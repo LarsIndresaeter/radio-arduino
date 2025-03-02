@@ -2,7 +2,7 @@
 
 . tools/helper_scripts/export_environment.sh
 
-CONTAINER_NAME=cxx-uart-build
+CONTAINER_NAME=radio-arduino-build
 MY_USER_ID=$(id -u)
 MY_GROUP_ID=$(id -g)
 USER_STRING="--user ${MY_USER_ID}:${MY_GROUP_ID}"
