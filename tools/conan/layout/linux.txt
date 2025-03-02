@@ -1,0 +1,18 @@
+{% set simple=false%}
+{% set build_dir='build' %}
+{% if simple==false %}
+{% set build_dir='build'  %}
+{% set arch=settings.arch|string %}
+{% set build_dir=build_dir+'/'+arch %}
+{% endif %}
+
+[includedirs]
+.
+
+[source_folder]
+.
+
+[build_folder]
+{{ build_dir }}
+[libdirs]
+.

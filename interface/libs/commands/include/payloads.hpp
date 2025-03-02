@@ -1,0 +1,34 @@
+#pragma once
+
+#include <stdint.h>
+
+#include <aes/payload.hpp>
+#include <blink/payload.hpp>
+#include <common/command_id.hpp>
+#include <debug/payload.hpp>
+#include <ds18b20/payload.hpp>
+#include <eeprom_read/payload.hpp>
+#include <eeprom_write/payload.hpp>
+#include <gpio/payload.hpp>
+#include <hotp/payload.hpp>
+#include <i2c_read/payload.hpp>
+#include <i2c_write/payload.hpp>
+#include <ina219/payload.hpp>
+#include <pwm/payload.hpp>
+#include <random/payload.hpp>
+#include <sha1/payload.hpp>
+#include <set_key/payload.hpp>
+#include <set_device_info/payload.hpp>
+#include <get_device_info/payload.hpp>
+#include <ws2812b/payload.hpp>
+#include <ssd1306/payload.hpp>
+#include <timer/payload.hpp>
+#include <spi_read/payload.hpp>
+#include <spi_write/payload.hpp>
+#include <nrf24l01_init/payload.hpp>
+#include <nrf24l01_read/payload.hpp>
+#include <nrf24l01_write/payload.hpp>
+#include <radio_uart/payload.hpp>
+#include <vcc/payload.hpp>
+#include <sleep/payload.hpp>
+#include <wakeup/payload.hpp>

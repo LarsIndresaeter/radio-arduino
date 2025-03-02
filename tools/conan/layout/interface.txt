@@ -1,0 +1,6 @@
+{% set build_dir='build' %}
+
+[includedirs]
+libs/protocol/include
+libs/commands/include
+

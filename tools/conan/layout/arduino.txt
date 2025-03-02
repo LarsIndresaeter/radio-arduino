@@ -1,0 +1,10 @@
+{% set build_dir='../build/arduino' %}
+
+[bindirs]
+{{ build_dir }}
+
+[builddirs]
+{{ build_dir }}
+
+[resdirs]
+{{ build_dir }}/bin
