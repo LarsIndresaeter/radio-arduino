@@ -7,8 +7,6 @@ WORKDIR=$PWD
 
 conan_package_interface()
 {
-    export CONAN_USER_HOME=~/priv/
-
     if [ `conan editable list | grep "^uart-api/"` ]
     then
         conan editable remove $(conan editable list | grep "^uart-api/")
@@ -32,7 +30,6 @@ conan_package_interface()
 conan_package_arduino()
 {
     set -e
-    export CONAN_USER_HOME=~/priv/
 
     if [ `conan editable list | grep "^uart-avr/"` ]
     then
@@ -50,7 +47,6 @@ conan_package_arduino()
 conan_package_linux()
 {
     set -e
-    export CONAN_USER_HOME=~/priv/
 
     if [ `conan editable list | grep "^uart-tool/"` ]
     then

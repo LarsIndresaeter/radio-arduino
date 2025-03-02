@@ -1,7 +1,5 @@
 #!/bin/bash
 
-export CONAN_USER_HOME=~/priv/
-
 export CXX=avr-g++
 export CC=avr-gcc
 export AS="avr-gcc"
