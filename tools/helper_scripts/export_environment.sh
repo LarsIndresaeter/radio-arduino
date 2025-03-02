@@ -1,9 +1,9 @@
 #!/bin/bash
 
-PROJECT_BASE_DIR_IN_REPO="/cxx/uart"
-TOOLS_DIR_IN_REPO="/cxx/uart/tools"
-HELPER_SCRIPTS_DIR_IN_REPO="/cxx/uart/tools/helper_scripts"
-BIN_DIR_IN_REPO="/cxx/uart/bin"
+PROJECT_BASE_DIR_IN_REPO=""
+TOOLS_DIR_IN_REPO="/tools"
+HELPER_SCRIPTS_DIR_IN_REPO="/tools/helper_scripts"
+BIN_DIR_IN_REPO="/bin"
 CUSTOM_COMMAND="raduino"
 
 REPO_BASE_DIR=$(git rev-parse --show-toplevel)

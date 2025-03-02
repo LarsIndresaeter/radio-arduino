@@ -1,12 +1,12 @@
 #!/bin/bash
 
-SCRIPT_PATH="${PWD}/tools/source_env.sh"
+SCRIPT_PATH="${PWD}/tools/setup.sh"
 
 if [ "$0" != "-bash" ]
 then
     echo "usage: source ${SCRIPT_PATH}"
 else
-    tools/helper_scripts/export_environment.sh
+    . tools/helper_scripts/export_environment.sh
 
     if [ "$1" == "docker" ]
     then

@@ -20,7 +20,7 @@ if [ -x "$(command -v docker)" ]; then
     then
         docker build -t $CONTAINER_NAME tools/docker/
     else
-        docker run ${USER_STRING} -v ${REPO_BASE_DIR}/:/home/lars/ $CONTAINER_NAME bash -c "cxx/uart/tools/helper_scripts/docker.sh $1 $2 $3 $4"
+        docker run ${USER_STRING} -v ${REPO_BASE_DIR}/:/home/lars/ $CONTAINER_NAME bash -c "tools/helper_scripts/docker.sh $1 $2 $3 $4"
     fi
 else
     echo "you must install docker"
