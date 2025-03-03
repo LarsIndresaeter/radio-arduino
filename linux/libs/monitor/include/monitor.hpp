@@ -25,6 +25,11 @@ public:
     void printDebug(bool d);
     void setPrintResponseTime(bool value);
     void setTransportEncryption(bool value);
+    int getCommandsSent();
+    int getValidResponses();
+    int getInvalidResponses();
+    int getBytesSent();
+    int getBytesReceived();
 
     template <typename T> T get(T cmd)
     {

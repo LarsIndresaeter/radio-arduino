@@ -10,6 +10,7 @@
 #include <numeric>
 #include <thread>
 #include <uart.hpp>
+#include <string>
 
 using namespace std::chrono_literals;
 
@@ -253,16 +254,72 @@ void readVccFromRadioSlave(monitor& mon)
     connOpts.set_clean_session(true);
     connOpts.set_automatic_reconnect(true);
 
-    mqtt::topic json_topic(mqtt_client, "sensor/power/arduino/all", QOS, false);
+    mqtt::topic json_topic(mqtt_client, "arduino/sensor/slave/vcc/json", QOS, false);
     mqtt::topic vcc_topic(
-        mqtt_client, "sensor/power/arduino/vcc/voltage", QOS, false);
+        mqtt_client, "arduino/sensor/slave/vcc/voltage", QOS, false);
+    mqtt::topic connection_status_topic(
+        mqtt_client, "arduino/radio/status", QOS, false);
+    mqtt::topic connection_attempts_topic(
+        mqtt_client, "arduino/radio/wakeup_attempts", QOS, false);
+    int connection_attempts = 0;
 
+    mqtt::topic link_commands_sent_topic(
+        mqtt_client, "arduino/uart/commands_sent", QOS, false);
+    mqtt::topic link_valid_responses_topic(
+        mqtt_client, "arduino/uart/valid_responses", QOS, false);
+    mqtt::topic link_invalid_responses_topic(
+        mqtt_client, "arduino/uart/invalid_responses", QOS, false);
+    mqtt::topic link_bytes_sent_topic(
+        mqtt_client, "arduino/uart/bytes_sent", QOS, false);
+    mqtt::topic link_bytes_received_topic(
+        mqtt_client, "arduino/uart/bytes_received", QOS, false);
+    mqtt::topic slave_name(
+        mqtt_client, "arduino/slave/name", QOS, false);
+    mqtt::topic master_name(
+        mqtt_client, "arduino/master/name", QOS, false);
+    
     mqtt_client.connect(connOpts)->wait();
 
+    connection_attempts_topic.publish(std::move(std::to_string(connection_attempts)));
+
     while (true) {
+
+        link_commands_sent_topic.publish(std::move(std::to_string(mon.getCommandsSent())));
+        link_valid_responses_topic.publish(std::move(std::to_string(mon.getValidResponses())));
+        link_invalid_responses_topic.publish(std::move(std::to_string(mon.getInvalidResponses())));
+        link_bytes_sent_topic.publish(std::move(std::to_string(mon.getBytesSent())));
+        link_bytes_received_topic.publish(std::move(std::to_string(mon.getBytesReceived())));
+
+
+        auto slaveDeviceInfo =  mon.getRadio<>(UartCommandGetDeviceInfo());
+        if (slaveDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+                auto response = slaveDeviceInfo.responseStruct();
+                std::string name;
+
+                for (int i = 0; i < 16 && response.name[i] != 0; i++) {
+                    name += response.name[i];
+                }
+
+            slave_name.publish(std::move(name));
+        }
+
+        auto masterDeviceInfo =  mon.get<>(UartCommandGetDeviceInfo());
+        if (masterDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+                auto response = masterDeviceInfo.responseStruct();
+                std::string name;
+
+                for (int i = 0; i < 16 && response.name[i] != 0; i++) {
+                    name += response.name[i];
+                }
+
+            master_name.publish(std::move(name));
+        }
+
         auto vcc = mon.getRadio<>(UartCommandVcc());
 
         if (vcc.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+            connection_status_topic.publish("connected");
+
             uint16_t vcc_mv = (uint16_t)(vcc.responseStruct().vcc_h << 8)
                 | vcc.responseStruct().vcc_l;
 
@@ -285,8 +342,10 @@ void readVccFromRadioSlave(monitor& mon)
         }
         else
         {
-            std::cout << "send wakeup message" << std::endl;
-            std::cout << mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000)) << std::endl;
+            connection_status_topic.publish("disconnected");
+            auto wakeup = mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
+            connection_attempts++;
+            connection_attempts_topic.publish(std::move(std::to_string(connection_attempts)));
         }
     }
 

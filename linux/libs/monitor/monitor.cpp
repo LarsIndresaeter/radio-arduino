@@ -81,6 +81,12 @@ void monitor::get(std::vector<uint8_t> command, uint8_t protocol_version)
     sendRequest(cmd, command, protocol_version);
 }
 
+int monitor::getCommandsSent() { return m_commandsSentCounter; }
+int monitor::getValidResponses() { return m_validResponseCounter; }
+int monitor::getInvalidResponses() { return m_inValidResponseCounter; }
+int monitor::getBytesSent() { return m_bytesSent; }
+int monitor::getBytesReceived() { return m_bytesReceived; }
+
 void monitor::printCounterValues()
 {
     std::cout << "commands sent     : " << std::dec
