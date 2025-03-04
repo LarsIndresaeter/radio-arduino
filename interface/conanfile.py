@@ -34,3 +34,4 @@ class UartApiConan(ConanFile):
             installer = SystemPackageTool()
             installer.install("cmake")
             installer.install("ccache")
+            installer.install("ninja-build")
