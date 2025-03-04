@@ -17,7 +17,7 @@ make_build_dir()
         if [ -e ${BUILD_DIR}/CMakeFiles/ ]
         then
             pushd ${BUILD_DIR}
-            make
+            cmake --build .
             popd
         else
             echo "'${BUILD_DIR}/CMakeFiles' does not exist"
