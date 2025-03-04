@@ -42,6 +42,16 @@ bool rx_mode_master = false;
 bool rx_mode_master = true;
 #endif
 
+uint8_t rf_link_wakeup_command[32] 
+        = {'w', 'a', 'k', 'e', 'u', 'p', ' ', 0x55, 0x55, 0x55, 0x55, 
+            0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+            0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,};
+
+uint8_t rf_link_discover_package[32]
+        = { 'd', 'i', 's', 'c', 'o', 'v', 'e', 'r', ' ', 0xaa, 0xaa,
+            0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
+            0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa };
+
 #ifdef USE_NRF24L01_INTTERRUPT
 ISR(PCINT0_vect)
 {
@@ -921,27 +931,26 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
 
     // only master should execute this command
 #ifndef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_SLAVE
-    uint8_t wakeup_command[32] = {0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,};
-    uint8_t wakeup_ack[32] = {0};
+    uint8_t read_discover_package[32] = {0};
 
     NRF24L01_set_rx_as_master(false);
 
-    NRF24L01_write_ack_payload(&wakeup_command[0], 32); // put command in ack buffer
+    //NRF24L01_write_ack_payload(&rf_link_wakeup_command[0], 32); // put command in ack buffer
                                                         
     for(uint16_t i = 0; i < 1000; i++)
     {
-        uint8_t length = NRF24L01_read_rx_payload(&wakeup_ack[0]);
+        uint8_t length = NRF24L01_read_rx_payload(&read_discover_package[0]);
 
         if(length == 32)
         {
             NRF24L01_set_rx_as_master(true);
-            NRF24L01_write_tx_payload(&wakeup_command[0], 32);
+            NRF24L01_write_tx_payload(&rf_link_wakeup_command[0], 32);
                                                                 
             for(uint8_t j=0; j<32; j++)
             {
                 response.status = 1; // slave has sent a command to ask if it should be woken up
 
-                if(wakeup_ack[j] != 0xaa)
+                if(read_discover_package[j] != rf_link_discover_package[i])
                 {
                     response.status = 0;
                 }
@@ -1066,32 +1075,28 @@ void rxSlaveSleepAndPollForWakeup()
 {
     // periodically poll rx master for wakeup command
 
-    uint8_t wakeup[32] = { 0 };
+    uint8_t read_wakeup_command[32] = { 0 };
 
     uint8_t wakeup_received = 0;
-    uint8_t wakeup_ack[32]
-        = { 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
-            0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
-            0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa };
 
     while (wakeup_received == 0) {
         powerDownRadioAndSleep(5000);
         NRF24L01_set_rx_as_master(true); // set master and flush pipes
 
         // send command to rf master
-        NRF24L01_tx(&wakeup_ack[0], 32);
+        NRF24L01_tx(&rf_link_discover_package[0], 32);
 
         // ack not working, set in receiver mode as a temprary hack
         NRF24L01_set_rx_as_master(false); // wait for command from master
         _delay_ms(10);
 
         // poll master for wakeup command in ack packet
-        uint8_t length = NRF24L01_read_rx_payload(&wakeup[0]);
+        uint8_t length = NRF24L01_read_rx_payload(&read_wakeup_command[0]);
 
         if (length == 32) {
             wakeup_received = 1;
             for (uint8_t i = 0; i < 32; i++) {
-                if (wakeup[i] != 0x55) {
+                if (read_wakeup_command[i] != rf_link_wakeup_command[i]) {
                     wakeup_received = 0;
                 }
             }
