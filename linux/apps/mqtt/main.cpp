@@ -57,12 +57,21 @@ uint64_t secondsSinceEpoch()
 void print_usage()
 {
     std::cout << "mqtt-tool" << std::endl;
-    std::cout << "       -M : ina219 power monitor" << std::endl;
     std::cout << "       -N : ina219 power monitor, statistic per second for "
                  "<N> seconds"
               << std::endl;
     std::cout << "       -j : read voltage from rf slave" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
+}
+
+std::string createMqttTopic(std::string type, std::string eon, std::string device)
+{
+    std::string retval("radio-arduino/" + type + "/" + eon);
+    if(!device.empty())
+    {
+        retval.append("/" + device);
+    }
+    return(retval);
 }
 
 float calculateStddev(std::vector<float> data)
@@ -79,44 +88,12 @@ float calculateStddev(std::vector<float> data)
     return stddev;
 }
 
-void readCurrentAndVoltage(monitor& mon, int samples)
+void readCurrentAndVoltage(monitor& mon, mqtt::async_client& mqtt_client, int samples)
 {
     auto ina219 = mon.get<>(UartCommandIna219());
     std::vector<float> currentData, voltageData;
 
-    const std::string DFLT_ADDRESS { "tcp://localhost:1883" };
     const int QOS = 0;
-    // const std::string PERSIST_DIR { "data-persist" };
-    const auto PERIOD = std::chrono::seconds(5);
-    const int MAX_BUFFERED_MSGS = 120; // 120 * 5sec => 10min off-line buffering
-                                       //
-    std::string address = DFLT_ADDRESS;
-    mqtt::async_client mqtt_client(address, "", MAX_BUFFERED_MSGS, 0);
-
-    mqtt::connect_options connOpts;
-    connOpts.set_keep_alive_interval(MAX_BUFFERED_MSGS * PERIOD);
-    connOpts.set_clean_session(true);
-    connOpts.set_automatic_reconnect(true);
-
-    mqtt::topic json_topic(mqtt_client, "sensor/power/ina219/all", QOS, false);
-    mqtt::topic current_min_topic(
-        mqtt_client, "sensor/power/ina219/current/min", QOS, false);
-    mqtt::topic current_max_topic(
-        mqtt_client, "sensor/power/ina219/current/max", QOS, false);
-    mqtt::topic current_avg_topic(
-        mqtt_client, "sensor/power/ina219/current/avg", QOS, false);
-    mqtt::topic current_stddev_topic(
-        mqtt_client, "sensor/power/ina219/current/stddev", QOS, false);
-    mqtt::topic voltage_min_topic(
-        mqtt_client, "sensor/power/ina219/voltage/min", QOS, false);
-    mqtt::topic voltage_max_topic(
-        mqtt_client, "sensor/power/ina219/voltage/max", QOS, false);
-    mqtt::topic voltage_avg_topic(
-        mqtt_client, "sensor/power/ina219/voltage/avg", QOS, false);
-    mqtt::topic device_name_topic(
-        mqtt_client, "sensor/power/ina219/name", QOS, false);
-
-    mqtt_client.connect(connOpts)->wait();
 
     float I_avg_p = 0.0;
     float V_avg_p = 0.0;
@@ -129,6 +106,7 @@ void readCurrentAndVoltage(monitor& mon, int samples)
     uint json_message_id = 0;
     bool timeoutExpired = true; // always send message on start up
 
+    std::string masterName;
     
     for (int attempts = 0; attempts <= 10; attempts++) 
     {
@@ -137,13 +115,18 @@ void readCurrentAndVoltage(monitor& mon, int samples)
         if (deviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
             try {
                 auto response = deviceInfo.responseStruct();
-                std::string name;
 
                 for (int i = 0; i < 16 && response.name[i] != 0; i++) {
-                    name += response.name[i];
+                    masterName += response.name[i];
                 }
 
-                device_name_topic.publish(name);
+                mqtt::topic device_name_topic(
+                mqtt_client, createMqttTopic("NBIRTH", masterName, ""), QOS, false);
+
+                time_point input = std::chrono::system_clock::now();
+                std::string dateString = serializeTimePoint(input, "%Y-%m-%d %H:%M:%S");
+
+                device_name_topic.publish(dateString);
                 break; // successfully read name and published it to the mqtt broker
             }
             catch (const mqtt::exception& exc) {
@@ -151,6 +134,23 @@ void readCurrentAndVoltage(monitor& mon, int samples)
             }
         }
     }
+
+    mqtt::topic json_topic(mqtt_client, createMqttTopic("DDATA", masterName, "ina219"), QOS, false);
+    mqtt::topic current_min_topic(
+        mqtt_client, createMqttTopic("DDATA", masterName, "ina219/current/min"), QOS, false);
+    mqtt::topic current_max_topic(
+        mqtt_client, createMqttTopic("DDATA", masterName, "ina219/current/max"), QOS, false);
+    mqtt::topic current_avg_topic(
+        mqtt_client, createMqttTopic("DDATA", masterName, "ina219/current/avg"),  QOS, false);
+    mqtt::topic current_stddev_topic(
+        mqtt_client, createMqttTopic("DDATA", masterName, "ina219/current/stddev"), QOS, false);
+    mqtt::topic voltage_min_topic(
+        mqtt_client, createMqttTopic("DDATA", masterName, "ina219/voltage/min"), QOS, false);
+    mqtt::topic voltage_max_topic(
+        mqtt_client, createMqttTopic("DDATA", masterName, "ina219/voltage/max"), QOS, false);
+    mqtt::topic voltage_avg_topic(
+        mqtt_client, createMqttTopic("DDATA", masterName, "ina219/voltage/avg"), QOS, false);
+
 
     for (int i = 0; i <= samples; i++) {
         int time = 1;
@@ -254,39 +254,12 @@ void readCurrentAndVoltage(monitor& mon, int samples)
     mqtt_client.disconnect()->wait();
 }
 
-std::string createMqttTopic(std::string type, std::string eon, std::string device)
+void readVccFromRadioSlave(monitor& mon, mqtt::async_client& mqtt_client)
 {
-    std::string retval("spBv1.0/arduino/" + type + "/" + eon);
-    if(!device.empty())
-    {
-        retval.append("/" + device);
-    }
-    return(retval);
-}
-
-// spBv1.0/[Group ID]/[Message Type]/[EON Node ID]/[Device ID]
-void readVccFromRadioSlave(monitor& mon)
-{
-    const std::string DFLT_ADDRESS { "tcp://localhost:1883" };
-    const int QOS = 0;
-    // const std::string PERSIST_DIR { "data-persist" };
-    const auto PERIOD = std::chrono::seconds(5);
-    const int MAX_BUFFERED_MSGS = 120; // 120 * 5sec => 10min off-line buffering
-                                       //
-    std::string address = DFLT_ADDRESS;
-    mqtt::async_client mqtt_client(address, "", MAX_BUFFERED_MSGS, 0);
-
-    mqtt::connect_options connOpts;
-    connOpts.set_keep_alive_interval(MAX_BUFFERED_MSGS * PERIOD);
-    connOpts.set_clean_session(true);
-    connOpts.set_automatic_reconnect(true);
-
-    int connection_attempts = 0;
-   
-    mqtt_client.connect(connOpts)->wait();
-
     std::string masterName;
     std::string slaveName;
+    int connection_attempts = 0;
+    const int QOS = 0;
 
     while (true) {
         time_point input = std::chrono::system_clock::now();
@@ -408,15 +381,30 @@ void readVccFromRadioSlave(monitor& mon)
 
 void parseOpt(int argc, char* argv[], monitor& mon)
 {
+    const std::string DFLT_ADDRESS { "tcp://localhost:1883" };
+    // const std::string PERSIST_DIR { "data-persist" };
+    const auto PERIOD = std::chrono::seconds(5);
+    const int MAX_BUFFERED_MSGS = 120; // 120 * 5sec => 10min off-line buffering
+                                       //
+    std::string address = DFLT_ADDRESS;
+    mqtt::async_client mqtt_client(address, "", MAX_BUFFERED_MSGS, 0);
+
+    mqtt::connect_options connOpts;
+    connOpts.set_keep_alive_interval(MAX_BUFFERED_MSGS * PERIOD);
+    connOpts.set_clean_session(true);
+    connOpts.set_automatic_reconnect(true);
+   
+    mqtt_client.connect(connOpts)->wait();
+
     char option = 0;
 
     while ((option = getopt(argc, argv, "N:jh")) != -1) {
         switch (option) {
         case 'N':
-            readCurrentAndVoltage(mon, atoi(optarg));
+            readCurrentAndVoltage(mon, mqtt_client, atoi(optarg));
             break;
         case 'j': {
-            readVccFromRadioSlave(mon);
+            readVccFromRadioSlave(mon, mqtt_client);
         } break;
         case 'h':
             print_usage();
