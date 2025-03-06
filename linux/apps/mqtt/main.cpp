@@ -184,6 +184,8 @@ void readCurrentAndVoltage(monitor& mon, mqtt::async_client& mqtt_client, int sa
 
         // send data
         if (currentData.size() > 2) {
+            time_point input = std::chrono::system_clock::now();
+            std::string dateString = serializeTimePoint(input, "%Y-%m-%d %H:%M:%S");
             float I_avg = std::reduce(currentData.begin(), currentData.end())
                 / currentData.size();
             float V_avg = std::reduce(voltageData.begin(), voltageData.end())
@@ -236,7 +238,8 @@ void readCurrentAndVoltage(monitor& mon, mqtt::async_client& mqtt_client, int sa
                         + std::to_string(V_avg) + ", \"current\":"
                         + std::to_string(I_avg) + ", \"stddev\":"
                         + std::to_string(I_std) + ", \"messageCounter\":"
-                        + std::to_string(json_message_id)
+                        + std::to_string(json_message_id) 
+                        + ", \"dateTime\": \"" + dateString + "\""
                         + ", \"secondsSinceEpoch\":"
                         + std::to_string(secondsSinceEpoch()) + "}";
 
