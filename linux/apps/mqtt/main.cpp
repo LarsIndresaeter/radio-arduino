@@ -56,7 +56,7 @@ uint64_t secondsSinceEpoch()
 
 void print_usage()
 {
-    std::cout << "mqtt-tool" << std::endl;
+    std::cout << "mqtt-client" << std::endl;
     std::cout << "       -N : ina219 power monitor, statistic per second for "
                  "<N> seconds"
               << std::endl;
