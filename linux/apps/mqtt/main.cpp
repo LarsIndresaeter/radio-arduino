@@ -16,6 +16,10 @@
 #include <iomanip>
 #include <sstream>
 
+#include <nlohmann/json.hpp>
+
+using nlohmann::json;
+
 using namespace std::chrono_literals;
 
 constexpr float EVENT_THRESHOLD = 0.01; // 1% change before sending new message
@@ -239,7 +243,7 @@ void readCurrentAndVoltage(monitor& mon, mqtt::async_client& mqtt_client, int sa
                         + std::to_string(I_avg) + ", \"stddev\":"
                         + std::to_string(I_std) + ", \"messageCounter\":"
                         + std::to_string(json_message_id) 
-                        + ", \"dateTime\": \"" + dateString + "\""
+                        + ", \"timestamp\": \"" + dateString + "\""
                         + ", \"secondsSinceEpoch\":"
                         + std::to_string(secondsSinceEpoch()) + "}";
 
@@ -252,6 +256,15 @@ void readCurrentAndVoltage(monitor& mon, mqtt::async_client& mqtt_client, int sa
                 std::cerr << exc.what() << std::endl;
             }
         }
+    }
+}
+
+void pollSlaveAndWakeupIfNeccessary(monitor& mon)
+{
+    auto slaveVcc = mon.getRadio<>(UartCommandVcc(), static_cast<std::chrono::milliseconds>(500));
+
+    if (slaveVcc.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
+        auto wakeup = mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
     }
 }
 
@@ -335,7 +348,7 @@ void parseMqttCommands(monitor& mon, mqtt::async_client& mqtt_client, std::strin
 
             if(!masterName.empty())
             {
-                // seher: add subscription later
+                std::string commandParamString;
 
                 std::string commandTopic = createMqttTopic("RCMD", masterName, "");
                 int QOS = 0;
@@ -351,31 +364,57 @@ void parseMqttCommands(monitor& mon, mqtt::async_client& mqtt_client, std::strin
                 {
                     std::string json_string = msg->to_string();
                     std::cout << msg->get_topic() << ": " << json_string << std::endl;
+
+                    auto jsonData = json::parse(json_string);
+                    //std::cout << "command=" << jsonData["command"] << std::endl;
+                    commandParamString = jsonData["command"];
+                    std::cout << "command=" << commandParamString << std::endl;
+                    // seher
+
                 }
                 else
                 {
                     std::cout << "*** Connection Lost ***" << std::endl;
                 }
 
-                //auto slaveVcc = mon.getRadio<>(UartCommandVcc());
-                //if (slaveVcc.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
-                    //auto delayResponse = mon.getRadio<>(
-                        //UartCommandSleep(1000),
-                        //static_cast<std::chrono::milliseconds>(62000));
-                //}
-                //else
-                //{
-                    //mqtt::topic slave_death(
-                        //mqtt_client, createMqttTopic("DDEATH", masterName, slaveName), QOS, false);
-                    //slave_death.publish(std::move(dateString));
-                
-                    //slaveName.clear();
-                    //auto wakeup = mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
-                    //connection_attempts++;
-                    //mqtt::topic connection_attempts_topic(
-                        //mqtt_client, createMqttTopic("NDATA", masterName, "radio/wakeup_attempts"), QOS, false);
-                    //connection_attempts_topic.publish(std::move(std::to_string(connection_attempts)));
-                //}
+                if(commandParamString == "getVcc")
+                {
+                    // assume that the radio slave is sleeping
+                    pollSlaveAndWakeupIfNeccessary(mon);
+
+                    auto slaveVcc = mon.getRadio<>(UartCommandVcc());
+                    if (slaveVcc.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+                        mqtt::topic json_topic(mqtt_client, createMqttTopic("DDATA", masterName, slaveName), QOS, false);
+
+                        uint16_t vcc_mv = (uint16_t)(slaveVcc.responseStruct().vcc_h << 8)
+                            | slaveVcc.responseStruct().vcc_l;
+
+                        try {
+                            std::string mqtt_payload
+                                = "{\"timestamp\": \"" +  dateString + "\", \"voltage\":" + std::to_string(vcc_mv / 1000.0) + "}";
+
+                            json_topic.publish(std::move(mqtt_payload));
+                        }
+                        catch (const mqtt::exception& exc) {
+                            std::cerr << exc.what() << std::endl;
+                        }
+
+                        auto delayResponse = mon.getRadio<>(UartCommandSleep(1000),static_cast<std::chrono::milliseconds>(62000));
+                    }
+                    //else
+                    //{
+                        //mqtt::topic slave_death(
+                            //mqtt_client, createMqttTopic("DDEATH", masterName, slaveName), QOS, false);
+                        //slave_death.publish(std::move(dateString));
+                    
+                        //slaveName.clear();
+                        //auto wakeup = mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
+                        //connection_attempts++;
+                        //mqtt::topic connection_attempts_topic(
+                            //mqtt_client, createMqttTopic("NDATA", masterName, "radio/wakeup_attempts"), QOS, false);
+                        //connection_attempts_topic.publish(std::move(std::to_string(connection_attempts)));
+                    //}
+                }
             }
         }
     }
@@ -474,7 +513,7 @@ void readVccFromRadioSlave(monitor& mon, mqtt::async_client& mqtt_client)
 
                     try {
                         std::string mqtt_payload
-                            = "{\"dateTime\": \"" +  dateString + "\", \"voltage\":" + std::to_string(vcc_mv / 1000.0) + "}";
+                            = "{\"timestamp\": \"" +  dateString + "\", \"voltage\":" + std::to_string(vcc_mv / 1000.0) + "}";
 
                         json_topic.publish(std::move(mqtt_payload));
                         //vcc_topic.publish(std::move(std::to_string(vcc_mv / 1000.0)));
