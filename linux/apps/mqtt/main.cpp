@@ -253,9 +253,134 @@ void readCurrentAndVoltage(monitor& mon, mqtt::async_client& mqtt_client, int sa
             }
         }
     }
-
-    mqtt_client.disconnect()->wait();
 }
+
+void parseMqttCommands(monitor& mon, mqtt::async_client& mqtt_client, std::string args)
+{
+    std::string masterName;
+    std::string slaveName;
+    int connection_attempts = 0;
+    const int QOS = 0;
+
+    while (true) {
+        time_point input = std::chrono::system_clock::now();
+        std::string dateString = serializeTimePoint(input, "%Y-%m-%d %H:%M:%S");
+
+        //if(!masterName.empty())
+        //{
+            //mqtt::topic link_commands_sent_topic(
+                //mqtt_client, createMqttTopic("NDATA", masterName, "protocol/commands_sent"), QOS, false);
+            //mqtt::topic link_valid_responses_topic(
+                //mqtt_client, createMqttTopic("NDATA", masterName, "protocol/valid_responses"), QOS, false);
+            //mqtt::topic link_invalid_responses_topic(
+                //mqtt_client, createMqttTopic("NDATA", masterName, "protocol/invalid_responses"), QOS, false);
+            //mqtt::topic link_bytes_sent_topic(
+                //mqtt_client, createMqttTopic("NDATA", masterName, "protocol/bytes_sent"), QOS, false);
+            //mqtt::topic link_bytes_received_topic(
+                //mqtt_client, createMqttTopic("NDATA", masterName, "protocol/bytes_received"), QOS, false);
+
+            //link_commands_sent_topic.publish(std::move(std::to_string(mon.getCommandsSent())));
+            //link_valid_responses_topic.publish(std::move(std::to_string(mon.getValidResponses())));
+            //link_invalid_responses_topic.publish(std::move(std::to_string(mon.getInvalidResponses())));
+            //link_bytes_sent_topic.publish(std::move(std::to_string(mon.getBytesSent())));
+            //link_bytes_received_topic.publish(std::move(std::to_string(mon.getBytesReceived())));
+        //}
+
+        if(masterName.empty())
+        {
+            auto masterDeviceInfo =  mon.get<>(UartCommandGetDeviceInfo());
+            if (masterDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+                    auto response = masterDeviceInfo.responseStruct();
+
+                    for (int i = 0; i < 16 && response.name[i] != 0; i++) {
+                        masterName += response.name[i];
+                    }
+
+                mqtt::topic master_birth(
+                    mqtt_client, createMqttTopic("NBIRTH", masterName, ""), QOS, false);
+                master_birth.publish(std::move(dateString));
+            }
+        } else if (slaveName.empty())
+        {
+            auto slaveDeviceInfo =  mon.getRadio<>(UartCommandGetDeviceInfo());
+            if (slaveDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+                    auto response = slaveDeviceInfo.responseStruct();
+
+                    for (int i = 0; i < 16 && response.name[i] != 0; i++) {
+                        slaveName += response.name[i];
+                    }
+
+                mqtt::topic slave_birth(
+                    mqtt_client, createMqttTopic("DBIRTH", masterName, slaveName), QOS, false);
+                slave_birth.publish(std::move(dateString));
+            }
+            else{
+                auto wakeup = mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
+                connection_attempts++;
+                mqtt::topic connection_attempts_topic(
+                    mqtt_client, createMqttTopic("NDATA", masterName, "radio/wakeup_attempts"), QOS, false);
+                connection_attempts_topic.publish(std::move(std::to_string(connection_attempts)));
+            }
+        }
+        else
+        {
+            auto masterVcc = mon.get<>(UartCommandVcc());
+
+            if (masterVcc.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
+                mqtt::topic master_death(
+                    mqtt_client, createMqttTopic("NDEATH", masterName, ""), QOS, false);
+                master_death.publish(std::move(dateString));
+                masterName.clear();
+            }
+
+            if(!masterName.empty())
+            {
+                // seher: add subscription later
+
+                std::string commandTopic = createMqttTopic("RCMD", masterName, "");
+                int QOS = 0;
+                mqtt_client.subscribe(commandTopic, QOS)->wait();
+
+                // Consume messages
+
+                std::cout << "\nWaiting for messages on topic: '" << commandTopic << "'" << std::endl;
+
+                auto msg = mqtt_client.consume_message();
+
+                if (msg)
+                {
+                    std::string json_string = msg->to_string();
+                    std::cout << msg->get_topic() << ": " << json_string << std::endl;
+                }
+                else
+                {
+                    std::cout << "*** Connection Lost ***" << std::endl;
+                }
+
+                //auto slaveVcc = mon.getRadio<>(UartCommandVcc());
+                //if (slaveVcc.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+                    //auto delayResponse = mon.getRadio<>(
+                        //UartCommandSleep(1000),
+                        //static_cast<std::chrono::milliseconds>(62000));
+                //}
+                //else
+                //{
+                    //mqtt::topic slave_death(
+                        //mqtt_client, createMqttTopic("DDEATH", masterName, slaveName), QOS, false);
+                    //slave_death.publish(std::move(dateString));
+                
+                    //slaveName.clear();
+                    //auto wakeup = mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
+                    //connection_attempts++;
+                    //mqtt::topic connection_attempts_topic(
+                        //mqtt_client, createMqttTopic("NDATA", masterName, "radio/wakeup_attempts"), QOS, false);
+                    //connection_attempts_topic.publish(std::move(std::to_string(connection_attempts)));
+                //}
+            }
+        }
+    }
+}
+ 
 
 void readVccFromRadioSlave(monitor& mon, mqtt::async_client& mqtt_client)
 {
@@ -378,8 +503,6 @@ void readVccFromRadioSlave(monitor& mon, mqtt::async_client& mqtt_client)
             }
         }
     }
-
-    mqtt_client.disconnect()->wait();
 }
 
 void parseOpt(int argc, char* argv[], monitor& mon)
@@ -397,23 +520,30 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     connOpts.set_clean_session(true);
     connOpts.set_automatic_reconnect(true);
    
+    mqtt_client.start_consuming();
+        
     mqtt_client.connect(connOpts)->wait();
 
     char option = 0;
 
-    while ((option = getopt(argc, argv, "N:jh")) != -1) {
+    while ((option = getopt(argc, argv, "N:jhc:")) != -1) {
         switch (option) {
         case 'N':
             readCurrentAndVoltage(mon, mqtt_client, atoi(optarg));
             break;
-        case 'j': {
+        case 'j':
             readVccFromRadioSlave(mon, mqtt_client);
-        } break;
+            break;
+        case 'c':
+            parseMqttCommands(mon, mqtt_client, optarg);
+            break;
         case 'h':
             print_usage();
             break;
         }
     }
+
+    mqtt_client.disconnect()->wait();
 
     exit(0);
 }
