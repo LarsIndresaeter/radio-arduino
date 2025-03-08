@@ -65,6 +65,10 @@ void print_usage()
               << std::endl;
     std::cout << "       -j : read voltage from rf slave" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
+    std::cout << std::endl;
+    std::cout << "mosquitto_sub -t 'radio-arduino/#' -v" << std::endl;
+    std::cout << "mosquitto_pub -t \"radio-arduino/RCMD/rf-nano\" -m '{\"command\": \"getVcc\"}'" << std::endl;
+    std::cout << "mosquitto_pub -t \"radio-arduino/RCMD/rf-nano\" -m '{\"command\": \"lcd\", \"displayText\": \"hello world!\"}'" << std::endl;
 }
 
 std::string createMqttTopic(std::string type, std::string eon, std::string device)
@@ -90,20 +94,20 @@ float calculateStddev(std::vector<float> data)
     return stddev;
 }
 
-
 void pollSlaveAndWakeupIfNeccessary(monitor& mon)
 {
     // TODO: refactor this
-    auto slaveDebug = mon.getRadio<>(UartCommandDebug(), static_cast<std::chrono::milliseconds>(2000));
+    // this code crash and burn when the slave is in normal mode
+    auto slaveDebug = mon.getRadio<>(UartCommandDebug());
 
     if (slaveDebug.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
-        auto wakeup = mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
+        mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
     }
 
-    auto slaveDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo(), static_cast<std::chrono::milliseconds>(2000));
+    auto slaveDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
 
     if (slaveDeviceInfo.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
-        auto wakeup = mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
+        mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
     }
 }
 
@@ -136,7 +140,6 @@ std::string getMasterNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_
     std::string masterName("");
 
     auto masterDeviceInfo = mon.get<>(UartCommandGetDeviceInfo());
-
 
     if (masterDeviceInfo.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
         masterDeviceInfo = mon.get<>(UartCommandGetDeviceInfo());
@@ -190,6 +193,22 @@ std::string getSlaveNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_c
     return (slaveName);
 }
 
+void sendLcdCommandToSlave(monitor& mon, std::string& displayText)
+{
+    pollSlaveAndWakeupIfNeccessary(mon);
+
+    // seher
+    std::cout << "DEBUG: lcd, " << displayText << std::endl;
+
+    std::vector<uint8_t> lcd(COMMANDS::SSD1306::STRING_LENGTH, ' ');
+
+    for (uint8_t i = 0; i < displayText.size() && i < COMMANDS::SSD1306::STRING_LENGTH; i++) {
+        lcd.at(i) = displayText.at(i);
+    }
+
+    mon.getRadio<>(UartCommandSsd1306(2, lcd)); // second line
+}
+
 void readVccFromRadioSlaveAndPublish(monitor& mon, mqtt::async_client& mqtt_client, std::string& masterName, std::string& slaveName)
 {
     pollSlaveAndWakeupIfNeccessary(mon);
@@ -216,6 +235,28 @@ void readVccFromRadioSlaveAndPublish(monitor& mon, mqtt::async_client& mqtt_clie
     }
 }
 
+std::string getJsonCommandFromMqtt(mqtt::async_client& mqtt_client, std::string& masterName)
+{
+    std::string result;
+
+    std::string commandTopic = createMqttTopic("RCMD", masterName, "");
+    int QOS = 0;
+    mqtt_client.subscribe(commandTopic, QOS)->wait();
+
+    std::cout << "\nWaiting for messages on topic: '" << commandTopic << "'" << std::endl;
+
+    auto msg = mqtt_client.consume_message();
+
+    if (msg) {
+        result = msg->to_string();
+    }
+    else {
+        std::cout << "*** Connection Lost ***" << std::endl;
+    }
+
+    return (result);
+}
+
 void parseMqttCommands(monitor& mon, mqtt::async_client& mqtt_client)
 {
     std::string masterName;
@@ -234,36 +275,19 @@ void parseMqttCommands(monitor& mon, mqtt::async_client& mqtt_client)
         }
         else {
             std::string commandParamString;
-            bool validCommand = false;
+            std::string displayText;
 
-            try {
-                std::string commandTopic = createMqttTopic("RCMD", masterName, "");
-                int QOS = 0;
-                mqtt_client.subscribe(commandTopic, QOS)->wait();
+            std::string json_string = getJsonCommandFromMqtt(mqtt_client, masterName);
+            auto jsonData = json::parse(json_string);
+            commandParamString = jsonData["command"];
 
-                std::cout << "\nWaiting for messages on topic: '" << commandTopic << "'" << std::endl;
-
-                auto msg = mqtt_client.consume_message();
-
-                if (msg) {
-                    std::string json_string = msg->to_string();
-                    // std::cout << "DEBUG: " << msg->get_topic() << ": " << json_string << std::endl;
-
-                    auto jsonData = json::parse(json_string);
-                    commandParamString = jsonData["command"];
-                    validCommand = true;
-                }
-                else {
-                    std::cout << "*** Connection Lost ***" << std::endl;
-                }
-            }
-            catch (int e) {
-            }
-
-            // seher
-            if (validCommand) {
+            if (!commandParamString.empty()) {
                 if (commandParamString == "getVcc") {
                     readVccFromRadioSlaveAndPublish(mon, mqtt_client, masterName, slaveName);
+                }
+                else if (commandParamString == "lcd") {
+                    displayText = jsonData["displayText"];
+                    sendLcdCommandToSlave(mon, displayText);
                 }
             }
         }
