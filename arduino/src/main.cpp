@@ -1220,7 +1220,7 @@ void parseInput(protocol m_protocol, comBusInterface* comBus)
             if (response_length == 32) {
                 is_wakeup_ack = 1;
                 for (uint8_t j = 0; j < 32; j++) {
-                    if (ack_packet[j] != 0xaa) {
+                    if (ack_packet[j] != rf_link_discover_package[j]) {
                         is_wakeup_ack = 0;
                     }
                 }
