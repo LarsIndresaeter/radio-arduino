@@ -314,7 +314,7 @@ std::string getMasterNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_
         master_birth.publish(std::move(dateString));
     }
 
-    return(masterName);
+    return (masterName);
 }
 
 std::string getSlaveNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client, std::string& masterName)
@@ -337,15 +337,15 @@ std::string getSlaveNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_c
             mqtt_client, createMqttTopic("DBIRTH", masterName, slaveName), 0, false);
         slave_birth.publish(std::move(dateString));
     }
-    //else {
-        //auto wakeup = mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
-        //connection_attempts++;
-        //mqtt::topic connection_attempts_topic(
-            //mqtt_client, createMqttTopic("NDATA", masterName, "radio/wakeup_attempts"), 0, false);
-        //connection_attempts_topic.publish(std::move(std::to_string(connection_attempts)));
+    // else {
+    // auto wakeup = mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
+    // connection_attempts++;
+    // mqtt::topic connection_attempts_topic(
+    // mqtt_client, createMqttTopic("NDATA", masterName, "radio/wakeup_attempts"), 0, false);
+    // connection_attempts_topic.publish(std::move(std::to_string(connection_attempts)));
     //}
 
-    return(slaveName);
+    return (slaveName);
 }
 
 void readVccFromRadioSlaveAndPublish(monitor& mon, mqtt::async_client& mqtt_client, std::string& masterName, std::string& slaveName)
@@ -382,10 +382,7 @@ void parseMqttCommands(monitor& mon, mqtt::async_client& mqtt_client)
     const int QOS = 0;
 
     while (true) {
-        time_point input = std::chrono::system_clock::now();
-        std::string dateString = serializeTimePoint(input, "%Y-%m-%d %H:%M:%S");
-
-        //publishMonitorProtocolStatistics(mon, mqtt_client, masterName);
+        // publishMonitorProtocolStatistics(mon, mqtt_client, masterName);
 
         if (masterName.empty()) {
             masterName = getMasterNameAndPublishBirth(mon, mqtt_client);
@@ -394,39 +391,39 @@ void parseMqttCommands(monitor& mon, mqtt::async_client& mqtt_client)
             slaveName = getSlaveNameAndPublishBirth(mon, mqtt_client, masterName);
         }
         else {
-                std::string commandParamString;
-                bool validCommand = false;
+            std::string commandParamString;
+            bool validCommand = false;
 
-                try {
-                    std::string commandTopic = createMqttTopic("RCMD", masterName, "");
-                    int QOS = 0;
-                    mqtt_client.subscribe(commandTopic, QOS)->wait();
+            try {
+                std::string commandTopic = createMqttTopic("RCMD", masterName, "");
+                int QOS = 0;
+                mqtt_client.subscribe(commandTopic, QOS)->wait();
 
-                    std::cout << "\nWaiting for messages on topic: '" << commandTopic << "'" << std::endl;
+                std::cout << "\nWaiting for messages on topic: '" << commandTopic << "'" << std::endl;
 
-                    auto msg = mqtt_client.consume_message();
+                auto msg = mqtt_client.consume_message();
 
-                    if (msg) {
-                        std::string json_string = msg->to_string();
-                        //std::cout << "DEBUG: " << msg->get_topic() << ": " << json_string << std::endl;
+                if (msg) {
+                    std::string json_string = msg->to_string();
+                    // std::cout << "DEBUG: " << msg->get_topic() << ": " << json_string << std::endl;
 
-                        auto jsonData = json::parse(json_string);
-                        commandParamString = jsonData["command"];
-                        validCommand = true;
-                    }
-                    else {
-                        std::cout << "*** Connection Lost ***" << std::endl;
-                    }
+                    auto jsonData = json::parse(json_string);
+                    commandParamString = jsonData["command"];
+                    validCommand = true;
                 }
-                catch (int e) {
+                else {
+                    std::cout << "*** Connection Lost ***" << std::endl;
                 }
+            }
+            catch (int e) {
+            }
 
-                // seher
-                if (validCommand) {
-                    if (commandParamString == "getVcc") {
-                        readVccFromRadioSlaveAndPublish(mon, mqtt_client, masterName, slaveName);
-                    }
+            // seher
+            if (validCommand) {
+                if (commandParamString == "getVcc") {
+                    readVccFromRadioSlaveAndPublish(mon, mqtt_client, masterName, slaveName);
                 }
+            }
         }
     }
 }
@@ -442,7 +439,7 @@ void readVccFromRadioSlave(monitor& mon, mqtt::async_client& mqtt_client)
         time_point input = std::chrono::system_clock::now();
         std::string dateString = serializeTimePoint(input, "%Y-%m-%d %H:%M:%S");
 
-        //publishMonitorProtocolStatistics(mon, mqtt_client, masterName);
+        // publishMonitorProtocolStatistics(mon, mqtt_client, masterName);
 
         if (masterName.empty()) {
             masterName = getMasterNameAndPublishBirth(mon, mqtt_client);
