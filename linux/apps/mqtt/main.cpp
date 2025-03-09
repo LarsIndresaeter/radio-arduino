@@ -96,19 +96,15 @@ float calculateStddev(std::vector<float> data)
 
 void pollSlaveAndWakeupIfNeccessary(monitor& mon)
 {
-    // TODO: refactor this
-    // this code crash and burn when the slave is in normal mode
-    auto slaveDebug = mon.getRadio<>(UartCommandDebug());
+    auto wakeup = mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
 
-    if (slaveDebug.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
+    if (wakeup.responseStruct().status == 0) {
+        //std::cout << "DEBUG: send new wakeup command" << std::endl;
         mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
     }
-
-    auto slaveDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
-
-    if (slaveDeviceInfo.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
-        mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
-    }
+    //else {
+        //std::cout << "DEBUG: wakeup successful" << std::endl;
+    //}
 }
 
 void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_client, std::string& masterName)
