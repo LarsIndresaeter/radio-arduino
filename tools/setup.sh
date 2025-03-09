@@ -24,10 +24,12 @@ else
     then
         alias "${RADINO_CUSTOM_COMMAND}"="${RADINO_TOOLS_DIR}/docker/build_in_docker.sh"
         echo "${RADINO_CUSTOM_COMMAND} command ready"
+        echo "build=docker" >> ${RADINO_REPO_BASE_DIR}/build/config.txt
     elif [ "$1" == "local" ]
     then
         alias "${RADINO_CUSTOM_COMMAND}"="${RADINO_TOOLS_DIR}/suite.sh"
         echo "${RADINO_CUSTOM_COMMAND} command ready"
+        echo "build=local" >> ${RADINO_REPO_BASE_DIR}/build/config.txt
     else
         echo "you must specity 'docker' or 'local' tool setup"
     fi

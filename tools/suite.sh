@@ -33,7 +33,7 @@ fi
 
 if [ "${PARAM}" == "config" ]
 then
-    echo "not implemented"
+    ${RADINO_HELPER_SCRIPTS_DIR}/config.sh
 fi
 
 if [ "${PARAM}" == "experiment" ]
