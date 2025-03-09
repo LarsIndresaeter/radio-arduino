@@ -945,12 +945,11 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
         {
             NRF24L01_set_rx_as_master(true);
             NRF24L01_write_tx_payload(&rf_link_wakeup_command[0], 32);
+            response.status = 1;
                                                                 
             for(uint8_t j=0; j<32; j++)
             {
-                response.status = 1; // slave has sent a command to ask if it should be woken up
-
-                if(read_discover_package[j] != rf_link_discover_package[i])
+                if(read_discover_package[j] != rf_link_discover_package[j])
                 {
                     response.status = 0;
                 }
@@ -961,6 +960,7 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
 
         _delay_ms(10);
     }
+    _delay_ms(10); // give rf slave some time to be ready for new commands
 #endif
 
     response.serialize(responsePayload);
