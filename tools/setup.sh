@@ -2,7 +2,19 @@
 
 SCRIPT_PATH="${PWD}/tools/setup.sh"
 
-if [ "$0" != "-bash" ]
+SOURCE_COMMAND=0
+
+if [ "$0" == "-bash" ]
+then
+    SOURCE_COMMAND=1
+fi
+
+if [ "$0" == "bash" ]
+then
+    SOURCE_COMMAND=1
+fi
+
+if [ "$SOURCE_COMMAND" != 1 ]
 then
     echo "usage: source ${SCRIPT_PATH}"
 else
