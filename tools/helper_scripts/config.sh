@@ -1,12 +1,8 @@
 #!/bin/bash
 
-BUILD_SYSTEM=$(grep build ${RADINO_REPO_BASE_DIR}/build/config.txt)
-
-if [ "${BUILD_SYSTEM}" == "build=docker" ]
+if [ -f /.dockerenv ];
 then
-    echo "configured for docker"
-elif [ "${BUILD_SYSTEM}" == "build=local" ]
-then
-    echo "configured for local"
+    echo "build tool is running inside docker"
+else
+    echo "using local tools (not docker)"
 fi
-
