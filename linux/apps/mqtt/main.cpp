@@ -96,15 +96,11 @@ float calculateStddev(std::vector<float> data)
 
 void pollSlaveAndWakeupIfNeccessary(monitor& mon)
 {
-    auto wakeup = mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
+    auto pingSlave = mon.getRadio<>(UartCommandVcc());
 
-    if (wakeup.responseStruct().status == 0) {
-        //std::cout << "DEBUG: send new wakeup command" << std::endl;
+    if (pingSlave.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
         mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
     }
-    //else {
-        //std::cout << "DEBUG: wakeup successful" << std::endl;
-    //}
 }
 
 void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_client, std::string& masterName)
