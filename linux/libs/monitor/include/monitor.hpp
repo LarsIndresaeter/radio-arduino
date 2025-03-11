@@ -115,6 +115,8 @@ public:
             // std::cout << "Reply timeout" << std::endl;
             cmd.setReplyStatus(UartCommandBase::ReplyStatus::Timeout);
             m_inValidResponseCounter++;
+            std::vector<uint8_t> tmp(COMMANDS::MAX_PACKAGE_LENGTH);
+            cmd.setResponse(tmp); // fill dummy reponse data
             return (cmd);
         }
 
