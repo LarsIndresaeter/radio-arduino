@@ -497,7 +497,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     const int MAX_BUFFERED_MSGS = 120; // 120 * 5sec => 10min off-line buffering
                                        //
     std::string address = DFLT_ADDRESS;
-    mqtt::async_client mqtt_client(address, "", MAX_BUFFERED_MSGS, 0);
+    mqtt::async_client mqtt_client(address, "raduino-client", MAX_BUFFERED_MSGS, 0);
 
     mqtt::connect_options connOpts;
     connOpts.set_keep_alive_interval(MAX_BUFFERED_MSGS * PERIOD);
