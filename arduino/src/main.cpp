@@ -42,15 +42,18 @@ bool rx_mode_master = false;
 bool rx_mode_master = true;
 #endif
 
+uint8_t rx_tx_addr[5] = { 0xF0, 0xF0, 0xF0, 0xF0, 0xC2 };
+uint8_t rf_channel = 121;
+
 uint8_t rf_link_wakeup_command[32] 
         = {'w', 'a', 'k', 'e', 'u', 'p', ' ', 0x55, 0x55, 0x55, 0x55, 
             0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
-            0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,};
+            0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, rx_tx_addr[4]};
 
 uint8_t rf_link_discover_package[32]
         = { 'd', 'i', 's', 'c', 'o', 'v', 'e', 'r', ' ', 0xaa, 0xaa,
             0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
-            0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa };
+            0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, rx_tx_addr[4] };
 
 #ifdef USE_NRF24L01_INTTERRUPT
 ISR(PCINT0_vect)
@@ -966,6 +969,22 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
+void commandSetSlaveAddress(uint8_t* commandPayload, uint8_t* responsePayload)
+{
+    COMMANDS::SET_SLAVE_ADDRESS::command_t command(commandPayload);
+    COMMANDS::SET_SLAVE_ADDRESS::response_t response;
+    response.status = 0;
+
+    rx_tx_addr[NRF24L01_ADDR_SIZE - 1] = command.slave_address;
+
+    // update wakeup command and discover package
+    rf_link_wakeup_command[31] = command.slave_address;
+    rf_link_discover_package[31] = command.slave_address;
+
+    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_master);
+    response.serialize(responsePayload);
+}
+
 void parseCommand(
     protocol& m_protocol, comBusInterface* comBus, uint8_t* commandPayload)
 {
@@ -1061,6 +1080,9 @@ void parseCommand(
         break;
     case COMMANDS::OI::WAKEUP:
         commandWakeup(commandPayload, responsePayload);
+        break;
+    case COMMANDS::OI::SET_SLAVE_ADDRESS:
+        commandSetSlaveAddress(commandPayload, responsePayload);
         break;
     default:
         break;
@@ -1237,8 +1259,6 @@ void parseInput(protocol m_protocol, comBusInterface* comBus)
 
 int main()
 {
-    uint8_t rx_tx_addr[5] = { 0xF0, 0xF0, 0xF0, 0xF0, 0xC2 };
-    uint8_t rf_channel = 121;
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_SLAVE
     radioUart uartRadio;
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_master);
