@@ -31,3 +31,4 @@
 #include <vcc/command.hpp>
 #include <sleep/command.hpp>
 #include <wakeup/command.hpp>
+#include <set_slave_address/command.hpp>
