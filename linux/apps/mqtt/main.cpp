@@ -64,6 +64,7 @@ void print_usage()
                  "<N> seconds"
               << std::endl;
     std::cout << "       -j : read voltage from rf slave" << std::endl;
+    std::cout << "       -m : master address" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
     std::cout << std::endl;
     std::cout << "mosquitto_sub -t 'radio-arduino/#' -v" << std::endl;
@@ -510,8 +511,11 @@ void parseOpt(int argc, char* argv[], monitor& mon)
 
     char option = 0;
 
-    while ((option = getopt(argc, argv, "N:jhc")) != -1) {
+    while ((option = getopt(argc, argv, "N:jhcm:")) != -1) {
         switch (option) {
+        case 'm':
+            mon.get<>(UartCommandSetSlaveAddress(atoi(optarg)));
+            break;
         case 'N':
             readCurrentAndVoltage(mon, mqtt_client, atoi(optarg));
             break;
