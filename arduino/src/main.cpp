@@ -982,6 +982,9 @@ void commandSetSlaveAddress(uint8_t* commandPayload, uint8_t* responsePayload)
     rf_link_discover_package[31] = command.slave_address;
 
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_master);
+
+    response.status = 1;
+
     response.serialize(responsePayload);
 }
 
