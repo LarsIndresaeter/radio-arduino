@@ -330,9 +330,8 @@ void readVccFromRadioSlave(monitor& mon, mqtt::async_client& mqtt_client)
                         std::cerr << exc.what() << std::endl;
                     }
 
-                    auto delayResponse = mon.getRadio<>(
-                        UartCommandSleep(60000),
-                        static_cast<std::chrono::milliseconds>(62000));
+                    std::this_thread::sleep_for(30min);
+
                 }
                 else {
                     mqtt::topic slave_death(
