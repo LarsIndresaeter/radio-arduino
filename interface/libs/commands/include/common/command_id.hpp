@@ -39,6 +39,7 @@ enum class OI
     SLEEP = 29,
     WAKEUP = 30,
     SET_SLAVE_ADDRESS = 31,
+    KEEP_ALIVE = 32,
 };
 
 } // namespace COMMANDS

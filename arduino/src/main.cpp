@@ -55,6 +55,8 @@ uint8_t rf_link_discover_package[32]
             0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
             0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, rx_tx_addr[4] };
 
+uint32_t keep_alive_interval_ms = 500; // time in idle loop before entering sleep
+
 #ifdef USE_NRF24L01_INTTERRUPT
 ISR(PCINT0_vect)
 {
@@ -982,6 +984,22 @@ void commandSetSlaveAddress(uint8_t* commandPayload, uint8_t* responsePayload)
     rf_link_discover_package[31] = command.slave_address;
 
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_master);
+
+    response.status = 1;
+
+    response.serialize(responsePayload);
+}
+
+void commandKeepAlive(uint8_t* commandPayload, uint8_t* responsePayload)
+{
+    COMMANDS::KEEP_ALIVE::command_t command(commandPayload);
+    COMMANDS::KEEP_ALIVE::response_t response;
+    response.status = 0;
+
+    keep_alive_interval_ms = 100 + command.time*100; // only used by radio slave
+
+    response.status = 1;
+
     response.serialize(responsePayload);
 }
 
@@ -1083,6 +1101,9 @@ void parseCommand(
         break;
     case COMMANDS::OI::SET_SLAVE_ADDRESS:
         commandSetSlaveAddress(commandPayload, responsePayload);
+        break;
+    case COMMANDS::OI::KEEP_ALIVE:
+        commandKeepAlive(commandPayload, responsePayload);
         break;
     default:
         break;
@@ -1224,7 +1245,7 @@ void parseInput(protocol m_protocol, comBusInterface* comBus)
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_SLAVE
             _delay_ms(1);
             idle_loop_cnt_ms++;
-            if (idle_loop_cnt_ms > 500) {
+            if (idle_loop_cnt_ms > keep_alive_interval_ms) {
                 // slave has been idle for too long so go to sleep and wait for wakeup command
                 rxSlaveSleepAndPollForWakeup();
                 idle_loop_cnt_ms = 0;

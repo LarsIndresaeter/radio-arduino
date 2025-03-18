@@ -32,3 +32,4 @@
 #include <sleep/command.hpp>
 #include <wakeup/command.hpp>
 #include <set_slave_address/command.hpp>
+#include <keep_alive/command.hpp>
