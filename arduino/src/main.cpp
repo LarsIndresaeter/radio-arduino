@@ -1224,7 +1224,7 @@ void parseInput(protocol m_protocol, comBusInterface* comBus)
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_SLAVE
             _delay_ms(1);
             idle_loop_cnt_ms++;
-            if (idle_loop_cnt_ms > 5000) {
+            if (idle_loop_cnt_ms > 500) {
                 // slave has been idle for too long so go to sleep and wait for wakeup command
                 rxSlaveSleepAndPollForWakeup();
                 idle_loop_cnt_ms = 0;
