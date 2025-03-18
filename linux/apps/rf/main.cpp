@@ -62,6 +62,7 @@ void print_usage()
     std::cout << "       -h : print this text" << std::endl;
     std::cout << "       -m : set master address" << std::endl;
     std::cout << "       -a : set slave address" << std::endl;
+    std::cout << "       -k : set keep alive interval" << std::endl;
 }
 
 void compareResult(uint8_t expected, uint8_t actual)
@@ -173,7 +174,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     uint8_t i2cDeviceAddress = 0b10100000;
 
     while ((option
-            = getopt(argc, argv, "P:DBHECs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:wL:FJU:jm:a:"))
+            = getopt(argc, argv, "P:DBHECs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:wL:FJU:jm:a:k:"))
            != -1) {
         switch (option) {
         case 'd':
@@ -453,6 +454,9 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             break;
         case 'a':
             std::cout << mon.getRadio<>(UartCommandSetSlaveAddress(atoi(optarg))) << std::endl;
+            break;
+        case 'k':
+            std::cout << mon.getRadio<>(UartCommandKeepAlive(atoi(optarg))) << std::endl;
             break;
         }
     }

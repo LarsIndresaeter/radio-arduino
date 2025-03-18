@@ -14,8 +14,18 @@ public:
 
     void print(std::ostream& out) const override
     {
+        COMMANDS::SET_SLAVE_ADDRESS::response_t response(
+            (uint8_t*)&m_response.data()[4]);
         out << "KEEP_ALIVE           : ";
-        UartCommandBase::print(out);
+
+        if(response.status == 1)
+        {
+            out << "OK";
+        }
+        else
+        {
+            out << "FAILED";
+        }
     };
 
     COMMANDS::KEEP_ALIVE::response_t responseStruct()
