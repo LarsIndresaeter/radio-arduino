@@ -97,11 +97,11 @@ float calculateStddev(std::vector<float> data)
 
 void pollSlaveAndWakeupIfNeccessary(monitor& mon)
 {
-    auto pingSlave = mon.getRadio<>(UartCommandVcc());
+    //auto pingSlave = mon.getRadio<>(UartCommandVcc());
 
-    if (pingSlave.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
+    //if (pingSlave.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
         mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
-    }
+    //}
 }
 
 void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_client, std::string& masterName)
@@ -307,6 +307,12 @@ void readVccFromRadioSlave(monitor& mon, mqtt::async_client& mqtt_client)
             slaveName = getSlaveNameAndPublishBirth(mon, mqtt_client, masterName);
         }
         else {
+            mon.getRadio<>(UartCommandKeepAlive(0)); // tell slave to go to sleep
+
+            std::this_thread::sleep_for(10min);
+
+            pollSlaveAndWakeupIfNeccessary(mon);
+            mon.getRadio<>(UartCommandKeepAlive(100)); // tell slave to keep awake 
 
             if (!masterName.empty()) {
                 auto slaveVcc = mon.getRadio<>(UartCommandVcc());
@@ -329,9 +335,6 @@ void readVccFromRadioSlave(monitor& mon, mqtt::async_client& mqtt_client)
                     catch (const mqtt::exception& exc) {
                         std::cerr << exc.what() << std::endl;
                     }
-
-                    std::this_thread::sleep_for(30min);
-
                 }
                 else {
                     mqtt::topic slave_death(
