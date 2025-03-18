@@ -13,11 +13,18 @@ public:
 
     void print(std::ostream& out) const override
     {
-        COMMANDS::WAKEUP::response_t response(
-            (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH]);
-
+        COMMANDS::SET_SLAVE_ADDRESS::response_t response(
+            (uint8_t*)&m_response.data()[4]);
         out << "WAKEUP          : ";
-        out << "status=" << static_cast<int>(response.status);
+
+        if(response.status == 1)
+        {
+            out << "OK";
+        }
+        else
+        {
+            out << "FAILED";
+        }
     };
 
     COMMANDS::WAKEUP::response_t responseStruct()
