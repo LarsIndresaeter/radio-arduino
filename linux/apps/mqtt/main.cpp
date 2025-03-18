@@ -307,10 +307,6 @@ void readVccFromRadioSlave(monitor& mon, mqtt::async_client& mqtt_client)
             slaveName = getSlaveNameAndPublishBirth(mon, mqtt_client, masterName);
         }
         else {
-            mon.getRadio<>(UartCommandKeepAlive(0)); // tell slave to go to sleep
-
-            std::this_thread::sleep_for(10min);
-
             pollSlaveAndWakeupIfNeccessary(mon);
             mon.getRadio<>(UartCommandKeepAlive(100)); // tell slave to keep awake 
 
@@ -335,6 +331,9 @@ void readVccFromRadioSlave(monitor& mon, mqtt::async_client& mqtt_client)
                     catch (const mqtt::exception& exc) {
                         std::cerr << exc.what() << std::endl;
                     }
+
+                    mon.getRadio<>(UartCommandKeepAlive(0)); // tell slave to go to sleep
+                    std::this_thread::sleep_for(10min);
                 }
                 else {
                     mqtt::topic slave_death(
