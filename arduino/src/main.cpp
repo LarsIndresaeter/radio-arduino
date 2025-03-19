@@ -281,11 +281,8 @@ void powerDownRadioAndSleep(uint16_t delay)
     NRF24L01_power_down();
 #endif
 
-    uint32_t i = 0;
-    if (delay > 0) {
-        powerSaveSleepMs(1);
-        i++;
-    }
+    uint16_t i = 0;
+
     while (i < delay) {
         if ((delay - i) > 16) {
             powerSaveSleepMs(16);
