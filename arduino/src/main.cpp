@@ -256,16 +256,12 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
 
 void powerSaveSleepMs(uint8_t delay_ms)
 {
-    if (delay_ms > 16) {
-        delay_ms = 16;
-    }
-
     cli();
 
     TCCR2A = 0;
     TCCR2B = 0;
     TCNT2 = 0;
-    OCR2A = 16 * delay_ms;
+    OCR2A = delay_ms<<4;
     TCCR2A |= (1 << WGM21);
     TCCR2B |= (1 << CS22) | (1 << CS21) | (1 << CS20); // clk/1024=16kHz
     TIMSK2 |= (1 << OCIE2A);
