@@ -64,7 +64,7 @@ void print_usage()
                  "<N> seconds"
               << std::endl;
     std::cout << "       -j : read voltage from rf slave" << std::endl;
-    std::cout << "       -j : read voltage from multiple rf slaves" << std::endl;
+    std::cout << "       -k : read voltage from multiple rf slaves" << std::endl;
     std::cout << "       -m : master address" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
     std::cout << std::endl;
