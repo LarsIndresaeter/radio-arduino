@@ -266,6 +266,17 @@ void powerSaveSleepMs(uint8_t delay_ms)
     TCCR2B |= (1 << CS22) | (1 << CS21) | (1 << CS20); // clk/1024=16kHz
     TIMSK2 |= (1 << OCIE2A);
 
+    //SLEEP_MODE_IDLE: 15 mA
+    //SLEEP_MODE_ADC: 6.5 mA
+    //SLEEP_MODE_PWR_SAVE: 1.62 mA
+    //SLEEP_MODE_EXT_STANDBY: 1.62 mA
+    //SLEEP_MODE_STANDBY : 0.84 mA
+    //SLEEP_MODE_PWR_DOWN : 0.36 mA
+
+    // turn off ADC to save power
+    //
+    // seher
+    
     // sleep until timer wake up the chip
     set_sleep_mode(SLEEP_MODE_EXT_STANDBY); // keep external oscillator enabled
     sleep_enable();
