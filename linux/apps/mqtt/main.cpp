@@ -64,6 +64,7 @@ void print_usage()
                  "<N> seconds"
               << std::endl;
     std::cout << "       -j : read voltage from rf slave" << std::endl;
+    std::cout << "       -j : read voltage from multiple rf slaves" << std::endl;
     std::cout << "       -m : master address" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
     std::cout << std::endl;
@@ -97,11 +98,11 @@ float calculateStddev(std::vector<float> data)
 
 void pollSlaveAndWakeupIfNeccessary(monitor& mon)
 {
-    auto pingSlave = mon.getRadio<>(UartCommandVcc());
+    //auto pingSlave = mon.getRadio<>(UartCommandVcc());
 
-    if (pingSlave.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
+    //if (pingSlave.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
         mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
-    }
+    //}
 }
 
 void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_client, std::string& masterName)
@@ -287,6 +288,75 @@ void parseMqttCommands(monitor& mon, mqtt::async_client& mqtt_client)
     }
 }
 
+void readVccFromMultipleRadioSlave(monitor& mon, mqtt::async_client& mqtt_client, std::vector<uint8_t> slaveList)
+{
+    std::string masterName;
+    std::string slaveName;
+    int connection_attempts = 0;
+    const int QOS = 0;
+    uint8_t slaveAddress = 0;
+
+    while (true) {
+        if (masterName.empty()) {
+            time_point input = std::chrono::system_clock::now();
+            std::string dateString = serializeTimePoint(input, "%Y-%m-%d %H:%M:%S");
+
+            masterName = getMasterNameAndPublishBirth(mon, mqtt_client);
+        }
+        else {
+            for(int i = 0; i < slaveList.size(); i++)
+            {
+                time_point input = std::chrono::system_clock::now();
+                std::string dateString = serializeTimePoint(input, "%Y-%m-%d %H:%M:%S");
+
+                slaveAddress = slaveList.at(i);
+
+                mon.get<>(UartCommandSetSlaveAddress(slaveAddress));
+                pollSlaveAndWakeupIfNeccessary(mon);
+                mon.getRadio<>(UartCommandKeepAlive(100)); // tell slave to keep awake for 10 seconds
+
+                slaveName.clear();
+                auto slaveDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
+                if (slaveDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+                    auto response = slaveDeviceInfo.responseStruct();
+                    time_point input = std::chrono::system_clock::now();
+                    std::string dateString = serializeTimePoint(input, "%Y-%m-%d %H:%M:%S");
+
+                    for (int i = 0; i < 16 && response.name[i] != 0; i++) {
+                        slaveName += response.name[i];
+                    }
+                }
+
+                if(!slaveName.empty())
+                {
+                    auto slaveVcc = mon.getRadio<>(UartCommandVcc());
+
+                    if (slaveVcc.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+                        mqtt::topic json_topic(mqtt_client, createMqttTopic("DDATA", masterName, slaveName), QOS, false);
+
+                        uint16_t vcc_mv = (uint16_t)(slaveVcc.responseStruct().vcc_h << 8)
+                            | slaveVcc.responseStruct().vcc_l;
+
+                        try {
+                            std::string mqtt_payload
+                                = "{\"timestamp\": \"" + dateString + "\", \"voltage\":" + std::to_string(vcc_mv / 1000.0) + "}";
+
+                            json_topic.publish(std::move(mqtt_payload));
+                        }
+                        catch (const mqtt::exception& exc) {
+                            std::cerr << exc.what() << std::endl;
+                        }
+                    }
+                }
+
+                mon.getRadio<>(UartCommandKeepAlive(0)); // tell slave to go to sleep as soon as possible
+            }
+
+            std::this_thread::sleep_for(30min);
+        }
+    }
+}
+
 void readVccFromRadioSlave(monitor& mon, mqtt::async_client& mqtt_client)
 {
     std::string masterName;
@@ -307,6 +377,8 @@ void readVccFromRadioSlave(monitor& mon, mqtt::async_client& mqtt_client)
             slaveName = getSlaveNameAndPublishBirth(mon, mqtt_client, masterName);
         }
         else {
+            pollSlaveAndWakeupIfNeccessary(mon);
+            mon.getRadio<>(UartCommandKeepAlive(100)); // tell slave to keep awake 
 
             if (!masterName.empty()) {
                 auto slaveVcc = mon.getRadio<>(UartCommandVcc());
@@ -330,8 +402,8 @@ void readVccFromRadioSlave(monitor& mon, mqtt::async_client& mqtt_client)
                         std::cerr << exc.what() << std::endl;
                     }
 
-                    std::this_thread::sleep_for(30min);
-
+                    mon.getRadio<>(UartCommandKeepAlive(0)); // tell slave to go to sleep
+                    std::this_thread::sleep_for(10min);
                 }
                 else {
                     mqtt::topic slave_death(
@@ -508,18 +580,23 @@ void parseOpt(int argc, char* argv[], monitor& mon)
 
     mqtt_client.connect(connOpts)->wait();
 
+    std::vector<uint8_t> slaveList;
     char option = 0;
 
-    while ((option = getopt(argc, argv, "N:jhcm:")) != -1) {
+    while ((option = getopt(argc, argv, "N:jkhcm:")) != -1) {
         switch (option) {
         case 'm':
-            mon.get<>(UartCommandSetSlaveAddress(atoi(optarg)));
+            //mon.get<>(UartCommandSetSlaveAddress(atoi(optarg)));
+            slaveList.push_back(atoi(optarg));
             break;
         case 'N':
             readCurrentAndVoltage(mon, mqtt_client, atoi(optarg));
             break;
         case 'j':
             readVccFromRadioSlave(mon, mqtt_client);
+            break;
+        case 'k':
+            readVccFromMultipleRadioSlave(mon, mqtt_client, slaveList);
             break;
         case 'c':
             parseMqttCommands(mon, mqtt_client);
