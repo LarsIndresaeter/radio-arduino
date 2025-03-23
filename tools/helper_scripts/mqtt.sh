@@ -17,6 +17,7 @@ elif [ "${PARAM}" == "interval" ]
 then
     mosquitto_pub -t "radio-arduino/RCMD/solar-lamp" -m "{\"command\": \"desiredState\", \"pollInterval\": $2}"
     mosquitto_pub -t "radio-arduino/RCMD/breadboard" -m "{\"command\": \"desiredState\", \"pollInterval\": $2}"
+    mosquitto_pub -t "radio-arduino/RCMD/lcd" -m "{\"command\": \"desiredState\", \"pollInterval\": $2}"
 elif [ "${PARAM}" == "text" ]
 then
     mosquitto_pub -t "radio-arduino/RCMD/lcd" -m "{\"command\": \"lcd\", \"displayText\": \"$2\"}"
