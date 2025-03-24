@@ -11,6 +11,11 @@ then
     echo "RADINO_CUSTOM_COMMAND=${RADINO_CUSTOM_COMMAND}"
 fi
 
+if [ "${PARAM}" == "mqtt" ]
+then
+    ${RADINO_HELPER_SCRIPTS_DIR}/mqtt.sh $2 $3
+fi
+
 if [ "${PARAM}" == "setup" ]
 then
     ${RADINO_HELPER_SCRIPTS_DIR}/setup.sh $2
