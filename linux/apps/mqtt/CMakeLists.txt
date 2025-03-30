@@ -10,6 +10,6 @@ find_package(PahoMqttCpp REQUIRED)
 find_package(nlohmann_json REQUIRED)
 add_definitions(-DUSE_FEATURE_MQTT=1)
 
-add_executable(mqtt-client main.cpp ../../libs/crypto/crypto.cpp)
+add_executable(mqtt-client main.cpp desiredStateConfiguration.cpp mqtt_common.cpp currentMonitor.cpp ../../libs/crypto/crypto.cpp)
 target_link_libraries(mqtt-client ${CONAN_LIBS} epollevent eventprocess monitor uart protocol pthread)
 
