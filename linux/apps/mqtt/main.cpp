@@ -85,7 +85,7 @@ void readVccFromMultipleRadioSlave(monitor& mon, mqtt::async_client& mqtt_client
 
                 pollRadioSlaveAndSetDesiredState(mon, mqtt_client, dsc);
             }
-            std::this_thread::sleep_for(1s);
+            std::this_thread::sleep_for(100ms);
         }
     }
 }
