@@ -13,7 +13,7 @@ fi
 
 if [ "${PARAM}" == "mqtt" ]
 then
-    ${RADINO_HELPER_SCRIPTS_DIR}/mqtt.sh $2 $3
+    ${RADINO_HELPER_SCRIPTS_DIR}/mqtt.sh $2 "${3}"
 fi
 
 if [ "${PARAM}" == "setup" ]

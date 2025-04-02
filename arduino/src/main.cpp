@@ -56,7 +56,7 @@ uint8_t rf_link_discover_package[32]
             0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
             0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, slave_address };
 
-uint32_t keep_alive_interval_ms = 500; // time in idle loop before entering sleep
+uint32_t keep_alive_interval_ms = 0; // time in idle loop before entering sleep
 
 #ifdef USE_NRF24L01_INTTERRUPT
 ISR(PCINT0_vect)

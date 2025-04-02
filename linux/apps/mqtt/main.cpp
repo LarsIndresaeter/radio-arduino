@@ -36,9 +36,7 @@ void pollRadioSlaveAndSetDesiredState(monitor& mon, mqtt::async_client& mqtt_cli
     }
 
     if ((secondsSinceEpoch() - timeLastPoll[slaveAddress]) > dsc->getPollInterval()) {
-        // std::cout << "DEBUG: vcc, slave: " << std::to_string(slaveAddress) << ", " << dsc->getTopicString() << std::endl;
         mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
-        mon.getRadio<>(UartCommandKeepAlive(5));
 
         auto slaveDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
         if (slaveDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
@@ -47,31 +45,12 @@ void pollRadioSlaveAndSetDesiredState(monitor& mon, mqtt::async_client& mqtt_cli
             std::string slaveName = dsc->getName();
             readVccAndPublish(mon, mqtt_client, masterName, slaveName); // TODO: return true if success
         }
-
-        mon.getRadio<>(UartCommandKeepAlive(1)); // tell slave to go to sleep as soon as possible
     }
 
     if (dsc->displayTextChanged()) {
         // std::cout << "DEBUG: lcd, slave: " << std::to_string(slaveAddress) << ", " << dsc->getTopicString() << std::endl;
         updateDisplayText(mon, mqtt_client, dsc);
     }
-}
-
-DesiredState createCallback(uint8_t slaveAddress, std::string slaveName, mqtt::async_client& mqtt_client, std::vector<std::shared_ptr<DesiredStateConfiguration>>& desiredState)
-{
-    const int QOS = 0;
-
-    std::shared_ptr<DesiredStateConfiguration> dscLcd = std::make_shared<DesiredStateConfiguration>(slaveAddress, slaveName);
-    DesiredState desiredStateCallback(dscLcd);
-    mqtt_client.set_callback(desiredStateCallback);
-
-    std::string commandTopic = dscLcd->getTopicString();
-    std::cout << "subscribe to topic: " << commandTopic << std::endl;
-
-    mqtt_client.subscribe(commandTopic, QOS)->wait();
-    desiredState.push_back(dscLcd);
-
-    return (desiredStateCallback);
 }
 
 void readVccFromMultipleRadioSlave(monitor& mon, mqtt::async_client& mqtt_client, std::vector<uint8_t> slaveList)
@@ -81,9 +60,17 @@ void readVccFromMultipleRadioSlave(monitor& mon, mqtt::async_client& mqtt_client
 
     std::vector<std::shared_ptr<DesiredStateConfiguration>> desiredState;
 
-    DesiredState lcdCallback = createCallback(0, "lcd", mqtt_client, desiredState);
-    DesiredState solarCallback = createCallback(100, "solar-lamp", mqtt_client, desiredState);
-    DesiredState breadboardCallback = createCallback(101, "breadboard", mqtt_client, desiredState);
+    desiredState.push_back(std::make_shared<DesiredStateConfiguration>(0, "lcd"));
+    desiredState.push_back(std::make_shared<DesiredStateConfiguration>(100, "solar-lamp"));
+    desiredState.push_back(std::make_shared<DesiredStateConfiguration>(101, "breadboard"));
+
+    DesiredState desiredStateCallback(desiredState);
+
+
+    mqtt_client.set_callback(desiredStateCallback);
+    std::string commandTopic1 = "radio-arduino/RCMD/#";
+    std::cout << "subscribe to topic: " << commandTopic1 << std::endl;
+    mqtt_client.subscribe(commandTopic1, QOS)->wait();
 
     while (true) {
         if (masterName.empty()) {
@@ -95,7 +82,7 @@ void readVccFromMultipleRadioSlave(monitor& mon, mqtt::async_client& mqtt_client
 
                 pollRadioSlaveAndSetDesiredState(mon, mqtt_client, dsc);
             }
-            std::this_thread::sleep_for(1s);
+            std::this_thread::sleep_for(100ms);
         }
     }
 }
