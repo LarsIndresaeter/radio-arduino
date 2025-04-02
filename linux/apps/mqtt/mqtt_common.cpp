@@ -119,7 +119,6 @@ void updateDisplayText(monitor& mon, mqtt::async_client& mqtt_client, std::share
     }
 
     mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
-    //mon.getRadio<>(UartCommandKeepAlive(10));
 
     auto response = mon.getRadio<>(UartCommandSsd1306(2, lcd), static_cast<std::chrono::milliseconds>(500));
     if (response.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
@@ -132,8 +131,6 @@ void updateDisplayText(monitor& mon, mqtt::async_client& mqtt_client, std::share
 
         actual_state_topic.publish(std::move(mqtt_payload));
     }
-
-    //mon.getRadio<>(UartCommandKeepAlive(1));
 }
 
 void readVccAndPublish(monitor& mon, mqtt::async_client& mqtt_client, std::string masterName, std::string slaveName)

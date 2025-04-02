@@ -37,7 +37,6 @@ void pollRadioSlaveAndSetDesiredState(monitor& mon, mqtt::async_client& mqtt_cli
 
     if ((secondsSinceEpoch() - timeLastPoll[slaveAddress]) > dsc->getPollInterval()) {
         mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
-        mon.getRadio<>(UartCommandKeepAlive(5));
 
         auto slaveDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
         if (slaveDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
@@ -46,8 +45,6 @@ void pollRadioSlaveAndSetDesiredState(monitor& mon, mqtt::async_client& mqtt_cli
             std::string slaveName = dsc->getName();
             readVccAndPublish(mon, mqtt_client, masterName, slaveName); // TODO: return true if success
         }
-
-        mon.getRadio<>(UartCommandKeepAlive(1)); // tell slave to go to sleep as soon as possible
     }
 
     if (dsc->displayTextChanged()) {
