@@ -65,6 +65,57 @@ void print_usage()
     std::cout << "       -k : set keep alive interval" << std::endl;
 }
 
+bool wakeupNotResponding(monitor& mon, uint8_t address)
+{
+    bool status = true;
+
+    int initialInvalidResponses = mon.getInvalidResponses();
+    mon.getRadio<>(UartCommandDebug(), static_cast<std::chrono::milliseconds>(2000));
+    int invalidResponsesAfterPing = mon.getInvalidResponses();
+
+    if (invalidResponsesAfterPing > initialInvalidResponses) {
+        UartCommandWakeup result = mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
+        COMMANDS::WAKEUP::response_t response_struct = result.responseStruct();
+
+        if(response_struct.status == 1)
+        {
+            status=true;
+        }
+        else{
+            status=false;
+        }
+    }
+
+    if (status) {
+        std::cout << "Wake up device: " << std::to_string(address) << " (OK)" << std::endl;
+    }
+    else {
+        std::cout << "Wake up device: " << std::to_string(address) << " (FAILED)" << std::endl;
+    }
+
+    return (status);
+}
+
+bool wakeupNotRespondingRepeat(monitor& mon, uint8_t address, uint8_t attempts)
+{
+    uint8_t cnt = 0;
+
+    mon.get<>(UartCommandSetSlaveAddress(address));
+
+    while(cnt<=attempts)
+    {
+        cnt++;
+        if(wakeupNotResponding(mon, address))
+        {
+            return(true);
+        }
+    }
+
+    std::this_thread::sleep_for(10ms);
+
+    return(false);
+}
+
 void compareResult(uint8_t expected, uint8_t actual)
 {
     if (expected != actual) {
@@ -172,6 +223,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     char option = 0;
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
+    uint8_t radioAddress = 0;
 
     while ((option
             = getopt(argc, argv, "P:DBHECs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:wL:FJU:jm:a:k:"))
@@ -450,7 +502,8 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             print_usage();
             break;
         case 'm':
-            std::cout << mon.get<>(UartCommandSetSlaveAddress(atoi(optarg))) << std::endl;
+            radioAddress = atoi(optarg);
+            wakeupNotRespondingRepeat(mon, radioAddress, 3);
             break;
         case 'a':
             std::cout << mon.getRadio<>(UartCommandSetSlaveAddress(atoi(optarg))) << std::endl;
