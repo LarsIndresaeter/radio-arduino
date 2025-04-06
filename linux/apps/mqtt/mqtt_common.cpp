@@ -120,6 +120,7 @@ void updateDisplayText(monitor& mon, mqtt::async_client& mqtt_client, std::share
 
     auto response = mon.getRadio<>(UartCommandSsd1306(2, lcd), static_cast<std::chrono::milliseconds>(500));
     if (response.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+        mon.getRadio<>(UartCommandKeepAlive(0));
         dsc->setActualDisplayText();
 
         //mqtt::topic actual_state_topic(mqtt_client, createMqttTopic("STATE", nodeName, "actualState"), QOS, false);
@@ -137,6 +138,8 @@ void readVccAndPublish(monitor& mon, mqtt::async_client& mqtt_client, std::strin
     auto slaveVcc = mon.getRadio<>(UartCommandVcc());
 
     if (slaveVcc.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+        mon.getRadio<>(UartCommandKeepAlive(0));
+
         mqtt::topic json_topic(mqtt_client, createMqttTopic("DDATA", masterName, slaveName), QOS, false);
 
         uint16_t vcc_mv = (uint16_t)(slaveVcc.responseStruct().vcc_h << 8)
