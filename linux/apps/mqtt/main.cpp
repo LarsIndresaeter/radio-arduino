@@ -19,7 +19,7 @@
 using namespace std::chrono_literals;
 
 uint64_t timeLastPoll[256] = { 0 };
-int pollInterval[256] = { 1800 };
+int pollInterval[256] = { 3600 };
 
 bool wakeupNotRespondingTryOnce(monitor& mon, uint8_t address)
 {

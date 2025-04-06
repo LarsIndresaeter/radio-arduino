@@ -7,7 +7,7 @@ DesiredStateConfiguration::DesiredStateConfiguration(uint8_t radioAddress, std::
     : m_radioAddress(radioAddress)
     , m_name(name)
 {
-    m_pollInterval = 1800;
+    m_pollInterval = 3600;
     m_topic = createMqttTopic("RCMD", m_name, "");
 }
 
