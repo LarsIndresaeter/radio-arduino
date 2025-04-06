@@ -118,8 +118,6 @@ void updateDisplayText(monitor& mon, mqtt::async_client& mqtt_client, std::share
         lcd.at(i) = displayText.at(i);
     }
 
-    mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
-
     auto response = mon.getRadio<>(UartCommandSsd1306(2, lcd), static_cast<std::chrono::milliseconds>(500));
     if (response.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
         dsc->setActualDisplayText();
