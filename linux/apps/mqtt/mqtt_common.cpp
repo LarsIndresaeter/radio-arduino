@@ -97,7 +97,7 @@ void publishDesiredStatePollInterval(mqtt::async_client& mqtt_client, std::share
 
     mqtt::topic actual_state_topic(mqtt_client, createMqttTopic("STATE", dsc->getName(), "actualState"), QOS, false);
     std::string mqtt_payload
-        = "{\"dateString\": \"" + getDateTimeString() + "\", \"pollInterval\":" + std::to_string(dsc->getPollInterval()) + "}";
+        = "{\"dateString\": \"" + getDateTimeString() + "\", \"pollInterval\":" + std::to_string(dsc->getActualPollInterval()) + "}";
 
     actual_state_topic.publish(std::move(mqtt_payload));
 }
@@ -120,7 +120,6 @@ void updateDisplayText(monitor& mon, mqtt::async_client& mqtt_client, std::share
 
     auto response = mon.getRadio<>(UartCommandSsd1306(2, lcd), static_cast<std::chrono::milliseconds>(500));
     if (response.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
-        mon.getRadio<>(UartCommandKeepAlive(50));
         dsc->setActualDisplayText();
 
         //mqtt::topic actual_state_topic(mqtt_client, createMqttTopic("STATE", nodeName, "actualState"), QOS, false);
@@ -162,19 +161,4 @@ void readVccAndPublish(monitor& mon, mqtt::async_client& mqtt_client, std::strin
     }
 }
 
-std::string readSlaveName(monitor& mon)
-{
-    std::string slaveName;
-
-    auto slaveDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
-    if (slaveDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
-        auto response = slaveDeviceInfo.responseStruct();
-
-        for (int i = 0; i < 16 && response.name[i] != 0; i++) {
-            slaveName += response.name[i];
-        }
-    }
-
-    return (slaveName);
-}
 

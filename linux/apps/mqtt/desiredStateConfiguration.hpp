@@ -10,20 +10,25 @@ public:
 
     bool getStateSubscribeVoltage();
     uint8_t getRadioAddress();
-    int getPollInterval();
+    int getActualPollInterval();
+    int getDesiredPollInterval();
+    void setActualPollInterval(int interval);
     std::string getDesiredDisplayText();
     std::string getName();
     void setActualDisplayText();
     bool displayTextChanged();
     std::string getTopicString();
+    void setTimeLastPoll(uint64_t time);
+    uint64_t getTimeLastPoll();
 
 private:
     // std::vector<uint8_t> m_slaveAddressList;
     std::string m_desiredDisplayText;
     bool m_displayTextChanged = false;
-    int m_pollInterval;
+    int m_desiredPollInterval;
+    int m_actualPollInterval;
     uint8_t m_radioAddress;
-    uint64_t timeLastPublish = 0;
+    uint64_t m_timeLastPoll = 0;
     std::string m_name;
     std::string m_topic;
 };

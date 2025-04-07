@@ -7,7 +7,8 @@ DesiredStateConfiguration::DesiredStateConfiguration(uint8_t radioAddress, std::
     : m_radioAddress(radioAddress)
     , m_name(name)
 {
-    m_pollInterval = 3600;
+    m_desiredPollInterval = 3600;
+    m_actualPollInterval = m_desiredPollInterval;
     m_topic = createMqttTopic("RCMD", m_name, "");
 }
 
@@ -22,7 +23,7 @@ void DesiredStateConfiguration::parseMessage(std::string topic, std::string mess
         if (!commandParamString.empty()) {
             if (commandParamString == "desiredState") {
                 try {
-                    m_pollInterval = jsonData["pollInterval"];
+                    m_desiredPollInterval = jsonData["pollInterval"];
                 }
                 catch (std::exception const& e) {
                     // std::cout << "DEBUG: exception" << std::endl;
@@ -34,6 +35,16 @@ void DesiredStateConfiguration::parseMessage(std::string topic, std::string mess
             }
         }
     }
+}
+
+void DesiredStateConfiguration::setTimeLastPoll(uint64_t time)
+{
+    m_timeLastPoll = time;
+}
+
+uint64_t DesiredStateConfiguration::getTimeLastPoll()
+{
+    return(m_timeLastPoll);
 }
 
 std::string DesiredStateConfiguration::getTopicString()
@@ -56,9 +67,19 @@ uint8_t DesiredStateConfiguration::getRadioAddress()
     return (m_radioAddress);
 }
 
-int DesiredStateConfiguration::getPollInterval()
+int DesiredStateConfiguration::getDesiredPollInterval()
 {
-    return (m_pollInterval);
+    return (m_desiredPollInterval);
+}
+
+int DesiredStateConfiguration::getActualPollInterval()
+{
+    return (m_actualPollInterval);
+}
+
+void DesiredStateConfiguration::setActualPollInterval(int interval)
+{
+    m_actualPollInterval = interval;
 }
 
 std::string DesiredStateConfiguration::getDesiredDisplayText()

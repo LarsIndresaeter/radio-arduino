@@ -2,20 +2,32 @@
 #include "desiredStateConfiguration.hpp"
 
 //RadioSession::RadioSession(monitor& mon) : m_monitor(std::make_shared<monitor>(mon))
-RadioSession::RadioSession(uint8_t address) : m_radioAddress(address)
+RadioSession::RadioSession(monitor& mon, uint8_t address) : m_monitor(mon), m_radioAddress(address)
 {
+    m_wakeupAttempts = 2;
+    m_keepAliveInterval = 0;
 };
 
-bool RadioSession::wakeupNotRespondingTryOnce(monitor& mon, uint8_t address)
+RadioSession::~RadioSession()
+{
+    m_monitor.getRadio<>(UartCommandKeepAlive(m_keepAliveInterval));
+};
+
+void RadioSession::setKeepAliveInterval(uint8_t interval)
+{
+    m_keepAliveInterval = interval;
+}
+
+bool RadioSession::wakeupNotRespondingTryOnce()
 {
     bool status = true;
 
-    int initialInvalidResponses = mon.getInvalidResponses();
-    mon.getRadio<>(UartCommandDebug(), static_cast<std::chrono::milliseconds>(2000));
-    int invalidResponsesAfterPing = mon.getInvalidResponses();
+    int initialInvalidResponses = m_monitor.getInvalidResponses();
+    m_monitor.getRadio<>(UartCommandDebug(), static_cast<std::chrono::milliseconds>(2000));
+    int invalidResponsesAfterPing = m_monitor.getInvalidResponses();
 
     if (invalidResponsesAfterPing > initialInvalidResponses) {
-        UartCommandWakeup result = mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
+        UartCommandWakeup result = m_monitor.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
         COMMANDS::WAKEUP::response_t response_struct = result.responseStruct();
 
         if(response_struct.status == 1)
@@ -28,25 +40,25 @@ bool RadioSession::wakeupNotRespondingTryOnce(monitor& mon, uint8_t address)
     }
 
     //if (status) {
-        //std::cout << "Wake up device: " << std::to_string(address) << " (OK)" << std::endl;
+        //std::cout << "Wake up device: " << std::to_string(m_radioAddress) << " (OK)" << std::endl;
     //}
     //else {
-        //std::cout << "Wake up device: " << std::to_string(address) << " (FAILED)" << std::endl;
+        //std::cout << "Wake up device: " << std::to_string(m_radioAddress) << " (FAILED)" << std::endl;
     //}
 
     return (status);
 }
 
-bool RadioSession::wakeupNotResponding(monitor& mon, uint8_t address, uint8_t attempts)
+bool RadioSession::wakeupNotResponding()
 {
     uint8_t cnt = 0;
 
-    mon.get<>(UartCommandSetSlaveAddress(address));
+    m_monitor.get<>(UartCommandSetSlaveAddress(m_radioAddress));
 
-    while(cnt<=attempts)
+    while(cnt<=m_wakeupAttempts)
     {
         cnt++;
-        if(wakeupNotRespondingTryOnce(mon, address))
+        if(wakeupNotRespondingTryOnce())
         {
             return(true);
         }
@@ -57,4 +69,19 @@ bool RadioSession::wakeupNotResponding(monitor& mon, uint8_t address, uint8_t at
     return(false);
 }
 
+std::string RadioSession::readSlaveName(monitor& mon)
+{
+    std::string slaveName;
+
+    auto slaveDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
+    if (slaveDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+        auto response = slaveDeviceInfo.responseStruct();
+
+        for (int i = 0; i < 16 && response.name[i] != 0; i++) {
+            slaveName += response.name[i];
+        }
+    }
+
+    return (slaveName);
+}
 
