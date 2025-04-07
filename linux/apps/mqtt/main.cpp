@@ -2,6 +2,7 @@
 #include "desiredStateConfiguration.hpp"
 #include "mqtt/async_client.h"
 #include "mqtt_common.hpp"
+#include "radioSession.hpp"
 #include <chrono>
 #include <cmath>
 #include <commands.hpp>
@@ -21,60 +22,10 @@ using namespace std::chrono_literals;
 uint64_t timeLastPoll[256] = { 0 };
 int pollInterval[256] = { 3600 };
 
-bool wakeupNotRespondingTryOnce(monitor& mon, uint8_t address)
-{
-    bool status = true;
-
-    int initialInvalidResponses = mon.getInvalidResponses();
-    mon.getRadio<>(UartCommandDebug(), static_cast<std::chrono::milliseconds>(2000));
-    int invalidResponsesAfterPing = mon.getInvalidResponses();
-
-    if (invalidResponsesAfterPing > initialInvalidResponses) {
-        UartCommandWakeup result = mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
-        COMMANDS::WAKEUP::response_t response_struct = result.responseStruct();
-
-        if(response_struct.status == 1)
-        {
-            status=true;
-        }
-        else{
-            status=false;
-        }
-    }
-
-    //if (status) {
-        //std::cout << "Wake up device: " << std::to_string(address) << " (OK)" << std::endl;
-    //}
-    //else {
-        //std::cout << "Wake up device: " << std::to_string(address) << " (FAILED)" << std::endl;
-    //}
-
-    return (status);
-}
-
-bool wakeupNotResponding(monitor& mon, uint8_t address, uint8_t attempts)
-{
-    uint8_t cnt = 0;
-
-    mon.get<>(UartCommandSetSlaveAddress(address));
-
-    while(cnt<=attempts)
-    {
-        cnt++;
-        if(wakeupNotRespondingTryOnce(mon, address))
-        {
-            return(true);
-        }
-    }
-
-    std::this_thread::sleep_for(10ms);
-
-    return(false);
-}
-
 void pollRadioSlaveAndSetDesiredState(monitor& mon, mqtt::async_client& mqtt_client, std::shared_ptr<DesiredStateConfiguration> dsc)
 {
     uint8_t slaveAddress = dsc->getRadioAddress();
+    RadioSession radioSession(slaveAddress);
 
     // std::cout << "DEBUG: slave: " << std::to_string(slaveAddress) << ", " << dsc->getTopicString() << std::endl;
 
@@ -84,7 +35,7 @@ void pollRadioSlaveAndSetDesiredState(monitor& mon, mqtt::async_client& mqtt_cli
     }
 
     if ((secondsSinceEpoch() - timeLastPoll[slaveAddress]) > dsc->getPollInterval()) {
-        if(wakeupNotResponding(mon, slaveAddress, 2))
+        if(radioSession.wakeupNotResponding(mon, slaveAddress, 2))
         {
             auto slaveDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
             if (slaveDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
@@ -98,7 +49,7 @@ void pollRadioSlaveAndSetDesiredState(monitor& mon, mqtt::async_client& mqtt_cli
 
     if (dsc->displayTextChanged()) {
         // std::cout << "DEBUG: lcd, slave: " << std::to_string(slaveAddress) << ", " << dsc->getTopicString() << std::endl;
-        if(wakeupNotResponding(mon, slaveAddress, 2))
+        if(radioSession.wakeupNotResponding(mon, slaveAddress, 2))
         {
             updateDisplayText(mon, mqtt_client, dsc);
         }
