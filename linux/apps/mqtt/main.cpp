@@ -33,7 +33,7 @@ void pollRadioSlaveAndSetDesiredState(monitor& mon, mqtt::async_client& mqtt_cli
         {
             dsc->setTimeLastPoll(secondsSinceEpoch());
             std::string slaveName = dsc->getName();
-            readVccAndPublish(mon, mqtt_client, masterName, slaveName); // TODO: return true if success
+            readVccAndPublish(mon, mqtt_client, slaveName); // TODO: return true if success
         }
     }
 

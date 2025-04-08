@@ -131,7 +131,7 @@ void updateDisplayText(monitor& mon, mqtt::async_client& mqtt_client, std::share
     }
 }
 
-void readVccAndPublish(monitor& mon, mqtt::async_client& mqtt_client, std::string masterName, std::string slaveName)
+void readVccAndPublish(monitor& mon, mqtt::async_client& mqtt_client, std::string slaveName)
 {
     const int QOS = 0;
     auto slaveVcc = mon.getRadio<>(UartCommandVcc());
@@ -139,7 +139,7 @@ void readVccAndPublish(monitor& mon, mqtt::async_client& mqtt_client, std::strin
     if (slaveVcc.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
         mon.getRadio<>(UartCommandKeepAlive(0));
 
-        mqtt::topic json_topic(mqtt_client, createMqttTopic("DDATA", masterName, slaveName), QOS, false);
+        mqtt::topic json_topic(mqtt_client, createMqttTopic("NDATA", slaveName, ""), QOS, false);
 
         uint16_t vcc_mv = (uint16_t)(slaveVcc.responseStruct().vcc_h << 8)
             | slaveVcc.responseStruct().vcc_l;
@@ -156,7 +156,7 @@ void readVccAndPublish(monitor& mon, mqtt::async_client& mqtt_client, std::strin
     }
     else {
         mqtt::topic slave_death(
-            mqtt_client, createMqttTopic("DDEATH", masterName, slaveName), QOS, false);
+            mqtt_client, createMqttTopic("NDEATH", slaveName, ""), QOS, false);
         slave_death.publish(std::move(getDateTimeString()));
     }
 }
