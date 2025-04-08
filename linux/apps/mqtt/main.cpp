@@ -19,7 +19,7 @@
 
 using namespace std::chrono_literals;
 
-void pollRadioSlaveAndSetDesiredState(monitor& mon, mqtt::async_client& mqtt_client, std::shared_ptr<DesiredStateConfiguration> dsc, std::string masterName)
+void pollRadioSlaveAndSetDesiredState(monitor& mon, mqtt::async_client& mqtt_client, std::shared_ptr<DesiredStateConfiguration> dsc)
 {
     RadioSession radioSession(mon, dsc->getRadioAddress());
 
@@ -53,9 +53,25 @@ void readVccFromMultipleRadioSlave(monitor& mon, mqtt::async_client& mqtt_client
 
     std::vector<std::shared_ptr<DesiredStateConfiguration>> desiredStateList;
 
-    desiredStateList.push_back(std::make_shared<DesiredStateConfiguration>(0, "lcd"));
-    desiredStateList.push_back(std::make_shared<DesiredStateConfiguration>(100, "solar-lamp"));
-    desiredStateList.push_back(std::make_shared<DesiredStateConfiguration>(101, "breadboard"));
+    //desiredStateList.push_back(std::make_shared<DesiredStateConfiguration>(0, "lcd"));
+    //desiredStateList.push_back(std::make_shared<DesiredStateConfiguration>(100, "solar-lamp"));
+    //desiredStateList.push_back(std::make_shared<DesiredStateConfiguration>(101, "breadboard"));
+
+    masterName = getMasterNameAndPublishBirth(mon, mqtt_client);
+
+    for(uint8_t i = 0; i<slaveList.size(); i++)
+    {
+        uint8_t slaveAddress = slaveList.at(i);
+        RadioSession radioSession(mon, slaveAddress);
+        radioSession.wakeupNotResponding();
+        std::string slaveName = getSlaveNameAndPublishBirth(mon, mqtt_client);
+        //std::cout << "DEBUG: check for radio slave on address: " << std::to_string(slaveAddress) << std::endl;
+
+        if(!slaveName.empty())
+        {
+            desiredStateList.push_back(std::make_shared<DesiredStateConfiguration>(slaveAddress, slaveName));
+        }
+    }
 
     DesiredState desiredStateCallback(desiredStateList);
 
@@ -73,7 +89,7 @@ void readVccFromMultipleRadioSlave(monitor& mon, mqtt::async_client& mqtt_client
             for (int i = 0; i < desiredStateList.size(); i++) {
                 std::shared_ptr<DesiredStateConfiguration> dsc = desiredStateList.at(i);
 
-                pollRadioSlaveAndSetDesiredState(mon, mqtt_client, dsc, masterName);
+                pollRadioSlaveAndSetDesiredState(mon, mqtt_client, dsc);
             }
             std::this_thread::sleep_for(100ms);
         }

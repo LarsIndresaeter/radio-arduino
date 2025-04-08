@@ -67,6 +67,31 @@ std::string getMasterNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_
     return (masterName);
 }
 
+std::string getSlaveNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client)
+{
+    std::string slaveName("");
+
+    auto slaveDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
+
+    if (slaveDeviceInfo.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
+        slaveDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
+    }
+
+    if (slaveDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+        auto response = slaveDeviceInfo.responseStruct();
+
+        for (int i = 0; i < 16 && response.name[i] != 0; i++) {
+            slaveName += response.name[i];
+        }
+
+        mqtt::topic master_birth(
+            mqtt_client, createMqttTopic("NBIRTH", slaveName, ""), 0, false);
+        master_birth.publish(std::move("{\"dateString: \"" + getDateTimeString() + "\"}"));
+    }
+
+    return (slaveName);
+}
+
 void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_client, std::string& masterName)
 {
     if (!masterName.empty()) {
