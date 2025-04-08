@@ -1,5 +1,4 @@
 #include "radioSession.hpp"
-#include "desiredStateConfiguration.hpp"
 
 //RadioSession::RadioSession(monitor& mon) : m_monitor(std::make_shared<monitor>(mon))
 RadioSession::RadioSession(monitor& mon, uint8_t address) : m_monitor(mon), m_radioAddress(address)
@@ -84,4 +83,28 @@ std::string RadioSession::readSlaveName(monitor& mon)
 
     return (slaveName);
 }
+
+std::string RadioSession::getSlaveNameAndPublishBirth(mqtt::async_client& mqtt_client)
+{
+    std::string slaveName("");
+
+    auto slaveDeviceInfo = m_monitor.getRadio<>(UartCommandGetDeviceInfo());
+
+    if (slaveDeviceInfo.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
+        slaveDeviceInfo = m_monitor.getRadio<>(UartCommandGetDeviceInfo());
+    }
+
+    if (slaveDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+        auto response = slaveDeviceInfo.responseStruct();
+
+        for (int i = 0; i < 16 && response.name[i] != 0; i++) {
+            slaveName += response.name[i];
+        }
+
+        publishNbirth(mqtt_client, slaveName);
+    }
+
+    return (slaveName);
+}
+
 

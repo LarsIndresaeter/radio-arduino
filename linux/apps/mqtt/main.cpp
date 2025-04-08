@@ -64,7 +64,7 @@ void readVccFromMultipleRadioSlave(monitor& mon, mqtt::async_client& mqtt_client
         uint8_t slaveAddress = slaveList.at(i);
         RadioSession radioSession(mon, slaveAddress);
         radioSession.wakeupNotResponding();
-        std::string slaveName = getSlaveNameAndPublishBirth(mon, mqtt_client);
+        std::string slaveName = radioSession.getSlaveNameAndPublishBirth(mqtt_client);
         //std::cout << "DEBUG: check for radio slave on address: " << std::to_string(slaveAddress) << std::endl;
 
         if(!slaveName.empty())
