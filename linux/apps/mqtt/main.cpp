@@ -33,6 +33,17 @@ void registerRadioSlave(monitor& mon, mqtt::async_client& mqtt_client, uint8_t s
     }
 }
 
+void moveRadioSlave(monitor& mon, mqtt::async_client& mqtt_client, std::string name, uint8_t slaveAddress)
+{
+    RadioSession radioSession(mon, 0);
+    radioSession.wakeupNotResponding();
+    std::string slaveName = radioSession.getSlaveNameAndPublishBirth(mqtt_client);
+
+    if (slaveName == name) {
+        mon.getRadio<>(UartCommandSetSlaveAddress(slaveAddress));
+    }
+}
+
 void readMultipleRadioSlaves(monitor& mon, mqtt::async_client& mqtt_client, std::vector<uint8_t> slaveList)
 {
     const int QOS = 0;
@@ -41,6 +52,14 @@ void readMultipleRadioSlaves(monitor& mon, mqtt::async_client& mqtt_client, std:
     std::vector<std::shared_ptr<DigitalTwin>> digitalTwinList;
 
     std::string masterName = getMasterNameAndPublishBirth(mon, mqtt_client);
+
+    //moveRadioSlave(mon, "solar-lamp", 100);
+    //moveRadioSlave(mon, "breadboard", 101);
+    //moveRadioSlave(mon, mqtt_client, "lcd", 102);
+
+    //slaveList.push_back(100);
+    //slaveList.push_back(101);
+    //slaveList.push_back(102);
 
     for (uint8_t i = 0; i < slaveList.size(); i++) {
         registerRadioSlave(mon, mqtt_client, slaveList.at(i), desiredStateList, digitalTwinList);
