@@ -3,6 +3,7 @@
 #include "mqtt/async_client.h"
 #include "mqtt_common.hpp"
 #include "radioSession.hpp"
+#include "digitalTwin.hpp"
 #include <chrono>
 #include <cmath>
 #include <commands.hpp>
@@ -19,45 +20,14 @@
 
 using namespace std::chrono_literals;
 
-void pollRadioSlaveAndSetDesiredState(monitor& mon, mqtt::async_client& mqtt_client, std::shared_ptr<DesiredStateConfiguration> dsc)
-{
-    RadioSession radioSession(mon, dsc->getRadioAddress());
-
-    if (dsc->getDesiredPollInterval() != dsc->getActualPollInterval()) {
-        dsc->setActualPollInterval(dsc->getDesiredPollInterval());
-        publishDesiredStatePollInterval(mqtt_client, dsc);
-    }
-
-    if ((secondsSinceEpoch() - dsc->getTimeLastPoll()) > dsc->getActualPollInterval()) {
-        if(radioSession.wakeupNotResponding())
-        {
-            dsc->setTimeLastPoll(secondsSinceEpoch());
-            std::string slaveName = dsc->getName();
-            readVccAndPublish(mon, mqtt_client, slaveName); // TODO: return true if success
-        }
-    }
-
-    if (dsc->displayTextChanged()) {
-        if(radioSession.wakeupNotResponding())
-        {
-            radioSession.setKeepAliveInterval(50);
-            updateDisplayText(mon, mqtt_client, dsc);
-        }
-    }
-}
-
 void readVccFromMultipleRadioSlave(monitor& mon, mqtt::async_client& mqtt_client, std::vector<uint8_t> slaveList)
 {
-    std::string masterName;
     const int QOS = 0;
 
     std::vector<std::shared_ptr<DesiredStateConfiguration>> desiredStateList;
+    std::vector<std::shared_ptr<DigitalTwin>> digitalTwinList;
 
-    //desiredStateList.push_back(std::make_shared<DesiredStateConfiguration>(0, "lcd"));
-    //desiredStateList.push_back(std::make_shared<DesiredStateConfiguration>(100, "solar-lamp"));
-    //desiredStateList.push_back(std::make_shared<DesiredStateConfiguration>(101, "breadboard"));
-
-    masterName = getMasterNameAndPublishBirth(mon, mqtt_client);
+    std::string masterName = getMasterNameAndPublishBirth(mon, mqtt_client);
 
     for(uint8_t i = 0; i<slaveList.size(); i++)
     {
@@ -65,16 +35,17 @@ void readVccFromMultipleRadioSlave(monitor& mon, mqtt::async_client& mqtt_client
         RadioSession radioSession(mon, slaveAddress);
         radioSession.wakeupNotResponding();
         std::string slaveName = radioSession.getSlaveNameAndPublishBirth(mqtt_client);
-        //std::cout << "DEBUG: check for radio slave on address: " << std::to_string(slaveAddress) << std::endl;
 
         if(!slaveName.empty())
         {
-            desiredStateList.push_back(std::make_shared<DesiredStateConfiguration>(slaveAddress, slaveName));
+            DigitalTwin twin(mon, mqtt_client, slaveAddress, slaveName);
+
+            desiredStateList.push_back(std::make_shared<DesiredStateConfiguration>(twin.getDesiredStateConfiguration()));
+            digitalTwinList.push_back(std::make_shared<DigitalTwin>(twin));
         }
     }
 
     DesiredStateCallback desiredStateCallback(desiredStateList);
-
 
     mqtt_client.set_callback(desiredStateCallback);
     std::string commandTopic1 = "radio-arduino/RCMD/#";
@@ -82,17 +53,10 @@ void readVccFromMultipleRadioSlave(monitor& mon, mqtt::async_client& mqtt_client
     mqtt_client.subscribe(commandTopic1, QOS)->wait();
 
     while (true) {
-        if (masterName.empty()) {
-            masterName = getMasterNameAndPublishBirth(mon, mqtt_client);
+        for (int i = 0; i < desiredStateList.size(); i++) {
+            digitalTwinList.at(i)->execute();
         }
-        else {
-            for (int i = 0; i < desiredStateList.size(); i++) {
-                std::shared_ptr<DesiredStateConfiguration> dsc = desiredStateList.at(i);
-
-                pollRadioSlaveAndSetDesiredState(mon, mqtt_client, dsc);
-            }
-            std::this_thread::sleep_for(100ms);
-        }
+        std::this_thread::sleep_for(100ms);
     }
 }
 

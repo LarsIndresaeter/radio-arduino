@@ -1,0 +1,21 @@
+#pragma once
+
+#include "desiredStateConfiguration.hpp"
+#include "radioSession.hpp"
+#include "mqtt/async_client.h"
+#include "mqtt_common.hpp"
+
+class DigitalTwin {
+public:
+    DigitalTwin(monitor& monitor, mqtt::async_client& mqtt_client, uint8_t radioAddress, std::string name);
+    void execute();
+    DesiredStateConfiguration getDesiredStateConfiguration();
+private:
+    ActualState m_actualState;
+    DesiredStateConfiguration m_desiredStateConfiguration;
+    RadioSession m_radioSession;
+
+    uint8_t m_radioAddress;
+    monitor& m_monitor;
+    mqtt::async_client& m_mqttClient;
+};
