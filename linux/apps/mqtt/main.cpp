@@ -1,4 +1,3 @@
-#include "currentMonitor.hpp"
 #include "desiredStateConfiguration.hpp"
 #include "mqtt/async_client.h"
 #include "mqtt_common.hpp"
@@ -63,10 +62,7 @@ void readVccFromMultipleRadioSlave(monitor& mon, mqtt::async_client& mqtt_client
 void print_usage()
 {
     std::cout << "mqtt-client" << std::endl;
-    std::cout << "       -N : ina219 power monitor, statistic per second for "
-                 "<N> seconds"
-              << std::endl;
-    std::cout << "       -j : read voltage from rf slave" << std::endl;
+    std::cout << "       -k : read voltage from rf slave" << std::endl;
     std::cout << "       -m : master address" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
     std::cout << std::endl;
@@ -93,13 +89,10 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     std::vector<uint8_t> slaveList;
     char option = 0;
 
-    while ((option = getopt(argc, argv, "N:khm:")) != -1) {
+    while ((option = getopt(argc, argv, "khm:")) != -1) {
         switch (option) {
         case 'm':
             slaveList.push_back(atoi(optarg));
-            break;
-        case 'N':
-            readCurrentAndVoltage(mon, mqtt_client, atoi(optarg));
             break;
         case 'k':
             readVccFromMultipleRadioSlave(mon, mqtt_client, slaveList);
