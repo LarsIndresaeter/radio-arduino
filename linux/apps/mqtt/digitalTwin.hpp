@@ -9,10 +9,10 @@ class DigitalTwin {
 public:
     DigitalTwin(monitor& monitor, mqtt::async_client& mqtt_client, uint8_t radioAddress, std::string name);
     void execute();
-    DesiredStateConfiguration getDesiredStateConfiguration();
+    std::shared_ptr<DesiredStateConfiguration> getDesiredStateConfiguration();
 private:
     ActualState m_actualState;
-    DesiredStateConfiguration m_desiredStateConfiguration;
+    std::shared_ptr<DesiredStateConfiguration> m_desiredStateConfiguration;
     RadioSession m_radioSession;
     std::string m_name;
 

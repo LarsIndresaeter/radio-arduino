@@ -37,7 +37,7 @@ void readMultipleRadioSlaves(monitor& mon, mqtt::async_client& mqtt_client, std:
         if (!slaveName.empty()) {
             DigitalTwin twin(mon, mqtt_client, slaveAddress, slaveName);
 
-            desiredStateList.push_back(std::make_shared<DesiredStateConfiguration>(twin.getDesiredStateConfiguration()));
+            desiredStateList.push_back(twin.getDesiredStateConfiguration());
             digitalTwinList.push_back(std::make_shared<DigitalTwin>(twin));
         }
     }

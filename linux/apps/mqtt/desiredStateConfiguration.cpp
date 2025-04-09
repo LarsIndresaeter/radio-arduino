@@ -3,11 +3,11 @@
 
 using nlohmann::json;
 
-//constexpr int pollInterval=3600;
+// constexpr int pollInterval=3600;
 
 ActualState::ActualState()
 {
-    m_actualDisplayText = "?";
+    m_actualDisplayText = "";
     m_actualPollInterval = 3600;
 }
 
@@ -34,8 +34,7 @@ void ActualState::setActualPollInterval(int interval)
 ////////////////////////////////////////////
 
 DesiredStateConfiguration::DesiredStateConfiguration(uint8_t radioAddress, std::string name)
-    : m_radioAddress(radioAddress)
-    , m_name(name)
+    : m_name(name)
 {
     m_desiredPollInterval = 3600;
     m_topic = createMqttTopic("RCMD", m_name, "");
@@ -61,7 +60,6 @@ void DesiredStateConfiguration::parseMessage(std::string topic, std::string mess
             }
             else if (commandParamString == "lcd") {
                 m_desiredDisplayText = jsonData["displayText"];
-                m_displayTextChanged = true;
             }
         }
     }

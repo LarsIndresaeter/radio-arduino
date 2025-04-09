@@ -32,9 +32,7 @@ public:
 
 private:
     std::string m_desiredDisplayText;
-    bool m_displayTextChanged = false;
     int m_desiredPollInterval;
-    uint8_t m_radioAddress;
     std::string m_name;
     std::string m_topic;
 };
