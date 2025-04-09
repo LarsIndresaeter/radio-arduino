@@ -42,13 +42,6 @@ std::string getDateTimeString()
     return (dateString);
 }
 
-void publishNbirth(mqtt::async_client& mqtt_client, std::string nodeName)
-{
-    mqtt::topic master_birth(
-        mqtt_client, createMqttTopic("NBIRTH", nodeName, ""), 0, false);
-    master_birth.publish(std::move("{\"dateString: \"" + getDateTimeString() + "\"}"));
-}
-
 void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_client, std::string& masterName)
 {
     if (!masterName.empty()) {
@@ -73,25 +66,11 @@ void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_cli
     }
 }
 
-void publishDesiredStatePollInterval(mqtt::async_client& mqtt_client, std::shared_ptr<DesiredStateConfiguration> dsc)
+void publishNbirth(mqtt::async_client& mqtt_client, std::string nodeName)
 {
-    const int QOS = 0;
-
-    mqtt::topic actual_state_topic(mqtt_client, createMqttTopic("STATE", dsc->getName(), "actualState"), QOS, false);
-    std::string mqtt_payload
-        = "{\"dateString\": \"" + getDateTimeString() + "\", \"pollInterval\":" + std::to_string(dsc->getActualPollInterval()) + "}";
-
-    actual_state_topic.publish(std::move(mqtt_payload));
-}
-
-void publishActualStateDisplayText(mqtt::async_client& mqtt_client, std::string topic, std::string displayText)
-{
-    const int QOS = 0;
-    mqtt::topic actual_state_topic(mqtt_client, topic + "/actualState", QOS, false);
-    std::string mqtt_payload
-        = "{\"dateString\": \"" + getDateTimeString() + "\", \"displayText\": \"" + displayText + "\"}";
-
-    actual_state_topic.publish(std::move(mqtt_payload));
+    mqtt::topic master_birth(
+        mqtt_client, createMqttTopic("NBIRTH", nodeName, ""), 0, false);
+    master_birth.publish(std::move("{\"dateString: \"" + getDateTimeString() + "\"}"));
 }
 
 void publishNdeath(mqtt::async_client& mqtt_client, std::string slaveName)
@@ -102,28 +81,6 @@ void publishNdeath(mqtt::async_client& mqtt_client, std::string slaveName)
         mqtt_client, createMqttTopic("NDEATH", slaveName, ""), QOS, false);
     slave_death.publish(std::move(getDateTimeString()));
 }
-
-void publishVcc(mqtt::async_client& mqtt_client, std::string slaveName, std::string voltage)
-{
-    const int QOS = 0;
-
-    mqtt::topic json_topic(mqtt_client, createMqttTopic("NDATA", slaveName, ""), QOS, false);
-
-
-    try {
-        std::string mqtt_payload
-            = "{\"dateString\": \"" + getDateTimeString() + "\", \"voltage\":" + voltage + "}";
-
-        json_topic.publish(std::move(mqtt_payload));
-    }
-    catch (const mqtt::exception& exc) {
-        std::cerr << exc.what() << std::endl;
-    }
-}
-
-
-
-
 
 std::string getSlaveNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client)
 {
@@ -170,5 +127,4 @@ std::string getMasterNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_
 
     return (masterName);
 }
-
 

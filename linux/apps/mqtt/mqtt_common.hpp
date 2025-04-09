@@ -14,8 +14,5 @@ std::string getMasterNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_
 
 void publishNbirth(mqtt::async_client& mqtt_client, std::string nodeName);
 void publishNdeath(mqtt::async_client& mqtt_client, std::string slaveName);
-void publishVcc(mqtt::async_client& mqtt_client, std::string slaveName, std::string voltage);
-void publishActualStateDisplayText(mqtt::async_client& mqtt_client, std::string topic, std::string displayText);
 
 void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_client, std::string& masterName);
-void publishDesiredStatePollInterval(mqtt::async_client& mqtt_client, std::shared_ptr<DesiredStateConfiguration> ds);

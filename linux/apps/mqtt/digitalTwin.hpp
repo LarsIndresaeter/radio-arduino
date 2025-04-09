@@ -22,4 +22,8 @@ private:
 
     void readVccAndPublish();
     void updateDisplayText();
+
+    void publishDesiredStatePollInterval();
+    void publishActualStateDisplayText(std::string displayText);
+    void publishVcc(std::string voltage);
 };

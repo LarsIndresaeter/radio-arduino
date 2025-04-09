@@ -12,29 +12,27 @@ DigitalTwin::DigitalTwin(monitor& monitor, mqtt::async_client& mqtt_client, uint
 
 DesiredStateConfiguration DigitalTwin::getDesiredStateConfiguration()
 {
-    return(m_desiredStateConfiguration);
+    return (m_desiredStateConfiguration);
 }
 
 void DigitalTwin::execute()
 {
-    //std::cout << "DEBUG: DigitalTwin: address=" + std::to_string(m_radioAddress) << std::endl;
+    // std::cout << "DEBUG: DigitalTwin: address=" + std::to_string(m_radioAddress) << std::endl;
 
     if (m_desiredStateConfiguration.getDesiredPollInterval() != m_desiredStateConfiguration.getActualPollInterval()) {
         m_desiredStateConfiguration.setActualPollInterval(m_desiredStateConfiguration.getDesiredPollInterval());
-        publishDesiredStatePollInterval(m_mqttClient, std::make_shared<DesiredStateConfiguration>(m_desiredStateConfiguration));
+        publishDesiredStatePollInterval();
     }
 
     if ((secondsSinceEpoch() - m_desiredStateConfiguration.getTimeLastPoll()) > m_desiredStateConfiguration.getActualPollInterval()) {
-        if(m_radioSession.wakeupNotResponding())
-        {
+        if (m_radioSession.wakeupNotResponding()) {
             m_desiredStateConfiguration.setTimeLastPoll(secondsSinceEpoch());
             readVccAndPublish();
         }
     }
 
     if (m_desiredStateConfiguration.displayTextChanged()) {
-        if(m_radioSession.wakeupNotResponding())
-        {
+        if (m_radioSession.wakeupNotResponding()) {
             m_radioSession.setKeepAliveInterval(50);
             updateDisplayText();
         }
@@ -48,10 +46,10 @@ void DigitalTwin::readVccAndPublish()
     if (slaveVcc.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
         uint16_t vcc_mv = (uint16_t)(slaveVcc.responseStruct().vcc_h << 8)
             | slaveVcc.responseStruct().vcc_l;
-        publishVcc(m_mqttClient, m_name, std::to_string(vcc_mv / 1000.0));
+        publishVcc(std::to_string(vcc_mv / 1000.0));
     }
     else {
-        publishNdeath(m_mqttClient,m_name);
+        publishNdeath(m_mqttClient, m_name);
     }
 }
 
@@ -67,8 +65,45 @@ void DigitalTwin::updateDisplayText()
     auto response = m_monitor.getRadio<>(UartCommandSsd1306(2, lcd), static_cast<std::chrono::milliseconds>(500));
     if (response.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
         m_desiredStateConfiguration.setActualDisplayText();
-        publishActualStateDisplayText(m_mqttClient, m_desiredStateConfiguration.getTopicString(), displayText);
+        publishActualStateDisplayText(displayText);
     }
 }
 
+void DigitalTwin::publishDesiredStatePollInterval()
+{
+    const int QOS = 0;
+
+    mqtt::topic actual_state_topic(m_mqttClient, createMqttTopic("STATE", m_name, "actualState"), QOS, false);
+    std::string mqtt_payload
+        = "{\"dateString\": \"" + getDateTimeString() + "\", \"pollInterval\":" + std::to_string(m_desiredStateConfiguration.getActualPollInterval()) + "}";
+
+    actual_state_topic.publish(std::move(mqtt_payload));
+}
+
+void DigitalTwin::publishActualStateDisplayText(std::string displayText)
+{
+    const int QOS = 0;
+    mqtt::topic actual_state_topic(m_mqttClient, m_desiredStateConfiguration.getTopicString() + "/actualState", QOS, false);
+    std::string mqtt_payload
+        = "{\"dateString\": \"" + getDateTimeString() + "\", \"displayText\": \"" + displayText + "\"}";
+
+    actual_state_topic.publish(std::move(mqtt_payload));
+}
+
+void DigitalTwin::publishVcc(std::string voltage)
+{
+    const int QOS = 0;
+
+    mqtt::topic json_topic(m_mqttClient, createMqttTopic("NDATA", m_name, ""), QOS, false);
+
+    try {
+        std::string mqtt_payload
+            = "{\"dateString\": \"" + getDateTimeString() + "\", \"voltage\":" + voltage + "}";
+
+        json_topic.publish(std::move(mqtt_payload));
+    }
+    catch (const mqtt::exception& exc) {
+        std::cerr << exc.what() << std::endl;
+    }
+}
 
