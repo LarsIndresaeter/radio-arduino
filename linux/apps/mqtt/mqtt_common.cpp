@@ -73,15 +73,6 @@ void publishNbirth(mqtt::async_client& mqtt_client, std::string nodeName)
     master_birth.publish(std::move("{\"dateString: \"" + getDateTimeString() + "\"}"));
 }
 
-void publishNdeath(mqtt::async_client& mqtt_client, std::string slaveName)
-{
-    const int QOS = 0;
-
-    mqtt::topic slave_death(
-        mqtt_client, createMqttTopic("NDEATH", slaveName, ""), QOS, false);
-    slave_death.publish(std::move(getDateTimeString()));
-}
-
 std::string getSlaveNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client)
 {
     std::string slaveName("");

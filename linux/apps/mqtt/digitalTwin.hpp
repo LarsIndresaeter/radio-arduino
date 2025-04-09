@@ -26,4 +26,5 @@ private:
     void publishDesiredStatePollInterval();
     void publishActualStateDisplayText(std::string displayText);
     void publishVcc(std::string voltage);
+    void publishNdeath();
 };

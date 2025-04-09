@@ -13,6 +13,5 @@ std::string getDateTimeString();
 std::string getMasterNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client);
 
 void publishNbirth(mqtt::async_client& mqtt_client, std::string nodeName);
-void publishNdeath(mqtt::async_client& mqtt_client, std::string slaveName);
 
 void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_client, std::string& masterName);

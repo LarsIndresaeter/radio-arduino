@@ -49,7 +49,7 @@ void DigitalTwin::readVccAndPublish()
         publishVcc(std::to_string(vcc_mv / 1000.0));
     }
     else {
-        publishNdeath(m_mqttClient, m_name);
+        publishNdeath();
     }
 }
 
@@ -106,4 +106,14 @@ void DigitalTwin::publishVcc(std::string voltage)
         std::cerr << exc.what() << std::endl;
     }
 }
+
+void DigitalTwin::publishNdeath()
+{
+    const int QOS = 0;
+
+    mqtt::topic slave_death(
+        m_mqttClient, createMqttTopic("NDEATH", m_name, ""), QOS, false);
+    slave_death.publish(std::move(getDateTimeString()));
+}
+
 
