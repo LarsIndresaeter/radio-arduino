@@ -5,11 +5,15 @@ RadioSession::RadioSession(monitor& mon, uint8_t address) : m_monitor(mon), m_ra
 {
     m_wakeupAttempts = 2;
     m_keepAliveInterval = 0;
+    m_isAlive = false;
 };
 
 RadioSession::~RadioSession()
 {
-    m_monitor.getRadio<>(UartCommandKeepAlive(m_keepAliveInterval));
+    if(m_isAlive)
+    {
+        m_monitor.getRadio<>(UartCommandKeepAlive(m_keepAliveInterval));
+    }
 };
 
 void RadioSession::setKeepAliveInterval(uint8_t interval)
@@ -37,6 +41,8 @@ bool RadioSession::wakeupNotRespondingTryOnce()
             status=false;
         }
     }
+
+    m_isAlive = status;
 
     //if (status) {
         //std::cout << "Wake up device: " << std::to_string(m_radioAddress) << " (OK)" << std::endl;

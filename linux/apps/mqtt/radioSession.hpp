@@ -19,6 +19,7 @@ private:
     uint8_t m_radioAddress;
     uint8_t m_keepAliveInterval;
     uint8_t m_wakeupAttempts;
+    bool m_isAlive; 
     //std::shared_ptr<monitor> m_monitor;
 };
 
