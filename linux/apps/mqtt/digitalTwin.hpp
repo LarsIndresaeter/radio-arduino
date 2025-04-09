@@ -21,4 +21,5 @@ private:
     mqtt::async_client& m_mqttClient;
 
     void readVccAndPublish();
+    void updateDisplayText();
 };

@@ -36,7 +36,7 @@ void DigitalTwin::execute()
         if(m_radioSession.wakeupNotResponding())
         {
             m_radioSession.setKeepAliveInterval(50);
-            updateDisplayText(m_monitor, m_mqttClient, std::make_shared<DesiredStateConfiguration>(m_desiredStateConfiguration));
+            updateDisplayText();
         }
     }
 }
@@ -54,3 +54,21 @@ void DigitalTwin::readVccAndPublish()
         publishNdeath(m_mqttClient,m_name);
     }
 }
+
+void DigitalTwin::updateDisplayText()
+{
+    std::vector<uint8_t> lcd(COMMANDS::SSD1306::STRING_LENGTH, ' ');
+    std::string displayText = m_desiredStateConfiguration.getDesiredDisplayText();
+
+    for (uint8_t i = 0; i < displayText.size() && i < COMMANDS::SSD1306::STRING_LENGTH; i++) {
+        lcd.at(i) = displayText.at(i);
+    }
+
+    auto response = m_monitor.getRadio<>(UartCommandSsd1306(2, lcd), static_cast<std::chrono::milliseconds>(500));
+    if (response.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+        m_desiredStateConfiguration.setActualDisplayText();
+        publishActualStateDisplayText(m_mqttClient, m_desiredStateConfiguration.getTopicString(), displayText);
+    }
+}
+
+

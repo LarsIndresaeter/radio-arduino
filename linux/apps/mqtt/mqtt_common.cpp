@@ -123,26 +123,6 @@ void publishVcc(mqtt::async_client& mqtt_client, std::string slaveName, std::str
 
 
 
-void updateDisplayText(monitor& mon, mqtt::async_client& mqtt_client, std::shared_ptr<DesiredStateConfiguration> dsc)
-{
-    //std::cout << "DEBUG: updateDisplayText, nodeName=" << nodeName << std::endl;
-
-    std::vector<uint8_t> lcd(COMMANDS::SSD1306::STRING_LENGTH, ' ');
-    std::string displayText = dsc->getDesiredDisplayText();
-
-    //std::cout << "DEBUG: updateDisplayText, displayText=" << displayText << std::endl;
-
-    for (uint8_t i = 0; i < displayText.size() && i < COMMANDS::SSD1306::STRING_LENGTH; i++) {
-        lcd.at(i) = displayText.at(i);
-    }
-
-    auto response = mon.getRadio<>(UartCommandSsd1306(2, lcd), static_cast<std::chrono::milliseconds>(500));
-    if (response.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
-        dsc->setActualDisplayText();
-        publishActualStateDisplayText(mqtt_client, dsc->getTopicString(), displayText);
-    }
-}
-
 
 
 std::string getSlaveNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client)
