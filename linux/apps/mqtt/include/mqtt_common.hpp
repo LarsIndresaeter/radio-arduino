@@ -4,7 +4,7 @@
 #include <chrono>
 #include <nlohmann/json.hpp>
 #include "mqtt/async_client.h"
-#include "desiredStateConfiguration.hpp"
+#include <desiredStateConfiguration.hpp>
 #include <monitor.hpp>
 
 uint64_t secondsSinceEpoch();

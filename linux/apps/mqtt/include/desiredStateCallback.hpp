@@ -1,6 +1,6 @@
 #pragma once
 
-#include "desiredStateConfiguration.hpp"
+#include <desiredStateConfiguration.hpp>
 #include "mqtt/async_client.h"
 #include <nlohmann/json.hpp>
 

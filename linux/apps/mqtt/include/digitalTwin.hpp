@@ -1,10 +1,10 @@
 #pragma once
 
-#include "desiredStateConfiguration.hpp"
-#include "actualState.hpp"
-#include "radioSession.hpp"
+#include <desiredStateConfiguration.hpp>
+#include <actualState.hpp>
+#include <radioSession.hpp>
 #include "mqtt/async_client.h"
-#include "mqtt_common.hpp"
+#include <mqtt_common.hpp>
 
 class DigitalTwin {
 public:
