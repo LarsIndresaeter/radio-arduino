@@ -143,19 +143,7 @@ void updateDisplayText(monitor& mon, mqtt::async_client& mqtt_client, std::share
     }
 }
 
-void readVccAndPublish(monitor& mon, mqtt::async_client& mqtt_client, std::string slaveName)
-{
-    auto slaveVcc = mon.getRadio<>(UartCommandVcc());
 
-    if (slaveVcc.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
-        uint16_t vcc_mv = (uint16_t)(slaveVcc.responseStruct().vcc_h << 8)
-            | slaveVcc.responseStruct().vcc_l;
-        publishVcc(mqtt_client, slaveName, std::to_string(vcc_mv / 1000.0));
-    }
-    else {
-        publishNdeath(mqtt_client, slaveName);
-    }
-}
 
 std::string getSlaveNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client)
 {

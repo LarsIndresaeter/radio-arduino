@@ -14,8 +14,11 @@ private:
     ActualState m_actualState;
     DesiredStateConfiguration m_desiredStateConfiguration;
     RadioSession m_radioSession;
+    std::string m_name;
 
     uint8_t m_radioAddress;
     monitor& m_monitor;
     mqtt::async_client& m_mqttClient;
+
+    void readVccAndPublish();
 };

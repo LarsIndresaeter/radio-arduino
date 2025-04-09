@@ -6,6 +6,7 @@ DigitalTwin::DigitalTwin(monitor& monitor, mqtt::async_client& mqtt_client, uint
     , m_radioSession(monitor, radioAddress)
     , m_desiredStateConfiguration(radioAddress, name)
     , m_mqttClient(mqtt_client)
+    , m_name(name)
 {
 }
 
@@ -27,8 +28,7 @@ void DigitalTwin::execute()
         if(m_radioSession.wakeupNotResponding())
         {
             m_desiredStateConfiguration.setTimeLastPoll(secondsSinceEpoch());
-            std::string slaveName = m_desiredStateConfiguration.getName();
-            readVccAndPublish(m_monitor, m_mqttClient, slaveName); // TODO: return true if success
+            readVccAndPublish();
         }
     }
 
@@ -39,6 +39,18 @@ void DigitalTwin::execute()
             updateDisplayText(m_monitor, m_mqttClient, std::make_shared<DesiredStateConfiguration>(m_desiredStateConfiguration));
         }
     }
+}
 
+void DigitalTwin::readVccAndPublish()
+{
+    auto slaveVcc = m_monitor.getRadio<>(UartCommandVcc());
 
+    if (slaveVcc.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+        uint16_t vcc_mv = (uint16_t)(slaveVcc.responseStruct().vcc_h << 8)
+            | slaveVcc.responseStruct().vcc_l;
+        publishVcc(m_mqttClient, m_name, std::to_string(vcc_mv / 1000.0));
+    }
+    else {
+        publishNdeath(m_mqttClient,m_name);
+    }
 }

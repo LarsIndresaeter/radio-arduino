@@ -20,4 +20,4 @@ void publishActualStateDisplayText(mqtt::async_client& mqtt_client, std::string 
 void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_client, std::string& masterName);
 void publishDesiredStatePollInterval(mqtt::async_client& mqtt_client, std::shared_ptr<DesiredStateConfiguration> ds);
 void updateDisplayText(monitor& mon, mqtt::async_client& mqtt_client, std::shared_ptr<DesiredStateConfiguration> ds);
-void readVccAndPublish(monitor& mon, mqtt::async_client& mqtt_client, std::string slaveName);
+//void readVccAndPublish(monitor& mon, mqtt::async_client& mqtt_client, std::string slaveName);
