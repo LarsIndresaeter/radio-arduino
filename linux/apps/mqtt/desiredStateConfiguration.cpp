@@ -3,31 +3,43 @@
 
 using nlohmann::json;
 
+//constexpr int pollInterval=3600;
+
 ActualState::ActualState()
 {
-    m_timeLastPoll=0;
+    m_actualDisplayText = "?";
+    m_actualPollInterval = 3600;
 }
 
-void ActualState::setTimeLastPoll(uint64_t time)
+void ActualState::setActualDisplayText(std::string displayText)
 {
-    m_timeLastPoll = time;
+    m_actualDisplayText = displayText;
 }
 
-uint64_t ActualState::getTimeLastPoll()
+std::string ActualState::getActualDisplayText()
 {
-    return(m_timeLastPoll);
+    return (m_actualDisplayText);
+}
+
+int ActualState::getActualPollInterval()
+{
+    return (m_actualPollInterval);
+}
+
+void ActualState::setActualPollInterval(int interval)
+{
+    m_actualPollInterval = interval;
 }
 
 ////////////////////////////////////////////
-
 
 DesiredStateConfiguration::DesiredStateConfiguration(uint8_t radioAddress, std::string name)
     : m_radioAddress(radioAddress)
     , m_name(name)
 {
     m_desiredPollInterval = 3600;
-    m_actualPollInterval = m_desiredPollInterval;
     m_topic = createMqttTopic("RCMD", m_name, "");
+    m_desiredDisplayText = "";
 }
 
 void DesiredStateConfiguration::parseMessage(std::string topic, std::string message)
@@ -55,16 +67,6 @@ void DesiredStateConfiguration::parseMessage(std::string topic, std::string mess
     }
 }
 
-void DesiredStateConfiguration::setTimeLastPoll(uint64_t time)
-{
-    m_timeLastPoll = time;
-}
-
-uint64_t DesiredStateConfiguration::getTimeLastPoll()
-{
-    return(m_timeLastPoll);
-}
-
 std::string DesiredStateConfiguration::getTopicString()
 {
     return (m_topic);
@@ -80,40 +82,14 @@ bool DesiredStateConfiguration::getStateSubscribeVoltage()
     return (true);
 }
 
-uint8_t DesiredStateConfiguration::getRadioAddress()
-{
-    return (m_radioAddress);
-}
-
 int DesiredStateConfiguration::getDesiredPollInterval()
 {
     return (m_desiredPollInterval);
 }
 
-int DesiredStateConfiguration::getActualPollInterval()
-{
-    return (m_actualPollInterval);
-}
-
-void DesiredStateConfiguration::setActualPollInterval(int interval)
-{
-    m_actualPollInterval = interval;
-}
-
 std::string DesiredStateConfiguration::getDesiredDisplayText()
 {
     return (m_desiredDisplayText);
-}
-
-void DesiredStateConfiguration::setActualDisplayText()
-{
-    m_displayTextChanged = false;
-    // std::cout << "DEBUG: update actual state" << std::endl;
-}
-
-bool DesiredStateConfiguration::displayTextChanged()
-{
-    return (m_displayTextChanged);
 }
 
 //////////////////////////////////
@@ -132,7 +108,7 @@ void DesiredStateCallback::addDesiredStateConfiguration(std::shared_ptr<DesiredS
 
 void DesiredStateCallback::message_arrived(mqtt::const_message_ptr message)
 {
-    //std::cout << "DEBUG: got message on topic: " << message->get_topic() << std::endl;
+    // std::cout << "DEBUG: got message on topic: " << message->get_topic() << std::endl;
     for (int i = 0; i < m_desiredStateConfiguration.size(); i++) {
         std::shared_ptr<DesiredStateConfiguration> dsc = m_desiredStateConfiguration.at(i);
         if (dsc->getTopicString() == message->get_topic()) {

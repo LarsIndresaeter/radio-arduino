@@ -27,4 +27,5 @@ private:
     void publishActualStateDisplayText(std::string displayText);
     void publishVcc(std::string voltage);
     void publishNdeath();
+    uint64_t m_timeLastPoll = 0;
 };

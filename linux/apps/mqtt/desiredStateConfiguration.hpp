@@ -9,8 +9,14 @@ public:
     void setTimeLastPoll(uint64_t time);
     uint64_t getTimeLastPoll();
 
+    void setActualPollInterval(int interval);
+    int getActualPollInterval();
+    void setActualDisplayText(std::string displayText);
+    std::string getActualDisplayText();
+
 private:
-    uint64_t m_timeLastPoll = 0;
+    int m_actualPollInterval;
+    std::string m_actualDisplayText;
 };
 
 class DesiredStateConfiguration {
@@ -19,26 +25,16 @@ public:
     void parseMessage(std::string topic, std::string message);
 
     bool getStateSubscribeVoltage();
-    uint8_t getRadioAddress();
-    int getActualPollInterval();
     int getDesiredPollInterval();
-    void setActualPollInterval(int interval);
     std::string getDesiredDisplayText();
     std::string getName();
-    void setActualDisplayText();
-    bool displayTextChanged();
     std::string getTopicString();
-    void setTimeLastPoll(uint64_t time);
-    uint64_t getTimeLastPoll();
 
 private:
-    // std::vector<uint8_t> m_slaveAddressList;
     std::string m_desiredDisplayText;
     bool m_displayTextChanged = false;
     int m_desiredPollInterval;
-    int m_actualPollInterval;
     uint8_t m_radioAddress;
-    uint64_t m_timeLastPoll = 0;
     std::string m_name;
     std::string m_topic;
 };

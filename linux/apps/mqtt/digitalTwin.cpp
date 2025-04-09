@@ -19,22 +19,23 @@ void DigitalTwin::execute()
 {
     // std::cout << "DEBUG: DigitalTwin: address=" + std::to_string(m_radioAddress) << std::endl;
 
-    if (m_desiredStateConfiguration.getDesiredPollInterval() != m_desiredStateConfiguration.getActualPollInterval()) {
-        m_desiredStateConfiguration.setActualPollInterval(m_desiredStateConfiguration.getDesiredPollInterval());
+    if (m_desiredStateConfiguration.getDesiredPollInterval() != m_actualState.getActualPollInterval()) {
+        m_actualState.setActualPollInterval(m_desiredStateConfiguration.getDesiredPollInterval());
         publishDesiredStatePollInterval();
     }
 
-    if ((secondsSinceEpoch() - m_desiredStateConfiguration.getTimeLastPoll()) > m_desiredStateConfiguration.getActualPollInterval()) {
+    if ((secondsSinceEpoch() - m_timeLastPoll) > m_actualState.getActualPollInterval()) {
         if (m_radioSession.wakeupNotResponding()) {
-            m_desiredStateConfiguration.setTimeLastPoll(secondsSinceEpoch());
+            m_timeLastPoll = secondsSinceEpoch();
             readVccAndPublish();
         }
     }
 
-    if (m_desiredStateConfiguration.displayTextChanged()) {
+    if (m_desiredStateConfiguration.getDesiredDisplayText() != m_actualState.getActualDisplayText()) {
         if (m_radioSession.wakeupNotResponding()) {
             m_radioSession.setKeepAliveInterval(50);
             updateDisplayText();
+            m_actualState.setActualDisplayText(m_desiredStateConfiguration.getDesiredDisplayText());
         }
     }
 }
@@ -64,7 +65,6 @@ void DigitalTwin::updateDisplayText()
 
     auto response = m_monitor.getRadio<>(UartCommandSsd1306(2, lcd), static_cast<std::chrono::milliseconds>(500));
     if (response.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
-        m_desiredStateConfiguration.setActualDisplayText();
         publishActualStateDisplayText(displayText);
     }
 }
@@ -75,7 +75,7 @@ void DigitalTwin::publishDesiredStatePollInterval()
 
     mqtt::topic actual_state_topic(m_mqttClient, createMqttTopic("STATE", m_name, "actualState"), QOS, false);
     std::string mqtt_payload
-        = "{\"dateString\": \"" + getDateTimeString() + "\", \"pollInterval\":" + std::to_string(m_desiredStateConfiguration.getActualPollInterval()) + "}";
+        = "{\"dateString\": \"" + getDateTimeString() + "\", \"pollInterval\":" + std::to_string(m_actualState.getActualPollInterval()) + "}";
 
     actual_state_topic.publish(std::move(mqtt_payload));
 }
