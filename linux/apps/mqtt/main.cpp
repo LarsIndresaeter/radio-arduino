@@ -19,6 +19,20 @@
 
 using namespace std::chrono_literals;
 
+void registerRadioSlave(monitor& mon, mqtt::async_client& mqtt_client, uint8_t slaveAddress, std::vector<std::shared_ptr<DesiredStateConfiguration>>& desiredStateList, std::vector<std::shared_ptr<DigitalTwin>>& digitalTwinList)
+{
+    RadioSession radioSession(mon, slaveAddress);
+    radioSession.wakeupNotResponding();
+    std::string slaveName = radioSession.getSlaveNameAndPublishBirth(mqtt_client);
+
+    if (!slaveName.empty()) {
+        DigitalTwin twin(mon, mqtt_client, slaveAddress, slaveName);
+
+        desiredStateList.push_back(twin.getDesiredStateConfiguration());
+        digitalTwinList.push_back(std::make_shared<DigitalTwin>(twin));
+    }
+}
+
 void readMultipleRadioSlaves(monitor& mon, mqtt::async_client& mqtt_client, std::vector<uint8_t> slaveList)
 {
     const int QOS = 0;
@@ -29,17 +43,7 @@ void readMultipleRadioSlaves(monitor& mon, mqtt::async_client& mqtt_client, std:
     std::string masterName = getMasterNameAndPublishBirth(mon, mqtt_client);
 
     for (uint8_t i = 0; i < slaveList.size(); i++) {
-        uint8_t slaveAddress = slaveList.at(i);
-        RadioSession radioSession(mon, slaveAddress);
-        radioSession.wakeupNotResponding();
-        std::string slaveName = radioSession.getSlaveNameAndPublishBirth(mqtt_client);
-
-        if (!slaveName.empty()) {
-            DigitalTwin twin(mon, mqtt_client, slaveAddress, slaveName);
-
-            desiredStateList.push_back(twin.getDesiredStateConfiguration());
-            digitalTwinList.push_back(std::make_shared<DigitalTwin>(twin));
-        }
+        registerRadioSlave(mon, mqtt_client, slaveList.at(i), desiredStateList, digitalTwinList);
     }
 
     DesiredStateCallback desiredStateCallback(desiredStateList);

@@ -17,8 +17,6 @@ std::shared_ptr<DesiredStateConfiguration> DigitalTwin::getDesiredStateConfigura
 
 void DigitalTwin::execute()
 {
-    // std::cout << "DEBUG: DigitalTwin: address=" + std::to_string(m_radioAddress) << std::endl;
-
     if (m_desiredStateConfiguration->getDesiredPollInterval() != m_actualState.getActualPollInterval()) {
         m_actualState.setActualPollInterval(m_desiredStateConfiguration->getDesiredPollInterval());
         publishDesiredStatePollInterval();
@@ -30,10 +28,6 @@ void DigitalTwin::execute()
             readVccAndPublish();
         }
     }
-
-    //std::cout << "desired text : " << m_desiredStateConfiguration.getDesiredDisplayText() << std::endl;
-    //std::cout << "actual text  : " << m_actualState.getActualDisplayText() << std::endl;
-    //std::cout << "name: " << m_name << ", topic: " << m_desiredStateConfiguration.getTopicString() << std::endl;
 
     if (m_desiredStateConfiguration->getDesiredDisplayText() != m_actualState.getActualDisplayText()) {
         if (m_radioSession.wakeupNotResponding()) {
@@ -119,5 +113,4 @@ void DigitalTwin::publishNdeath()
         m_mqttClient, createMqttTopic("NDEATH", m_name, ""), QOS, false);
     slave_death.publish(std::move(getDateTimeString()));
 }
-
 
