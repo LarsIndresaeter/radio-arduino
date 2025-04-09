@@ -3,6 +3,16 @@
 #include "mqtt/async_client.h"
 #include <nlohmann/json.hpp>
 
+class ActualState {
+public:
+    ActualState();
+    void setTimeLastPoll(uint64_t time);
+    uint64_t getTimeLastPoll();
+
+private:
+    uint64_t m_timeLastPoll = 0;
+};
+
 class DesiredStateConfiguration {
 public:
     DesiredStateConfiguration(uint8_t radioAddress, std::string name);

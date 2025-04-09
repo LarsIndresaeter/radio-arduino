@@ -3,6 +3,24 @@
 
 using nlohmann::json;
 
+ActualState::ActualState()
+{
+    m_timeLastPoll=0;
+}
+
+void ActualState::setTimeLastPoll(uint64_t time)
+{
+    m_timeLastPoll = time;
+}
+
+uint64_t ActualState::getTimeLastPoll()
+{
+    return(m_timeLastPoll);
+}
+
+////////////////////////////////////////////
+
+
 DesiredStateConfiguration::DesiredStateConfiguration(uint8_t radioAddress, std::string name)
     : m_radioAddress(radioAddress)
     , m_name(name)
