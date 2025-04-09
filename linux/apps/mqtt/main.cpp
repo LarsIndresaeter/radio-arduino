@@ -1,8 +1,8 @@
 #include "desiredStateConfiguration.hpp"
+#include "digitalTwin.hpp"
 #include "mqtt/async_client.h"
 #include "mqtt_common.hpp"
 #include "radioSession.hpp"
-#include "digitalTwin.hpp"
 #include <chrono>
 #include <cmath>
 #include <commands.hpp>
@@ -19,7 +19,7 @@
 
 using namespace std::chrono_literals;
 
-void readVccFromMultipleRadioSlave(monitor& mon, mqtt::async_client& mqtt_client, std::vector<uint8_t> slaveList)
+void readMultipleRadioSlaves(monitor& mon, mqtt::async_client& mqtt_client, std::vector<uint8_t> slaveList)
 {
     const int QOS = 0;
 
@@ -28,15 +28,13 @@ void readVccFromMultipleRadioSlave(monitor& mon, mqtt::async_client& mqtt_client
 
     std::string masterName = getMasterNameAndPublishBirth(mon, mqtt_client);
 
-    for(uint8_t i = 0; i<slaveList.size(); i++)
-    {
+    for (uint8_t i = 0; i < slaveList.size(); i++) {
         uint8_t slaveAddress = slaveList.at(i);
         RadioSession radioSession(mon, slaveAddress);
         radioSession.wakeupNotResponding();
         std::string slaveName = radioSession.getSlaveNameAndPublishBirth(mqtt_client);
 
-        if(!slaveName.empty())
-        {
+        if (!slaveName.empty()) {
             DigitalTwin twin(mon, mqtt_client, slaveAddress, slaveName);
 
             desiredStateList.push_back(std::make_shared<DesiredStateConfiguration>(twin.getDesiredStateConfiguration()));
@@ -89,19 +87,18 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     std::vector<uint8_t> slaveList;
     char option = 0;
 
-    while ((option = getopt(argc, argv, "khm:")) != -1) {
+    while ((option = getopt(argc, argv, "hm:")) != -1) {
         switch (option) {
         case 'm':
             slaveList.push_back(atoi(optarg));
-            break;
-        case 'k':
-            readVccFromMultipleRadioSlave(mon, mqtt_client, slaveList);
             break;
         case 'h':
             print_usage();
             break;
         }
     }
+
+    readMultipleRadioSlaves(mon, mqtt_client, slaveList);
 
     mqtt_client.disconnect()->wait();
 
