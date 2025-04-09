@@ -100,19 +100,19 @@ bool DesiredStateConfiguration::displayTextChanged()
 
 //////////////////////////////////
 
-DesiredState::DesiredState(std::vector<std::shared_ptr<DesiredStateConfiguration>> dscList)
+DesiredStateCallback::DesiredStateCallback(std::vector<std::shared_ptr<DesiredStateConfiguration>> dscList)
 {
     for (int i = 0; i < dscList.size(); i++) {
         m_desiredStateConfiguration.push_back(dscList.at(i));
     }
 }
 
-void DesiredState::addDesiredStateConfiguration(std::shared_ptr<DesiredStateConfiguration> dsc)
+void DesiredStateCallback::addDesiredStateConfiguration(std::shared_ptr<DesiredStateConfiguration> dsc)
 {
     m_desiredStateConfiguration.push_back(dsc);
 }
 
-void DesiredState::message_arrived(mqtt::const_message_ptr message)
+void DesiredStateCallback::message_arrived(mqtt::const_message_ptr message)
 {
     //std::cout << "DEBUG: got message on topic: " << message->get_topic() << std::endl;
     for (int i = 0; i < m_desiredStateConfiguration.size(); i++) {
@@ -123,12 +123,12 @@ void DesiredState::message_arrived(mqtt::const_message_ptr message)
     }
 }
 
-void DesiredState::connection_lost(const std::string& cause)
+void DesiredStateCallback::connection_lost(const std::string& cause)
 {
     std::cout << "Connection lost: " << cause << std::endl;
 }
 
-void DesiredState::delivery_complete(mqtt::delivery_token_ptr token)
+void DesiredStateCallback::delivery_complete(mqtt::delivery_token_ptr token)
 {
     std::cout << "Message delivered" << std::endl;
 }

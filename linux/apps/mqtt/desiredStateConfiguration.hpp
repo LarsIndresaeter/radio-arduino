@@ -33,9 +33,9 @@ private:
     std::string m_topic;
 };
 
-class DesiredState : public virtual mqtt::callback {
+class DesiredStateCallback : public virtual mqtt::callback {
 public:
-    DesiredState(std::vector<std::shared_ptr<DesiredStateConfiguration>> dscList);
+    DesiredStateCallback(std::vector<std::shared_ptr<DesiredStateConfiguration>> dscList);
     void addDesiredStateConfiguration(std::shared_ptr<DesiredStateConfiguration> dsc);
     void connection_lost(const std::string& cause) override;
     void message_arrived(mqtt::const_message_ptr message) override;

@@ -73,7 +73,7 @@ void readVccFromMultipleRadioSlave(monitor& mon, mqtt::async_client& mqtt_client
         }
     }
 
-    DesiredState desiredStateCallback(desiredStateList);
+    DesiredStateCallback desiredStateCallback(desiredStateList);
 
 
     mqtt_client.set_callback(desiredStateCallback);
