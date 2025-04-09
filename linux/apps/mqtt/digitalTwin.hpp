@@ -1,6 +1,7 @@
 #pragma once
 
 #include "desiredStateConfiguration.hpp"
+#include "actualState.hpp"
 #include "radioSession.hpp"
 #include "mqtt/async_client.h"
 #include "mqtt_common.hpp"

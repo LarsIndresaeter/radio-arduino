@@ -1,4 +1,5 @@
 #include "desiredStateConfiguration.hpp"
+#include "desiredStateCallback.hpp"
 #include "digitalTwin.hpp"
 #include "mqtt/async_client.h"
 #include "mqtt_common.hpp"
