@@ -36,6 +36,8 @@ void DigitalTwin::execute()
             m_actualState.setActualDisplayText(m_desiredStateConfiguration->getDesiredDisplayText());
         }
     }
+
+    m_radioSession.close();
 }
 
 void DigitalTwin::readVccAndPublish()

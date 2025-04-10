@@ -5,15 +5,18 @@ using time_point = std::chrono::system_clock::time_point;
 
 using nlohmann::json;
 
-uint64_t secondsSinceEpoch()
+uint64_t milliSecondsSinceEpoch()
 {
     using namespace std::chrono;
     uint64_t seconds
         = (duration_cast<milliseconds>(system_clock::now().time_since_epoch())
-                  .count())
-        / 1000;
-    // std::cout << "time " << std::to_string(seconds) << std::endl;
+                .count());
     return seconds;
+}
+
+uint64_t secondsSinceEpoch()
+{
+    return milliSecondsSinceEpoch()/1000;
 }
 
 std::string createMqttTopic(std::string type, std::string eon, std::string device)

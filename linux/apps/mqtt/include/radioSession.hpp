@@ -8,8 +8,11 @@
 class RadioSession {
 public:
     RadioSession(monitor& mon, uint8_t address);
-    ~RadioSession();
+    void close();
+    uint64_t getActiveTimeForRadioSlave();
     bool wakeupNotResponding();
+    uint32_t getWakeupSuccessCounter();
+    uint32_t getWakeupFailedCounter();
     void setKeepAliveInterval(uint8_t interval);
     std::string readSlaveName(monitor& mon);
     std::string getSlaveNameAndPublishBirth(mqtt::async_client& mqtt_client);
@@ -18,8 +21,13 @@ private:
     monitor& m_monitor;
     uint8_t m_radioAddress;
     uint8_t m_keepAliveInterval;
+    uint8_t m_initialKeepAliveInterval;
     uint8_t m_wakeupAttempts;
     bool m_isAlive; 
+    uint32_t m_wakeupSuccessCounter;
+    uint32_t m_wakeupFailedCounter;
+    uint64_t m_timeLastWakeup;
+    uint64_t m_activeTime;
     //std::shared_ptr<monitor> m_monitor;
 };
 

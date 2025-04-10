@@ -7,6 +7,7 @@
 #include <desiredStateConfiguration.hpp>
 #include <monitor.hpp>
 
+uint64_t milliSecondsSinceEpoch();
 uint64_t secondsSinceEpoch();
 std::string createMqttTopic(std::string type, std::string eon, std::string device);
 std::string getDateTimeString();
