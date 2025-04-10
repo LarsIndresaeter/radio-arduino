@@ -24,14 +24,10 @@ void RadioSession::close()
         int validResponsesAfterKeepAlive = m_monitor.getValidResponses();
 
         if (validResponsesAfterKeepAlive > initialValidResponses) {
-            auto response = keepAliveReply.responseStruct();
 
-            if(response.status == 1)
+            if(m_keepAliveInterval != 0)
             {
-                if(m_keepAliveInterval != 0)
-                {
-                    m_activeTime = m_activeTime + 100 + m_keepAliveInterval*100; // new keep alive interval
-                }
+                m_activeTime = m_activeTime + 100 + m_keepAliveInterval*100; // new keep alive interval
             }
 
             m_activeTime = m_activeTime + activeTimeSinceLastWakeup;

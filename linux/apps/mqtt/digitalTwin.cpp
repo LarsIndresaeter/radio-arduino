@@ -37,7 +37,7 @@ void DigitalTwin::execute()
         }
     }
 
-    m_radioSession.close();
+    //m_radioSession.close();
 }
 
 void DigitalTwin::readVccAndPublish()
