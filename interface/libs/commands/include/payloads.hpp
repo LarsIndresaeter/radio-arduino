@@ -32,5 +32,5 @@
 #include <vcc/payload.hpp>
 #include <sleep/payload.hpp>
 #include <wakeup/payload.hpp>
-#include <set_slave_address/payload.hpp>
+#include <set_node_address/payload.hpp>
 #include <keep_alive/payload.hpp>

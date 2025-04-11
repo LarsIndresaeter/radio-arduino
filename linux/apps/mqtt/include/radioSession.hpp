@@ -9,13 +9,13 @@ class RadioSession {
 public:
     RadioSession(monitor& mon, uint8_t address);
     void close();
-    uint64_t getActiveTimeForRadioSlave();
+    uint64_t getActiveTimeForRadioNode();
     bool wakeupNotResponding();
     uint32_t getWakeupSuccessCounter();
     uint32_t getWakeupFailedCounter();
     void setKeepAliveInterval(uint8_t interval);
-    std::string readSlaveName(monitor& mon);
-    std::string getSlaveNameAndPublishBirth(mqtt::async_client& mqtt_client);
+    std::string readNodeName(monitor& mon);
+    std::string getNodeNameAndPublishBirth(mqtt::async_client& mqtt_client);
 private:
     bool wakeupNotRespondingTryOnce();
     monitor& m_monitor;

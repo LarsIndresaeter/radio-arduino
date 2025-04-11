@@ -58,10 +58,10 @@ void print_usage()
     std::cout << "       -j : read vcc" << std::endl;
     std::cout << "       -s : sleep" << std::endl;
     std::cout << "       -L : print text on LCD" << std::endl;
-    std::cout << "       -w : wake up sleeping rx slave" << std::endl;
+    std::cout << "       -w : wake up sleeping rx node" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
-    std::cout << "       -m : set master address" << std::endl;
-    std::cout << "       -a : set slave address" << std::endl;
+    std::cout << "       -m : set gateway address" << std::endl;
+    std::cout << "       -a : set node address" << std::endl;
     std::cout << "       -k : set keep alive interval" << std::endl;
 }
 
@@ -100,7 +100,7 @@ bool wakeupNotRespondingRepeat(monitor& mon, uint8_t address, uint8_t attempts)
 {
     uint8_t cnt = 0;
 
-    mon.get<>(UartCommandSetSlaveAddress(address));
+    mon.get<>(UartCommandSetNodeAddress(address));
 
     while(cnt<=attempts)
     {
@@ -506,7 +506,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             wakeupNotRespondingRepeat(mon, radioAddress, 3);
             break;
         case 'a':
-            std::cout << mon.getRadio<>(UartCommandSetSlaveAddress(atoi(optarg))) << std::endl;
+            std::cout << mon.getRadio<>(UartCommandSetNodeAddress(atoi(optarg))) << std::endl;
             break;
         case 'k':
             std::cout << mon.getRadio<>(UartCommandKeepAlive(atoi(optarg))) << std::endl;

@@ -42,28 +42,28 @@ std::string getDateTimeString()
     return (dateString);
 }
 
-void publishNbirth(mqtt::async_client& mqtt_client, std::string nodeName)
+void publishNbirth(mqtt::async_client& mqtt_client, std::string deviceName)
 {
-    mqtt::topic master_birth(
-        mqtt_client, createMqttTopic("NBIRTH", nodeName, ""), 0, false);
-    master_birth.publish(std::move("{\"dateString: \"" + getDateTimeString() + "\"}"));
+    mqtt::topic deviceBirth(
+        mqtt_client, createMqttTopic("NBIRTH", deviceName, ""), 0, false);
+    deviceBirth.publish(std::move("{\"dateString: \"" + getDateTimeString() + "\"}"));
 }
 
-void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_client, std::string& masterName)
+void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_client, std::string& deviceName)
 {
-    if (!masterName.empty()) {
+    if (!deviceName.empty()) {
         int QOS = 0;
 
         mqtt::topic link_commands_sent_topic(
-            mqtt_client, createMqttTopic("NDATA", masterName, "protocol/commands_sent"), QOS, false);
+            mqtt_client, createMqttTopic("NDATA", deviceName, "protocol/commands_sent"), QOS, false);
         mqtt::topic link_valid_responses_topic(
-            mqtt_client, createMqttTopic("NDATA", masterName, "protocol/valid_responses"), QOS, false);
+            mqtt_client, createMqttTopic("NDATA", deviceName, "protocol/valid_responses"), QOS, false);
         mqtt::topic link_invalid_responses_topic(
-            mqtt_client, createMqttTopic("NDATA", masterName, "protocol/invalid_responses"), QOS, false);
+            mqtt_client, createMqttTopic("NDATA", deviceName, "protocol/invalid_responses"), QOS, false);
         mqtt::topic link_bytes_sent_topic(
-            mqtt_client, createMqttTopic("NDATA", masterName, "protocol/bytes_sent"), QOS, false);
+            mqtt_client, createMqttTopic("NDATA", deviceName, "protocol/bytes_sent"), QOS, false);
         mqtt::topic link_bytes_received_topic(
-            mqtt_client, createMqttTopic("NDATA", masterName, "protocol/bytes_received"), QOS, false);
+            mqtt_client, createMqttTopic("NDATA", deviceName, "protocol/bytes_received"), QOS, false);
 
         link_commands_sent_topic.publish(std::move(std::to_string(mon.getCommandsSent())));
         link_valid_responses_topic.publish(std::move(std::to_string(mon.getValidResponses())));
@@ -73,9 +73,9 @@ void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_cli
     }
 }
 
-std::string getMasterNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client)
+std::string getGatewayNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client)
 {
-    std::string masterName("");
+    std::string gatewayName("");
 
     auto masterDeviceInfo = mon.get<>(UartCommandGetDeviceInfo());
 
@@ -87,13 +87,13 @@ std::string getMasterNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_
         auto response = masterDeviceInfo.responseStruct();
 
         for (int i = 0; i < 16 && response.name[i] != 0; i++) {
-            masterName += response.name[i];
+            gatewayName += response.name[i];
         }
 
-        publishNbirth(mqtt_client, masterName);
+        publishNbirth(mqtt_client, gatewayName);
     }
 
-    return (masterName);
+    return (gatewayName);
 }
 
 

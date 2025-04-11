@@ -40,8 +40,8 @@ conan_package_arduino()
     conan remove uart-avr -f
 
     echo "build uart-avr in cache"
-    conan create arduino lars/test -pr tools/conan/profiles/gcc-avr -o uart-avr:RX_SLAVE=False
-    conan create arduino lars/test -pr tools/conan/profiles/gcc-avr -o uart-avr:RX_SLAVE=True
+    conan create arduino lars/test -pr tools/conan/profiles/gcc-avr -o uart-avr:RX_NODE=False
+    conan create arduino lars/test -pr tools/conan/profiles/gcc-avr -o uart-avr:RX_NODE=True
 }
 
 conan_package_linux()
@@ -58,8 +58,8 @@ conan_package_linux()
 
     echo "build uart-tool in cache"
     pushd linux
-    conan create . lars/test -o uart-tool:mqtt=True -o uart-avr:RX_SLAVE=False --build=missing
-    conan create . lars/test -o uart-tool:mqtt=True -o uart-avr:RX_SLAVE=True --build=missing
+    conan create . lars/test -o uart-tool:mqtt=True -o uart-avr:RX_NODE=False --build=missing
+    conan create . lars/test -o uart-tool:mqtt=True -o uart-avr:RX_NODE=True --build=missing
     popd
 }
 

@@ -24,7 +24,7 @@ namespace NRF24L01_INIT {
                 rx_addr[j] = cmd[7 + j];
             }
             rf_channel = cmd[12];
-            master = cmd[13];
+            gateway = cmd[13];
         }
 
         uint8_t OI;
@@ -32,7 +32,7 @@ namespace NRF24L01_INIT {
         uint8_t tx_addr[ADDR_SIZE];
         uint8_t rx_addr[ADDR_SIZE];
         uint8_t rf_channel;
-        uint8_t master;
+        uint8_t gateway;
     } command_t;
 
     typedef struct response {

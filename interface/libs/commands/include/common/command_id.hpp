@@ -38,7 +38,7 @@ enum class OI
     VCC = 28,
     SLEEP = 29,
     WAKEUP = 30,
-    SET_SLAVE_ADDRESS = 31,
+    SET_NODE_ADDRESS = 31,
     KEEP_ALIVE = 32,
 };
 
