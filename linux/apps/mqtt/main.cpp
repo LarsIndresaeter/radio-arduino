@@ -1,4 +1,4 @@
-#include <desiredStateConfiguration.hpp>
+#include <desiredState.hpp>
 #include <desiredStateCallback.hpp>
 #include <digitalTwin.hpp>
 #include "mqtt/async_client.h"
@@ -20,7 +20,7 @@
 
 using namespace std::chrono_literals;
 
-void registerRadioNode(monitor& mon, mqtt::async_client& mqtt_client, uint8_t nodeAddress, std::vector<std::shared_ptr<DesiredStateConfiguration>>& desiredStateList, std::vector<std::shared_ptr<DigitalTwin>>& digitalTwinList)
+void registerRadioNode(monitor& mon, mqtt::async_client& mqtt_client, uint8_t nodeAddress, std::vector<std::shared_ptr<DesiredState>>& desiredStateList, std::vector<std::shared_ptr<DigitalTwin>>& digitalTwinList)
 {
     RadioSession radioSession(mon, nodeAddress);
     radioSession.wakeupNotResponding();
@@ -29,7 +29,7 @@ void registerRadioNode(monitor& mon, mqtt::async_client& mqtt_client, uint8_t no
     if (!nodeName.empty()) {
         DigitalTwin twin(mon, mqtt_client, nodeAddress, nodeName);
 
-        desiredStateList.push_back(twin.getDesiredStateConfiguration());
+        desiredStateList.push_back(twin.getDesiredState());
         digitalTwinList.push_back(std::make_shared<DigitalTwin>(twin));
     }
 }
@@ -49,7 +49,7 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client, std::
 {
     const int QOS = 0;
 
-    std::vector<std::shared_ptr<DesiredStateConfiguration>> desiredStateList;
+    std::vector<std::shared_ptr<DesiredState>> desiredStateList;
     std::vector<std::shared_ptr<DigitalTwin>> digitalTwinList;
 
     getGatewayNameAndPublishBirth(mon, mqtt_client);

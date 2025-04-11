@@ -3,7 +3,7 @@
 #include <monitor.hpp>
 #include "mqtt/async_client.h"
 #include <mqtt_common.hpp>
-#include <desiredStateConfiguration.hpp>
+#include <desiredState.hpp>
 
 class RadioSession {
 public:

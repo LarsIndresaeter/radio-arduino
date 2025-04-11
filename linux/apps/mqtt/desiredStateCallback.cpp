@@ -3,23 +3,23 @@
 
 using nlohmann::json;
 
-DesiredStateCallback::DesiredStateCallback(std::vector<std::shared_ptr<DesiredStateConfiguration>> dscList)
+DesiredStateCallback::DesiredStateCallback(std::vector<std::shared_ptr<DesiredState>> dscList)
 {
     for (int i = 0; i < dscList.size(); i++) {
-        m_desiredStateConfiguration.push_back(dscList.at(i));
+        m_desiredState.push_back(dscList.at(i));
     }
 }
 
-void DesiredStateCallback::addDesiredStateConfiguration(std::shared_ptr<DesiredStateConfiguration> dsc)
+void DesiredStateCallback::addDesiredState(std::shared_ptr<DesiredState> dsc)
 {
-    m_desiredStateConfiguration.push_back(dsc);
+    m_desiredState.push_back(dsc);
 }
 
 void DesiredStateCallback::message_arrived(mqtt::const_message_ptr message)
 {
     // std::cout << "DEBUG: got message on topic: " << message->get_topic() << std::endl;
-    for (int i = 0; i < m_desiredStateConfiguration.size(); i++) {
-        std::shared_ptr<DesiredStateConfiguration> dsc = m_desiredStateConfiguration.at(i);
+    for (int i = 0; i < m_desiredState.size(); i++) {
+        std::shared_ptr<DesiredState> dsc = m_desiredState.at(i);
         if (dsc->getTopicString() == message->get_topic()) {
             dsc->parseMessage(message->get_topic(), message->get_payload_str());
         }

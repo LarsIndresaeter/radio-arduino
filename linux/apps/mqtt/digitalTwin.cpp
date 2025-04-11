@@ -4,21 +4,21 @@ DigitalTwin::DigitalTwin(monitor& monitor, mqtt::async_client& mqtt_client, uint
     : m_radioAddress(radioAddress)
     , m_monitor(monitor)
     , m_radioSession(monitor, radioAddress)
-    , m_desiredStateConfiguration(std::make_shared<DesiredStateConfiguration>(radioAddress, name))
+    , m_desiredState(std::make_shared<DesiredState>(radioAddress, name))
     , m_mqttClient(mqtt_client)
     , m_name(name)
 {
 }
 
-std::shared_ptr<DesiredStateConfiguration> DigitalTwin::getDesiredStateConfiguration()
+std::shared_ptr<DesiredState> DigitalTwin::getDesiredState()
 {
-    return (m_desiredStateConfiguration);
+    return (m_desiredState);
 }
 
 void DigitalTwin::execute()
 {
-    if (m_desiredStateConfiguration->getDesiredPollInterval() != m_actualState.getActualPollInterval()) {
-        m_actualState.setActualPollInterval(m_desiredStateConfiguration->getDesiredPollInterval());
+    if (m_desiredState->getDesiredPollInterval() != m_actualState.getActualPollInterval()) {
+        m_actualState.setActualPollInterval(m_desiredState->getDesiredPollInterval());
         publishDesiredStatePollInterval();
     }
 
@@ -29,11 +29,11 @@ void DigitalTwin::execute()
         }
     }
 
-    if (m_desiredStateConfiguration->getDesiredDisplayText() != m_actualState.getActualDisplayText()) {
+    if (m_desiredState->getDesiredDisplayText() != m_actualState.getActualDisplayText()) {
         if (m_radioSession.wakeupNotResponding()) {
             m_radioSession.setKeepAliveInterval(50);
             updateDisplayText();
-            m_actualState.setActualDisplayText(m_desiredStateConfiguration->getDesiredDisplayText());
+            m_actualState.setActualDisplayText(m_desiredState->getDesiredDisplayText());
         }
     }
 
@@ -57,7 +57,7 @@ void DigitalTwin::readVccAndPublish()
 void DigitalTwin::updateDisplayText()
 {
     std::vector<uint8_t> lcd(COMMANDS::SSD1306::STRING_LENGTH, ' ');
-    std::string displayText = m_desiredStateConfiguration->getDesiredDisplayText();
+    std::string displayText = m_desiredState->getDesiredDisplayText();
 
     for (uint8_t i = 0; i < displayText.size() && i < COMMANDS::SSD1306::STRING_LENGTH; i++) {
         lcd.at(i) = displayText.at(i);
@@ -83,7 +83,7 @@ void DigitalTwin::publishDesiredStatePollInterval()
 void DigitalTwin::publishActualStateDisplayText(std::string displayText)
 {
     const int QOS = 0;
-    mqtt::topic actual_state_topic(m_mqttClient, m_desiredStateConfiguration->getTopicString() + "/actualState", QOS, false);
+    mqtt::topic actual_state_topic(m_mqttClient, m_desiredState->getTopicString() + "/actualState", QOS, false);
     std::string mqtt_payload
         = "{\"dateString\": \"" + getDateTimeString() + "\", \"displayText\": \"" + displayText + "\"}";
 
