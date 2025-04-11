@@ -20,7 +20,7 @@ void RadioSession::close()
         uint64_t activeTimeSinceLastWakeup=milliSecondsSinceEpoch() - m_timeLastWakeup;
         
         int initialValidResponses = m_monitor.getValidResponses();
-        auto keepAliveReply = m_monitor.getRadio<>(UartCommandKeepAlive(m_keepAliveInterval));
+        m_monitor.getRadio<>(UartCommandKeepAlive(m_keepAliveInterval));
         int validResponsesAfterKeepAlive = m_monitor.getValidResponses();
 
         if (validResponsesAfterKeepAlive > initialValidResponses) {
