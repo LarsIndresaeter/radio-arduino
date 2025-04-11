@@ -13,6 +13,7 @@
 #include <numeric>
 #include <thread>
 #include <uart.hpp>
+#include "../mqtt/include/radioSession.hpp"
 
 using namespace std::chrono_literals;
 
@@ -63,57 +64,6 @@ void print_usage()
     std::cout << "       -m : set gateway address" << std::endl;
     std::cout << "       -a : set node address" << std::endl;
     std::cout << "       -k : set keep alive interval" << std::endl;
-}
-
-bool wakeupNotResponding(monitor& mon, uint8_t address)
-{
-    bool status = true;
-
-    int initialInvalidResponses = mon.getInvalidResponses();
-    mon.getRadio<>(UartCommandDebug(), static_cast<std::chrono::milliseconds>(50)); // espect response in less than 50 ms
-    int invalidResponsesAfterPing = mon.getInvalidResponses();
-
-    if (invalidResponsesAfterPing > initialInvalidResponses) {
-        UartCommandWakeup result = mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
-        COMMANDS::WAKEUP::response_t response_struct = result.responseStruct();
-
-        if(response_struct.status == 1)
-        {
-            status=true;
-        }
-        else{
-            status=false;
-        }
-    }
-
-    if (status) {
-        std::cout << "Wake up device: " << std::to_string(address) << " (OK)" << std::endl;
-    }
-    else {
-        std::cout << "Wake up device: " << std::to_string(address) << " (FAILED)" << std::endl;
-    }
-
-    return (status);
-}
-
-bool wakeupNotRespondingRepeat(monitor& mon, uint8_t address, uint8_t attempts)
-{
-    uint8_t cnt = 0;
-
-    mon.get<>(UartCommandSetNodeAddress(address));
-
-    while(cnt<=attempts)
-    {
-        cnt++;
-        if(wakeupNotResponding(mon, address))
-        {
-            return(true);
-        }
-    }
-
-    std::this_thread::sleep_for(10ms);
-
-    return(false);
 }
 
 void compareResult(uint8_t expected, uint8_t actual)
@@ -496,20 +446,27 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             mon.getRadio<>(UartCommandSetDeviceInfo(name));
         } break;
         case 'z':
+            {
+            RadioSession radioSession(mon, radioAddress);
+            radioSession.wakeupNotResponding();
             std::cout << mon.getRadio<>(UartCommandGetDeviceInfo()) << std::endl;
+            radioSession.close();
+            }
             break;
         case 'h':
             print_usage();
             break;
         case 'm':
             radioAddress = atoi(optarg);
-            wakeupNotRespondingRepeat(mon, radioAddress, 3);
             break;
         case 'a':
             std::cout << mon.getRadio<>(UartCommandSetNodeAddress(atoi(optarg))) << std::endl;
             break;
         case 'k':
+            RadioSession radioSession(mon, radioAddress);
+            radioSession.wakeupNotResponding();
             std::cout << mon.getRadio<>(UartCommandKeepAlive(atoi(optarg))) << std::endl;
+            radioSession.close();
             break;
         }
     }

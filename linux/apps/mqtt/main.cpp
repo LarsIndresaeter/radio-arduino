@@ -24,9 +24,10 @@ void registerRadioNode(monitor& mon, mqtt::async_client& mqtt_client, uint8_t no
 {
     RadioSession radioSession(mon, nodeAddress);
     radioSession.wakeupNotResponding();
-    std::string nodeName = radioSession.getNodeNameAndPublishBirth(mqtt_client);
+    std::string nodeName = radioSession.getNodeName();
 
     if (!nodeName.empty()) {
+        publishNbirth(mqtt_client, nodeName);
         DigitalTwin twin(mon, mqtt_client, nodeAddress, nodeName);
 
         desiredStateList.push_back(twin.getDesiredState());
@@ -38,7 +39,11 @@ void moveRadioNode(monitor& mon, mqtt::async_client& mqtt_client, std::string na
 {
     RadioSession radioSession(mon, 0);
     radioSession.wakeupNotResponding();
-    std::string nodeName = radioSession.getNodeNameAndPublishBirth(mqtt_client);
+    std::string nodeName = radioSession.getNodeName();
+    if(!nodeName.empty())
+    {
+        publishNbirth(mqtt_client, nodeName);
+    }
 
     if (nodeName == name) {
         mon.getRadio<>(UartCommandSetNodeAddress(nodeAddress));

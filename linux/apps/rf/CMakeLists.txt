@@ -11,6 +11,7 @@ if(mqtt)
     add_definitions(-DUSE_FEATURE_MQTT=1)
 endif()
 
-add_executable(rf-tool main.cpp ../../libs/crypto/crypto.cpp)
+include_directories(mqtt-client ../mqtt/include)
+add_executable(rf-tool ../mqtt/radioSession.cpp main.cpp ../../libs/crypto/crypto.cpp)
 target_link_libraries(rf-tool ${CONAN_LIBS} epollevent eventprocess monitor uart protocol pthread)
 

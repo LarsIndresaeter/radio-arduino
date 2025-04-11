@@ -1,6 +1,19 @@
 #include "radioSession.hpp"
 
-//RadioSession::RadioSession(monitor& mon) : m_monitor(std::make_shared<monitor>(mon))
+uint64_t RadioSession::milliSecondsSinceEpoch()
+{
+    using namespace std::chrono;
+    uint64_t seconds
+        = (duration_cast<milliseconds>(system_clock::now().time_since_epoch())
+                .count());
+    return seconds;
+}
+
+uint64_t RadioSession::secondsSinceEpoch()
+{
+    return milliSecondsSinceEpoch()/1000;
+}
+
 RadioSession::RadioSession(monitor& mon, uint8_t address) : m_monitor(mon), m_radioAddress(address)
 {
     m_wakeupAttempts = 3;
@@ -138,7 +151,7 @@ std::string RadioSession::readNodeName(monitor& mon)
     return (nodeName);
 }
 
-std::string RadioSession::getNodeNameAndPublishBirth(mqtt::async_client& mqtt_client)
+std::string RadioSession::getNodeName()
 {
     std::string nodeName("");
 
@@ -154,8 +167,6 @@ std::string RadioSession::getNodeNameAndPublishBirth(mqtt::async_client& mqtt_cl
         for (int i = 0; i < 16 && response.name[i] != 0; i++) {
             nodeName += response.name[i];
         }
-
-        publishNbirth(mqtt_client, nodeName);
     }
 
     return (nodeName);
