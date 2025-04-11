@@ -44,23 +44,23 @@ void readCurrentAndVoltage(monitor& mon, mqtt::async_client& mqtt_client, int sa
     uint json_message_id = 0;
     bool timeoutExpired = true; // always send message on start up
 
-    std::string masterName = getMasterNameAndPublishBirth(mon, mqtt_client);
+    std::string gatewayName = getGatewayNameAndPublishBirth(mon, mqtt_client);
 
-    mqtt::topic json_topic(mqtt_client, createMqttTopic("DDATA", masterName, "ina219"), QOS, false);
+    mqtt::topic json_topic(mqtt_client, createMqttTopic("DDATA", gatewayName, "ina219"), QOS, false);
     mqtt::topic current_min_topic(
-        mqtt_client, createMqttTopic("DDATA", masterName, "ina219/current/min"), QOS, false);
+        mqtt_client, createMqttTopic("DDATA", gatewayName, "ina219/current/min"), QOS, false);
     mqtt::topic current_max_topic(
-        mqtt_client, createMqttTopic("DDATA", masterName, "ina219/current/max"), QOS, false);
+        mqtt_client, createMqttTopic("DDATA", gatewayName, "ina219/current/max"), QOS, false);
     mqtt::topic current_avg_topic(
-        mqtt_client, createMqttTopic("DDATA", masterName, "ina219/current/avg"), QOS, false);
+        mqtt_client, createMqttTopic("DDATA", gatewayName, "ina219/current/avg"), QOS, false);
     mqtt::topic current_stddev_topic(
-        mqtt_client, createMqttTopic("DDATA", masterName, "ina219/current/stddev"), QOS, false);
+        mqtt_client, createMqttTopic("DDATA", gatewayName, "ina219/current/stddev"), QOS, false);
     mqtt::topic voltage_min_topic(
-        mqtt_client, createMqttTopic("DDATA", masterName, "ina219/voltage/min"), QOS, false);
+        mqtt_client, createMqttTopic("DDATA", gatewayName, "ina219/voltage/min"), QOS, false);
     mqtt::topic voltage_max_topic(
-        mqtt_client, createMqttTopic("DDATA", masterName, "ina219/voltage/max"), QOS, false);
+        mqtt_client, createMqttTopic("DDATA", gatewayName, "ina219/voltage/max"), QOS, false);
     mqtt::topic voltage_avg_topic(
-        mqtt_client, createMqttTopic("DDATA", masterName, "ina219/voltage/avg"), QOS, false);
+        mqtt_client, createMqttTopic("DDATA", gatewayName, "ina219/voltage/avg"), QOS, false);
 
     for (int i = 0; i <= samples; i++) {
         int time = 1;

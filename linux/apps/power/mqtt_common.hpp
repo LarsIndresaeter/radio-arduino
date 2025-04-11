@@ -9,9 +9,9 @@
 uint64_t secondsSinceEpoch();
 std::string createMqttTopic(std::string type, std::string eon, std::string device);
 std::string getDateTimeString();
-std::string getMasterNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client);
+std::string getGatewayNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client);
 
-void publishNbirth(mqtt::async_client& mqtt_client, std::string nodeName);
-void publishNdeath(mqtt::async_client& mqtt_client, std::string nodeName);
+void publishNbirth(mqtt::async_client& mqtt_client, std::string deviceName);
+void publishNdeath(mqtt::async_client& mqtt_client, std::string deviceName);
 
-void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_client, std::string& masterName);
+void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_client, std::string& gatewayName);

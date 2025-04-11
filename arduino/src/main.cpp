@@ -37,9 +37,9 @@ uint8_t protocolVersionLastReceivedMessage
     = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
 
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-bool rx_mode_master = false;
+bool rx_mode_gateway = false;
 #else
-bool rx_mode_master = true;
+bool rx_mode_gateway = true;
 #endif
 
 uint8_t node_address = 0;
@@ -90,7 +90,7 @@ void sendMessage(protocol m_protocol, comBusInterface* comBus, uint8_t* payload)
     if (protocolVersionLastReceivedMessage
             == static_cast<uint8_t>(
                 PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT)
-        || ((rx_mode_master == false)
+        || ((rx_mode_gateway == false)
             && protocolVersionLastReceivedMessage
                 == static_cast<uint8_t>(
                     PROTOCOL::HEADER::VERSION::RADIO_ENCRYPTED_BINARY_AND_TEXT))
@@ -114,7 +114,7 @@ void sendMessage(protocol m_protocol, comBusInterface* comBus, uint8_t* payload)
     else if (
         protocolVersionLastReceivedMessage
             == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::BINARY_AND_TEXT)
-        || ((rx_mode_master == false)
+        || ((rx_mode_gateway == false)
             && protocolVersionLastReceivedMessage
                 == static_cast<uint8_t>(
                     PROTOCOL::HEADER::VERSION::RADIO_BINARY_AND_TEXT))) {
@@ -785,7 +785,7 @@ void commandNrf24l01Init(uint8_t* commandPayload, uint8_t* responsePayload)
         &command.rx_addr[0],
         &command.tx_addr[0],
         command.rf_channel,
-        command.master == 1);
+        command.gateway == 1);
 
     response.status = 1;
 
@@ -815,7 +815,7 @@ void commandNrf24l01Write(uint8_t* commandPayload, uint8_t* responsePayload)
     NRF24L01_tx(&command.data[0], command.length);
     response.length = NRF24L01_rx(&response.data[0]);
 
-    if (rx_mode_master) {
+    if (rx_mode_gateway) {
         uint8_t status = NRF24L01_read_register(NRF24L01_REGISTER_STATUS);
 
         if (status & 0x20) {
@@ -935,7 +935,7 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::WAKEUP::response_t response;
     response.status = 0;
 
-    // only master should execute this command
+    // only gateway should execute this command
 #ifndef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
     uint8_t read_discover_package[32] = {0};
 
@@ -984,7 +984,7 @@ void commandSetNodeAddress(uint8_t* commandPayload, uint8_t* responsePayload)
     rf_link_wakeup_command[31] = command.node_address;
     rf_link_discover_package[31] = command.node_address;
 
-    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_master);
+    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
 
     response.status = 1;
 
@@ -1117,7 +1117,7 @@ void parseCommand(
 
 void rxNodeSleepAndPollForWakeup()
 {
-    // periodically poll rx master for wakeup command
+    // periodically poll rx gateway for wakeup command
 
     uint8_t read_wakeup_command[32] = { 0 };
 
@@ -1125,16 +1125,16 @@ void rxNodeSleepAndPollForWakeup()
 
     while (wakeup_received == 0) {
         powerDownRadioAndSleep(5000);
-        NRF24L01_set_rx_as_master(true); // set master and flush pipes
+        NRF24L01_set_rx_as_master(true); // set gateway and flush pipes
 
-        // send command to rf master
+        // send command to rf gateway
         NRF24L01_tx(&rf_link_discover_package[0], 32);
 
         // ack not working, set in receiver mode as a temprary hack
-        NRF24L01_set_rx_as_master(false); // wait for command from master
+        NRF24L01_set_rx_as_master(false); // wait for command from gateway
         _delay_ms(10);
 
-        // poll master for wakeup command in ack packet
+        // poll gateway for wakeup command in ack packet
         uint8_t length = NRF24L01_read_rx_payload(&read_wakeup_command[0]);
 
         if (length == 32) {
@@ -1179,7 +1179,7 @@ void parseInput(protocol m_protocol, comBusInterface* comBus)
                     if (protocolVersionLastReceivedMessage
                             == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::
                                                         RADIO_BINARY_AND_TEXT)
-                        && rx_mode_master) {
+                        && rx_mode_gateway) {
                         uint8_t data_size = 0;
                         m_protocol.createPacket(
                             length,
@@ -1198,7 +1198,7 @@ void parseInput(protocol m_protocol, comBusInterface* comBus)
                             == static_cast<uint8_t>(
                                 PROTOCOL::HEADER::VERSION::
                                     RADIO_ENCRYPTED_BINARY_AND_TEXT)
-                        && rx_mode_master) {
+                        && rx_mode_gateway) {
                         uint8_t data_size = 0;
                         m_protocol.createEncryptedPacket(
                             length,
@@ -1254,7 +1254,7 @@ void parseInput(protocol m_protocol, comBusInterface* comBus)
 #endif
 
 #ifndef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-            // rx master reads response in idle loop
+            // rx gateway reads response in idle loop
             uint8_t ack_packet[COMMANDS::MAX_PACKAGE_LENGTH];
             uint8_t response_length
                 = NRF24L01_rx(&ack_packet[0]);
@@ -1283,11 +1283,11 @@ int main()
 {
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
     radioUart uartRadio;
-    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_master);
+    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
     comBusInterface* u = &uartRadio;
 #else
     uart uartSerialPort;
-    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_master);
+    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
     comBusInterface* u = &uartSerialPort;
 #endif
     ArduinoCryptoHandler c(m_aes);

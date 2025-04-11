@@ -52,7 +52,7 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client, std::
     std::vector<std::shared_ptr<DesiredStateConfiguration>> desiredStateList;
     std::vector<std::shared_ptr<DigitalTwin>> digitalTwinList;
 
-    std::string masterName = getMasterNameAndPublishBirth(mon, mqtt_client);
+    getGatewayNameAndPublishBirth(mon, mqtt_client);
 
     //moveRadioNode(mon, "solar-lamp", 100);
     //moveRadioNode(mon, "breadboard", 101);
@@ -85,7 +85,7 @@ void print_usage()
 {
     std::cout << "mqtt-client" << std::endl;
     std::cout << "       -k : read voltage from rf node" << std::endl;
-    std::cout << "       -m : master address" << std::endl;
+    std::cout << "       -m : gateway address" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
     std::cout << std::endl;
 }

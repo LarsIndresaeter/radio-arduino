@@ -60,7 +60,7 @@ void print_usage()
     std::cout << "       -L : print text on LCD" << std::endl;
     std::cout << "       -w : wake up sleeping rx node" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
-    std::cout << "       -m : set master address" << std::endl;
+    std::cout << "       -m : set gateway address" << std::endl;
     std::cout << "       -a : set node address" << std::endl;
     std::cout << "       -k : set keep alive interval" << std::endl;
 }

@@ -8,19 +8,19 @@ public:
         std::vector<uint8_t> tx_addr,
         std::vector<uint8_t> rx_addr,
         uint8_t rf_channel,
-        bool master)
+        bool gateway)
         : UartCommandBase(
             static_cast<uint8_t>(COMMANDS::OI::NRF24L01_INIT),
             COMMANDS::NRF24L01_INIT::COMMAND_LENGTH)
     {
         m_payload.at(offsetof(COMMANDS::NRF24L01_INIT::command_t, rf_channel))
             = rf_channel;
-        if (master) {
-            m_payload.at(offsetof(COMMANDS::NRF24L01_INIT::command_t, master))
+        if (gateway) {
+            m_payload.at(offsetof(COMMANDS::NRF24L01_INIT::command_t, gateway))
                 = 0x01;
         }
         else {
-            m_payload.at(offsetof(COMMANDS::NRF24L01_INIT::command_t, master))
+            m_payload.at(offsetof(COMMANDS::NRF24L01_INIT::command_t, gateway))
                 = 0x00;
         }
 
