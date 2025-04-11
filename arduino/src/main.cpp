@@ -56,7 +56,10 @@ uint8_t rf_link_discover_package[32]
             0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
             0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, node_address };
 
-uint32_t keep_alive_interval_ms = 100; // time in idle loop before entering sleep
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
+    uint32_t keep_alive_interval_ms = 100; // time in idle loop before entering sleep
+    uint32_t idle_loop_cnt_ms = 0;
+#endif
 
 #ifdef USE_NRF24L01_INTTERRUPT
 ISR(PCINT0_vect)
@@ -997,7 +1000,14 @@ void commandKeepAlive(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::KEEP_ALIVE::response_t response;
     response.status = 0;
 
-    keep_alive_interval_ms = 100 + command.time*100; // only used by radio node
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
+    keep_alive_interval_ms = 100 + command.time * 100;
+
+    if (0 == command.time) {
+        // if keep alive interval is set to minimum the go to sleep immediately
+        idle_loop_cnt_ms = keep_alive_interval_ms;
+    }
+#endif
 
     response.status = 1;
 
@@ -1157,9 +1167,6 @@ void parseInput(protocol m_protocol, comBusInterface* comBus)
     uint8_t packet[COMMANDS::MAX_PACKAGE_LENGTH];
     uint8_t length = 0;
     uint8_t cnt = 0;
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    uint32_t idle_loop_cnt_ms = 0;
-#endif
 
     while (1) {
         cnt++;
