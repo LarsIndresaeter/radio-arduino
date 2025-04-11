@@ -13,7 +13,7 @@
 #include <numeric>
 #include <thread>
 #include <uart.hpp>
-#include "../mqtt/include/radioSession.hpp"
+#include <radioSession.hpp>
 
 using namespace std::chrono_literals;
 
