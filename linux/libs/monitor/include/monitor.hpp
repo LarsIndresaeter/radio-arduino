@@ -15,7 +15,7 @@ using ProtocolCallback = std::function<void(std::vector<uint8_t>&)>;
 
 using namespace std::chrono_literals;
 
-constexpr std::chrono::milliseconds default_timeout = 500ms;
+constexpr std::chrono::milliseconds default_timeout = 1000ms;
 
 class monitor {
 public:

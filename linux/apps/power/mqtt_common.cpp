@@ -5,18 +5,15 @@ using time_point = std::chrono::system_clock::time_point;
 
 using nlohmann::json;
 
-uint64_t milliSecondsSinceEpoch()
+uint64_t secondsSinceEpoch()
 {
     using namespace std::chrono;
     uint64_t seconds
         = (duration_cast<milliseconds>(system_clock::now().time_since_epoch())
-                .count());
+                  .count())
+        / 1000;
+    // std::cout << "time " << std::to_string(seconds) << std::endl;
     return seconds;
-}
-
-uint64_t secondsSinceEpoch()
-{
-    return milliSecondsSinceEpoch()/1000;
 }
 
 std::string createMqttTopic(std::string type, std::string eon, std::string device)
@@ -45,6 +42,13 @@ std::string getDateTimeString()
     return (dateString);
 }
 
+void publishNbirth(mqtt::async_client& mqtt_client, std::string nodeName)
+{
+    mqtt::topic master_birth(
+        mqtt_client, createMqttTopic("NBIRTH", nodeName, ""), 0, false);
+    master_birth.publish(std::move("{\"dateString: \"" + getDateTimeString() + "\"}"));
+}
+
 void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_client, std::string& masterName)
 {
     if (!masterName.empty()) {
@@ -69,36 +73,6 @@ void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_cli
     }
 }
 
-void publishNbirth(mqtt::async_client& mqtt_client, std::string nodeName)
-{
-    mqtt::topic master_birth(
-        mqtt_client, createMqttTopic("NBIRTH", nodeName, ""), 0, false);
-    master_birth.publish(std::move("{\"dateString: \"" + getDateTimeString() + "\"}"));
-}
-
-std::string getSlaveNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client)
-{
-    std::string slaveName("");
-
-    auto slaveDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
-
-    if (slaveDeviceInfo.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
-        slaveDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
-    }
-
-    if (slaveDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
-        auto response = slaveDeviceInfo.responseStruct();
-
-        for (int i = 0; i < 16 && response.name[i] != 0; i++) {
-            slaveName += response.name[i];
-        }
-
-        publishNbirth(mqtt_client, slaveName);
-    }
-
-    return (slaveName);
-}
-
 std::string getMasterNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client)
 {
     std::string masterName("");
@@ -121,4 +95,5 @@ std::string getMasterNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_
 
     return (masterName);
 }
+
 

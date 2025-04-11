@@ -1,7 +1,9 @@
-#include "currentMonitor.hpp"
-#include "desiredStateConfiguration.hpp"
+#include <desiredStateConfiguration.hpp>
+#include <desiredStateCallback.hpp>
+#include <digitalTwin.hpp>
 #include "mqtt/async_client.h"
-#include "mqtt_common.hpp"
+#include <mqtt_common.hpp>
+#include <radioSession.hpp>
 #include <chrono>
 #include <cmath>
 #include <commands.hpp>
@@ -18,54 +20,53 @@
 
 using namespace std::chrono_literals;
 
-uint64_t timeLastPoll[256] = { 0 };
-int pollInterval[256] = { 1800 };
-
-void pollRadioSlaveAndSetDesiredState(monitor& mon, mqtt::async_client& mqtt_client, std::shared_ptr<DesiredStateConfiguration> dsc)
+void registerRadioSlave(monitor& mon, mqtt::async_client& mqtt_client, uint8_t slaveAddress, std::vector<std::shared_ptr<DesiredStateConfiguration>>& desiredStateList, std::vector<std::shared_ptr<DigitalTwin>>& digitalTwinList)
 {
-    uint8_t slaveAddress = dsc->getRadioAddress();
+    RadioSession radioSession(mon, slaveAddress);
+    radioSession.wakeupNotResponding();
+    std::string slaveName = radioSession.getSlaveNameAndPublishBirth(mqtt_client);
 
-    mon.get<>(UartCommandSetSlaveAddress(dsc->getRadioAddress()));
-    std::this_thread::sleep_for(2s); // TODO: Fix this. we should now have to sleep after changing address
+    if (!slaveName.empty()) {
+        DigitalTwin twin(mon, mqtt_client, slaveAddress, slaveName);
 
-    // std::cout << "DEBUG: slave: " << std::to_string(slaveAddress) << ", " << dsc->getTopicString() << std::endl;
-
-    if (pollInterval[slaveAddress] != dsc->getPollInterval()) {
-        pollInterval[slaveAddress] = dsc->getPollInterval();
-        publishDesiredStatePollInterval(mqtt_client, dsc);
-    }
-
-    if ((secondsSinceEpoch() - timeLastPoll[slaveAddress]) > dsc->getPollInterval()) {
-        mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
-
-        auto slaveDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
-        if (slaveDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
-            timeLastPoll[slaveAddress] = secondsSinceEpoch();
-            std::string masterName = "rf-nano";
-            std::string slaveName = dsc->getName();
-            readVccAndPublish(mon, mqtt_client, masterName, slaveName); // TODO: return true if success
-        }
-    }
-
-    if (dsc->displayTextChanged()) {
-        // std::cout << "DEBUG: lcd, slave: " << std::to_string(slaveAddress) << ", " << dsc->getTopicString() << std::endl;
-        updateDisplayText(mon, mqtt_client, dsc);
+        desiredStateList.push_back(twin.getDesiredStateConfiguration());
+        digitalTwinList.push_back(std::make_shared<DigitalTwin>(twin));
     }
 }
 
-void readVccFromMultipleRadioSlave(monitor& mon, mqtt::async_client& mqtt_client, std::vector<uint8_t> slaveList)
+void moveRadioSlave(monitor& mon, mqtt::async_client& mqtt_client, std::string name, uint8_t slaveAddress)
 {
-    std::string masterName;
+    RadioSession radioSession(mon, 0);
+    radioSession.wakeupNotResponding();
+    std::string slaveName = radioSession.getSlaveNameAndPublishBirth(mqtt_client);
+
+    if (slaveName == name) {
+        mon.getRadio<>(UartCommandSetSlaveAddress(slaveAddress));
+    }
+}
+
+void readMultipleRadioSlaves(monitor& mon, mqtt::async_client& mqtt_client, std::vector<uint8_t> slaveList)
+{
     const int QOS = 0;
 
-    std::vector<std::shared_ptr<DesiredStateConfiguration>> desiredState;
+    std::vector<std::shared_ptr<DesiredStateConfiguration>> desiredStateList;
+    std::vector<std::shared_ptr<DigitalTwin>> digitalTwinList;
 
-    desiredState.push_back(std::make_shared<DesiredStateConfiguration>(0, "lcd"));
-    desiredState.push_back(std::make_shared<DesiredStateConfiguration>(100, "solar-lamp"));
-    desiredState.push_back(std::make_shared<DesiredStateConfiguration>(101, "breadboard"));
+    std::string masterName = getMasterNameAndPublishBirth(mon, mqtt_client);
 
-    DesiredState desiredStateCallback(desiredState);
+    //moveRadioSlave(mon, "solar-lamp", 100);
+    //moveRadioSlave(mon, "breadboard", 101);
+    //moveRadioSlave(mon, mqtt_client, "lcd", 102);
 
+    //slaveList.push_back(100);
+    //slaveList.push_back(101);
+    //slaveList.push_back(102);
+
+    for (uint8_t i = 0; i < slaveList.size(); i++) {
+        registerRadioSlave(mon, mqtt_client, slaveList.at(i), desiredStateList, digitalTwinList);
+    }
+
+    DesiredStateCallback desiredStateCallback(desiredStateList);
 
     mqtt_client.set_callback(desiredStateCallback);
     std::string commandTopic1 = "radio-arduino/RCMD/#";
@@ -73,27 +74,17 @@ void readVccFromMultipleRadioSlave(monitor& mon, mqtt::async_client& mqtt_client
     mqtt_client.subscribe(commandTopic1, QOS)->wait();
 
     while (true) {
-        if (masterName.empty()) {
-            masterName = getMasterNameAndPublishBirth(mon, mqtt_client);
+        for (int i = 0; i < desiredStateList.size(); i++) {
+            digitalTwinList.at(i)->execute();
         }
-        else {
-            for (int i = 0; i < desiredState.size(); i++) {
-                std::shared_ptr<DesiredStateConfiguration> dsc = desiredState.at(i);
-
-                pollRadioSlaveAndSetDesiredState(mon, mqtt_client, dsc);
-            }
-            std::this_thread::sleep_for(100ms);
-        }
+        std::this_thread::sleep_for(100ms);
     }
 }
 
 void print_usage()
 {
     std::cout << "mqtt-client" << std::endl;
-    std::cout << "       -N : ina219 power monitor, statistic per second for "
-                 "<N> seconds"
-              << std::endl;
-    std::cout << "       -j : read voltage from rf slave" << std::endl;
+    std::cout << "       -k : read voltage from rf slave" << std::endl;
     std::cout << "       -m : master address" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
     std::cout << std::endl;
@@ -120,22 +111,18 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     std::vector<uint8_t> slaveList;
     char option = 0;
 
-    while ((option = getopt(argc, argv, "N:khm:")) != -1) {
+    while ((option = getopt(argc, argv, "hm:")) != -1) {
         switch (option) {
         case 'm':
             slaveList.push_back(atoi(optarg));
-            break;
-        case 'N':
-            readCurrentAndVoltage(mon, mqtt_client, atoi(optarg));
-            break;
-        case 'k':
-            readVccFromMultipleRadioSlave(mon, mqtt_client, slaveList);
             break;
         case 'h':
             print_usage();
             break;
         }
     }
+
+    readMultipleRadioSlaves(mon, mqtt_client, slaveList);
 
     mqtt_client.disconnect()->wait();
 
