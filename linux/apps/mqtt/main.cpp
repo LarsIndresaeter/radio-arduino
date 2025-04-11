@@ -85,7 +85,7 @@ void print_usage()
 {
     std::cout << "mqtt-client" << std::endl;
     std::cout << "       -k : read voltage from rf node" << std::endl;
-    std::cout << "       -m : gateway address" << std::endl;
+    std::cout << "       -n : gateway address" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
     std::cout << std::endl;
 }
@@ -111,9 +111,9 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     std::vector<uint8_t> nodeAddressList;
     char option = 0;
 
-    while ((option = getopt(argc, argv, "hm:")) != -1) {
+    while ((option = getopt(argc, argv, "hn:")) != -1) {
         switch (option) {
-        case 'm':
+        case 'n':
             nodeAddressList.push_back(atoi(optarg));
             break;
         case 'h':
