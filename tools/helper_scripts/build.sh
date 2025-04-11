@@ -41,9 +41,9 @@ build_arduino()
     make_build_dir ${WORKDIR}/build/arduino
     cp build/arduino/bin/*.hex bin/
     avr-size -C --mcu=atmega328p ./build/arduino/bin/arduino.elf | grep Data | cut -d ':' -f2 | sed 's/    //g'
-    make_build_dir ${WORKDIR}/build/arduino_slave
-    cp build/arduino_slave/bin/arduino.hex bin/slave.hex
-    avr-size -C --mcu=atmega328p ./build/arduino_slave/bin/arduino.elf | grep Data | cut -d ':' -f2 | sed 's/    //g'
+    make_build_dir ${WORKDIR}/build/arduino_node
+    cp build/arduino_node/bin/arduino.hex bin/node.hex
+    avr-size -C --mcu=atmega328p ./build/arduino_node/bin/arduino.elf | grep Data | cut -d ':' -f2 | sed 's/    //g'
 }
 
 build_linux()

@@ -36,25 +36,25 @@ random m_random;
 uint8_t protocolVersionLastReceivedMessage
     = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
 
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_SLAVE
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
 bool rx_mode_master = false;
 #else
 bool rx_mode_master = true;
 #endif
 
-uint8_t slave_address = 0;
-uint8_t rx_tx_addr[5] = { 0xF0, 0xF0, 0xF0, 0xF0, slave_address };
+uint8_t node_address = 0;
+uint8_t rx_tx_addr[5] = { 0xF0, 0xF0, 0xF0, 0xF0, node_address };
 uint8_t rf_channel = 121;
 
 uint8_t rf_link_wakeup_command[32] 
         = {'w', 'a', 'k', 'e', 'u', 'p', ' ', 0x55, 0x55, 0x55, 0x55, 
             0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
-            0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, slave_address};
+            0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, node_address};
 
 uint8_t rf_link_discover_package[32]
         = { 'd', 'i', 's', 'c', 'o', 'v', 'e', 'r', ' ', 0xaa, 0xaa,
             0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
-            0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, slave_address };
+            0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, node_address };
 
 uint32_t keep_alive_interval_ms = 100; // time in idle loop before entering sleep
 
@@ -99,7 +99,7 @@ void sendMessage(protocol m_protocol, comBusInterface* comBus, uint8_t* payload)
         m_protocol.createEncryptedPacket(
             length, payload, &packet[0], protocolVersionLastReceivedMessage);
 
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_SLAVE
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
         NRF24L01_tx(
             &packet[0],
             PROTOCOL::HEADER::LENGTH + PROTOCOL::CHECKSUM::LENGTH + length
@@ -121,7 +121,7 @@ void sendMessage(protocol m_protocol, comBusInterface* comBus, uint8_t* payload)
         m_protocol.createPacket(
             length, payload, &packet[0], protocolVersionLastReceivedMessage);
 
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_SLAVE
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
         NRF24L01_tx(
             &packet[0],
             PROTOCOL::HEADER::LENGTH + PROTOCOL::CHECKSUM::LENGTH + length);
@@ -277,7 +277,7 @@ void powerSaveSleepMs(uint8_t delay_ms)
 
 void powerDownRadioAndSleep(uint16_t delay)
 {
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_SLAVE
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
     NRF24L01_power_down();
 #endif
 
@@ -297,7 +297,7 @@ void powerDownRadioAndSleep(uint16_t delay)
         }
     }
 
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_SLAVE
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
     NRF24L01_power_up();
 #endif
 }
@@ -936,7 +936,7 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
     response.status = 0;
 
     // only master should execute this command
-#ifndef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_SLAVE
+#ifndef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
     uint8_t read_discover_package[32] = {0};
 
     NRF24L01_set_rx_as_master(false);
@@ -966,23 +966,23 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
 
         _delay_ms(10);
     }
-    _delay_ms(10); // give rf slave some time to be ready for new commands
+    _delay_ms(10); // give rf node some time to be ready for new commands
 #endif
 
     response.serialize(responsePayload);
 }
 
-void commandSetSlaveAddress(uint8_t* commandPayload, uint8_t* responsePayload)
+void commandSetNodeAddress(uint8_t* commandPayload, uint8_t* responsePayload)
 {
-    COMMANDS::SET_SLAVE_ADDRESS::command_t command(commandPayload);
-    COMMANDS::SET_SLAVE_ADDRESS::response_t response;
+    COMMANDS::SET_NODE_ADDRESS::command_t command(commandPayload);
+    COMMANDS::SET_NODE_ADDRESS::response_t response;
     response.status = 0;
 
-    rx_tx_addr[NRF24L01_ADDR_SIZE - 1] = command.slave_address;
+    rx_tx_addr[NRF24L01_ADDR_SIZE - 1] = command.node_address;
 
     // update wakeup command and discover package
-    rf_link_wakeup_command[31] = command.slave_address;
-    rf_link_discover_package[31] = command.slave_address;
+    rf_link_wakeup_command[31] = command.node_address;
+    rf_link_discover_package[31] = command.node_address;
 
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_master);
 
@@ -997,7 +997,7 @@ void commandKeepAlive(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::KEEP_ALIVE::response_t response;
     response.status = 0;
 
-    keep_alive_interval_ms = 100 + command.time*100; // only used by radio slave
+    keep_alive_interval_ms = 100 + command.time*100; // only used by radio node
 
     response.status = 1;
 
@@ -1100,8 +1100,8 @@ void parseCommand(
     case COMMANDS::OI::WAKEUP:
         commandWakeup(commandPayload, responsePayload);
         break;
-    case COMMANDS::OI::SET_SLAVE_ADDRESS:
-        commandSetSlaveAddress(commandPayload, responsePayload);
+    case COMMANDS::OI::SET_NODE_ADDRESS:
+        commandSetNodeAddress(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::KEEP_ALIVE:
         commandKeepAlive(commandPayload, responsePayload);
@@ -1115,7 +1115,7 @@ void parseCommand(
     }
 }
 
-void rxSlaveSleepAndPollForWakeup()
+void rxNodeSleepAndPollForWakeup()
 {
     // periodically poll rx master for wakeup command
 
@@ -1157,7 +1157,7 @@ void parseInput(protocol m_protocol, comBusInterface* comBus)
     uint8_t packet[COMMANDS::MAX_PACKAGE_LENGTH];
     uint8_t length = 0;
     uint8_t cnt = 0;
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_SLAVE
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
     uint32_t idle_loop_cnt_ms = 0;
 #endif
 
@@ -1190,7 +1190,7 @@ void parseInput(protocol m_protocol, comBusInterface* comBus)
                         data_size = PROTOCOL::HEADER::LENGTH
                             + PROTOCOL::CHECKSUM::LENGTH + length;
 
-                        // send command to rx_slave and wait for response
+                        // send command to rx_node and wait for response
                         NRF24L01_tx(&packet[0], data_size);
                     }
                     else if (
@@ -1210,12 +1210,12 @@ void parseInput(protocol m_protocol, comBusInterface* comBus)
                             + PROTOCOL::CHECKSUM::LENGTH + length
                             + PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD;
 
-                        // send command to rx_slave and wait for response
+                        // send command to rx_node and wait for response
                         NRF24L01_tx(&packet[0], data_size);
                     }
                     else {
                         parseCommand(m_protocol, comBus, payload);
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_SLAVE
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
                         idle_loop_cnt_ms = 0;
 #endif
                     }
@@ -1231,7 +1231,7 @@ void parseInput(protocol m_protocol, comBusInterface* comBus)
                 comBus->putChar(uartRadio.getChar());
             }
 
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_SLAVE
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
             set_sleep_mode(SLEEP_MODE_PWR_DOWN);
             sleep_enable();
             sleep_bod_disable();
@@ -1243,23 +1243,23 @@ void parseInput(protocol m_protocol, comBusInterface* comBus)
 #endif
 
             
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_SLAVE
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
             _delay_ms(1);
             idle_loop_cnt_ms++;
             if (idle_loop_cnt_ms > keep_alive_interval_ms) {
-                // slave has been idle for too long so go to sleep and wait for wakeup command
-                rxSlaveSleepAndPollForWakeup();
+                // node has been idle for too long so go to sleep and wait for wakeup command
+                rxNodeSleepAndPollForWakeup();
                 idle_loop_cnt_ms = 0;
             }
 #endif
 
-#ifndef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_SLAVE
+#ifndef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
             // rx master reads response in idle loop
             uint8_t ack_packet[COMMANDS::MAX_PACKAGE_LENGTH];
             uint8_t response_length
                 = NRF24L01_rx(&ack_packet[0]);
 
-            // ignore messages from rx slave if it is a wakeup ack packet
+            // ignore messages from rx node if it is a wakeup ack packet
             uint8_t is_wakeup_ack = 0;
             if (response_length == 32) {
                 is_wakeup_ack = 1;
@@ -1281,7 +1281,7 @@ void parseInput(protocol m_protocol, comBusInterface* comBus)
 
 int main()
 {
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_SLAVE
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
     radioUart uartRadio;
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_master);
     comBusInterface* u = &uartRadio;

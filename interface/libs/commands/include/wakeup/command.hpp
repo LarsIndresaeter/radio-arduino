@@ -13,7 +13,7 @@ public:
 
     void print(std::ostream& out) const override
     {
-        COMMANDS::SET_SLAVE_ADDRESS::response_t response(
+        COMMANDS::SET_NODE_ADDRESS::response_t response(
             (uint8_t*)&m_response.data()[4]);
         out << "WAKEUP          : ";
 

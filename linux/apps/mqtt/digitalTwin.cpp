@@ -42,11 +42,11 @@ void DigitalTwin::execute()
 
 void DigitalTwin::readVccAndPublish()
 {
-    auto slaveVcc = m_monitor.getRadio<>(UartCommandVcc());
+    auto nodeVcc = m_monitor.getRadio<>(UartCommandVcc());
 
-    if (slaveVcc.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
-        uint16_t vcc_mv = (uint16_t)(slaveVcc.responseStruct().vcc_h << 8)
-            | slaveVcc.responseStruct().vcc_l;
+    if (nodeVcc.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+        uint16_t vcc_mv = (uint16_t)(nodeVcc.responseStruct().vcc_h << 8)
+            | nodeVcc.responseStruct().vcc_l;
         publishVcc(std::to_string(vcc_mv / 1000.0));
     }
     else {
@@ -111,8 +111,8 @@ void DigitalTwin::publishNdeath()
 {
     const int QOS = 0;
 
-    mqtt::topic slave_death(
+    mqtt::topic nodeDeath(
         m_mqttClient, createMqttTopic("NDEATH", m_name, ""), QOS, false);
-    slave_death.publish(std::move(getDateTimeString()));
+    nodeDeath.publish(std::move(getDateTimeString()));
 }
 

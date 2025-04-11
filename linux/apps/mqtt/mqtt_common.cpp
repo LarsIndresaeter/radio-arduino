@@ -76,27 +76,27 @@ void publishNbirth(mqtt::async_client& mqtt_client, std::string nodeName)
     master_birth.publish(std::move("{\"dateString: \"" + getDateTimeString() + "\"}"));
 }
 
-std::string getSlaveNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client)
+std::string getNodeNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client)
 {
-    std::string slaveName("");
+    std::string nodeName("");
 
-    auto slaveDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
+    auto nodeDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
 
-    if (slaveDeviceInfo.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
-        slaveDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
+    if (nodeDeviceInfo.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
+        nodeDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
     }
 
-    if (slaveDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
-        auto response = slaveDeviceInfo.responseStruct();
+    if (nodeDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+        auto response = nodeDeviceInfo.responseStruct();
 
         for (int i = 0; i < 16 && response.name[i] != 0; i++) {
-            slaveName += response.name[i];
+            nodeName += response.name[i];
         }
 
-        publishNbirth(mqtt_client, slaveName);
+        publishNbirth(mqtt_client, nodeName);
     }
 
-    return (slaveName);
+    return (nodeName);
 }
 
 std::string getMasterNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client)

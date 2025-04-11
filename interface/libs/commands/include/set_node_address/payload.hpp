@@ -4,7 +4,7 @@
 
 namespace COMMANDS {
 
-namespace SET_SLAVE_ADDRESS {
+namespace SET_NODE_ADDRESS {
     constexpr uint8_t COMMAND_LENGTH = 1;
     constexpr uint8_t RESPONSE_LENGTH = 1;
 
@@ -16,18 +16,18 @@ namespace SET_SLAVE_ADDRESS {
         {
             OI = cmd[0];
             OL = cmd[1];
-            slave_address = cmd[2];
+            node_address = cmd[2];
         }
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t slave_address;
+        uint8_t node_address;
     } command_t;
 
     typedef struct response {
         response()
         {
-            OI = static_cast<uint8_t>(COMMANDS::OI::SET_SLAVE_ADDRESS);
+            OI = static_cast<uint8_t>(COMMANDS::OI::SET_NODE_ADDRESS);
             OL = RESPONSE_LENGTH;
         }
 

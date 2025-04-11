@@ -1,7 +1,7 @@
 #!/bin/bash
 
 _SERIAL_DEVICE_MASTER=/dev/ttyUSB0
-_SERIAL_DEVICE_SLAVE=/dev/ttyUSB1
+_SERIAL_DEVICE_NODE=/dev/ttyUSB1
 
 PARAM=$1
 
@@ -10,17 +10,17 @@ flash_master()
     avrdude -c arduino -b 57600 -P ${_SERIAL_DEVICE_MASTER} -p atmega328p -vv -U flash:w:bin/arduino.hex
 }
 
-flash_slave()
+flash_node()
 {
-    avrdude -c arduino -b 57600 -P ${_SERIAL_DEVICE_SLAVE} -p atmega328p -vv -U flash:w:bin/slave.hex
+    avrdude -c arduino -b 57600 -P ${_SERIAL_DEVICE_NODE} -p atmega328p -vv -U flash:w:bin/node.hex
 }
 
-if [ "${PARAM}" == "slave" ] 
+if [ "${PARAM}" == "node" ] 
 then
-    flash_slave
+    flash_node
 elif [ "${PARAM}" == "both" ] 
 then
-    flash_slave
+    flash_node
     flash_master
 else 
     flash_master

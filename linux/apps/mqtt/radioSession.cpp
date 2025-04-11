@@ -56,7 +56,7 @@ uint32_t RadioSession::getWakeupFailedCounter()
     return (m_wakeupFailedCounter);
 }
 
-uint64_t RadioSession::getActiveTimeForRadioSlave()
+uint64_t RadioSession::getActiveTimeForRadioNode()
 {
     return(m_activeTime);
 }
@@ -106,7 +106,7 @@ bool RadioSession::wakeupNotResponding()
 {
     uint8_t cnt = 0;
 
-    m_monitor.get<>(UartCommandSetSlaveAddress(m_radioAddress));
+    m_monitor.get<>(UartCommandSetNodeAddress(m_radioAddress));
 
     while(cnt<=m_wakeupAttempts)
     {
@@ -122,43 +122,43 @@ bool RadioSession::wakeupNotResponding()
     return(false);
 }
 
-std::string RadioSession::readSlaveName(monitor& mon)
+std::string RadioSession::readNodeName(monitor& mon)
 {
-    std::string slaveName;
+    std::string nodeName;
 
-    auto slaveDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
-    if (slaveDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
-        auto response = slaveDeviceInfo.responseStruct();
+    auto nodeDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
+    if (nodeDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+        auto response = nodeDeviceInfo.responseStruct();
 
         for (int i = 0; i < 16 && response.name[i] != 0; i++) {
-            slaveName += response.name[i];
+            nodeName += response.name[i];
         }
     }
 
-    return (slaveName);
+    return (nodeName);
 }
 
-std::string RadioSession::getSlaveNameAndPublishBirth(mqtt::async_client& mqtt_client)
+std::string RadioSession::getNodeNameAndPublishBirth(mqtt::async_client& mqtt_client)
 {
-    std::string slaveName("");
+    std::string nodeName("");
 
-    auto slaveDeviceInfo = m_monitor.getRadio<>(UartCommandGetDeviceInfo());
+    auto nodeDeviceInfo = m_monitor.getRadio<>(UartCommandGetDeviceInfo());
 
-    if (slaveDeviceInfo.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
-        slaveDeviceInfo = m_monitor.getRadio<>(UartCommandGetDeviceInfo());
+    if (nodeDeviceInfo.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
+        nodeDeviceInfo = m_monitor.getRadio<>(UartCommandGetDeviceInfo());
     }
 
-    if (slaveDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
-        auto response = slaveDeviceInfo.responseStruct();
+    if (nodeDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+        auto response = nodeDeviceInfo.responseStruct();
 
         for (int i = 0; i < 16 && response.name[i] != 0; i++) {
-            slaveName += response.name[i];
+            nodeName += response.name[i];
         }
 
-        publishNbirth(mqtt_client, slaveName);
+        publishNbirth(mqtt_client, nodeName);
     }
 
-    return (slaveName);
+    return (nodeName);
 }
 
 

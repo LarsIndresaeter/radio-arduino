@@ -28,7 +28,7 @@ clean_interface()
 clean_arduino()
 {
     delete_build_dir ${WORKDIR}/build/arduino
-    delete_build_dir ${WORKDIR}/build/arduino_slave
+    delete_build_dir ${WORKDIR}/build/arduino_node
     rm -f bin/*.hex
 }
 

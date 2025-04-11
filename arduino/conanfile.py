@@ -46,8 +46,8 @@ class AvrUartConan(ConanFile):
     description = "avr snippet using conan and cmake"
     topics = ("conan", "avr")
     settings = "build_type"
-    options = {"RX_SLAVE": [True, False]}
-    default_options = {"RX_SLAVE": False}
+    options = {"RX_NODE": [True, False]}
+    default_options = {"RX_NODE": False}
     generators = "cmake"
     keep_imports = True
     exports_sources = [ 
@@ -68,8 +68,8 @@ class AvrUartConan(ConanFile):
     def build(self):
         cmake = CMake(self)
         cmake.definitions["ARDUINO_VERSION"] = self.version
-        if self.options.RX_SLAVE == True:
-            cmake.definitions["REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_SLAVE"] = 1
+        if self.options.RX_NODE == True:
+            cmake.definitions["REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE"] = 1
         cmake.configure()
         cmake.build()
 

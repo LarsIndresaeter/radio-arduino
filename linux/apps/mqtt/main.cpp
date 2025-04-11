@@ -20,32 +20,32 @@
 
 using namespace std::chrono_literals;
 
-void registerRadioSlave(monitor& mon, mqtt::async_client& mqtt_client, uint8_t slaveAddress, std::vector<std::shared_ptr<DesiredStateConfiguration>>& desiredStateList, std::vector<std::shared_ptr<DigitalTwin>>& digitalTwinList)
+void registerRadioNode(monitor& mon, mqtt::async_client& mqtt_client, uint8_t nodeAddress, std::vector<std::shared_ptr<DesiredStateConfiguration>>& desiredStateList, std::vector<std::shared_ptr<DigitalTwin>>& digitalTwinList)
 {
-    RadioSession radioSession(mon, slaveAddress);
+    RadioSession radioSession(mon, nodeAddress);
     radioSession.wakeupNotResponding();
-    std::string slaveName = radioSession.getSlaveNameAndPublishBirth(mqtt_client);
+    std::string nodeName = radioSession.getNodeNameAndPublishBirth(mqtt_client);
 
-    if (!slaveName.empty()) {
-        DigitalTwin twin(mon, mqtt_client, slaveAddress, slaveName);
+    if (!nodeName.empty()) {
+        DigitalTwin twin(mon, mqtt_client, nodeAddress, nodeName);
 
         desiredStateList.push_back(twin.getDesiredStateConfiguration());
         digitalTwinList.push_back(std::make_shared<DigitalTwin>(twin));
     }
 }
 
-void moveRadioSlave(monitor& mon, mqtt::async_client& mqtt_client, std::string name, uint8_t slaveAddress)
+void moveRadioNode(monitor& mon, mqtt::async_client& mqtt_client, std::string name, uint8_t nodeAddress)
 {
     RadioSession radioSession(mon, 0);
     radioSession.wakeupNotResponding();
-    std::string slaveName = radioSession.getSlaveNameAndPublishBirth(mqtt_client);
+    std::string nodeName = radioSession.getNodeNameAndPublishBirth(mqtt_client);
 
-    if (slaveName == name) {
-        mon.getRadio<>(UartCommandSetSlaveAddress(slaveAddress));
+    if (nodeName == name) {
+        mon.getRadio<>(UartCommandSetNodeAddress(nodeAddress));
     }
 }
 
-void readMultipleRadioSlaves(monitor& mon, mqtt::async_client& mqtt_client, std::vector<uint8_t> slaveList)
+void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client, std::vector<uint8_t> nodeAddressList)
 {
     const int QOS = 0;
 
@@ -54,16 +54,16 @@ void readMultipleRadioSlaves(monitor& mon, mqtt::async_client& mqtt_client, std:
 
     std::string masterName = getMasterNameAndPublishBirth(mon, mqtt_client);
 
-    //moveRadioSlave(mon, "solar-lamp", 100);
-    //moveRadioSlave(mon, "breadboard", 101);
-    //moveRadioSlave(mon, mqtt_client, "lcd", 102);
+    //moveRadioNode(mon, "solar-lamp", 100);
+    //moveRadioNode(mon, "breadboard", 101);
+    //moveRadioNode(mon, mqtt_client, "lcd", 102);
 
-    //slaveList.push_back(100);
-    //slaveList.push_back(101);
-    //slaveList.push_back(102);
+    //nodeAddressList.push_back(100);
+    //nodeAddressList.push_back(101);
+    //nodeAddressList.push_back(102);
 
-    for (uint8_t i = 0; i < slaveList.size(); i++) {
-        registerRadioSlave(mon, mqtt_client, slaveList.at(i), desiredStateList, digitalTwinList);
+    for (uint8_t i = 0; i < nodeAddressList.size(); i++) {
+        registerRadioNode(mon, mqtt_client, nodeAddressList.at(i), desiredStateList, digitalTwinList);
     }
 
     DesiredStateCallback desiredStateCallback(desiredStateList);
@@ -84,7 +84,7 @@ void readMultipleRadioSlaves(monitor& mon, mqtt::async_client& mqtt_client, std:
 void print_usage()
 {
     std::cout << "mqtt-client" << std::endl;
-    std::cout << "       -k : read voltage from rf slave" << std::endl;
+    std::cout << "       -k : read voltage from rf node" << std::endl;
     std::cout << "       -m : master address" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
     std::cout << std::endl;
@@ -108,13 +108,13 @@ void parseOpt(int argc, char* argv[], monitor& mon)
 
     mqtt_client.connect(connOpts)->wait();
 
-    std::vector<uint8_t> slaveList;
+    std::vector<uint8_t> nodeAddressList;
     char option = 0;
 
     while ((option = getopt(argc, argv, "hm:")) != -1) {
         switch (option) {
         case 'm':
-            slaveList.push_back(atoi(optarg));
+            nodeAddressList.push_back(atoi(optarg));
             break;
         case 'h':
             print_usage();
@@ -122,7 +122,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
         }
     }
 
-    readMultipleRadioSlaves(mon, mqtt_client, slaveList);
+    readMultipleRadioNodes(mon, mqtt_client, nodeAddressList);
 
     mqtt_client.disconnect()->wait();
 
