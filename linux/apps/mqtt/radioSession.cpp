@@ -3,7 +3,7 @@
 //RadioSession::RadioSession(monitor& mon) : m_monitor(std::make_shared<monitor>(mon))
 RadioSession::RadioSession(monitor& mon, uint8_t address) : m_monitor(mon), m_radioAddress(address)
 {
-    m_wakeupAttempts = 2;
+    m_wakeupAttempts = 3;
     m_keepAliveInterval = 0;
     m_initialKeepAliveInterval = 4; // 500 ms
     m_isAlive = false;
@@ -71,11 +71,11 @@ bool RadioSession::wakeupNotRespondingTryOnce()
     bool status = true;
 
     int initialInvalidResponses = m_monitor.getInvalidResponses();
-    m_monitor.getRadio<>(UartCommandKeepAlive(m_initialKeepAliveInterval), static_cast<std::chrono::milliseconds>(2000));
+    m_monitor.getRadio<>(UartCommandKeepAlive(m_initialKeepAliveInterval), static_cast<std::chrono::milliseconds>(50)); // expect answer in less than 50 ms
     int invalidResponsesAfterPing = m_monitor.getInvalidResponses();
 
     if (invalidResponsesAfterPing > initialInvalidResponses) {
-        UartCommandWakeup result = m_monitor.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000));
+        UartCommandWakeup result = m_monitor.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(6000));
         COMMANDS::WAKEUP::response_t response_struct = result.responseStruct();
 
         if(response_struct.status == 1)

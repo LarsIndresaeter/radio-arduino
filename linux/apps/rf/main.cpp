@@ -70,7 +70,7 @@ bool wakeupNotResponding(monitor& mon, uint8_t address)
     bool status = true;
 
     int initialInvalidResponses = mon.getInvalidResponses();
-    mon.getRadio<>(UartCommandDebug(), static_cast<std::chrono::milliseconds>(2000));
+    mon.getRadio<>(UartCommandDebug(), static_cast<std::chrono::milliseconds>(50)); // espect response in less than 50 ms
     int invalidResponsesAfterPing = mon.getInvalidResponses();
 
     if (invalidResponsesAfterPing > initialInvalidResponses) {
