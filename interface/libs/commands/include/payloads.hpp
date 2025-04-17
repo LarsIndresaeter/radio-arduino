@@ -34,3 +34,4 @@
 #include <wakeup/payload.hpp>
 #include <set_node_address/payload.hpp>
 #include <keep_alive/payload.hpp>
+#include <ping/payload.hpp>

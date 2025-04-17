@@ -40,6 +40,7 @@ enum class OI
     WAKEUP = 30,
     SET_NODE_ADDRESS = 31,
     KEEP_ALIVE = 32,
+    PING = 33,
 };
 
 } // namespace COMMANDS
