@@ -502,6 +502,7 @@ void commandDebug(uint8_t* commandPayload, uint8_t* responsePayload)
 void commandPing(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::PING::response_t response;
+    _delay_ms(10);
     response.serialize(responsePayload);
 }
 
