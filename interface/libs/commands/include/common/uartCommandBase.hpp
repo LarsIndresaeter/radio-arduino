@@ -49,6 +49,8 @@ public:
 
     virtual void validateResponse()
     {
+        m_replyStatus = ReplyStatus::Complete;
+
         // check if resonse vector size matches object length
         if (m_response.size() < PROTOCOL::HEADER::LENGTH
                 + m_response.at(PROTOCOL::PAYLOAD::OL_OFFSET)

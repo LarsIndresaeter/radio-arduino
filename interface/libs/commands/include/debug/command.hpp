@@ -17,7 +17,13 @@ public:
 
     COMMANDS::DEBUG::response_t responseStruct()
     {
-        return {(uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH]};
+        if(m_response.size() >= sizeof(COMMANDS::DEBUG::response_t))
+        {
+            return {(uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH]};
+        }
+        else{
+            return((uint8_t*){});
+        }
     }
 };
 
