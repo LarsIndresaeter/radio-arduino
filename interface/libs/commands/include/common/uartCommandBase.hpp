@@ -43,34 +43,22 @@ public:
     void setReplyStatus(ReplyStatus status)
     {
         m_replyStatus = status;
-
-        if (m_replyStatus == ReplyStatus::Timeout) {
-            // std::vector<uint8_t> tmp(COMMANDS::MAX_PACKAGE_LENGTH);
-            setResponse({ 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }); // fill dummy reponse data
-        }
     };
 
     ReplyStatus getReplyStatus() { return (m_replyStatus); };
 
     virtual void validateResponse()
     {
-        // check if response message has the correct object id
-        if (m_response.at(PROTOCOL::PAYLOAD::PAYLOAD_OFFSET) != m_cmdId) {
-            m_replyStatus = ReplyStatus::Error;
-            return;
-        }
-
         // check if resonse vector size matches object length
         if (m_response.size() < PROTOCOL::HEADER::LENGTH
                 + m_response.at(PROTOCOL::PAYLOAD::OL_OFFSET)
                 + PROTOCOL::CHECKSUM::LENGTH) {
+            m_replyStatus = ReplyStatus::Error;
+            return;
+        }
+
+        // check if response message has the correct object id
+        if (m_response.at(PROTOCOL::PAYLOAD::PAYLOAD_OFFSET) != m_cmdId) {
             m_replyStatus = ReplyStatus::Error;
             return;
         }
@@ -111,14 +99,15 @@ protected:
         else if (m_replyStatus == ReplyStatus::Pending) {
             out << "pending : ";
         }
-
-        if (m_response.size() > 0) {
-            for (uint i = PROTOCOL::PAYLOAD::PAYLOAD_OFFSET;
-                 i < m_response.size() - 4;
-                 i++) {
-                c = m_response.at(i);
-                out << std::setfill('0') << std::setw(2) << std::uppercase
-                    << std::hex << static_cast<int>(c) << " ";
+        else if (m_replyStatus == ReplyStatus::Complete) {
+            if (m_response.size() > PROTOCOL::PAYLOAD::PAYLOAD_OFFSET) {
+                for (uint i = PROTOCOL::PAYLOAD::PAYLOAD_OFFSET;
+                     i < m_response.size() - PROTOCOL::PAYLOAD::PAYLOAD_OFFSET;
+                     i++) {
+                    c = m_response.at(i);
+                    out << std::setfill('0') << std::setw(2) << std::uppercase
+                        << std::hex << static_cast<int>(c) << " ";
+                }
             }
         }
     };
