@@ -174,6 +174,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
     uint8_t radioAddress = 0;
+    uint8_t keepAliveInterval = 0;
 
     while ((option
             = getopt(argc, argv, "P:DBHECs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:wL:FJU:jm:a:k:"))
@@ -447,10 +448,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
         } break;
         case 'z':
             {
-            RadioSession radioSession(mon, radioAddress);
-            radioSession.wakeupNotResponding();
             std::cout << mon.getRadio<>(UartCommandGetDeviceInfo()) << std::endl;
-            radioSession.close();
             }
             break;
         case 'h':
@@ -458,15 +456,18 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             break;
         case 'm':
             radioAddress = atoi(optarg);
+            {
+                RadioSession radioSession(mon, radioAddress);
+                radioSession.setKeepAliveInterval(keepAliveInterval);
+                radioSession.wakeupNotResponding();
+                radioSession.close();
+            }
             break;
         case 'a':
             std::cout << mon.getRadio<>(UartCommandSetNodeAddress(atoi(optarg))) << std::endl;
             break;
         case 'k':
-            RadioSession radioSession(mon, radioAddress);
-            radioSession.wakeupNotResponding();
-            std::cout << mon.getRadio<>(UartCommandKeepAlive(atoi(optarg))) << std::endl;
-            radioSession.close();
+            keepAliveInterval = atoi(optarg);
             break;
         }
     }
