@@ -175,6 +175,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     uint8_t i2cDeviceAddress = 0b10100000;
     uint8_t radioAddress = 0;
     uint8_t keepAliveInterval = 0;
+    bool verbose = false;
 
     while ((option
             = getopt(argc, argv, "P:DBHECs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:wL:FJU:jm:a:k:"))
@@ -193,6 +194,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             }
             break;
         case 'V':
+            verbose = true;
             mon.printDebug(true);
             mon.setPrintResponseTime(true);
             break;
@@ -259,6 +261,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
         } break;
         case 'v':
             mon.printDebug(false);
+            verbose = false;
             mon.setPrintResponseTime(false);
             break;
         case 'B':
@@ -458,6 +461,10 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             radioAddress = atoi(optarg);
             {
                 RadioSession radioSession(mon, radioAddress);
+                if(verbose)
+                {
+                    radioSession.setVerbose(true);
+                }
                 radioSession.setKeepAliveInterval(keepAliveInterval);
                 radioSession.wakeupNotResponding();
                 radioSession.close();

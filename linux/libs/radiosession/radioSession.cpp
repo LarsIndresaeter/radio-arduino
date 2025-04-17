@@ -14,6 +14,11 @@ uint64_t RadioSession::secondsSinceEpoch()
     return milliSecondsSinceEpoch()/1000;
 }
 
+void RadioSession::setVerbose(bool verbose)
+{
+    m_verbose = verbose;
+}
+
 RadioSession::RadioSession(monitor& mon, uint8_t address) : m_monitor(mon), m_radioAddress(address)
 {
     m_wakeupAttempts = 3;
@@ -24,6 +29,7 @@ RadioSession::RadioSession(monitor& mon, uint8_t address) : m_monitor(mon), m_ra
     m_wakeupFailedCounter = 0;
     m_activeTime = 0;
     m_timeLastWakeup = 0;
+    m_verbose = false;
 };
 
 void RadioSession::close()
@@ -48,11 +54,13 @@ void RadioSession::close()
 
         m_isAlive = false;
 
-        std::cout << "DEBUG: radioAddress=" << std::to_string(m_radioAddress) 
-                  << ", activeTime(ms)=" << std::to_string(m_activeTime) 
-                  << ", wakeupSuccess=" << std::to_string(getWakeupSuccessCounter()) 
-                  << ", wakeupFailed=" << std::to_string(getWakeupFailedCounter()) 
-                  << std::endl;
+        if (m_verbose) {
+            std::cout << "DEBUG: radioAddress=" << std::to_string(m_radioAddress)
+                      << ", activeTime(ms)=" << std::to_string(m_activeTime)
+                      << ", wakeupSuccess=" << std::to_string(getWakeupSuccessCounter())
+                      << ", wakeupFailed=" << std::to_string(getWakeupFailedCounter())
+                      << std::endl;
+        }
     }
 }
 
@@ -103,12 +111,14 @@ bool RadioSession::wakeupNotRespondingTryOnce()
 
     m_isAlive = status;
 
-    //if (status) {
-        //std::cout << "Wake up device: " << std::to_string(m_radioAddress) << " (OK)" << std::endl;
-    //}
-    //else {
-        //std::cout << "Wake up device: " << std::to_string(m_radioAddress) << " (FAILED)" << std::endl;
-    //}
+    if (m_verbose) {
+        if (status) {
+            std::cout << "Wake up device: " << std::to_string(m_radioAddress) << " (OK)" << std::endl;
+        }
+        else {
+            std::cout << "Wake up device: " << std::to_string(m_radioAddress) << " (FAILED)" << std::endl;
+        }
+    }
 
     return (status);
 }
