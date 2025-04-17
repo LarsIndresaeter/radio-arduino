@@ -86,30 +86,31 @@ void RadioSession::setKeepAliveInterval(uint8_t interval)
 
 bool RadioSession::wakeupNotRespondingTryOnce()
 {
-    bool status = true;
+    m_isAlive = false;
 
     m_monitor.getRadio<>(UartCommandPing(), static_cast<std::chrono::milliseconds>(500));
 
     if (m_monitor.lastCommandReturnedValidResponse()) {
+        if (m_verbose) {
+            std::cout << "DEBUG: radio node responded to ping, no need to wake up" << std::endl;
+        }
+        m_isAlive = true;
+    } else {
         UartCommandWakeup result = m_monitor.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(6000));
         COMMANDS::WAKEUP::response_t response_struct = result.responseStruct();
 
-        if(response_struct.status == 1)
-        {
-            status=true;
+        if (m_monitor.lastCommandReturnedValidResponse()) {
+            m_isAlive = true;
             m_wakeupSuccessCounter++;
             m_timeLastWakeup = milliSecondsSinceEpoch();
         }
-        else{
-            status=false;
+        else {
             m_wakeupFailedCounter++;
         }
     }
 
-    m_isAlive = status;
-
     if (m_verbose) {
-        if (status) {
+        if (m_isAlive) {
             std::cout << "Wake up device: " << std::to_string(m_radioAddress) << " (OK)" << std::endl;
         }
         else {
@@ -117,8 +118,8 @@ bool RadioSession::wakeupNotRespondingTryOnce()
         }
     }
 
-    return (status);
-}
+        return (m_isAlive);
+    }
 
 bool RadioSession::wakeupNotResponding()
 {
