@@ -111,10 +111,10 @@ bool RadioSession::wakeupNotRespondingTryOnce()
 
     if (m_verbose) {
         if (m_isAlive) {
-            std::cout << "Wake up device: " << std::to_string(m_radioAddress) << " (OK)" << std::endl;
+            std::cout << "DEBUG: Wake up device: " << std::to_string(m_radioAddress) << " (OK)" << std::endl;
         }
         else {
-            std::cout << "Wake up device: " << std::to_string(m_radioAddress) << " (FAILED)" << std::endl;
+            std::cout << "DEBUG: Wake up device: " << std::to_string(m_radioAddress) << " (FAILED)" << std::endl;
         }
     }
 

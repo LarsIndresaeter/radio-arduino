@@ -206,8 +206,11 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             mon.setTransportEncryption(true);
             break;
         case 'p':
+        {
+            RadioSession radioSession(mon, radioAddress);
+            radioSession.wakeupNotResponding();
             std::cout << mon.getRadio<>(UartCommandPing()) << std::endl;
-            break;
+        } break;
         case 'w':
             std::cout << mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000)) << std::endl;
             break;
@@ -392,7 +395,11 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             std::cout << mon.getRadio<>(UartCommandDebug()) << std::endl;
             break;
         case 'j':
+            {
+            RadioSession radioSession(mon, radioAddress);
+            radioSession.wakeupNotResponding();
             std::cout << mon.getRadio<>(UartCommandVcc()) << std::endl;
+            }
             break;
         case 'i': {
             std::string s(optarg);
@@ -453,11 +460,11 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             // set name
             mon.getRadio<>(UartCommandSetDeviceInfo(name));
         } break;
-        case 'z':
-            {
+        case 'z': {
+            RadioSession radioSession(mon, radioAddress);
+            radioSession.wakeupNotResponding();
             std::cout << mon.getRadio<>(UartCommandGetDeviceInfo()) << std::endl;
-            }
-            break;
+        } break;
         case 'h':
             print_usage();
             break;
@@ -469,9 +476,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
                 {
                     radioSession.setVerbose(true);
                 }
-                radioSession.setKeepAliveInterval(keepAliveInterval);
                 radioSession.wakeupNotResponding();
-                radioSession.close();
             }
             break;
         case 'a':

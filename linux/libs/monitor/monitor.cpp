@@ -91,10 +91,10 @@ bool monitor::lastCommandReturnedValidResponse()
 {
     if (m_printDebug) {
         if (m_lastResponseValid) {
-            std::cout << "DEBUG: m_lastResponseValid=true" << std::endl;
+            std::cout << "DEBUG: lastCommandReturnedValidResponse()->true" << std::endl;
         }
         else {
-            std::cout << "DEBUG: m_lastResponseValid=false" << std::endl;
+            std::cout << "DEBUG: lastCommandReturnedValidResponse()->false" << std::endl;
         }
     }
 

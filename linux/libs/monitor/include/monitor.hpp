@@ -134,9 +134,6 @@ public:
         cmd.validateResponse(); // set status to Error if response is not valid
 
         if (cmd.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
-            if (m_printDebug) {
-                std::cout << "DEBUG: ReplyStatus::Complete" << std::endl;
-            }
             m_lastResponseValid = true;
         }
         else

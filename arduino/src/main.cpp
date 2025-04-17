@@ -949,9 +949,6 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
     uint8_t read_discover_package[32] = {0};
 
     NRF24L01_set_rx_as_master(false);
-
-    //NRF24L01_write_ack_payload(&rf_link_wakeup_command[0], 32); // put command in ack buffer
-                                                        
     for(uint16_t i = 0; i < 1000; i++)
     {
         uint8_t length = NRF24L01_read_rx_payload(&read_discover_package[0]);
@@ -960,6 +957,8 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
         {
             NRF24L01_set_rx_as_master(true);
             NRF24L01_write_tx_payload(&rf_link_wakeup_command[0], 32);
+            //NRF24L01_tx(&rf_link_wakeup_command[0], 32);
+            NRF24L01_set_rx_as_master(false);
             response.status = 1;
                                                                 
             for(uint8_t j=0; j<32; j++)
@@ -1144,13 +1143,10 @@ void rxNodeSleepAndPollForWakeup()
 
     while (wakeup_received == 0) {
         powerDownRadioAndSleep(5000);
-        NRF24L01_set_rx_as_master(true); // set gateway and flush pipes
 
         // send command to rf gateway
         NRF24L01_tx(&rf_link_discover_package[0], 32);
 
-        // ack not working, set in receiver mode as a temprary hack
-        NRF24L01_set_rx_as_master(false); // wait for command from gateway
         _delay_ms(10);
 
         // poll gateway for wakeup command in ack packet

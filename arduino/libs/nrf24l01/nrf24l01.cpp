@@ -235,6 +235,8 @@ void NRF24L01_wait_for_tx_complete()
             // TX_DS flag is set when AUTO_ACK is activated and ACK received
             break;
         }
+
+        _delay_ms(1);
     }
 
     SPI_ChipSelectHigh();
