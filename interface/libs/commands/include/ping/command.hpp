@@ -11,7 +11,7 @@ public:
 
     void print(std::ostream& out) const override
     {
-        out << "PING         : ";
+        out << "PING            : ";
         if (m_replyStatus == ReplyStatus::Complete) {
             out << "OK";
         }
