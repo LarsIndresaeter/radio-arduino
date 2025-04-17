@@ -133,9 +133,15 @@ public:
 
         cmd.validateResponse(); // set status to Error if response is not valid
 
-        if(cmd.getReplyStatus() == UartCommandBase::ReplyStatus::Complete)
-        {
+        if (cmd.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+            if (m_printDebug) {
+                std::cout << "DEBUG: ReplyStatus::Complete" << std::endl;
+            }
             m_lastResponseValid = true;
+        }
+        else
+        {
+            m_lastResponseValid = false;
         }
 
         return (cmd);
@@ -162,5 +168,6 @@ private:
     std::string m_receivedString;
     bool m_printResponseTime = false;
     bool m_transportEncryption = false;
+    bool m_printDebug = false;
 };
 

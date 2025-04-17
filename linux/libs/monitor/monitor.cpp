@@ -87,7 +87,19 @@ int monitor::getValidResponses() { return m_validResponseCounter; }
 int monitor::getInvalidResponses() { return m_inValidResponseCounter; }
 int monitor::getBytesSent() { return m_bytesSent; }
 int monitor::getBytesReceived() { return m_bytesReceived; }
-bool monitor::lastCommandReturnedValidResponse(){ return m_lastResponseValid;}
+bool monitor::lastCommandReturnedValidResponse()
+{
+    if (m_printDebug) {
+        if (m_lastResponseValid) {
+            std::cout << "DEBUG: m_lastResponseValid=true" << std::endl;
+        }
+        else {
+            std::cout << "DEBUG: m_lastResponseValid=false" << std::endl;
+        }
+    }
+
+    return m_lastResponseValid;
+}
 
 void monitor::printCounterValues()
 {
@@ -107,4 +119,5 @@ void monitor::printDebug(bool d)
 {
     m_uart.printDebug(d);
     m_parser.printDebug(d);
+    m_printDebug = d;
 }
