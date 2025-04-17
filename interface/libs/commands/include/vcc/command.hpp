@@ -15,7 +15,7 @@ public:
             (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH]);
 
         uint16_t vcc = (response.vcc_h << 8) | response.vcc_l;
-        out << "VCC         : " << std::dec << static_cast<int>(vcc) << " mV";
+        out << "VCC             : " << std::dec << static_cast<int>(vcc) << " mV";
     };
 
     COMMANDS::VCC::response_t responseStruct()

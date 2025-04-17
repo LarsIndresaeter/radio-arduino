@@ -14,7 +14,7 @@ public:
         COMMANDS::GET_DEVICE_INFO::response_t response(
             (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH]);
 
-        out << "GET_DEVICE_INFO       : name=";
+        out << "GET_DEVICE_INFO : name=";
 
         for (int i = 0; i < 16 && response.name[i] != 0; i++) {
             out << response.name[i];

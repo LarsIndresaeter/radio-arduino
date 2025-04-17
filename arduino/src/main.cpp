@@ -499,6 +499,13 @@ void commandDebug(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
+void commandPing(uint8_t* commandPayload, uint8_t* responsePayload)
+{
+    COMMANDS::PING::response_t response;
+    _delay_ms(10);
+    response.serialize(responsePayload);
+}
+
 void commandEepromRead(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::EEPROM_READ::command_t command(commandPayload);
@@ -942,18 +949,13 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
 #ifndef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
     uint8_t read_discover_package[32] = {0};
 
-    NRF24L01_set_rx_as_master(false);
-
-    //NRF24L01_write_ack_payload(&rf_link_wakeup_command[0], 32); // put command in ack buffer
-                                                        
     for(uint16_t i = 0; i < 1000; i++)
     {
         uint8_t length = NRF24L01_read_rx_payload(&read_discover_package[0]);
 
         if(length == 32)
         {
-            NRF24L01_set_rx_as_master(true);
-            NRF24L01_write_tx_payload(&rf_link_wakeup_command[0], 32);
+            NRF24L01_tx(&rf_link_wakeup_command[0], 32);
             response.status = 1;
                                                                 
             for(uint8_t j=0; j<32; j++)
@@ -1062,6 +1064,9 @@ void parseCommand(
     case COMMANDS::OI::DEBUG:
         commandDebug(commandPayload, responsePayload);
         break;
+    case COMMANDS::OI::PING:
+        commandPing(commandPayload, responsePayload);
+        break;
     case COMMANDS::OI::VCC:
         commandVcc(commandPayload, responsePayload);
         break;
@@ -1135,13 +1140,10 @@ void rxNodeSleepAndPollForWakeup()
 
     while (wakeup_received == 0) {
         powerDownRadioAndSleep(5000);
-        NRF24L01_set_rx_as_master(true); // set gateway and flush pipes
 
         // send command to rf gateway
         NRF24L01_tx(&rf_link_discover_package[0], 32);
 
-        // ack not working, set in receiver mode as a temprary hack
-        NRF24L01_set_rx_as_master(false); // wait for command from gateway
         _delay_ms(10);
 
         // poll gateway for wakeup command in ack packet
@@ -1156,8 +1158,6 @@ void rxNodeSleepAndPollForWakeup()
             }
         }
     }
-
-    NRF24L01_set_rx_as_master(false);
 }
 
 void parseInput(protocol m_protocol, comBusInterface* comBus)

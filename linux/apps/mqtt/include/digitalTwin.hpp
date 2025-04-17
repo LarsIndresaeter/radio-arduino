@@ -1,6 +1,6 @@
 #pragma once
 
-#include <desiredStateConfiguration.hpp>
+#include <desiredState.hpp>
 #include <actualState.hpp>
 #include <radioSession.hpp>
 #include "mqtt/async_client.h"
@@ -10,11 +10,11 @@ class DigitalTwin {
 public:
     DigitalTwin(monitor& monitor, mqtt::async_client& mqtt_client, uint8_t radioAddress, std::string name);
     void execute();
-    std::shared_ptr<DesiredStateConfiguration> getDesiredStateConfiguration();
+    std::shared_ptr<DesiredState> getDesiredState();
 
 private:
     ActualState m_actualState;
-    std::shared_ptr<DesiredStateConfiguration> m_desiredStateConfiguration;
+    std::shared_ptr<DesiredState> m_desiredState;
     RadioSession m_radioSession;
     std::string m_name;
     uint8_t m_radioAddress;

@@ -21,6 +21,7 @@ monitor::monitor(Uart& uart, EventProcess& ep, CryptoHandlerInterface* cryptoHan
     m_commandsSentCounter = 0;
     m_bytesSent = 0;
     m_bytesReceived = 0;
+    m_lastResponseValid = false;
 }
 
 void monitor::setPrintResponseTime(bool value) { m_printResponseTime = value; }
@@ -86,6 +87,19 @@ int monitor::getValidResponses() { return m_validResponseCounter; }
 int monitor::getInvalidResponses() { return m_inValidResponseCounter; }
 int monitor::getBytesSent() { return m_bytesSent; }
 int monitor::getBytesReceived() { return m_bytesReceived; }
+bool monitor::lastCommandReturnedValidResponse()
+{
+    if (m_printDebug) {
+        if (m_lastResponseValid) {
+            std::cout << "DEBUG: lastCommandReturnedValidResponse()->true" << std::endl;
+        }
+        else {
+            std::cout << "DEBUG: lastCommandReturnedValidResponse()->false" << std::endl;
+        }
+    }
+
+    return m_lastResponseValid;
+}
 
 void monitor::printCounterValues()
 {
@@ -105,4 +119,5 @@ void monitor::printDebug(bool d)
 {
     m_uart.printDebug(d);
     m_parser.printDebug(d);
+    m_printDebug = d;
 }

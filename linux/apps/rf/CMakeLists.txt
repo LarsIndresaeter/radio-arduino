@@ -12,5 +12,5 @@ if(mqtt)
 endif()
 
 add_executable(rf-tool main.cpp ../../libs/crypto/crypto.cpp)
-target_link_libraries(rf-tool ${CONAN_LIBS} epollevent eventprocess monitor uart protocol pthread)
+target_link_libraries(rf-tool ${CONAN_LIBS} epollevent eventprocess monitor uart protocol radiosession pthread)
 

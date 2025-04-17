@@ -33,3 +33,4 @@
 #include <wakeup/command.hpp>
 #include <set_node_address/command.hpp>
 #include <keep_alive/command.hpp>
+#include <ping/command.hpp>

@@ -1,9 +1,6 @@
 #pragma once
 
 #include <monitor.hpp>
-#include "mqtt/async_client.h"
-#include <mqtt_common.hpp>
-#include <desiredStateConfiguration.hpp>
 
 class RadioSession {
 public:
@@ -14,8 +11,9 @@ public:
     uint32_t getWakeupSuccessCounter();
     uint32_t getWakeupFailedCounter();
     void setKeepAliveInterval(uint8_t interval);
+    void setVerbose(bool verbose);
     std::string readNodeName(monitor& mon);
-    std::string getNodeNameAndPublishBirth(mqtt::async_client& mqtt_client);
+    std::string getNodeName();
 private:
     bool wakeupNotRespondingTryOnce();
     monitor& m_monitor;
@@ -28,6 +26,8 @@ private:
     uint32_t m_wakeupFailedCounter;
     uint64_t m_timeLastWakeup;
     uint64_t m_activeTime;
-    //std::shared_ptr<monitor> m_monitor;
+    uint64_t milliSecondsSinceEpoch();
+    uint64_t secondsSinceEpoch();
+    bool m_verbose;
 };
 

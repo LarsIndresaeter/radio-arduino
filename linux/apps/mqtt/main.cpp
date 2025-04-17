@@ -1,4 +1,4 @@
-#include <desiredStateConfiguration.hpp>
+#include <desiredState.hpp>
 #include <desiredStateCallback.hpp>
 #include <digitalTwin.hpp>
 #include "mqtt/async_client.h"
@@ -20,16 +20,17 @@
 
 using namespace std::chrono_literals;
 
-void registerRadioNode(monitor& mon, mqtt::async_client& mqtt_client, uint8_t nodeAddress, std::vector<std::shared_ptr<DesiredStateConfiguration>>& desiredStateList, std::vector<std::shared_ptr<DigitalTwin>>& digitalTwinList)
+void registerRadioNode(monitor& mon, mqtt::async_client& mqtt_client, uint8_t nodeAddress, std::vector<std::shared_ptr<DesiredState>>& desiredStateList, std::vector<std::shared_ptr<DigitalTwin>>& digitalTwinList)
 {
     RadioSession radioSession(mon, nodeAddress);
     radioSession.wakeupNotResponding();
-    std::string nodeName = radioSession.getNodeNameAndPublishBirth(mqtt_client);
+    std::string nodeName = radioSession.getNodeName();
 
     if (!nodeName.empty()) {
+        publishNbirth(mqtt_client, nodeName);
         DigitalTwin twin(mon, mqtt_client, nodeAddress, nodeName);
 
-        desiredStateList.push_back(twin.getDesiredStateConfiguration());
+        desiredStateList.push_back(twin.getDesiredState());
         digitalTwinList.push_back(std::make_shared<DigitalTwin>(twin));
     }
 }
@@ -38,7 +39,11 @@ void moveRadioNode(monitor& mon, mqtt::async_client& mqtt_client, std::string na
 {
     RadioSession radioSession(mon, 0);
     radioSession.wakeupNotResponding();
-    std::string nodeName = radioSession.getNodeNameAndPublishBirth(mqtt_client);
+    std::string nodeName = radioSession.getNodeName();
+    if(!nodeName.empty())
+    {
+        publishNbirth(mqtt_client, nodeName);
+    }
 
     if (nodeName == name) {
         mon.getRadio<>(UartCommandSetNodeAddress(nodeAddress));
@@ -49,7 +54,7 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client, std::
 {
     const int QOS = 0;
 
-    std::vector<std::shared_ptr<DesiredStateConfiguration>> desiredStateList;
+    std::vector<std::shared_ptr<DesiredState>> desiredStateList;
     std::vector<std::shared_ptr<DigitalTwin>> digitalTwinList;
 
     getGatewayNameAndPublishBirth(mon, mqtt_client);

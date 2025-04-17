@@ -3,9 +3,9 @@
 #include "mqtt/async_client.h"
 #include <nlohmann/json.hpp>
 
-class DesiredStateConfiguration {
+class DesiredState {
 public:
-    DesiredStateConfiguration(uint8_t radioAddress, std::string name);
+    DesiredState(uint8_t radioAddress, std::string name);
     void parseMessage(std::string topic, std::string message);
 
     bool getStateSubscribeVoltage();
