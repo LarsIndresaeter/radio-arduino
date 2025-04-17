@@ -30,6 +30,7 @@ public:
     int getInvalidResponses();
     int getBytesSent();
     int getBytesReceived();
+    bool lastCommandReturnedValidResponse();
 
     template <typename T> T get(T cmd)
     {
@@ -98,6 +99,7 @@ public:
     template <typename T> T get(T cmd, uint8_t protocol_version, std::chrono::milliseconds timeout)
     {
         cmd.setReplyStatus(UartCommandBase::ReplyStatus::Pending);
+        m_lastResponseValid = false;
 
         auto start = std::chrono::high_resolution_clock::now();
 
@@ -129,8 +131,12 @@ public:
                       << static_cast<int>(cmd.getResponseTimeUs()) << "]";
         }
 
-        cmd.setReplyStatus(UartCommandBase::ReplyStatus::Complete);
         cmd.validateResponse(); // set status to Error if response is not valid
+
+        if(cmd.getReplyStatus() == UartCommandBase::ReplyStatus::Complete)
+        {
+            m_lastResponseValid = true;
+        }
 
         return (cmd);
     }
@@ -149,6 +155,7 @@ private:
     std::mutex m_mutex;
     uint32_t m_validResponseCounter;
     uint32_t m_inValidResponseCounter;
+    bool m_lastResponseValid;
     uint32_t m_commandsSentCounter;
     uint32_t m_bytesSent;
     uint32_t m_bytesReceived;
