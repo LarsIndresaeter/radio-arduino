@@ -948,17 +948,13 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
 #ifndef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
     uint8_t read_discover_package[32] = {0};
 
-    NRF24L01_set_rx_as_master(false);
     for(uint16_t i = 0; i < 1000; i++)
     {
         uint8_t length = NRF24L01_read_rx_payload(&read_discover_package[0]);
 
         if(length == 32)
         {
-            NRF24L01_set_rx_as_master(true);
-            NRF24L01_write_tx_payload(&rf_link_wakeup_command[0], 32);
-            //NRF24L01_tx(&rf_link_wakeup_command[0], 32);
-            NRF24L01_set_rx_as_master(false);
+            NRF24L01_tx(&rf_link_wakeup_command[0], 32);
             response.status = 1;
                                                                 
             for(uint8_t j=0; j<32; j++)
@@ -1161,8 +1157,6 @@ void rxNodeSleepAndPollForWakeup()
             }
         }
     }
-
-    NRF24L01_set_rx_as_master(false);
 }
 
 void parseInput(protocol m_protocol, comBusInterface* comBus)
