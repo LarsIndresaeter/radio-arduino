@@ -138,6 +138,7 @@ void print_usage()
     std::cout << "       -j : read vcc" << std::endl;
     std::cout << "       -s : sleep" << std::endl;
     std::cout << "       -L : print text on LCD" << std::endl;
+    std::cout << "       -p : ping command" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -262,7 +263,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     uint8_t i2cDeviceAddress = 0b10100000;
 
     while ((option
-            = getopt(argc, argv, "P:DBSHEACs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:L:FJU:j"))
+            = getopt(argc, argv, "P:DBSHEACs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:L:FJU:jp"))
            != -1) {
         switch (option) {
         case 'd':
@@ -473,6 +474,9 @@ void parseOpt(int argc, char* argv[], monitor& mon)
         }
         case 'D':
             std::cout << mon.get<>(UartCommandDebug()) << std::endl;
+            break;
+        case 'p':
+            std::cout << mon.get<>(UartCommandPing()) << std::endl;
             break;
         case 'j':
             std::cout << mon.get<>(UartCommandVcc()) << std::endl;
