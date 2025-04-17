@@ -64,6 +64,7 @@ void print_usage()
     std::cout << "       -m : set gateway address" << std::endl;
     std::cout << "       -a : set node address" << std::endl;
     std::cout << "       -k : set keep alive interval" << std::endl;
+    std::cout << "       -p : ping radio node" << std::endl;
 }
 
 void compareResult(uint8_t expected, uint8_t actual)
@@ -178,7 +179,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     bool verbose = false;
 
     while ((option
-            = getopt(argc, argv, "P:DBHECs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:wL:FJU:jm:a:k:"))
+            = getopt(argc, argv, "P:DBHECs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:wL:FJU:jm:a:k:p"))
            != -1) {
         switch (option) {
         case 'd':
@@ -203,6 +204,9 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             break;
         case 'T':
             mon.setTransportEncryption(true);
+            break;
+        case 'p':
+            std::cout << mon.getRadio<>(UartCommandPing()) << std::endl;
             break;
         case 'w':
             std::cout << mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000)) << std::endl;

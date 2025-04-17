@@ -88,12 +88,9 @@ bool RadioSession::wakeupNotRespondingTryOnce()
 {
     bool status = true;
 
-    int initialInvalidResponses = m_monitor.getInvalidResponses();
-    //m_monitor.getRadio<>(UartCommandKeepAlive(m_initialKeepAliveInterval), static_cast<std::chrono::milliseconds>(50)); // expect answer in less than 50 ms
-    m_monitor.getRadio<>(UartCommandDebug(), static_cast<std::chrono::milliseconds>(100));
-    int invalidResponsesAfterPing = m_monitor.getInvalidResponses();
+    m_monitor.getRadio<>(UartCommandPing(), static_cast<std::chrono::milliseconds>(500));
 
-    if (invalidResponsesAfterPing > initialInvalidResponses) {
+    if (m_monitor.lastCommandReturnedValidResponse()) {
         UartCommandWakeup result = m_monitor.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(6000));
         COMMANDS::WAKEUP::response_t response_struct = result.responseStruct();
 
