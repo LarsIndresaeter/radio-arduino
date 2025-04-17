@@ -499,6 +499,12 @@ void commandDebug(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
+void commandPing(uint8_t* commandPayload, uint8_t* responsePayload)
+{
+    COMMANDS::PING::response_t response;
+    response.serialize(responsePayload);
+}
+
 void commandEepromRead(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::EEPROM_READ::command_t command(commandPayload);
@@ -1061,6 +1067,9 @@ void parseCommand(
         break;
     case COMMANDS::OI::DEBUG:
         commandDebug(commandPayload, responsePayload);
+        break;
+    case COMMANDS::OI::PING:
+        commandPing(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::VCC:
         commandVcc(commandPayload, responsePayload);
