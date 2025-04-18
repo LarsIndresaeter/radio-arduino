@@ -208,6 +208,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
         case 'p':
         {
             RadioSession radioSession(mon, radioAddress);
+            radioSession.setKeepAliveInterval(keepAliveInterval);
             radioSession.wakeupNotResponding();
             std::cout << mon.getRadio<>(UartCommandPing()) << std::endl;
         } break;
@@ -462,6 +463,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
         } break;
         case 'z': {
             RadioSession radioSession(mon, radioAddress);
+            radioSession.setKeepAliveInterval(keepAliveInterval);
             radioSession.wakeupNotResponding();
             std::cout << mon.getRadio<>(UartCommandGetDeviceInfo()) << std::endl;
         } break;
@@ -472,6 +474,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             radioAddress = atoi(optarg);
             {
                 RadioSession radioSession(mon, radioAddress);
+                radioSession.setKeepAliveInterval(keepAliveInterval);
                 if(verbose)
                 {
                     radioSession.setVerbose(true);
