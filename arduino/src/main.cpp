@@ -502,7 +502,6 @@ void commandDebug(uint8_t* commandPayload, uint8_t* responsePayload)
 void commandPing(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::PING::response_t response;
-    _delay_ms(10);
     response.serialize(responsePayload);
 }
 
@@ -1126,6 +1125,9 @@ void parseCommand(
     }
 
     if (responsePayload[0] != static_cast<uint8_t>(COMMANDS::OI::UNDEFINED)) {
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
+        _delay_ms(1); // give gateway some time to switch to listening mode
+#endif
         sendMessage(m_protocol, comBus, responsePayload);
     }
 }
