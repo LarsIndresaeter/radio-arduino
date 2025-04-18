@@ -35,18 +35,21 @@ void registerRadioNode(monitor& mon, mqtt::async_client& mqtt_client, uint8_t no
     }
 }
 
-void moveRadioNode(monitor& mon, mqtt::async_client& mqtt_client, std::string name, uint8_t nodeAddress)
+void moveRadioNode(monitor& mon, mqtt::async_client& mqtt_client, std::vector<std::shared_ptr<DesiredState>>& desiredStateList, std::vector<std::shared_ptr<DigitalTwin>>& digitalTwinList, std::string name, uint8_t nodeAddress)
 {
     RadioSession radioSession(mon, 0);
     radioSession.wakeupNotResponding();
     std::string nodeName = radioSession.getNodeName();
-    if(!nodeName.empty())
-    {
-        publishNbirth(mqtt_client, nodeName);
-    }
 
     if (nodeName == name) {
+        std::cout << "DEBUG: try to move '" + nodeName + "' to address: " + std::to_string(nodeAddress) << std::endl;
         mon.getRadio<>(UartCommandSetNodeAddress(nodeAddress));
+
+        if(mon.lastCommandReturnedValidResponse()) {
+            std::cout << "DEBUG: move operation was successful" << std::endl;
+        }
+
+        registerRadioNode(mon, mqtt_client, nodeAddress, desiredStateList, digitalTwinList);
     }
 }
 
@@ -59,16 +62,12 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client, std::
 
     getGatewayNameAndPublishBirth(mon, mqtt_client);
 
-    //moveRadioNode(mon, "solar-lamp", 100);
-    //moveRadioNode(mon, "breadboard", 101);
-    //moveRadioNode(mon, mqtt_client, "lcd", 102);
+    //moveRadioNode(mon, mqtt_client, desiredStateList, digitalTwinList, "solar-lamp", 100);
+    //moveRadioNode(mon, mqtt_client, desiredStateList, digitalTwinList, "breadboard", 101);
+    //moveRadioNode(mon, mqtt_client, desiredStateList, digitalTwinList, "lcd", 102);
 
-    //nodeAddressList.push_back(100);
-    //nodeAddressList.push_back(101);
-    //nodeAddressList.push_back(102);
-
-    for (uint8_t i = 0; i < nodeAddressList.size(); i++) {
-        registerRadioNode(mon, mqtt_client, nodeAddressList.at(i), desiredStateList, digitalTwinList);
+    for (uint8_t nodeAddress: nodeAddressList){
+        registerRadioNode(mon, mqtt_client, nodeAddress, desiredStateList, digitalTwinList);
     }
 
     DesiredStateCallback desiredStateCallback(desiredStateList);
@@ -79,8 +78,8 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client, std::
     mqtt_client.subscribe(commandTopic1, QOS)->wait();
 
     while (true) {
-        for (int i = 0; i < desiredStateList.size(); i++) {
-            digitalTwinList.at(i)->execute();
+        for (std::shared_ptr<DigitalTwin> digitalTwin: digitalTwinList){
+            digitalTwin->execute();
         }
         std::this_thread::sleep_for(100ms);
     }

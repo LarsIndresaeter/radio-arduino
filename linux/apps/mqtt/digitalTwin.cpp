@@ -24,8 +24,10 @@ void DigitalTwin::execute()
 
     if ((secondsSinceEpoch() - m_timeLastPoll) > m_actualState.getActualPollInterval()) {
         if (m_radioSession.wakeupNotResponding()) {
-            m_timeLastPoll = secondsSinceEpoch();
-            readVccAndPublish();
+            if(readVccAndPublish())
+            {
+                m_timeLastPoll = secondsSinceEpoch();
+            }
             readGpioAndPublish();
         }
     }
@@ -41,18 +43,23 @@ void DigitalTwin::execute()
     //m_radioSession.close();
 }
 
-void DigitalTwin::readVccAndPublish()
+bool DigitalTwin::readVccAndPublish()
 {
+    bool retval = false;
     auto nodeVcc = m_monitor.getRadio<>(UartCommandVcc());
 
     if (nodeVcc.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
         uint16_t vcc_mv = (uint16_t)(nodeVcc.responseStruct().vcc_h << 8)
             | nodeVcc.responseStruct().vcc_l;
         publishVcc(std::to_string(vcc_mv / 1000.0));
+        retval = true;
     }
     else {
+        // TODO: publish this after n failed read attempts
         publishNdeath();
     }
+
+    return(retval);
 }
 
 void DigitalTwin::readGpioAndPublish()
@@ -67,6 +74,7 @@ void DigitalTwin::readGpioAndPublish()
         publishGpio(portB, portC, portD);
     }
     else {
+        // TODO: publish this after n failed read attempts
         publishNdeath();
     }
 }
