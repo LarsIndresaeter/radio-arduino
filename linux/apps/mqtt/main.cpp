@@ -89,7 +89,6 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client, std::
 void print_usage()
 {
     std::cout << "mqtt-client" << std::endl;
-    std::cout << "       -k : read voltage from rf node" << std::endl;
     std::cout << "       -n : gateway address" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
     std::cout << std::endl;
