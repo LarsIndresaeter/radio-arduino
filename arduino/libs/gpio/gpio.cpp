@@ -2,11 +2,11 @@
 #include <avr/io.h>
 #include <gpio.hpp>
 
-void gpio::wait() { _delay_ms(DELAY_MS); }
+void Gpio::wait() { _delay_ms(DELAY_MS); }
 
-gpio::gpio() {}
+Gpio::Gpio() {}
 
-void gpio::blink()
+void Gpio::blink()
 {
     PORTB = PINB ^ 0x20;
     wait();
@@ -14,17 +14,17 @@ void gpio::blink()
     wait();
 }
 
-uint8_t gpio::readPortB()
+uint8_t Gpio::readPortB()
 {
     return PINB;
 }
 
-uint8_t gpio::readPortC()
+uint8_t Gpio::readPortC()
 {
     return PINC;
 }
 
-uint8_t gpio::readPortD()
+uint8_t Gpio::readPortD()
 {
     return PIND;
 }

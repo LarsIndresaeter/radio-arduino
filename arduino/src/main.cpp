@@ -13,7 +13,6 @@
 #include <aes.hpp>
 #include <arduinoCryptoHandler.hpp>
 #include <eeprom.hpp>
-#include <gpio.hpp>
 #include <i2c.hpp>
 #include <nrf24l01.hpp>
 #include <payloads.hpp>
@@ -159,7 +158,7 @@ void commandBlink(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::BLINK::command_t command(commandPayload);
     COMMANDS::BLINK::response_t response;
 
-    gpio m_gpio;
+    Gpio m_gpio;
     m_gpio.blink();
 
     response.serialize(responsePayload);
@@ -339,7 +338,7 @@ void commandPwm(uint8_t* commandPayload, uint8_t* responsePayload)
 
 void commandGpio(uint8_t* commandPayload, uint8_t* responsePayload)
 {
-    gpio m_gpio;
+    Gpio m_gpio;
     COMMANDS::GPIO::command_t command(commandPayload);
     COMMANDS::GPIO::response_t response;
 

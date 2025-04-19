@@ -4,10 +4,10 @@
 
 #define DELAY_MS 500
 
-class gpio
+class Gpio
 {
 public:
-    gpio();
+    Gpio();
     void blink(void);
     uint8_t readPortB();
     uint8_t readPortC();
