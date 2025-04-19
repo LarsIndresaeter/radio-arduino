@@ -751,7 +751,7 @@ void commandRadioUart(
     }
     else if (command.mode == 's') // send data read from uart over radio
     {
-        radioUart uartRadio;
+        RadioUart uartRadio;
 
         uint8_t package[32] = { 0 };
         uint8_t len = 0;
@@ -771,7 +771,7 @@ void commandRadioUart(
     }
     else if (command.mode == 'r') // receive data from radio and write to uart
     {
-        radioUart uartRadio;
+        RadioUart uartRadio;
 
         while (true) {
             if (uartRadio.has_data()) {
@@ -1235,7 +1235,7 @@ void parseInput(protocol m_protocol, comBusInterface* comBus)
         else {
             // idle process
 #ifdef USE_NRF24L01_INTTERRUPT
-            radioUart uartRadio;
+            RadioUart uartRadio;
             if (uartRadio.has_data()) {
                 comBus->putChar(uartRadio.getChar());
             }
@@ -1292,9 +1292,9 @@ int main()
 {
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    radioUart u;
+    RadioUart u;
 #else
-    uart u;
+    Uart u;
 #endif
     ArduinoCryptoHandler c(m_aes);
     protocol p((comBusInterface*) &u, &c);

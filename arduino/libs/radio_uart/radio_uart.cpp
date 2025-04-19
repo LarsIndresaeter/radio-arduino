@@ -35,25 +35,25 @@ uint8_t rb_get()
 
 } // namespace
 
-radioUart::radioUart() {}
+RadioUart::RadioUart() {}
 
-void radioUart::init() {}
+void RadioUart::init() {}
 
-void radioUart::putChar(char c) { NRF24L01::rb_put(c); }
+void RadioUart::putChar(char c) { NRF24L01::rb_put(c); }
 
-void radioUart::writeBuffer(uint8_t* msg, uint16_t length)
+void RadioUart::writeBuffer(uint8_t* msg, uint16_t length)
 {
     NRF24L01_tx(&msg[0], length);
 }
 
-uint8_t radioUart::getChar()
+uint8_t RadioUart::getChar()
 {
     has_data(); // force read if ring buffer is empty
 
     return NRF24L01::rb_get();
 }
 
-bool radioUart::has_data()
+bool RadioUart::has_data()
 {
 
 #ifndef USE_NRF24L01_INTTERRUPT

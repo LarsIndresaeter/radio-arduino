@@ -47,9 +47,9 @@ uint8_t rb_get()
 
 } // namespace
 
-uart::uart() { init(); }
+Uart::Uart() { init(); }
 
-void uart::init()
+void Uart::init()
 {
     UBRR0H = (uint8_t)(UBRR0_1000000 >> 8); // 57600
     UBRR0L = (uint8_t)(UBRR0_1000000 & 0xff);
@@ -68,24 +68,24 @@ void uart::init()
 
 ISR(USART_RX_vect) { UART::rb_put(UDR0); }
 
-void uart::putChar(char c)
+void Uart::putChar(char c)
 {
     loop_until_bit_is_set(UCSR0A, UDRE0);
     UDR0 = c;
 }
 
-void uart::writeBuffer(uint8_t* msg, uint16_t length)
+void Uart::writeBuffer(uint8_t* msg, uint16_t length)
 {
     for (uint16_t i = 0; i < length; i++) {
         putChar(msg[i]);
     }
 }
 
-uint8_t uart::getChar()
+uint8_t Uart::getChar()
 {
     while (UART::rb_length == 0) {
     } // wait for data to arrive in ring buffer
     return UART::rb_get();
 }
 
-bool uart::has_data() { return UART::rb_length > 0; }
+bool Uart::has_data() { return UART::rb_length > 0; }
