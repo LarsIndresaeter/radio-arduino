@@ -21,10 +21,10 @@ typedef struct rgb_color
   uint8_t red, green, blue;
 } rgb_color;
 
-class ws2812b
+class Ws2812b
 {
 public:
-    ws2812b();
+    Ws2812b();
     void led_strip_write(rgb_color * colors, uint16_t count);
 };
 

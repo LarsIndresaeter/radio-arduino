@@ -524,7 +524,7 @@ void commandWs2812b(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::WS2812B::command_t command(commandPayload);
     COMMANDS::WS2812B::response_t response;
 
-    ws2812b m_ws2812b;
+    Ws2812b m_ws2812b;
 
     rgb_color colors[COMMANDS::WS2812B::LEDS];
 
