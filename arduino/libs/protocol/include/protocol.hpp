@@ -5,7 +5,7 @@
 
 class Protocol : public StreamProtocol {
 public:
-    Protocol(ComBusInterface* u, CryptoHandlerInterface* c);
+    Protocol(ComBusInterface* comBus, CryptoHandlerInterface* cryptoHandler);
 
     virtual char getChar();
     virtual bool hasData();
