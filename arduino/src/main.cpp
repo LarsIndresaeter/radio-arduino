@@ -1292,19 +1292,19 @@ int main()
 {
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    RadioUart u;
+    RadioUart uart;
 #else
-    Uart u;
+    Uart uart;
 #endif
     ArduinoCryptoHandler c(m_aes);
-    protocol p((comBusInterface*) &u, &c);
+    protocol p((comBusInterface*) &uart, &c);
 
 #ifdef USE_NRF24L01_INTTERRUPT
     PCICR |= _BV(PCIE0);
     PCMSK0 |= _BV(PCINT0);
 #endif
 
-    parseInput(p, (comBusInterface*) &u);
+    parseInput(p, (comBusInterface*) &uart);
 
     return 0;
 }
