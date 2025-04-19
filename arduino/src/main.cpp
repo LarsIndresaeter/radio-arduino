@@ -85,7 +85,7 @@ ISR(PCINT0_vect)
 }
 #endif
 
-void sendMessage(protocol m_protocol, comBusInterface* comBus, uint8_t* payload)
+void sendMessage(protocol m_protocol, ComBusInterface* comBus, uint8_t* payload)
 {
     uint8_t packet[COMMANDS::MAX_PACKAGE_LENGTH];
     uint8_t length = payload[1] + 2;
@@ -733,7 +733,7 @@ void commandSpiWrite(uint8_t* commandPayload, uint8_t* responsePayload)
 }
 
 void commandRadioUart(
-    uint8_t* commandPayload, uint8_t* responsePayload, comBusInterface* comBus)
+    uint8_t* commandPayload, uint8_t* responsePayload, ComBusInterface* comBus)
 {
     COMMANDS::RADIO_UART::command_t command(commandPayload);
     COMMANDS::RADIO_UART::response_t response;
@@ -1016,7 +1016,7 @@ void commandKeepAlive(uint8_t* commandPayload, uint8_t* responsePayload)
 }
 
 void parseCommand(
-    protocol& m_protocol, comBusInterface* comBus, uint8_t* commandPayload)
+    protocol& m_protocol, ComBusInterface* comBus, uint8_t* commandPayload)
 {
     uint8_t responsePayload[COMMANDS::MAX_PAYLOAD_LENGTH] = {};
 
@@ -1162,7 +1162,7 @@ void rxNodeSleepAndPollForWakeup()
     }
 }
 
-void parseInput(protocol m_protocol, comBusInterface* comBus)
+void parseInput(protocol m_protocol, ComBusInterface* comBus)
 {
     uint8_t c = ' ';
     uint8_t payload[COMMANDS::MAX_PAYLOAD_LENGTH] = {};
@@ -1297,14 +1297,14 @@ int main()
     Uart uart;
 #endif
     ArduinoCryptoHandler c(m_aes);
-    protocol p((comBusInterface*) &uart, &c);
+    protocol p((ComBusInterface*) &uart, &c);
 
 #ifdef USE_NRF24L01_INTTERRUPT
     PCICR |= _BV(PCIE0);
     PCMSK0 |= _BV(PCINT0);
 #endif
 
-    parseInput(p, (comBusInterface*) &uart);
+    parseInput(p, (ComBusInterface*) &uart);
 
     return 0;
 }

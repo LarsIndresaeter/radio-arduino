@@ -5,7 +5,7 @@
 
 /* http://www.ermicro.com/blog/?p=325 */
 
-class Uart : public comBusInterface{
+class Uart : public ComBusInterface{
 public:
     Uart();
     virtual void init();

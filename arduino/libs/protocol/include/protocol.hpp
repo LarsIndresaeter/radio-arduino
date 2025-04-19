@@ -5,12 +5,12 @@
 
 class protocol : public StreamProtocol {
 public:
-    protocol(comBusInterface* u, CryptoHandlerInterface* c);
+    protocol(ComBusInterface* u, CryptoHandlerInterface* c);
 
     virtual char getChar();
     virtual bool hasData();
 
 private:
-    comBusInterface* m_comBus;
+    ComBusInterface* m_comBus;
 };
 

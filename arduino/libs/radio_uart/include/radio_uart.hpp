@@ -7,7 +7,7 @@ namespace NRF24L01 {
 void rb_put(uint8_t c);
 } // namespace
 
-class RadioUart : public comBusInterface {
+class RadioUart : public ComBusInterface {
 public:
     RadioUart();
     virtual void init();

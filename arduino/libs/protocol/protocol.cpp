@@ -1,7 +1,7 @@
 #include <arduinoCryptoHandler.hpp>
 #include <protocol.hpp>
 
-protocol::protocol(comBusInterface* u, CryptoHandlerInterface* c)
+protocol::protocol(ComBusInterface* u, CryptoHandlerInterface* c)
     : StreamProtocol(c)
     , m_comBus(u)
 {
