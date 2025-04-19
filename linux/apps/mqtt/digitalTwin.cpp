@@ -24,8 +24,11 @@ void DigitalTwin::execute()
 
     if ((secondsSinceEpoch() - m_timeLastPoll) > m_actualState.getActualPollInterval()) {
         if (m_radioSession.wakeupNotResponding()) {
-            m_timeLastPoll = secondsSinceEpoch();
-            readVccAndPublish();
+            if(readVccAndPublish())
+            {
+                m_timeLastPoll = secondsSinceEpoch();
+            }
+            readGpioAndPublish();
         }
     }
 
@@ -40,16 +43,38 @@ void DigitalTwin::execute()
     //m_radioSession.close();
 }
 
-void DigitalTwin::readVccAndPublish()
+bool DigitalTwin::readVccAndPublish()
 {
+    bool retval = false;
     auto nodeVcc = m_monitor.getRadio<>(UartCommandVcc());
 
     if (nodeVcc.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
         uint16_t vcc_mv = (uint16_t)(nodeVcc.responseStruct().vcc_h << 8)
             | nodeVcc.responseStruct().vcc_l;
         publishVcc(std::to_string(vcc_mv / 1000.0));
+        retval = true;
     }
     else {
+        // TODO: publish this after n failed read attempts
+        publishNdeath();
+    }
+
+    return(retval);
+}
+
+void DigitalTwin::readGpioAndPublish()
+{
+    auto nodeGpio = m_monitor.getRadio<>(UartCommandGpio());
+
+    if (nodeGpio.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+        uint8_t portB = nodeGpio.responseStruct().portB;
+        uint8_t portC = nodeGpio.responseStruct().portC;
+        uint8_t portD = nodeGpio.responseStruct().portD;
+
+        publishGpio(portB, portC, portD);
+    }
+    else {
+        // TODO: publish this after n failed read attempts
         publishNdeath();
     }
 }
@@ -99,6 +124,26 @@ void DigitalTwin::publishVcc(std::string voltage)
     try {
         std::string mqtt_payload
             = "{\"dateString\": \"" + getDateTimeString() + "\", \"voltage\":" + voltage + "}";
+
+        json_topic.publish(std::move(mqtt_payload));
+    }
+    catch (const mqtt::exception& exc) {
+        std::cerr << exc.what() << std::endl;
+    }
+}
+
+void DigitalTwin::publishGpio(uint8_t portB, uint8_t portC, uint8_t portD)
+{
+    const int QOS = 0;
+
+    std::string portBstring = std::to_string((int) portB);
+    std::string portCstring = std::to_string((int) portC);
+    std::string portDstring = std::to_string((int) portD);
+
+    mqtt::topic json_topic(m_mqttClient, createMqttTopic("NDATA", m_name, "gpio"), QOS, false);
+
+    try {
+        std::string mqtt_payload = "{\"dateString\": \"" + getDateTimeString() + "\", \"portB\": \"" + portBstring + "\", \"portC\": \"" + portCstring + "\", \"portD\": \"" + portDstring + "\" }";
 
         json_topic.publish(std::move(mqtt_payload));
     }
