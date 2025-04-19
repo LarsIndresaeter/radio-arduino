@@ -31,7 +31,7 @@
 #include <version.h>
 #include <ws2812b.hpp>
 
-aes m_aes;
+Aes m_aes;
 random m_random;
 uint8_t protocolVersionLastReceivedMessage
     = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);

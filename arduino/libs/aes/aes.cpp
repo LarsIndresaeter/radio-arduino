@@ -63,21 +63,21 @@ const uint8_t rCON[15] = {
 
 
 
-aes::aes() {
+Aes::Aes() {
 	Sanitize();
 }
 
-aes::~aes() {
+Aes::~Aes() {
 }
 
-void aes::Sanitize() {
+void Aes::Sanitize() {
 	memset(keyBox, 0, 16);
 	memset(toCipherOrPlain, 0, 16);
 	memset(tempBox, 0, 16);
 	memset(fgVec, 0, 4);
 }
 
-void aes::VecToBox(uint8_t(*arr)[4][4], uint8_t * data) {
+void Aes::VecToBox(uint8_t(*arr)[4][4], uint8_t * data) {
 	for (int i = 0; i<4; i++) {
 		for (int j = 0; j<4; j++) {
 			(*arr)[j][i] = data[i * 4 + j];
@@ -85,7 +85,7 @@ void aes::VecToBox(uint8_t(*arr)[4][4], uint8_t * data) {
 	}
 }
 
-void aes::BoxToVec(uint8_t(*arr)[4][4], uint8_t * data) {
+void Aes::BoxToVec(uint8_t(*arr)[4][4], uint8_t * data) {
 	for (int i = 0; i<4; i++) {
 		for (int j = 0; j<4; j++) {
 			data[i * 4 + j] = (*arr)[j][i];
@@ -93,7 +93,7 @@ void aes::BoxToVec(uint8_t(*arr)[4][4], uint8_t * data) {
 	}
 }
 
-void aes::GetFGVector(uint8_t(*arr)[4][4], uint8_t round, uint8_t * output) {
+void Aes::GetFGVector(uint8_t(*arr)[4][4], uint8_t round, uint8_t * output) {
 	//Load data with shift
 	for (int i = 0; i<4; i++) {
 		output[i] = (*arr)[(i + 1) % 4][3];
@@ -102,7 +102,7 @@ void aes::GetFGVector(uint8_t(*arr)[4][4], uint8_t round, uint8_t * output) {
 	output[0] ^= rCON[round];
 }
 
-void aes::ExpandKey(uint8_t(*keyBox)[4][4], uint8_t round) {
+void Aes::ExpandKey(uint8_t(*keyBox)[4][4], uint8_t round) {
 
 	memset(fgVec, 0, 4);
 	GetFGVector(keyBox, round, fgVec);
@@ -119,7 +119,7 @@ void aes::ExpandKey(uint8_t(*keyBox)[4][4], uint8_t round) {
 
 }
 
-void aes::RewindKey(uint8_t(*keyBox)[4][4], uint8_t round) {
+void Aes::RewindKey(uint8_t(*keyBox)[4][4], uint8_t round) {
 
 	//W5 - W7
 	for (int j = 3; j>0; j--) {
@@ -137,7 +137,7 @@ void aes::RewindKey(uint8_t(*keyBox)[4][4], uint8_t round) {
 
 
 
-void aes::AddRoundKey(uint8_t(*text)[4][4], uint8_t(*curKeyBox)[4][4]) {
+void Aes::AddRoundKey(uint8_t(*text)[4][4], uint8_t(*curKeyBox)[4][4]) {
 	for (int i = 0; i<4; i++) {
 		for (int j = 0; j<4; j++) {
 			(*text)[i][j] = (*text)[i][j] ^ (*curKeyBox)[i][j];
@@ -145,7 +145,7 @@ void aes::AddRoundKey(uint8_t(*text)[4][4], uint8_t(*curKeyBox)[4][4]) {
 	}
 }
 
-void aes::Substitution(uint8_t(*text)[4][4], int mode) {
+void Aes::Substitution(uint8_t(*text)[4][4], int mode) {
 
 	const uint8_t(*subMat)[16];
 	if (mode == 0) {
@@ -162,7 +162,7 @@ void aes::Substitution(uint8_t(*text)[4][4], int mode) {
 	}
 }
 
-void aes::ShiftRow(uint8_t(*arr)[4][4], int row, int mode) {
+void Aes::ShiftRow(uint8_t(*arr)[4][4], int row, int mode) {
 	if (mode == 0) {
 		for (int j = 0; j<row; j++) {
 			uint8_t temp = (*arr)[row][0];
@@ -183,13 +183,13 @@ void aes::ShiftRow(uint8_t(*arr)[4][4], int row, int mode) {
 	}
 }
 
-void aes::ShiftRows(uint8_t(*text)[4][4], int mode) {
+void Aes::ShiftRows(uint8_t(*text)[4][4], int mode) {
 	ShiftRow(text, 1, mode);
 	ShiftRow(text, 2, mode);
 	ShiftRow(text, 3, mode);
 }
 
-int aes::MultiplyBy2(uint8_t value) {
+int Aes::MultiplyBy2(uint8_t value) {
 	int ret = value << 1;
 	if ((1 << 7) & value) {
 		ret ^= 0b00011011;
@@ -197,7 +197,7 @@ int aes::MultiplyBy2(uint8_t value) {
 	return ret;
 }
 
-void aes::MixColumn(uint8_t(*text)[4][4], int mode) {
+void Aes::MixColumn(uint8_t(*text)[4][4], int mode) {
 
 	const uint8_t(*subMat)[4];
 	if (mode == 0) {
@@ -248,7 +248,7 @@ void aes::MixColumn(uint8_t(*text)[4][4], int mode) {
 	}
 }
 
-void aes::CryptRound(uint8_t(*text)[4][4], uint8_t(*curKeyBox)[4][4], int curRound) {
+void Aes::CryptRound(uint8_t(*text)[4][4], uint8_t(*curKeyBox)[4][4], int curRound) {
 	if (curRound == 0) { AddRoundKey(text, curKeyBox); return; }
 	Substitution(text, 0);
 	ShiftRows(text, 0);
@@ -256,7 +256,7 @@ void aes::CryptRound(uint8_t(*text)[4][4], uint8_t(*curKeyBox)[4][4], int curRou
 	AddRoundKey(text, curKeyBox);
 }
 
-void aes::DecryptRound(uint8_t(*text)[4][4], uint8_t(*curKeyBox)[4][4], int curRound) {
+void Aes::DecryptRound(uint8_t(*text)[4][4], uint8_t(*curKeyBox)[4][4], int curRound) {
 	AddRoundKey(text, curKeyBox);
 	if (curRound == 0) return;
 	if (curRound != 10) MixColumn(text, 1);
@@ -264,7 +264,7 @@ void aes::DecryptRound(uint8_t(*text)[4][4], uint8_t(*curKeyBox)[4][4], int curR
 	Substitution(text, 1);
 }
 
-void aes::Crypt(uint8_t * data, uint8_t * key, uint8_t * IV) {
+void Aes::Crypt(uint8_t * data, uint8_t * key, uint8_t * IV) {
 
 	if (IV != 0) {
 		for (int i = 0; i<16; i++) {
@@ -289,7 +289,7 @@ void aes::Crypt(uint8_t * data, uint8_t * key, uint8_t * IV) {
 	BoxToVec(&toCipherOrPlain, data);
 }
 
-void aes::Decrypt(uint8_t * data, uint8_t * key, uint8_t * IV) {
+void Aes::Decrypt(uint8_t * data, uint8_t * key, uint8_t * IV) {
 
 	VecToBox(&toCipherOrPlain, data);
 

@@ -1,7 +1,7 @@
 #include <arduinoCryptoHandler.hpp>
 
 ArduinoCryptoHandler::ArduinoCryptoHandler(
-    aes& p_aes)
+    Aes& p_aes)
     : m_aes(p_aes)
 {
     uint8_t tmp[16] = { 0 };

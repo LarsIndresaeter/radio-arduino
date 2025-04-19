@@ -6,10 +6,10 @@
 #include <avr/pgmspace.h>
 
 
-class aes {
+class Aes {
 public:
-	aes();
-	~aes();
+	Aes();
+	~Aes();
 
 	int counter = 0;
 
