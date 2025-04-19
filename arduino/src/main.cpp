@@ -226,7 +226,7 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::AES::command_t command(commandPayload);
     COMMANDS::AES::response_t response;
 
-    eeprom m_eeprom;
+    Eeprom m_eeprom;
 
     uint8_t aes_key[16] = {};
     for (uint8_t i = 0; i < 16; i++) {
@@ -509,7 +509,7 @@ void commandEepromRead(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::EEPROM_READ::command_t command(commandPayload);
     COMMANDS::EEPROM_READ::response_t response;
-    eeprom m_eeprom;
+    Eeprom m_eeprom;
 
     response.addressHigh = command.addressHigh;
     response.addressLow = command.addressLow;
@@ -543,7 +543,7 @@ void commandEepromWrite(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::EEPROM_WRITE::command_t command(commandPayload);
     COMMANDS::EEPROM_WRITE::response_t response;
-    eeprom m_eeprom;
+    Eeprom m_eeprom;
 
     m_eeprom.write(
         command.addressHigh * 256 + command.addressLow, command.data);
@@ -582,7 +582,7 @@ void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::SET_KEY::command_t command(commandPayload);
     COMMANDS::SET_KEY::response_t response;
-    eeprom m_eeprom;
+    Eeprom m_eeprom;
 
     uint16_t address = 0;
 
@@ -615,7 +615,7 @@ void commandSetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::SET_DEVICE_INFO::command_t command(commandPayload);
     COMMANDS::SET_DEVICE_INFO::response_t response;
-    eeprom m_eeprom;
+    Eeprom m_eeprom;
 
     for (uint8_t i = 0; i < 16; i++) {
         m_eeprom.write(offsetof(eeprom_data_t, NAME) + i, command.name[i]);
@@ -629,7 +629,7 @@ void commandGetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::GET_DEVICE_INFO::command_t command(commandPayload);
     COMMANDS::GET_DEVICE_INFO::response_t response;
-    eeprom m_eeprom;
+    Eeprom m_eeprom;
 
     for (uint8_t i = 0; i < 16; i++) {
         response.name[i] = m_eeprom.read(offsetof(eeprom_data_t, NAME) + i);
