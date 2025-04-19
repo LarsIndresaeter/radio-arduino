@@ -14,6 +14,10 @@ public:
         out << "PING            : ";
         if (m_replyStatus == ReplyStatus::Complete) {
             out << "OK";
+
+            out << " (" << std::to_string(m_responseTimeUs/1000);
+            out << "." << std::to_string((m_responseTimeUs%1000)/100);
+            out << " ms)";
         }
         else {
             out << "FAILED";
