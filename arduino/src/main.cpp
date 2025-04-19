@@ -30,7 +30,7 @@
 #include <version.h>
 #include <ws2812b.hpp>
 
-Aes m_aes;
+Aes aes;
 Random m_random;
 uint8_t protocolVersionLastReceivedMessage
     = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
@@ -240,11 +240,11 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
     }
 
     if (command.type == 'c') {
-        m_aes.Crypt(response.data, &aes_key[0], &aes_iv[0]);
+        aes.Crypt(response.data, &aes_key[0], &aes_iv[0]);
     }
 
     if (command.type == 'd') {
-        m_aes.Decrypt(response.data, &aes_key[0], &aes_iv[0]);
+        aes.Decrypt(response.data, &aes_key[0], &aes_iv[0]);
     }
 
     response.type = command.type;
@@ -1295,7 +1295,7 @@ int main()
 #else
     Uart uart;
 #endif
-    ArduinoCryptoHandler c(m_aes);
+    ArduinoCryptoHandler c(aes);
     Protocol p((ComBusInterface*) &uart, &c);
 
 #ifdef USE_NRF24L01_INTTERRUPT
