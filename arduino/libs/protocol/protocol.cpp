@@ -1,9 +1,9 @@
 #include <arduinoCryptoHandler.hpp>
 #include <protocol.hpp>
 
-Protocol::Protocol(ComBusInterface* u, CryptoHandlerInterface* c)
-    : StreamProtocol(c)
-    , m_comBus(u)
+Protocol::Protocol(ComBusInterface* comBus, CryptoHandlerInterface* cryptoHandler)
+    : StreamProtocol(cryptoHandler)
+    , m_comBus(comBus)
 {
 }
 

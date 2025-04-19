@@ -30,8 +30,8 @@
 #include <version.h>
 #include <ws2812b.hpp>
 
-Aes m_aes;
-Random m_random;
+Aes aes;
+Random random;
 uint8_t protocolVersionLastReceivedMessage
     = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
 
@@ -84,7 +84,7 @@ ISR(PCINT0_vect)
 }
 #endif
 
-void sendMessage(Protocol m_protocol, ComBusInterface* comBus, uint8_t* payload)
+void sendMessage(Protocol protocol, ComBusInterface* comBus, uint8_t* payload)
 {
     uint8_t packet[COMMANDS::MAX_PACKAGE_LENGTH];
     uint8_t length = payload[1] + 2;
@@ -98,7 +98,7 @@ void sendMessage(Protocol m_protocol, ComBusInterface* comBus, uint8_t* payload)
                     PROTOCOL::HEADER::VERSION::RADIO_ENCRYPTED_BINARY_AND_TEXT))
 
     ) {
-        m_protocol.createEncryptedPacket(
+        protocol.createEncryptedPacket(
             length, payload, &packet[0], protocolVersionLastReceivedMessage);
 
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
@@ -120,7 +120,7 @@ void sendMessage(Protocol m_protocol, ComBusInterface* comBus, uint8_t* payload)
             && protocolVersionLastReceivedMessage
                 == static_cast<uint8_t>(
                     PROTOCOL::HEADER::VERSION::RADIO_BINARY_AND_TEXT))) {
-        m_protocol.createPacket(
+        protocol.createPacket(
             length, payload, &packet[0], protocolVersionLastReceivedMessage);
 
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
@@ -158,8 +158,8 @@ void commandBlink(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::BLINK::command_t command(commandPayload);
     COMMANDS::BLINK::response_t response;
 
-    Gpio m_gpio;
-    m_gpio.blink();
+    Gpio gpio;
+    gpio.blink();
 
     response.serialize(responsePayload);
 }
@@ -168,15 +168,15 @@ void commandRandom(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::RANDOM::response_t response;
 
-    m_random.addEntropy(AtmelAdc::getRandomByte());
-    m_random.addEntropy(AtmelAdc::getRandomByte());
-    m_random.mix();
-    m_random.addEntropy(AtmelAdc::getRandomByte());
-    m_random.addEntropy(AtmelAdc::getRandomByte());
-    m_random.mix();
+    random.addEntropy(AtmelAdc::getRandomByte());
+    random.addEntropy(AtmelAdc::getRandomByte());
+    random.mix();
+    random.addEntropy(AtmelAdc::getRandomByte());
+    random.addEntropy(AtmelAdc::getRandomByte());
+    random.mix();
 
     for (uint8_t i = 0; i < 16; i++) {
-        response.data[i] = m_random.getRandomByte();
+        response.data[i] = random.getRandomByte();
     }
 
     response.serialize(responsePayload);
@@ -225,14 +225,14 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::AES::command_t command(commandPayload);
     COMMANDS::AES::response_t response;
 
-    Eeprom m_eeprom;
+    Eeprom eeprom;
 
     uint8_t aes_key[16] = {};
     for (uint8_t i = 0; i < 16; i++) {
-        aes_key[i] = m_eeprom.read(offsetof(eeprom_data_t, EK_KEY) + i);
+        aes_key[i] = eeprom.read(offsetof(eeprom_data_t, EK_KEY) + i);
     }
 
-    uint8_t aes_iv[16] = {};
+    uint8_t aes_iv[16] = {0};
 
     // copy data to response buffer
     for (int i = 0; i < 16; i++) {
@@ -240,11 +240,11 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
     }
 
     if (command.type == 'c') {
-        m_aes.Crypt(response.data, &aes_key[0], &aes_iv[0]);
+        aes.Crypt(response.data, &aes_key[0], &aes_iv[0]);
     }
 
     if (command.type == 'd') {
-        m_aes.Decrypt(response.data, &aes_key[0], &aes_iv[0]);
+        aes.Decrypt(response.data, &aes_key[0], &aes_iv[0]);
     }
 
     response.type = command.type;
@@ -323,7 +323,7 @@ void commandSleep(uint8_t* commandPayload, uint8_t* responsePayload)
 
 void commandPwm(uint8_t* commandPayload, uint8_t* responsePayload)
 {
-    Pwm m_pwm;
+    Pwm pwm;
     COMMANDS::PWM::command_t command(commandPayload);
     COMMANDS::PWM::response_t response;
 
@@ -331,20 +331,20 @@ void commandPwm(uint8_t* commandPayload, uint8_t* responsePayload)
     response.pin = command.pin;
     response.value = command.value;
 
-    m_pwm.write(command.port, command.pin, command.value);
+    pwm.write(command.port, command.pin, command.value);
 
     response.serialize(responsePayload);
 }
 
 void commandGpio(uint8_t* commandPayload, uint8_t* responsePayload)
 {
-    Gpio m_gpio;
+    Gpio gpio;
     COMMANDS::GPIO::command_t command(commandPayload);
     COMMANDS::GPIO::response_t response;
 
-    response.portB = m_gpio.readPortB();
-    response.portC = m_gpio.readPortC();
-    response.portD = m_gpio.readPortD();
+    response.portB = gpio.readPortB();
+    response.portC = gpio.readPortC();
+    response.portD = gpio.readPortD();
 
     response.serialize(responsePayload);
 }
@@ -508,12 +508,12 @@ void commandEepromRead(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::EEPROM_READ::command_t command(commandPayload);
     COMMANDS::EEPROM_READ::response_t response;
-    Eeprom m_eeprom;
+    Eeprom eeprom;
 
     response.addressHigh = command.addressHigh;
     response.addressLow = command.addressLow;
     response.data
-        = m_eeprom.read(command.addressHigh * 256 + command.addressLow);
+        = eeprom.read(command.addressHigh * 256 + command.addressLow);
 
     response.serialize(responsePayload);
 }
@@ -523,7 +523,7 @@ void commandWs2812b(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::WS2812B::command_t command(commandPayload);
     COMMANDS::WS2812B::response_t response;
 
-    Ws2812b m_ws2812b;
+    Ws2812b ws2812b;
 
     rgb_color colors[COMMANDS::WS2812B::LEDS];
 
@@ -533,7 +533,7 @@ void commandWs2812b(uint8_t* commandPayload, uint8_t* responsePayload)
         colors[i].blue = command.data[i].blue;
     }
 
-    m_ws2812b.led_strip_write(colors, COMMANDS::WS2812B::LEDS);
+    ws2812b.led_strip_write(colors, COMMANDS::WS2812B::LEDS);
 
     response.serialize(responsePayload);
 }
@@ -542,15 +542,15 @@ void commandEepromWrite(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::EEPROM_WRITE::command_t command(commandPayload);
     COMMANDS::EEPROM_WRITE::response_t response;
-    Eeprom m_eeprom;
+    Eeprom eeprom;
 
-    m_eeprom.write(
+    eeprom.write(
         command.addressHigh * 256 + command.addressLow, command.data);
 
     response.addressHigh = command.addressHigh;
     response.addressLow = command.addressLow;
     response.data
-        = m_eeprom.read(command.addressHigh * 256 + command.addressLow);
+        = eeprom.read(command.addressHigh * 256 + command.addressLow);
 
     response.serialize(responsePayload);
 }
@@ -581,7 +581,7 @@ void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::SET_KEY::command_t command(commandPayload);
     COMMANDS::SET_KEY::response_t response;
-    Eeprom m_eeprom;
+    Eeprom eeprom;
 
     uint16_t address = 0;
 
@@ -600,7 +600,7 @@ void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
 
     if (command.key_id != COMMANDS::SET_KEY::UNKNOWN_KEY_ID) {
         for (uint8_t i = 0; i < 16; i++) {
-            m_eeprom.write(address + i, command.key_value[i]);
+            eeprom.write(address + i, command.key_value[i]);
         }
         response.status = 1;
     }
@@ -614,10 +614,10 @@ void commandSetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::SET_DEVICE_INFO::command_t command(commandPayload);
     COMMANDS::SET_DEVICE_INFO::response_t response;
-    Eeprom m_eeprom;
+    Eeprom eeprom;
 
     for (uint8_t i = 0; i < 16; i++) {
-        m_eeprom.write(offsetof(eeprom_data_t, NAME) + i, command.name[i]);
+        eeprom.write(offsetof(eeprom_data_t, NAME) + i, command.name[i]);
     }
     response.status = 1;
 
@@ -628,10 +628,10 @@ void commandGetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::GET_DEVICE_INFO::command_t command(commandPayload);
     COMMANDS::GET_DEVICE_INFO::response_t response;
-    Eeprom m_eeprom;
+    Eeprom eeprom;
 
     for (uint8_t i = 0; i < 16; i++) {
-        response.name[i] = m_eeprom.read(offsetof(eeprom_data_t, NAME) + i);
+        response.name[i] = eeprom.read(offsetof(eeprom_data_t, NAME) + i);
     }
 
     for (int i = 0; i < 32; i++) {
@@ -1015,7 +1015,7 @@ void commandKeepAlive(uint8_t* commandPayload, uint8_t* responsePayload)
 }
 
 void parseCommand(
-    Protocol& m_protocol, ComBusInterface* comBus, uint8_t* commandPayload)
+    Protocol& protocol, ComBusInterface* comBus, uint8_t* commandPayload)
 {
     uint8_t responsePayload[COMMANDS::MAX_PAYLOAD_LENGTH] = {};
 
@@ -1127,7 +1127,7 @@ void parseCommand(
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
         _delay_ms(1); // give gateway some time to switch to listening mode
 #endif
-        sendMessage(m_protocol, comBus, responsePayload);
+        sendMessage(protocol, comBus, responsePayload);
     }
 }
 
@@ -1161,7 +1161,7 @@ void rxNodeSleepAndPollForWakeup()
     }
 }
 
-void parseInput(Protocol m_protocol, ComBusInterface* comBus)
+void parseInput(Protocol protocol, ComBusInterface* comBus)
 {
     uint8_t c = ' ';
     uint8_t payload[COMMANDS::MAX_PAYLOAD_LENGTH] = {};
@@ -1178,18 +1178,18 @@ void parseInput(Protocol m_protocol, ComBusInterface* comBus)
                 = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
 
             if (c == PROTOCOL::HEADER::SYNC_PATTERN_BYTE_0) {
-                length = m_protocol.searchForMessage(
+                length = protocol.searchForMessage(
                     (uint8_t*)payload, &protocolVersionLastReceivedMessage);
 
                 if (length > 0) { // found payload
-                    m_random.addEntropy(cnt);
+                    random.addEntropy(cnt);
 
                     if (protocolVersionLastReceivedMessage
                             == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::
                                                         RADIO_BINARY_AND_TEXT)
                         && rx_mode_gateway) {
                         uint8_t data_size = 0;
-                        m_protocol.createPacket(
+                        protocol.createPacket(
                             length,
                             payload,
                             &packet[0],
@@ -1208,7 +1208,7 @@ void parseInput(Protocol m_protocol, ComBusInterface* comBus)
                                     RADIO_ENCRYPTED_BINARY_AND_TEXT)
                         && rx_mode_gateway) {
                         uint8_t data_size = 0;
-                        m_protocol.createEncryptedPacket(
+                        protocol.createEncryptedPacket(
                             length,
                             payload,
                             &packet[0],
@@ -1222,7 +1222,7 @@ void parseInput(Protocol m_protocol, ComBusInterface* comBus)
                         NRF24L01_tx(&packet[0], data_size);
                     }
                     else {
-                        parseCommand(m_protocol, comBus, payload);
+                        parseCommand(protocol, comBus, payload);
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
                         idle_loop_cnt_ms = 0;
 #endif
@@ -1295,15 +1295,15 @@ int main()
 #else
     Uart uart;
 #endif
-    ArduinoCryptoHandler c(m_aes);
-    Protocol p((ComBusInterface*) &uart, &c);
+    ArduinoCryptoHandler cryptoHandler(aes);
+    Protocol protocol((ComBusInterface*) &uart, &cryptoHandler);
 
 #ifdef USE_NRF24L01_INTTERRUPT
     PCICR |= _BV(PCIE0);
     PCMSK0 |= _BV(PCINT0);
 #endif
 
-    parseInput(p, (ComBusInterface*) &uart);
+    parseInput(protocol, (ComBusInterface*) &uart);
 
     return 0;
 }
