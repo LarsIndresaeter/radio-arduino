@@ -2,9 +2,9 @@
 #include <pwm.hpp>
 #include <stdint.h>
 
-pwm::pwm() {}
+Pwm::Pwm() {}
 
-uint8_t pwm::write(uint8_t port, uint8_t pin, uint8_t value)
+uint8_t Pwm::write(uint8_t port, uint8_t pin, uint8_t value)
 {
     uint8_t retval = 0;
 

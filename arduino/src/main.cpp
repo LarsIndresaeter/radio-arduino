@@ -323,7 +323,7 @@ void commandSleep(uint8_t* commandPayload, uint8_t* responsePayload)
 
 void commandPwm(uint8_t* commandPayload, uint8_t* responsePayload)
 {
-    pwm m_pwm;
+    Pwm m_pwm;
     COMMANDS::PWM::command_t command(commandPayload);
     COMMANDS::PWM::response_t response;
 

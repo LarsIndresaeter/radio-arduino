@@ -3,8 +3,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
-class pwm {
+class Pwm {
 public:
-    pwm();
+    Pwm();
     uint8_t write(uint8_t port, uint8_t pin, uint8_t value);
 };
