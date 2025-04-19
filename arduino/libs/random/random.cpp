@@ -1,8 +1,8 @@
 #include <random.hpp>
 
-random::random() {}
+Random::Random() {}
 
-void random::mix()
+void Random::mix()
 {
     SHA1Reset(&sha);
     SHA1Input(&sha, state, randomPoolSize);
@@ -11,13 +11,13 @@ void random::mix()
     writePos = state[9] % randomPoolSize;
 }
 
-void random::addEntropy(uint8_t e)
+void Random::addEntropy(uint8_t e)
 {
     writePos = (writePos + 1) % randomPoolSize;
     state[writePos] = e;
 }
 
-uint8_t random::getRandomByte()
+uint8_t Random::getRandomByte()
 {
     readPos = (readPos + 1) % randomPoolSize;
     return state[readPos];

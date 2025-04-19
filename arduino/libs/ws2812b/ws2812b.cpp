@@ -2,7 +2,7 @@
 
 // copied from: https://github.com/pololu/pololu-led-strip-avr
 
-ws2812b::ws2812b() {}
+Ws2812b::Ws2812b() {}
 
 // led_strip_write sends a series of colors to the LED strip, updating the LEDs.
 // The colors parameter should point to an array of rgb_color structs that hold
@@ -19,7 +19,7 @@ ws2812b::ws2812b() {}
 //   0 pulse  = 375 ns
 //   1 pulse  = 812.5 ns
 //   "period" = 1500 ns
-void __attribute__((noinline)) ws2812b::led_strip_write(rgb_color * colors, uint16_t count)
+void __attribute__((noinline)) Ws2812b::led_strip_write(rgb_color * colors, uint16_t count)
 {
   // Set the pin to be an output driving low.
   LED_STRIP_PORT &= ~(1<<LED_STRIP_PIN);

@@ -6,11 +6,11 @@
 
 // https://gist.github.com/ricardas/4367016
 
-eeprom::eeprom()
+Eeprom::Eeprom()
 {
 }
 
-void eeprom::write(uint16_t address, uint8_t data) {
+void Eeprom::write(uint16_t address, uint8_t data) {
 	while(EECR & (1 << EEPE));
 	EEAR = address;
 	EEDR = data;
@@ -19,7 +19,7 @@ void eeprom::write(uint16_t address, uint8_t data) {
 }
 
 
-uint8_t eeprom::read(uint16_t address) {
+uint8_t Eeprom::read(uint16_t address) {
     while (EECR & (1 << EEPE));
     EEAR = address;
     EECR |= (1 << EERE);

@@ -5,9 +5,9 @@
 
 constexpr uint8_t randomPoolSize = 16;
 
-class random {
+class Random {
 public:
-    random();
+    Random();
     uint8_t getRandomByte();
     void mix();
     void addEntropy(uint8_t e);

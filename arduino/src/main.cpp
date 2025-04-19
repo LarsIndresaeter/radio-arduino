@@ -13,7 +13,6 @@
 #include <aes.hpp>
 #include <arduinoCryptoHandler.hpp>
 #include <eeprom.hpp>
-#include <gpio.hpp>
 #include <i2c.hpp>
 #include <nrf24l01.hpp>
 #include <payloads.hpp>
@@ -31,8 +30,8 @@
 #include <version.h>
 #include <ws2812b.hpp>
 
-aes m_aes;
-random m_random;
+Aes m_aes;
+Random m_random;
 uint8_t protocolVersionLastReceivedMessage
     = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
 
@@ -85,7 +84,7 @@ ISR(PCINT0_vect)
 }
 #endif
 
-void sendMessage(protocol m_protocol, comBusInterface* comBus, uint8_t* payload)
+void sendMessage(Protocol m_protocol, ComBusInterface* comBus, uint8_t* payload)
 {
     uint8_t packet[COMMANDS::MAX_PACKAGE_LENGTH];
     uint8_t length = payload[1] + 2;
@@ -159,7 +158,7 @@ void commandBlink(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::BLINK::command_t command(commandPayload);
     COMMANDS::BLINK::response_t response;
 
-    gpio m_gpio;
+    Gpio m_gpio;
     m_gpio.blink();
 
     response.serialize(responsePayload);
@@ -226,7 +225,7 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::AES::command_t command(commandPayload);
     COMMANDS::AES::response_t response;
 
-    eeprom m_eeprom;
+    Eeprom m_eeprom;
 
     uint8_t aes_key[16] = {};
     for (uint8_t i = 0; i < 16; i++) {
@@ -324,7 +323,7 @@ void commandSleep(uint8_t* commandPayload, uint8_t* responsePayload)
 
 void commandPwm(uint8_t* commandPayload, uint8_t* responsePayload)
 {
-    pwm m_pwm;
+    Pwm m_pwm;
     COMMANDS::PWM::command_t command(commandPayload);
     COMMANDS::PWM::response_t response;
 
@@ -339,7 +338,7 @@ void commandPwm(uint8_t* commandPayload, uint8_t* responsePayload)
 
 void commandGpio(uint8_t* commandPayload, uint8_t* responsePayload)
 {
-    gpio m_gpio;
+    Gpio m_gpio;
     COMMANDS::GPIO::command_t command(commandPayload);
     COMMANDS::GPIO::response_t response;
 
@@ -509,7 +508,7 @@ void commandEepromRead(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::EEPROM_READ::command_t command(commandPayload);
     COMMANDS::EEPROM_READ::response_t response;
-    eeprom m_eeprom;
+    Eeprom m_eeprom;
 
     response.addressHigh = command.addressHigh;
     response.addressLow = command.addressLow;
@@ -524,7 +523,7 @@ void commandWs2812b(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::WS2812B::command_t command(commandPayload);
     COMMANDS::WS2812B::response_t response;
 
-    ws2812b m_ws2812b;
+    Ws2812b m_ws2812b;
 
     rgb_color colors[COMMANDS::WS2812B::LEDS];
 
@@ -543,7 +542,7 @@ void commandEepromWrite(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::EEPROM_WRITE::command_t command(commandPayload);
     COMMANDS::EEPROM_WRITE::response_t response;
-    eeprom m_eeprom;
+    Eeprom m_eeprom;
 
     m_eeprom.write(
         command.addressHigh * 256 + command.addressLow, command.data);
@@ -582,7 +581,7 @@ void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::SET_KEY::command_t command(commandPayload);
     COMMANDS::SET_KEY::response_t response;
-    eeprom m_eeprom;
+    Eeprom m_eeprom;
 
     uint16_t address = 0;
 
@@ -615,7 +614,7 @@ void commandSetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::SET_DEVICE_INFO::command_t command(commandPayload);
     COMMANDS::SET_DEVICE_INFO::response_t response;
-    eeprom m_eeprom;
+    Eeprom m_eeprom;
 
     for (uint8_t i = 0; i < 16; i++) {
         m_eeprom.write(offsetof(eeprom_data_t, NAME) + i, command.name[i]);
@@ -629,7 +628,7 @@ void commandGetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::GET_DEVICE_INFO::command_t command(commandPayload);
     COMMANDS::GET_DEVICE_INFO::response_t response;
-    eeprom m_eeprom;
+    Eeprom m_eeprom;
 
     for (uint8_t i = 0; i < 16; i++) {
         response.name[i] = m_eeprom.read(offsetof(eeprom_data_t, NAME) + i);
@@ -733,7 +732,7 @@ void commandSpiWrite(uint8_t* commandPayload, uint8_t* responsePayload)
 }
 
 void commandRadioUart(
-    uint8_t* commandPayload, uint8_t* responsePayload, comBusInterface* comBus)
+    uint8_t* commandPayload, uint8_t* responsePayload, ComBusInterface* comBus)
 {
     COMMANDS::RADIO_UART::command_t command(commandPayload);
     COMMANDS::RADIO_UART::response_t response;
@@ -751,7 +750,7 @@ void commandRadioUart(
     }
     else if (command.mode == 's') // send data read from uart over radio
     {
-        radioUart uartRadio;
+        RadioUart uartRadio;
 
         uint8_t package[32] = { 0 };
         uint8_t len = 0;
@@ -771,7 +770,7 @@ void commandRadioUart(
     }
     else if (command.mode == 'r') // receive data from radio and write to uart
     {
-        radioUart uartRadio;
+        RadioUart uartRadio;
 
         while (true) {
             if (uartRadio.has_data()) {
@@ -1016,7 +1015,7 @@ void commandKeepAlive(uint8_t* commandPayload, uint8_t* responsePayload)
 }
 
 void parseCommand(
-    protocol& m_protocol, comBusInterface* comBus, uint8_t* commandPayload)
+    Protocol& m_protocol, ComBusInterface* comBus, uint8_t* commandPayload)
 {
     uint8_t responsePayload[COMMANDS::MAX_PAYLOAD_LENGTH] = {};
 
@@ -1162,7 +1161,7 @@ void rxNodeSleepAndPollForWakeup()
     }
 }
 
-void parseInput(protocol m_protocol, comBusInterface* comBus)
+void parseInput(Protocol m_protocol, ComBusInterface* comBus)
 {
     uint8_t c = ' ';
     uint8_t payload[COMMANDS::MAX_PAYLOAD_LENGTH] = {};
@@ -1235,7 +1234,7 @@ void parseInput(protocol m_protocol, comBusInterface* comBus)
         else {
             // idle process
 #ifdef USE_NRF24L01_INTTERRUPT
-            radioUart uartRadio;
+            RadioUart uartRadio;
             if (uartRadio.has_data()) {
                 comBus->putChar(uartRadio.getChar());
             }
@@ -1290,24 +1289,21 @@ void parseInput(protocol m_protocol, comBusInterface* comBus)
 
 int main()
 {
+    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    radioUart uartRadio;
-    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
-    comBusInterface* u = &uartRadio;
+    RadioUart uart;
 #else
-    uart uartSerialPort;
-    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
-    comBusInterface* u = &uartSerialPort;
+    Uart uart;
 #endif
     ArduinoCryptoHandler c(m_aes);
-    protocol p(u, &c);
+    Protocol p((ComBusInterface*) &uart, &c);
 
 #ifdef USE_NRF24L01_INTTERRUPT
     PCICR |= _BV(PCIE0);
     PCMSK0 |= _BV(PCINT0);
 #endif
 
-    parseInput(p, u);
+    parseInput(p, (ComBusInterface*) &uart);
 
     return 0;
 }

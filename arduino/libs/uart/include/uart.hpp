@@ -5,9 +5,9 @@
 
 /* http://www.ermicro.com/blog/?p=325 */
 
-class uart : public comBusInterface{
+class Uart : public ComBusInterface{
 public:
-    uart();
+    Uart();
     virtual void init();
     virtual void putChar(char c);
     virtual void writeBuffer(uint8_t* msg, uint16_t length);

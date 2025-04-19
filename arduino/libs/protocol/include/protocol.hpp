@@ -3,14 +3,14 @@
 #include <streamProtocol.hpp>
 #include <com_bus.hpp>
 
-class protocol : public StreamProtocol {
+class Protocol : public StreamProtocol {
 public:
-    protocol(comBusInterface* u, CryptoHandlerInterface* c);
+    Protocol(ComBusInterface* u, CryptoHandlerInterface* c);
 
     virtual char getChar();
     virtual bool hasData();
 
 private:
-    comBusInterface* m_comBus;
+    ComBusInterface* m_comBus;
 };
 

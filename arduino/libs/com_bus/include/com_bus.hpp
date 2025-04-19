@@ -1,7 +1,7 @@
 #pragma once
 #include <stdint.h>
 
-class comBusInterface {
+class ComBusInterface {
 public:
     virtual void init() = 0;
     virtual void putChar(char c) = 0;
