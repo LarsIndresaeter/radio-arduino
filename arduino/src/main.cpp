@@ -232,7 +232,7 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
         aes_key[i] = eeprom.read(offsetof(eeprom_data_t, EK_KEY) + i);
     }
 
-    uint8_t aes_iv[16] = {};
+    uint8_t aes_iv[16] = {0};
 
     // copy data to response buffer
     for (int i = 0; i < 16; i++) {
