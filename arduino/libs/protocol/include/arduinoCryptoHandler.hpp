@@ -18,7 +18,6 @@ public:
 
 private:
     Aes& m_aes;
-    SHA1Context m_sha;
     uint8_t m_tk[16];
     uint8_t m_mk[16];
 

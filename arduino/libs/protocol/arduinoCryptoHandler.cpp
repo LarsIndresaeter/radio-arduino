@@ -1,8 +1,8 @@
 #include <arduinoCryptoHandler.hpp>
 
 ArduinoCryptoHandler::ArduinoCryptoHandler(
-    Aes& p_aes)
-    : m_aes(p_aes)
+     Aes& p_aes)
+    : m_aes(p_aes) 
 {
     uint8_t tmp[16] = { 0 };
     tmp[0]='s';
@@ -78,10 +78,12 @@ uint32_t ArduinoCryptoHandler::checksum(uint8_t length, uint8_t* buffer)
     uint8_t shasum[20];
     uint32_t retval = 0;
 
-    SHA1Reset(&m_sha);
-    SHA1Input(&m_sha, m_mk, 16);
-    SHA1Input(&m_sha, buffer, length);
-    SHA1Result(&m_sha, shasum);
+    SHA1Context sha;
+
+    SHA1Reset(&sha);
+    SHA1Input(&sha, m_mk, 16);
+    SHA1Input(&sha, &buffer[0], length);
+    SHA1Result(&sha, &shasum[0]);
 
     retval |= ((uint32_t)shasum[0]) << 24;
     retval |= ((uint32_t)shasum[1]) << 16;
@@ -96,11 +98,13 @@ uint32_t ArduinoCryptoHandler::mac(uint8_t length, uint8_t* buffer)
     uint8_t shasum[20];
     uint32_t retval = 0;
 
-    SHA1Reset(&m_sha);
-    SHA1Input(&m_sha, m_mk, 16);
-    SHA1Input(&m_sha, buffer, length);
-    SHA1Input(&m_sha, m_mk, 16);
-    SHA1Result(&m_sha, shasum);
+    SHA1Context sha;
+
+    SHA1Reset(&sha);
+    SHA1Input(&sha, m_mk, 16);
+    SHA1Input(&sha, buffer, length);
+    SHA1Input(&sha, m_mk, 16);
+    SHA1Result(&sha, shasum);
 
     retval |= ((uint32_t)shasum[0]) << 24;
     retval |= ((uint32_t)shasum[1]) << 16;

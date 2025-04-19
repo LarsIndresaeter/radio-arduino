@@ -186,6 +186,7 @@ void commandSha1(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::SHA1::command_t command(commandPayload);
     COMMANDS::SHA1::response_t response;
+
     SHA1Context sha;
 
     SHA1Reset(&sha);
@@ -199,7 +200,6 @@ void commandHotp(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::HOTP::command_t command(commandPayload);
     COMMANDS::HOTP::response_t response;
-    SHA1Context sha;
 
     static uint16_t cnt = 0;
     uint8_t HOTP_message[16];
@@ -212,6 +212,8 @@ void commandHotp(uint8_t* commandPayload, uint8_t* responsePayload)
     HOTP_message[5] = 'r';
     HOTP_message[6] = 'e';
     HOTP_message[7] = 't';
+
+    SHA1Context sha;
 
     SHA1Reset(&sha);
     SHA1Input(&sha, &HOTP_message[0], 8);
