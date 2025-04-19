@@ -1290,24 +1290,21 @@ void parseInput(protocol m_protocol, comBusInterface* comBus)
 
 int main()
 {
+    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    radioUart uartRadio;
-    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
-    comBusInterface* u = &uartRadio;
+    radioUart u;
 #else
-    uart uartSerialPort;
-    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
-    comBusInterface* u = &uartSerialPort;
+    uart u;
 #endif
     ArduinoCryptoHandler c(m_aes);
-    protocol p(u, &c);
+    protocol p((comBusInterface*) &u, &c);
 
 #ifdef USE_NRF24L01_INTTERRUPT
     PCICR |= _BV(PCIE0);
     PCMSK0 |= _BV(PCINT0);
 #endif
 
-    parseInput(p, u);
+    parseInput(p, (comBusInterface*) &u);
 
     return 0;
 }
