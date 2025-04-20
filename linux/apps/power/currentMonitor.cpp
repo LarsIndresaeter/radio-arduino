@@ -47,21 +47,6 @@ void readCurrentAndVoltage(monitor& mon, mqtt::async_client& mqtt_client, int sa
     std::string gatewayName = getGatewayNameAndPublishBirth(mon, mqtt_client);
 
     mqtt::topic json_topic(mqtt_client, createMqttTopic("DDATA", gatewayName, "ina219"), QOS, false);
-    mqtt::topic current_min_topic(
-        mqtt_client, createMqttTopic("DDATA", gatewayName, "ina219/current/min"), QOS, false);
-    mqtt::topic current_max_topic(
-        mqtt_client, createMqttTopic("DDATA", gatewayName, "ina219/current/max"), QOS, false);
-    mqtt::topic current_avg_topic(
-        mqtt_client, createMqttTopic("DDATA", gatewayName, "ina219/current/avg"), QOS, false);
-    mqtt::topic current_stddev_topic(
-        mqtt_client, createMqttTopic("DDATA", gatewayName, "ina219/current/stddev"), QOS, false);
-    mqtt::topic voltage_min_topic(
-        mqtt_client, createMqttTopic("DDATA", gatewayName, "ina219/voltage/min"), QOS, false);
-    mqtt::topic voltage_max_topic(
-        mqtt_client, createMqttTopic("DDATA", gatewayName, "ina219/voltage/max"), QOS, false);
-    mqtt::topic voltage_avg_topic(
-        mqtt_client, createMqttTopic("DDATA", gatewayName, "ina219/voltage/avg"), QOS, false);
-
     for (int i = 0; i <= samples; i++) {
         int time = 1;
         int timePrev = 0;
@@ -105,52 +90,44 @@ void readCurrentAndVoltage(monitor& mon, mqtt::async_client& mqtt_client, int sa
             float I_max = *max_element(currentData.begin(), currentData.end());
 
             try {
-                bool json_data_changed = false;
+                bool json_data_changed = true;
 
                 if (abs(V_min - V_min_p) > EVENT_THRESHOLD || timeoutExpired) {
-                    voltage_min_topic.publish(std::move(std::to_string(V_min)));
                     V_min_p = V_min;
                 }
                 if (abs(V_max - V_max_p) > EVENT_THRESHOLD || timeoutExpired) {
-                    voltage_max_topic.publish(std::move(std::to_string(V_max)));
                     V_max_p = V_max;
                 }
                 if (abs(V_avg - V_avg_p) > EVENT_THRESHOLD || timeoutExpired) {
                     json_data_changed = true;
-                    voltage_avg_topic.publish(std::move(std::to_string(V_avg)));
                     V_avg_p = V_avg;
                 }
                 if (abs(I_min - I_min_p) > EVENT_THRESHOLD || timeoutExpired) {
-                    current_min_topic.publish(std::move(std::to_string(I_min)));
                     I_min_p = I_min;
                 }
                 if (abs(I_max - I_max_p) > EVENT_THRESHOLD || timeoutExpired) {
-                    current_max_topic.publish(std::move(std::to_string(I_max)));
                     I_max_p = I_max;
                 }
                 if (abs(I_avg - I_avg_p) > EVENT_THRESHOLD || timeoutExpired) {
                     json_data_changed = true;
-                    current_avg_topic.publish(std::move(std::to_string(I_avg)));
                     I_avg_p = I_avg;
                 }
                 if (abs(I_std - I_std_p) > EVENT_THRESHOLD || timeoutExpired) {
                     json_data_changed = true;
-                    current_stddev_topic.publish(
-                        std::move(std::to_string(I_std)));
                     I_std_p = I_std;
                 }
 
                 if (json_data_changed) {
                     json_message_id++;
 
-                    //json message = {
-                        //{ "voltage", std::to_string(V_avg),
-                            //"current", std::to_string(I_avg),
-                            //"stddev", std::to_string(I_std),
-                            //"messageCounter", std::to_string(json_message_id),
-                            //"timestamp", getDateTimeString(),
-                            //"secondsSinceEpoch", std::to_string(secondsSinceEpoch()) }
-                    //};
+                    json message = {
+                        { "voltage", std::to_string(V_avg),
+                            "current", std::to_string(I_avg),
+                            "stddev", std::to_string(I_std),
+                            "messageCounter", std::to_string(json_message_id),
+                            "timestamp", getDateTimeString(),
+                            "secondsSinceEpoch", std::to_string(secondsSinceEpoch()) }
+                    };
 
                     std::string mqtt_payload = "{\"voltage\":"
                         + std::to_string(V_avg) + ", \"current\":"
