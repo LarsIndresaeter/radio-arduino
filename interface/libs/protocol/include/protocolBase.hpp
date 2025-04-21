@@ -151,7 +151,7 @@ public:
             PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD - 4 + length, &packet[4]);
 
         // add message authentification code
-        uint32_t mac = m_cryptoHandler->mac(length + 16, &packet[4]);
+        uint32_t mac = m_cryptoHandler->mac(length + 16, &packet[PROTOCOL::ENCRYPTED::CHECKSUM_OFFSET]);
         writeUint32ToBuffer(&packet[PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD + length], mac);
 
         CRC32_calculate(
