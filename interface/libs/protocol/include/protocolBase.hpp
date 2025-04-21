@@ -131,11 +131,11 @@ public:
         packet[PROTOCOL::HEADER::LENGTH_OFFSET] = length + PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD;
 
         // create header which act as initialization vector
+        writeUint32ToBuffer(&packet[PROTOCOL::ENCRYPTED::MESSAGE_ID_OFFSET], m_lastMessageId);
+        m_lastMessageId++;
         uint32_t nonce = m_cryptoHandler->nonce();
         writeUint32ToBuffer(&packet[PROTOCOL::ENCRYPTED::NONCE_OFFSET], nonce);
         writeUint32ToBuffer(&packet[PROTOCOL::ENCRYPTED::RESERVED_OFFSET], 0);
-        writeUint32ToBuffer(&packet[PROTOCOL::ENCRYPTED::MESSAGE_ID_OFFSET], m_lastMessageId);
-        m_lastMessageId++;
 
         // copy payload
         for (int i = 0; i < length; i++) {
@@ -178,7 +178,7 @@ public:
         uint32_t checksum_calculated
             = m_cryptoHandler->checksum(length - 8, &payload[4]);
         uint32_t checksum_package = readUint32FromBuffer(&payload[0]);
-        uint32_t message_id = readUint32FromBuffer(&payload[4]);;
+        uint32_t message_id = readUint32FromBuffer(&payload[4]);
 
         if (message_id > m_lastMessageId) {
             m_lastMessageId = message_id;
