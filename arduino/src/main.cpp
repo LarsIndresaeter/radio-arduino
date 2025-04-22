@@ -1265,7 +1265,7 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
 
 #ifndef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
             // rx gateway reads response in idle loop
-            uint8_t ack_packet[COMMANDS::MAX_PACKAGE_LENGTH];
+            uint8_t ack_packet[32];
             uint8_t response_length
                 = NRF24L01_rx(&ack_packet[0]);
 
