@@ -256,16 +256,12 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
 
 void powerSaveSleepMs(uint8_t delay_ms)
 {
-    if (delay_ms > 16) {
-        delay_ms = 16;
-    }
-
     cli();
 
     TCCR2A = 0;
     TCCR2B = 0;
     TCNT2 = 0;
-    OCR2A = 16 * delay_ms;
+    OCR2A = delay_ms<<4;
     TCCR2A |= (1 << WGM21);
     TCCR2B |= (1 << CS22) | (1 << CS21) | (1 << CS20); // clk/1024=16kHz
     TIMSK2 |= (1 << OCIE2A);
@@ -285,11 +281,8 @@ void powerDownRadioAndSleep(uint16_t delay)
     NRF24L01_power_down();
 #endif
 
-    uint32_t i = 0;
-    if (delay > 0) {
-        powerSaveSleepMs(1);
-        i++;
-    }
+    uint16_t i = 0;
+
     while (i < delay) {
         if ((delay - i) > 16) {
             powerSaveSleepMs(16);
