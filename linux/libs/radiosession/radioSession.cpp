@@ -96,7 +96,7 @@ bool RadioSession::wakeupNotRespondingTryOnce()
         }
         m_isAlive = true;
     } else {
-        UartCommandWakeup result = m_monitor.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(6000));
+        UartCommandWakeup result = m_monitor.get<>(UartCommandWakeup(false), static_cast<std::chrono::milliseconds>(6000));
         COMMANDS::WAKEUP::response_t response_struct = result.responseStruct();
 
         if (m_monitor.lastCommandReturnedValidResponse()) {

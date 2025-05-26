@@ -60,6 +60,7 @@ void print_usage()
     std::cout << "       -s : sleep" << std::endl;
     std::cout << "       -L : print text on LCD" << std::endl;
     std::cout << "       -w : wake up sleeping rx node" << std::endl;
+    std::cout << "       -x : wake up sleeping rx node if data available flag is set" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
     std::cout << "       -m : set gateway address" << std::endl;
     std::cout << "       -a : set node address" << std::endl;
@@ -179,7 +180,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     bool verbose = false;
 
     while ((option
-            = getopt(argc, argv, "P:DBHECs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:wL:FJU:jm:a:k:p"))
+            = getopt(argc, argv, "P:DBHECs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:wxL:FJU:jm:a:k:p"))
            != -1) {
         switch (option) {
         case 'd':
@@ -213,7 +214,10 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             std::cout << mon.getRadio<>(UartCommandPing()) << std::endl;
         } break;
         case 'w':
-            std::cout << mon.get<>(UartCommandWakeup(), static_cast<std::chrono::milliseconds>(12000)) << std::endl;
+            std::cout << mon.get<>(UartCommandWakeup(false), static_cast<std::chrono::milliseconds>(12000)) << std::endl;
+            break;
+        case 'x':
+            std::cout << mon.get<>(UartCommandWakeup(true), static_cast<std::chrono::milliseconds>(12000)) << std::endl;
             break;
         case 'W': {
             UartCommandWs2812b ws2812b;
