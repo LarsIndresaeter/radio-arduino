@@ -32,6 +32,7 @@
 
 Aes aes;
 Random random;
+uint8_t attention_flag = 0;
 uint8_t protocolVersionLastReceivedMessage
     = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
 
@@ -53,7 +54,7 @@ uint8_t rf_link_wakeup_command[32]
 uint8_t rf_link_discover_package[32]
         = { 'd', 'i', 's', 'c', 'o', 'v', 'e', 'r', ' ', 0xaa, 0xaa,
             0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
-            0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, node_address };
+            0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, node_address, 1 };
 
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
     uint32_t keep_alive_interval_ms = 100; // time in idle loop before entering sleep
@@ -937,6 +938,7 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::WAKEUP::command_t command(commandPayload);
     COMMANDS::WAKEUP::response_t response;
     response.status = 0;
+    response.attention = 0;
 
     // only gateway should execute this command
 #ifndef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
@@ -948,17 +950,26 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
 
         if(length == 32)
         {
-            NRF24L01_tx(&rf_link_wakeup_command[0], 32);
-            response.status = 1;
-                                                                
-            for(uint8_t j=0; j<32; j++)
-            {
-                if(read_discover_package[j] != rf_link_discover_package[j])
-                {
-                    response.status = 0;
-                }
-                i=10000;
+            response.attention = read_discover_package[31];
+
+            if ((0 != command.check_attention_flag) && (0 == read_discover_package[31])) {
+                // received discover package but about wakeup since data available flag was not set
                 break;
+            }
+            else
+            {
+                NRF24L01_tx(&rf_link_wakeup_command[0], 32);
+                response.status = 1;
+                                                                    
+                for(uint8_t j=0; j<31; j++)
+                {
+                    if(read_discover_package[j] != rf_link_discover_package[j])
+                    {
+                        response.status = 0;
+                    }
+                    i=10000;
+                    break;
+                }
             }
         }
 
@@ -980,7 +991,7 @@ void commandSetNodeAddress(uint8_t* commandPayload, uint8_t* responsePayload)
 
     // update wakeup command and discover package
     rf_link_wakeup_command[31] = command.node_address;
-    rf_link_discover_package[31] = command.node_address;
+    rf_link_discover_package[30] = command.node_address;
 
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
 
@@ -1138,6 +1149,7 @@ void rxNodeSleepAndPollForWakeup()
         powerDownRadioAndSleep(5000);
 
         // send command to rf gateway
+        rf_link_discover_package[31] = attention_flag;
         NRF24L01_tx(&rf_link_discover_package[0], 32);
 
         _delay_ms(10);
@@ -1266,7 +1278,7 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
             uint8_t is_wakeup_ack = 0;
             if (response_length == 32) {
                 is_wakeup_ack = 1;
-                for (uint8_t j = 0; j < 32; j++) {
+                for (uint8_t j = 0; j < 31; j++) {
                     if (ack_packet[j] != rf_link_discover_package[j]) {
                         is_wakeup_ack = 0;
                     }
