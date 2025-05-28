@@ -35,3 +35,4 @@
 #include <set_node_address/payload.hpp>
 #include <keep_alive/payload.hpp>
 #include <ping/payload.hpp>
+#include <quadrature_encoder/payload.hpp>

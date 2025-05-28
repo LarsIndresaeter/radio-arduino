@@ -34,3 +34,4 @@
 #include <set_node_address/command.hpp>
 #include <keep_alive/command.hpp>
 #include <ping/command.hpp>
+#include <quadrature_encoder/command.hpp>
