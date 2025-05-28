@@ -61,6 +61,8 @@ void print_usage()
     std::cout << "       -L : print text on LCD" << std::endl;
     std::cout << "       -w : wake up sleeping rx node" << std::endl;
     std::cout << "       -x : wake up sleeping rx node if data available flag is set" << std::endl;
+    std::cout << "       -q : read quadrature encoder" << std::endl;
+    std::cout << "       -A : read quadrature encoder on change" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
     std::cout << "       -m : set gateway address" << std::endl;
     std::cout << "       -a : set node address" << std::endl;
@@ -180,7 +182,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     bool verbose = false;
 
     while ((option
-            = getopt(argc, argv, "P:DBHECs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:wxL:FJU:jm:a:k:p"))
+            = getopt(argc, argv, "P:DBHECs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:wxqAL:FJU:jm:a:k:p"))
            != -1) {
         switch (option) {
         case 'd':
@@ -219,6 +221,17 @@ void parseOpt(int argc, char* argv[], monitor& mon)
         case 'x':
             std::cout << mon.get<>(UartCommandWakeup(true), static_cast<std::chrono::milliseconds>(12000)) << std::endl;
             break;
+        case 'q':
+            std::cout << mon.getRadio<>(UartCommandQuadratureEncoder()) << std::endl;
+            break;
+        case 'A': {
+            while (1) {
+                mon.get<>(UartCommandWakeup(true), static_cast<std::chrono::milliseconds>(12000));
+                if (mon.lastCommandReturnedValidResponse()) {
+                    std::cout << mon.getRadio<>(UartCommandQuadratureEncoder()) << std::endl;
+                }
+            }
+        } break;
         case 'W': {
             UartCommandWs2812b ws2812b;
             std::string s(optarg);
