@@ -42,6 +42,9 @@ bool rx_mode_gateway = false;
 bool rx_mode_gateway = true;
 #endif
 
+uint16_t cnt_pos = 0;
+uint16_t cnt_neg = 0;
+
 uint8_t node_address = 0;
 uint8_t rx_tx_addr[5] = { 0xF0, 0xF0, 0xF0, 0xF0, node_address };
 uint8_t rf_channel = 121;
@@ -84,6 +87,22 @@ ISR(PCINT0_vect)
     }
 }
 #endif
+
+ISR(PCINT1_vect)
+{
+    uint8_t direction = 0;
+
+    if(((PINC & 0x03) == 0x00) || ((PINC & 0x03) == 0x03))
+    {
+        cnt_pos++;
+    }
+    else
+    {
+        cnt_neg++;
+    }
+
+    attention_flag = 1;
+}
 
 void sendMessage(Protocol protocol, ComBusInterface* comBus, uint8_t* payload)
 {
@@ -292,6 +311,10 @@ void powerDownRadioAndSleep(uint16_t delay)
         else {
             powerSaveSleepMs(delay - i);
             i = delay;
+        }
+        if(1 == attention_flag)
+        {
+            break; // wake up and send discover package 
         }
     }
 
@@ -981,6 +1004,36 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
+bool quadratureEncoderIsInitialised=false;
+void commandQuadratureEncoder(uint8_t* commandPayload, uint8_t* responsePayload)
+{
+    COMMANDS::QUADRATURE_ENCODER::command_t command(commandPayload);
+    COMMANDS::QUADRATURE_ENCODER::response_t response;
+    response.status = 1;
+
+    attention_flag = 0;
+
+    if(!quadratureEncoderIsInitialised)
+    {
+        quadratureEncoderIsInitialised = true;
+
+        DDRC &= ~(1<<PC0); // set PC0 input (CLK)
+        DDRC &= ~(1<<PC1); // set PC1 input (DT)
+        DDRC &= ~(1<<PC2); // set PC2 input (SW)
+        PCICR=0x02; // enable PCINT1
+        PCMSK1=0x01; // enable pin PCINT8 (PC0)
+                    
+        sei();
+    }
+
+    response.cnt_pos_high = cnt_pos >> 8;
+    response.cnt_pos_low = cnt_pos;
+    response.cnt_neg_high = cnt_neg >> 8;
+    response.cnt_neg_low = cnt_neg;
+
+    response.serialize(responsePayload);
+}
+
 void commandSetNodeAddress(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::SET_NODE_ADDRESS::command_t command(commandPayload);
@@ -1118,6 +1171,9 @@ void parseCommand(
         break;
     case COMMANDS::OI::WAKEUP:
         commandWakeup(commandPayload, responsePayload);
+        break;
+    case COMMANDS::OI::QUADRATURE_ENCODER:
+        commandQuadratureEncoder(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SET_NODE_ADDRESS:
         commandSetNodeAddress(commandPayload, responsePayload);
