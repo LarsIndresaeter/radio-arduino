@@ -17,16 +17,19 @@ public:
             (uint8_t*)&m_response.data()[4]);
         out << "QUADRATURE_ENCODER : ";
 
-        if(response.status == 1)
-        {
-            uint16_t cnt_pos = (response.cnt_pos_high<<8) + response.cnt_pos_low;
-            uint16_t cnt_neg = (response.cnt_neg_high<<8) + response.cnt_neg_low;
+        if (response.status == 1) {
+            uint16_t cnt_pos = (response.cnt_pos_high << 8) + response.cnt_pos_low;
+            uint16_t cnt_neg = (response.cnt_neg_high << 8) + response.cnt_neg_low;
+            uint16_t sw_cnt = (response.sw_cnt_high << 8) + response.sw_cnt_low;
 
             out << "OK (";
-            out << "pos=" << std::to_string(cnt_pos) << " neg=" << std::to_string(cnt_neg) << ")";
+            out << "pos=" << std::to_string(cnt_pos);
+            out << " neg=" << std::to_string(cnt_neg);
+            out << " sw_cnt=" << std::to_string(sw_cnt);
+            out << " sw_pos=" << std::to_string(response.sw_pos);
+            out << ")";
         }
-        else
-        {
+        else {
             out << "FAILED";
         }
     };

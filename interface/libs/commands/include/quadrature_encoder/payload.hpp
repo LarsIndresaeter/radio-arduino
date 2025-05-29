@@ -8,7 +8,7 @@ namespace COMMANDS {
 
 namespace QUADRATURE_ENCODER {
     constexpr uint8_t COMMAND_LENGTH = 0;
-    constexpr uint8_t RESPONSE_LENGTH = 5;
+    constexpr uint8_t RESPONSE_LENGTH = 8;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
     static_assert(RESPONSE_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "RESPONSE_LENGTH larger than max payload");
@@ -39,7 +39,10 @@ namespace QUADRATURE_ENCODER {
             cnt_neg_low = res[3];
             cnt_pos_high = res[4];
             cnt_pos_low = res[5];
-            status = res[6];
+            sw_pos = res[6];
+            sw_cnt_high = res[7];
+            sw_cnt_low = res[8];
+            status = res[9];
         }
 
         void serialize(uint8_t* response)
@@ -50,7 +53,10 @@ namespace QUADRATURE_ENCODER {
             response[3] = cnt_neg_low;
             response[4] = cnt_pos_high;
             response[5] = cnt_pos_low;
-            response[6] = status;
+            response[6] = sw_pos;
+            response[7] = sw_cnt_high;
+            response[8] = sw_cnt_low;
+            response[9] = status;
         }
 
         uint8_t OI;
@@ -59,6 +65,9 @@ namespace QUADRATURE_ENCODER {
         uint8_t cnt_pos_low;
         uint8_t cnt_neg_high;
         uint8_t cnt_neg_low;
+        uint8_t sw_pos;
+        uint8_t sw_cnt_high;
+        uint8_t sw_cnt_low;
         uint8_t status;
 
     } response_t;
