@@ -44,6 +44,8 @@ bool rx_mode_gateway = true;
 
 uint16_t cnt_pos = 0;
 uint16_t cnt_neg = 0;
+uint16_t sw_cnt = 0;
+uint8_t sw_pos = 0;
 
 uint8_t node_address = 0;
 uint8_t rx_tx_addr[5] = { 0xF0, 0xF0, 0xF0, 0xF0, node_address };
@@ -99,6 +101,15 @@ ISR(PCINT1_vect)
     else
     {
         cnt_neg++;
+    }
+
+    if(PINC & 0x04)
+    {
+        sw_cnt++;
+        sw_pos=1;
+    }
+    else{
+        sw_pos=0;
     }
 
     attention_flag = 1;
@@ -1021,7 +1032,7 @@ void commandQuadratureEncoder(uint8_t* commandPayload, uint8_t* responsePayload)
         DDRC &= ~(1<<PC1); // set PC1 input (DT)
         DDRC &= ~(1<<PC2); // set PC2 input (SW)
         PCICR=0x02; // enable PCINT1
-        PCMSK1=0x01; // enable pin PCINT8 (PC0)
+        PCMSK1=0x05; // enable pin PCINT8 (PC0) and PCINT10 (PC2)
                     
         sei();
     }
@@ -1030,6 +1041,9 @@ void commandQuadratureEncoder(uint8_t* commandPayload, uint8_t* responsePayload)
     response.cnt_pos_low = cnt_pos;
     response.cnt_neg_high = cnt_neg >> 8;
     response.cnt_neg_low = cnt_neg;
+    response.sw_cnt_high = sw_cnt >> 8;
+    response.sw_cnt_low = sw_cnt;
+    response.sw_pos = sw_pos;
 
     response.serialize(responsePayload);
 }
