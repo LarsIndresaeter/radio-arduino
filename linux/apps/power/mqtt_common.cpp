@@ -77,14 +77,14 @@ std::string getGatewayNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt
 {
     std::string gatewayName("");
 
-    auto masterDeviceInfo = mon.get<>(UartCommandGetDeviceInfo());
+    auto gatewayDeviceInfo = mon.get<>(UartCommandGetDeviceInfo());
 
-    if (masterDeviceInfo.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
-        masterDeviceInfo = mon.get<>(UartCommandGetDeviceInfo());
+    if (gatewayDeviceInfo.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
+        gatewayDeviceInfo = mon.get<>(UartCommandGetDeviceInfo());
     }
 
-    if (masterDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
-        auto response = masterDeviceInfo.responseStruct();
+    if (gatewayDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+        auto response = gatewayDeviceInfo.responseStruct();
 
         for (int i = 0; i < 16 && response.name[i] != 0; i++) {
             gatewayName += response.name[i];
