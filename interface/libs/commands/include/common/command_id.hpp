@@ -41,6 +41,7 @@ enum class OI
     SET_NODE_ADDRESS = 31,
     KEEP_ALIVE = 32,
     PING = 33,
+    QUADRATURE_ENCODER = 34,
 };
 
 } // namespace COMMANDS
