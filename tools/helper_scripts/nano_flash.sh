@@ -7,7 +7,7 @@ PARAM=$1
 
 flash_gateway()
 {
-    avrdude -c arduino -b 57600 -P ${_SERIAL_DEVICE_GATEWAY} -p atmega328p -vv -U flash:w:bin/arduino.hex
+    avrdude -c arduino -b 57600 -P ${_SERIAL_DEVICE_GATEWAY} -p atmega328p -vv -U flash:w:bin/gateway.hex
 }
 
 flash_node()

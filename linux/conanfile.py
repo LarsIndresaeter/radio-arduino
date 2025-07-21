@@ -45,7 +45,7 @@ class AvrUartConan(ConanFile):
 
     def package(self):
         self.copy("uart-tool", dst="bin", src="apps/generic/bin")
-        self.copy("arduino.hex", dst="bin", src="bin")
+        self.copy("gateway.hex", dst="bin", src="bin")
 
     def system_requirements(self):
         packages = None
