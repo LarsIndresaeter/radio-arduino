@@ -26,8 +26,8 @@ setup_arduino()
 
 setup_linux()
 {
-    conan editable add linux uart-tool/0.0.1@lars/test --layout=tools/conan/layout/linux.txt
-    conan install -if build/linux linux -o uart-tool:mqtt=True -o uart-avr:RX_NODE=True --build=missing
+    conan editable add linux raduino-tool/0.0.1@lars/test --layout=tools/conan/layout/linux.txt
+    conan install -if build/linux linux -o raduino-tool:mqtt=True -o raduino-avr:RX_NODE=True --build=missing
     conan build -bf build/linux linux
 }
 
