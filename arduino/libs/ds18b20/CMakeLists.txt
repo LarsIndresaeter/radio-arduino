@@ -6,5 +6,5 @@ add_library(ds18b20
     romsearch.c
     )
 
-target_include_directories(ds18b20 PUBLIC ${CONAN_INCLUDE_DIRS_UART-API})
+target_include_directories(ds18b20 PUBLIC ${CONAN_INCLUDE_DIRS_RADUINO-API})
 target_include_directories(ds18b20 INTERFACE include)
