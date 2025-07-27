@@ -104,7 +104,7 @@ void testAes(monitor& mon)
 
 void print_usage()
 {
-    std::cout << "uart-tool" << std::endl;
+    std::cout << "raduino-gateway" << std::endl;
     std::cout << "       -V : Verbose on" << std::endl;
     std::cout << "       -v : Verbose off" << std::endl;
     std::cout << "       -B : Blink command" << std::endl;

@@ -10,7 +10,7 @@ find_package(PahoMqttCpp REQUIRED)
 find_package(nlohmann_json REQUIRED)
 add_definitions(-DUSE_FEATURE_MQTT=1)
 
-include_directories(mqtt-client include)
-add_executable(mqtt-client main.cpp desiredStateCallback.cpp desiredState.cpp actualState.cpp mqtt_common.cpp digitalTwin.cpp ../../libs/crypto/crypto.cpp)
-target_link_libraries(mqtt-client ${CONAN_LIBS} epollevent eventprocess monitor uart protocol radiosession pthread)
+include_directories(raduino-mqtt-client include)
+add_executable(raduino-mqtt-client main.cpp desiredStateCallback.cpp desiredState.cpp actualState.cpp mqtt_common.cpp digitalTwin.cpp ../../libs/crypto/crypto.cpp)
+target_link_libraries(raduino-mqtt-client ${CONAN_LIBS} epollevent eventprocess monitor uart protocol radiosession pthread)
 

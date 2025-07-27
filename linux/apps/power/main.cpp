@@ -19,7 +19,7 @@ using namespace std::chrono_literals;
 
 void print_usage()
 {
-    std::cout << "power-client" << std::endl;
+    std::cout << "power-monitor" << std::endl;
     std::cout << "       -N : ina219 power monitor, statistic per second for "
                  "<N> seconds"
               << std::endl;

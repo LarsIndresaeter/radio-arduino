@@ -48,18 +48,18 @@ conan_package_linux()
 {
     set -e
 
-    if [ `conan editable list | grep "^raduino-tool/"` ]
+    if [ `conan editable list | grep "^raduino-gateway/"` ]
     then
-        conan editable remove $(conan editable list | grep "^raduino-tool/")
+        conan editable remove $(conan editable list | grep "^raduino-gateway/")
         rm -fr linux/build/ 
     fi
 
-    conan remove raduino-tool -f
+    conan remove raduino-gateway -f
 
-    echo "build raduino-tool in cache"
+    echo "build raduino-gateway in cache"
     pushd linux
-    conan create . lars/test -o raduino-tool:mqtt=True -o raduino-avr:RX_NODE=False --build=missing
-    conan create . lars/test -o raduino-tool:mqtt=True -o raduino-avr:RX_NODE=True --build=missing
+    conan create . lars/test -o raduino-gateway:mqtt=True -o raduino-avr:RX_NODE=False --build=missing
+    conan create . lars/test -o raduino-gateway:mqtt=True -o raduino-avr:RX_NODE=True --build=missing
     popd
 }
 

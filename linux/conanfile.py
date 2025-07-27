@@ -2,7 +2,7 @@ from conans import ConanFile, CMake, tools
 from conans.tools import os_info, SystemPackageTool
 
 class AvrUartConan(ConanFile):
-    name = "uart-tool"
+    name = "raduino-gateway"
     version = "0.0.1"
     license = "gpl"
     author = "Lars Indresaeter"
@@ -28,12 +28,12 @@ class AvrUartConan(ConanFile):
             self.requires("nlohmann_json/3.11.3", private=True)
         else:
             self.requires("openssl/3.1.1",private=True)
-        self.requires("uart-api/0.0.1@lars/test",private=True)
-        self.requires("uart-avr/[>0.0.2, include_prerelease=True]@lars/test",private=True)
+        self.requires("raduino-api/0.0.1@lars/test",private=True)
+        self.requires("raduino-avr/[>0.0.2, include_prerelease=True]@lars/test",private=True)
 
     def imports(self):
         self.copy("*.a", dst="", src="")
-        self.copy("*.hpp", dst="libs", src="libs", root_package="uart-api")
+        self.copy("*.hpp", dst="libs", src="libs", root_package="raduino-api")
         self.copy("*", dst="bin", src="bin")
 
     def build(self):
@@ -44,7 +44,7 @@ class AvrUartConan(ConanFile):
         cmake.build()
 
     def package(self):
-        self.copy("uart-tool", dst="bin", src="apps/generic/bin")
+        self.copy("raduino-gateway", dst="bin", src="apps/generic/bin")
         self.copy("gateway.hex", dst="bin", src="bin")
 
     def system_requirements(self):
