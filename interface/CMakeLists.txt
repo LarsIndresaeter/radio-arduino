@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(uart-api)
+project(raduino-api)
 
 set(PRODUCT_NAME api)
 
