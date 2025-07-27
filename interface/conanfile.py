@@ -2,7 +2,7 @@ from conans import ConanFile, CMake, tools
 from conans.tools import os_info, SystemPackageTool
 
 class UartApiConan(ConanFile):
-    name = "uart-api"
+    name = "raduino-api"
     version = "0.0.1"
     license = "gpl"
     author = "Lars Indresaeter"

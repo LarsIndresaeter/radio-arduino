@@ -27,7 +27,7 @@ int timeMs()
 
 void print_usage()
 {
-    std::cout << "rf-tool" << std::endl;
+    std::cout << "raduino-node" << std::endl;
     std::cout << "       -V : Verbose on" << std::endl;
     std::cout << "       -v : Verbose off" << std::endl;
     std::cout << "       -B : Blink command" << std::endl;

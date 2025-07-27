@@ -11,6 +11,6 @@ if(mqtt)
     add_definitions(-DUSE_FEATURE_MQTT=1)
 endif()
 
-add_executable(uart-tool main.cpp ../../libs/crypto/crypto.cpp)
-target_link_libraries(uart-tool ${CONAN_LIBS} epollevent eventprocess monitor uart protocol pthread)
+add_executable(raduino-gateway main.cpp ../../libs/crypto/crypto.cpp)
+target_link_libraries(raduino-gateway ${CONAN_LIBS} epollevent eventprocess monitor uart protocol pthread)
 

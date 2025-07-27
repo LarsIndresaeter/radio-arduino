@@ -63,7 +63,7 @@ void testAes(monitor& mon)
 
 void print_usage()
 {
-    std::cout << "test-tool" << std::endl;
+    std::cout << "raduino-test" << std::endl;
     std::cout << "       -A : test AES" << std::endl;
     std::cout << "       -C : print counter values" << std::endl;
     std::cout << "       -E : EEPROM command" << std::endl;

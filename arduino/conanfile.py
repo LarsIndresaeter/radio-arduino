@@ -38,7 +38,7 @@ def gitSemVerAddGitSha(versionString):
     return versionString
 
 class AvrUartConan(ConanFile):
-    name = "uart-avr"
+    name = "raduino-avr"
     version=gitSemVerAddGitSha('0.1.0')
     license = "gpl"
     author = "Lars Indresaeter"
@@ -60,10 +60,10 @@ class AvrUartConan(ConanFile):
             ]
 
     def requirements(self):
-        self.requires("uart-api/0.0.1@lars/test")
+        self.requires("raduino-api/0.0.1@lars/test")
 
     def imports(self):
-        self.copy("*.hpp", dst="libs", src="libs", root_package="uart-api")
+        self.copy("*.hpp", dst="libs", src="libs", root_package="raduino-api")
 
     def build(self):
         cmake = CMake(self)

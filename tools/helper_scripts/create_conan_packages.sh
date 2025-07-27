@@ -7,21 +7,21 @@ WORKDIR=$PWD
 
 conan_package_interface()
 {
-    if [ `conan editable list | grep "^uart-api/"` ]
+    if [ `conan editable list | grep "^raduino-api/"` ]
     then
-        conan editable remove $(conan editable list | grep "^uart-api/")
+        conan editable remove $(conan editable list | grep "^raduino-api/")
         rm -fr interface/build/
     fi
 
-    if [ `conan editable list | grep "^uart-api-test/"` ]
+    if [ `conan editable list | grep "^raduino-api-test/"` ]
     then
-        conan editable remove $(conan editable list | grep "^uart-api-test/")
+        conan editable remove $(conan editable list | grep "^raduino-api-test/")
         rm -fr interface/test_package/build/
     fi
 
-    conan remove uart-api -f
+    conan remove raduino-api -f
 
-    echo "build uart-api in cache"
+    echo "build raduino-api in cache"
     pushd interface
     conan create . lars/test --build=missing
     popd
@@ -31,35 +31,35 @@ conan_package_arduino()
 {
     set -e
 
-    if [ `conan editable list | grep "^uart-avr/"` ]
+    if [ `conan editable list | grep "^raduino-avr/"` ]
     then
-        conan editable remove $(conan editable list | grep "^uart-avr/")
+        conan editable remove $(conan editable list | grep "^raduino-avr/")
         rm -fr arduino/build/
     fi
 
-    conan remove uart-avr -f
+    conan remove raduino-avr -f
 
-    echo "build uart-avr in cache"
-    conan create arduino lars/test -pr tools/conan/profiles/gcc-avr -o uart-avr:RX_NODE=False
-    conan create arduino lars/test -pr tools/conan/profiles/gcc-avr -o uart-avr:RX_NODE=True
+    echo "build raduino-avr in cache"
+    conan create arduino lars/test -pr tools/conan/profiles/gcc-avr -o raduino-avr:RX_NODE=False
+    conan create arduino lars/test -pr tools/conan/profiles/gcc-avr -o raduino-avr:RX_NODE=True
 }
 
 conan_package_linux()
 {
     set -e
 
-    if [ `conan editable list | grep "^uart-tool/"` ]
+    if [ `conan editable list | grep "^raduino-gateway/"` ]
     then
-        conan editable remove $(conan editable list | grep "^uart-tool/")
+        conan editable remove $(conan editable list | grep "^raduino-gateway/")
         rm -fr linux/build/ 
     fi
 
-    conan remove uart-tool -f
+    conan remove raduino-gateway -f
 
-    echo "build uart-tool in cache"
+    echo "build raduino-gateway in cache"
     pushd linux
-    conan create . lars/test -o uart-tool:mqtt=True -o uart-avr:RX_NODE=False --build=missing
-    conan create . lars/test -o uart-tool:mqtt=True -o uart-avr:RX_NODE=True --build=missing
+    conan create . lars/test -o raduino-gateway:mqtt=True -o raduino-avr:RX_NODE=False --build=missing
+    conan create . lars/test -o raduino-gateway:mqtt=True -o raduino-avr:RX_NODE=True --build=missing
     popd
 }
 
