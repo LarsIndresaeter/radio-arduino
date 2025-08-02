@@ -35,7 +35,8 @@ clean_arduino()
 clean_linux()
 {
     delete_build_dir ${WORKDIR}/build/linux
-    rm -f bin/*tool*
+    rm -f bin/raduino-*
+    rm -f bin/power-monitor
 }
 
 clean_all()
