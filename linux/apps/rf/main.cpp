@@ -64,8 +64,8 @@ void print_usage()
     std::cout << "       -q : read quadrature encoder" << std::endl;
     std::cout << "       -A : read quadrature encoder on change" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
-    std::cout << "       -m : set gateway address" << std::endl;
-    std::cout << "       -a : set node address" << std::endl;
+    std::cout << "       -n : wakeup node address" << std::endl;
+    std::cout << "       -a : update node address" << std::endl;
     std::cout << "       -k : set keep alive interval" << std::endl;
     std::cout << "       -p : ping radio node" << std::endl;
 }
@@ -182,7 +182,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     bool verbose = false;
 
     while ((option
-            = getopt(argc, argv, "P:DBHECs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:wxqAL:FJU:jm:a:k:p"))
+            = getopt(argc, argv, "P:DBHECs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:wxqAL:FJU:jn:a:k:p"))
            != -1) {
         switch (option) {
         case 'd':
@@ -487,7 +487,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
         case 'h':
             print_usage();
             break;
-        case 'm':
+        case 'n':
             radioAddress = atoi(optarg);
             {
                 RadioSession radioSession(mon, radioAddress);
