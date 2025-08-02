@@ -75,13 +75,14 @@ check_device_file()
 
 check_device_file "/dev/ttyUSB0"
 check_device_file "/dev/ttyUSB1"
+check_device_file "/dev/ttyUSB2"
 
 if [ -e bin/devices/gateway/device ]
 then
     _DEVICE_GATEWAY=$(echo bin/devices/gateway/device)
     if [ -e "${_DEVICE_GATEWAY}" ]
     then
-        echo "gateway" >> bin/devices/${_DEVICE_GATEWAY/role}
+        echo "gateway" >> ${_DEVICE_GATEWAY/role}
     fi
 fi
 
@@ -90,7 +91,7 @@ then
     _DEVICE_GATEWAY=$(echo bin/devices/node/device)
     if [ -e "${_DEVICE_GATEWAY}" ]
     then
-        echo "node" >> bin/devices/${_DEVICE_GATEWAY/role}
+        echo "node" >> ${_DEVICE_GATEWAY/role}
     fi
 fi
 
