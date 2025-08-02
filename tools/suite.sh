@@ -13,7 +13,7 @@ fi
 
 if [ "${PARAM}" == "devices" ]
 then
-    ${RADINO_HELPER_SCRIPTS_DIR}/devices.sh "${2}"
+    ${RADINO_HELPER_SCRIPTS_DIR}/devices.sh "${2}" "${3}" "${4}"
 fi
 
 if [ "${PARAM}" == "mqtt" ]

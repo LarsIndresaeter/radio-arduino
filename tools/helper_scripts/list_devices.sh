@@ -1,10 +1,11 @@
 #!/bin/bash
 
 echo "list devices"
+echo ""
 
-printf "==================================================================\n"
-printf "%20s | %20s | %20s\n" 'role' 'name' 'device'
-printf "==================================================================\n"
+printf "===================================================================\n"
+printf "%10s | %18s | %20s | %10s\n" 'role' 'name' 'device' 'baud rate'
+printf "===================================================================\n"
 
 for d in bin/devices/dev/*/ ; do
     _DEV=$(echo "${d}" | cut -d '/' -f3-4)
@@ -22,6 +23,13 @@ for d in bin/devices/dev/*/ ; do
         _DEVICE_ROLE="?"
     fi
 
-    printf "%20s | %20s | %20s\n" "${_DEVICE_ROLE}" "${_DEVICE_NAME}" "${_DEV}"
+    if [ -f "$d/baudrate" ]
+    then
+        _DEVICE_BAUDRATE=$(cat "$d/baudrate")
+    else
+        _DEVICE_BAUDRATE="?"
+    fi
+
+    printf "%10s | %18s | %20s | %10s\n" "${_DEVICE_ROLE}" "${_DEVICE_NAME}" "/${_DEV}" "${_DEVICE_BAUDRATE}"
 done
 

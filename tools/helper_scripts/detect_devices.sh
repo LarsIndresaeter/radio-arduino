@@ -22,7 +22,7 @@ read_name()
     _DEVICE_FILE=$1
     _SETTINGS_DIR="bin/devices${_DEVICE_FILE}"
 
-    rm "${_SETTINGS_DIR}/name"
+    rm -f "${_SETTINGS_DIR}/name"
 
     for i in 1 2 3 4 5
     do
@@ -74,4 +74,23 @@ check_device_file()
 }
 
 check_device_file "/dev/ttyUSB0"
-#check_device_file "/dev/ttyUSB1"
+check_device_file "/dev/ttyUSB1"
+
+if [ -e bin/devices/gateway/device ]
+then
+    _DEVICE_GATEWAY=$(echo bin/devices/gateway/device)
+    if [ -e "${_DEVICE_GATEWAY}" ]
+    then
+        echo "gateway" >> bin/devices/${_DEVICE_GATEWAY/role}
+    fi
+fi
+
+if [ -e bin/devices/node/device ]
+then
+    _DEVICE_GATEWAY=$(echo bin/devices/node/device)
+    if [ -e "${_DEVICE_GATEWAY}" ]
+    then
+        echo "node" >> bin/devices/${_DEVICE_GATEWAY/role}
+    fi
+fi
+
