@@ -25,6 +25,7 @@ public:
             out << "OK (";
             out << "pos=" << std::to_string(cnt_pos);
             out << " neg=" << std::to_string(cnt_neg);
+            out << " value=" << std::to_string(cnt_pos - cnt_neg);
             out << " sw_cnt=" << std::to_string(sw_cnt);
             out << " sw_pos=" << std::to_string(response.sw_pos);
             out << ")";
