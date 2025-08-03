@@ -90,29 +90,50 @@ ISR(PCINT0_vect)
 }
 #endif
 
+static uint8_t pinc_prev;
+
 ISR(PCINT1_vect)
 {
-    uint8_t direction = 0;
+    // PC0 = (CLK)
+    // PC1 = (DT)
+    // PC2 = (SW)
+    cli(); // disable interrupt
 
-    if(((PINC & 0x03) == 0x00) || ((PINC & 0x03) == 0x03))
+    if((PINC & 0x03) != pinc_prev)
     {
-        cnt_pos++;
+        if(((PINC & 0x03) == 0x00) || ((PINC & 0x03) == 0x03))
+        {
+            cnt_pos++;
+        }
+        else
+        {
+            cnt_neg++;
+        }
     }
-    else
-    {
-        cnt_neg++;
-    }
+
+    pinc_prev=PINC & 0x03;
 
     if(PINC & 0x04)
     {
-        sw_cnt++;
+        if(sw_pos==0)
+        {
+            sw_cnt++;
+        }
+
         sw_pos=1;
     }
     else{
+        if(sw_pos==1)
+        {
+            sw_cnt++;
+        }
+
         sw_pos=0;
     }
 
     attention_flag = 1;
+
+    sei();
 }
 
 void sendMessage(Protocol protocol, ComBusInterface* comBus, uint8_t* payload)
@@ -1033,7 +1054,9 @@ void commandQuadratureEncoder(uint8_t* commandPayload, uint8_t* responsePayload)
         DDRC &= ~(1<<PC2); // set PC2 input (SW)
         PCICR=0x02; // enable PCINT1
         PCMSK1=0x05; // enable pin PCINT8 (PC0) and PCINT10 (PC2)
-                    
+                     // seher
+        PORTC |= 0x07; // enable pull-up resistor
+                       
         sei();
     }
 
