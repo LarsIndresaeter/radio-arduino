@@ -11,7 +11,7 @@ read_signature()
     if [ $? -eq 0 ]
     then
         mkdir -p ${_SETTINGS_DIR}
-        echo "${_BAUD_RATE_1}" >> "${_SETTINGS_DIR}/baudrate"
+        echo "${_BAUD_RATE_1}" > "${_SETTINGS_DIR}/baudrate"
     else
         avrdude -b "${_BAUD_RATE_1}" -p m328p -c arduino -P "${_DEVICE_FILE}"
     fi
@@ -42,7 +42,7 @@ read_name()
 
             #echo "DEBUG: info: ${_DEVICE_INFO}"
             #echo "DEBUG: name: ${_DEVICE_NAME}"
-            echo "${_DEVICE_NAME}" >> "${_SETTINGS_DIR}/name"
+            echo "${_DEVICE_NAME}" > "${_SETTINGS_DIR}/name"
 
             break
         fi
@@ -82,7 +82,7 @@ then
     _DEVICE_GATEWAY=$(echo bin/devices/gateway/device)
     if [ -e "${_DEVICE_GATEWAY}" ]
     then
-        echo "gateway" >> ${_DEVICE_GATEWAY/role}
+        echo "gateway" > ${_DEVICE_GATEWAY/role}
     fi
 fi
 
@@ -91,7 +91,7 @@ then
     _DEVICE_GATEWAY=$(echo bin/devices/node/device)
     if [ -e "${_DEVICE_GATEWAY}" ]
     then
-        echo "node" >> ${_DEVICE_GATEWAY/role}
+        echo "node" > ${_DEVICE_GATEWAY/role}
     fi
 fi
 
