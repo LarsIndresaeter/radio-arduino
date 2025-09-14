@@ -23,7 +23,7 @@ public:
         out << " data[0x" << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << static_cast<int>(response.reg) << "]=[";
 
         for (int i = 0;
-             (i < response.length) && (i < COMMANDS::SPI_READ::MAX_DATA_LENGTH);
+             (i < response.length) && (i < sizeof(response.data));
              i++) {
             out << " 0x" << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << static_cast<int>(response.data[i]);
         }
