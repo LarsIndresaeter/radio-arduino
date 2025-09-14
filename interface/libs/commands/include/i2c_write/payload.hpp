@@ -5,8 +5,7 @@
 namespace COMMANDS {
 
 namespace I2C_WRITE {
-    constexpr uint8_t MAX_DATA_LENGTH = 16;
-    constexpr uint8_t COMMAND_LENGTH = 4 + MAX_DATA_LENGTH;
+    constexpr uint8_t COMMAND_LENGTH = 20;
     constexpr uint8_t RESPONSE_LENGTH = 1;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
