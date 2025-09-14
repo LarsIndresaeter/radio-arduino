@@ -9,22 +9,24 @@ public:
             static_cast<uint8_t>(COMMANDS::OI::SPI_WRITE),
             COMMANDS::SPI_WRITE::COMMAND_LENGTH)
     {
+        COMMANDS::SPI_WRITE::command_t command;
+
         m_payload.at(offsetof(COMMANDS::SPI_WRITE::command_t, reg)) = reg;
 
-        if (data.size() < COMMANDS::SPI_WRITE::MAX_DATA_LENGTH) {
+        if (data.size() < sizeof(command.data)) {
             m_payload.at(offsetof(COMMANDS::SPI_WRITE::command_t, length))
                 = data.size();
         }
         else {
             m_payload.at(offsetof(COMMANDS::SPI_WRITE::command_t, length))
-                = COMMANDS::SPI_WRITE::MAX_DATA_LENGTH;
+                = sizeof(command.data);
         }
 
         for (int i = 0; i < data.size(); i++) {
-            if (i >= COMMANDS::SPI_WRITE::MAX_DATA_LENGTH) {
+            if (i >= sizeof(command.data)) {
                 std::cout << "WARNING: SPI payload truncated after "
                           << static_cast<int>(
-                                 COMMANDS::SPI_WRITE::MAX_DATA_LENGTH)
+                                 sizeof(command.data))
                           << " bytes" << std::endl;
                 break;
             }
