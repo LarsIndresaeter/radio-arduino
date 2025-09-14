@@ -24,9 +24,9 @@ public:
 
     void setLed(uint8_t pos, uint8_t red, uint8_t green, uint8_t blue)
     {
-        m_payload.at(offsetof(COMMANDS::WS2812B::command_t, data) + pos*3) = red;
-        m_payload.at(offsetof(COMMANDS::WS2812B::command_t, data) + pos*3 + 1) = green;
-        m_payload.at(offsetof(COMMANDS::WS2812B::command_t, data) + pos*3 + 2) = blue;
+        m_payload.at(offsetof(COMMANDS::WS2812B::command_t, red) + pos) = red;
+        m_payload.at(offsetof(COMMANDS::WS2812B::command_t, green) + pos) = green;
+        m_payload.at(offsetof(COMMANDS::WS2812B::command_t, blue) + pos) = blue;
     }
 };
 
