@@ -48,7 +48,7 @@ public:
         out << std::setfill('0') << std::setw(2) << std::hex << std::uppercase;
 
         for (int i = 0;
-             (i < response.length) && (i < COMMANDS::NRF24L01_READ::MAX_DATA_LENGTH);
+             (i < response.length) && (i < COMMANDS::NRF24L01_WRITE::MAX_DATA_LENGTH);
              i++) {
             out << " 0x" << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << static_cast<int>(response.data[i]);
         }
