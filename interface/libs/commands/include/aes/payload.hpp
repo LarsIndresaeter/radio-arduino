@@ -12,17 +12,20 @@ namespace AES {
     static_assert(RESPONSE_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "RESPONSE_LENGTH larger than max payload");
 
     typedef struct command {
+        command()
+        {
+            OI = static_cast<uint8_t>(COMMANDS::OI::AES);
+            OL = COMMAND_LENGTH;
+        }
+
         command(uint8_t* cmd)
         {
             OI = cmd[0];
             OL = cmd[1];
             type = cmd[2];
-
-            for (int i = 0; i < 16; i++) {
-                if (i >= 16) {
-                    break;
-                }
-                data[i] = cmd[i + 3];
+            for(uint8_t i=0; i<16; i++)
+            {
+                data[i] = cmd[3 + i];
             }
         }
 
@@ -33,24 +36,21 @@ namespace AES {
     } command_t;
 
     typedef struct response {
+        response()
+        {
+            OI = static_cast<uint8_t>(COMMANDS::OI::AES);
+            OL = RESPONSE_LENGTH;
+        }
+
         response(uint8_t* res)
         {
             OI = res[0];
             OL = res[1];
             type = res[2];
-
-            for (int i = 0; i < 16; i++) {
-                if (i >= 16) {
-                    break;
-                }
-                data[i] = res[i + 3];
+            for(uint8_t i=0; i<16; i++)
+            {
+                data[i] = res[3 + i];
             }
-        }
-
-        response()
-        {
-            OI = static_cast<uint8_t>(COMMANDS::OI::AES);
-            OL = RESPONSE_LENGTH;
         }
 
         void serialize(uint8_t* response)
@@ -58,8 +58,9 @@ namespace AES {
             response[0] = OI;
             response[1] = OL;
             response[2] = type;
-            for (int i = 0; i < 16; i++) {
-                response[i + 3] = data[i];
+            for(uint8_t i=0; i<16; i++)
+            {
+                response[3 + i] = data[i];
             }
         }
 
