@@ -32,6 +32,12 @@ namespace I2C_READ {
     } command_t;
 
     typedef struct response {
+        response()
+        {
+            OI = static_cast<uint8_t>(COMMANDS::OI::I2C_READ);
+            OL = RESPONSE_LENGTH;
+        }
+
         response(uint8_t* res)
         {
             OI = res[0];
@@ -41,15 +47,10 @@ namespace I2C_READ {
             registerLow = res[4];
             status = res[5];
             length = res[6];
-            for (int i = 0; i < MAX_DATA_LENGTH; i++) {
+            for(uint8_t i=0; i<16; i++)
+            {
                 data[i] = res[7 + i];
             }
-        }
-
-        response()
-        {
-            OI = static_cast<uint8_t>(COMMANDS::OI::I2C_READ);
-            OL = RESPONSE_LENGTH;
         }
 
         void serialize(uint8_t* response)
@@ -61,7 +62,8 @@ namespace I2C_READ {
             response[4] = registerLow;
             response[5] = status;
             response[6] = length;
-            for (int i = 0; i < MAX_DATA_LENGTH; i++) {
+            for(uint8_t i=0; i<16; i++)
+            {
                 response[7 + i] = data[i];
             }
         }
@@ -73,7 +75,7 @@ namespace I2C_READ {
         uint8_t registerLow;
         uint8_t status;
         uint8_t length;
-        uint8_t data[MAX_DATA_LENGTH];
+        uint8_t data[16];
 
     } response_t;
 }

@@ -21,7 +21,8 @@ namespace I2C_WRITE {
             registerHigh = cmd[3];
             registerLow = cmd[4];
             length = cmd[5];
-            for (int i = 0; i < MAX_DATA_LENGTH; i++) {
+            for(uint8_t i=0; i<16; i++)
+            {
                 data[i] = cmd[6 + i];
             }
         }
@@ -32,21 +33,21 @@ namespace I2C_WRITE {
         uint8_t registerHigh;
         uint8_t registerLow;
         uint8_t length;
-        uint8_t data[MAX_DATA_LENGTH];
+        uint8_t data[16];
     } command_t;
 
     typedef struct response {
+        response()
+        {
+            OI = static_cast<uint8_t>(COMMANDS::OI::I2C_WRITE);
+            OL = RESPONSE_LENGTH;
+        }
+
         response(uint8_t* res)
         {
             OI = res[0];
             OL = res[1];
             status = res[2];
-        }
-
-        response()
-        {
-            OI = static_cast<uint8_t>(COMMANDS::OI::I2C_WRITE);
-            OL = RESPONSE_LENGTH;
         }
 
         void serialize(uint8_t* response)

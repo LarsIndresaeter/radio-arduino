@@ -18,12 +18,9 @@ namespace SSD1306 {
             OI = cmd[0];
             OL = cmd[1];
             line = cmd[2];
-
-            for (int i = 0; i < OL; i++) {
-                if (i >= COMMAND_LENGTH) {
-                    break;
-                }
-                data[i] = cmd[i + 3];
+            for(uint8_t i=0; i<16; i++)
+            {
+                data[i] = cmd[3 + i];
             }
         }
 

@@ -16,8 +16,8 @@ namespace SET_DEVICE_INFO {
         {
             OI = cmd[0];
             OL = cmd[1];
-
-            for (int i = 0; i < 16; i++) {
+            for(uint8_t i=0; i<16; i++)
+            {
                 name[i] = cmd[2 + i];
             }
         }

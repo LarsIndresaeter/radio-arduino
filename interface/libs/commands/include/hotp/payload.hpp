@@ -33,12 +33,9 @@ namespace HOTP {
         {
             OI = res[0];
             OL = res[1];
-
-            for (int i = 0; i < 16; i++) {
-                if (i >= 16) {
-                    break;
-                }
-                data[i] = res[i + 2];
+            for(uint8_t i=0; i<16; i++)
+            {
+                data[i] = res[2 + i];
             }
         }
 
@@ -46,8 +43,9 @@ namespace HOTP {
         {
             response[0] = OI;
             response[1] = OL;
-            for (int i = 0; i < OL; i++) {
-                response[i + 2] = data[i];
+            for(uint8_t i=0; i<16; i++)
+            {
+                response[2 + i] = data[i];
             }
         }
 

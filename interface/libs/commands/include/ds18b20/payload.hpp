@@ -23,27 +23,31 @@ namespace DS18B20 {
     } command_t;
 
     typedef struct response {
-        response(uint8_t* res)
-        {
-            OI = res[0];
-            OL = res[1];
-            temperature[0] = res[2];
-            temperature[1] = res[3];
-            status = res[4];
-        }
-
         response()
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::DS18B20);
             OL = RESPONSE_LENGTH;
         }
 
+        response(uint8_t* res)
+        {
+            OI = res[0];
+            OL = res[1];
+            for(uint8_t i=0; i<2; i++)
+            {
+                temperature[i] = res[2 + i];
+            }
+            status = res[4];
+        }
+
         void serialize(uint8_t* response)
         {
             response[0] = OI;
             response[1] = OL;
-            response[2] = temperature[0];
-            response[3] = temperature[1];
+            for(uint8_t i=0; i<2; i++)
+            {
+                response[2 + i] = temperature[i];
+            }
             response[4] = status;
         }
 
