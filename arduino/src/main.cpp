@@ -636,20 +636,20 @@ void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
 
     uint16_t address = 0;
 
-    if (command.key_id == COMMANDS::SET_KEY::TK) {
+    if (command.key_id == 'T') {
         address = offsetof(eeprom_data, TK_KEY);
     }
-    else if (command.key_id == COMMANDS::SET_KEY::HK) {
+    else if (command.key_id == 'H') {
         address = offsetof(eeprom_data_t, HMAC_KEY);
     }
-    else if (command.key_id == COMMANDS::SET_KEY::HOTP_KEY) {
+    else if (command.key_id == 'O') {
         address = offsetof(eeprom_data_t, HOTP_KEY);
     }
-    else if (command.key_id == COMMANDS::SET_KEY::EK) {
+    else if (command.key_id == 'E') {
         address = offsetof(eeprom_data_t, EK_KEY);
     }
 
-    if (command.key_id != COMMANDS::SET_KEY::UNKNOWN_KEY_ID) {
+    if (command.key_id != 'U') {
         for (uint8_t i = 0; i < 16; i++) {
             eeprom.write(address + i, command.key_value[i]);
         }
@@ -878,14 +878,14 @@ void commandNrf24l01Write(uint8_t* commandPayload, uint8_t* responsePayload)
         uint8_t status = NRF24L01_read_register(NRF24L01_REGISTER_STATUS);
 
         if (status & 0x20) {
-            response.status = COMMANDS::NRF24L01_WRITE::STATUS_OK;
+            response.status = 1;
         }
         else {
-            response.status = COMMANDS::NRF24L01_WRITE::STATUS_NACK;
+            response.status = 0;
         }
     }
     else {
-        response.status = COMMANDS::NRF24L01_WRITE::STATUS_OK;
+        response.status = 1;
     }
 
     response.serialize(responsePayload);

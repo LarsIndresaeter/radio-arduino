@@ -1,7 +1,5 @@
 #pragma once
 
-#include <stdint.h>
-
 #include <common/command_id.hpp>
 
 namespace COMMANDS {

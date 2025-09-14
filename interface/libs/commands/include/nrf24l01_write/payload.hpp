@@ -8,10 +8,6 @@ namespace NRF24L01_WRITE {
     constexpr uint8_t COMMAND_LENGTH = 129;
     constexpr uint8_t RESPONSE_LENGTH = 130;
 
-    constexpr uint8_t STATUS_UNKNOWN = 0;
-    constexpr uint8_t STATUS_OK = 1;
-    constexpr uint8_t STATUS_NACK = 2;
-
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
     static_assert(RESPONSE_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "RESPONSE_LENGTH larger than max payload");
 
