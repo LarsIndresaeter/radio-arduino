@@ -878,14 +878,14 @@ void commandNrf24l01Write(uint8_t* commandPayload, uint8_t* responsePayload)
         uint8_t status = NRF24L01_read_register(NRF24L01_REGISTER_STATUS);
 
         if (status & 0x20) {
-            response.status = COMMANDS::NRF24L01_WRITE::STATUS_OK;
+            response.status = 1;
         }
         else {
-            response.status = COMMANDS::NRF24L01_WRITE::STATUS_NACK;
+            response.status = 0;
         }
     }
     else {
-        response.status = COMMANDS::NRF24L01_WRITE::STATUS_OK;
+        response.status = 1;
     }
 
     response.serialize(responsePayload);

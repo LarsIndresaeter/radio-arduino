@@ -38,7 +38,7 @@ public:
         COMMANDS::NRF24L01_WRITE::response_t response(
             (uint8_t*)&m_response.data()[4]);
         out << "NRF24L01_WRITE  : ";
-        if(response.status == COMMANDS::NRF24L01_WRITE::STATUS_OK)
+        if(response.status == 1)
         {
             out << "OK";
         }
