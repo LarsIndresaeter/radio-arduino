@@ -48,7 +48,7 @@ public:
         out << std::endl;
 
         uint16_t registerOffset = (response.registerHigh<<8) + response.registerLow;
-        for (int i = 0; (i < response.length) && (i < COMMANDS::I2C_READ::MAX_DATA_LENGTH); i++) {
+        for (int i = 0; (i < response.length) && (i < sizeof(response.data)); i++) {
             out << " data[" << static_cast<int>(i) << "] [" << static_cast<int>(registerOffset + i) << "]="
                 << static_cast<int>(response.data[i]) << std::endl;
         }

@@ -5,9 +5,8 @@
 namespace COMMANDS {
 
 namespace I2C_READ {
-    constexpr uint8_t MAX_DATA_LENGTH = 16;
     constexpr uint8_t COMMAND_LENGTH = 4;
-    constexpr uint8_t RESPONSE_LENGTH = 5 + MAX_DATA_LENGTH;
+    constexpr uint8_t RESPONSE_LENGTH = 21;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
     static_assert(RESPONSE_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "RESPONSE_LENGTH larger than max payload");
