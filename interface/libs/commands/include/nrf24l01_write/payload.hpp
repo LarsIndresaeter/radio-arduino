@@ -5,9 +5,8 @@
 namespace COMMANDS {
 
 namespace NRF24L01_WRITE {
-    constexpr uint8_t MAX_DATA_LENGTH = 128;
-    constexpr uint8_t COMMAND_LENGTH = 1 + MAX_DATA_LENGTH;
-    constexpr uint8_t RESPONSE_LENGTH = 2 + MAX_DATA_LENGTH;
+    constexpr uint8_t COMMAND_LENGTH = 129;
+    constexpr uint8_t RESPONSE_LENGTH = 130;
 
     constexpr uint8_t STATUS_UNKNOWN = 0;
     constexpr uint8_t STATUS_OK = 1;

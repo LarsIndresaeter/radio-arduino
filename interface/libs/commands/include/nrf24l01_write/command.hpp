@@ -9,20 +9,22 @@ public:
             static_cast<uint8_t>(COMMANDS::OI::NRF24L01_WRITE),
             COMMANDS::NRF24L01_WRITE::COMMAND_LENGTH)
     {
-        if (data.size() < COMMANDS::NRF24L01_WRITE::MAX_DATA_LENGTH) {
+        COMMANDS::NRF24L01_WRITE::command_t command;
+
+        if (data.size() < sizeof(command.data)) {
             m_payload.at(offsetof(COMMANDS::NRF24L01_WRITE::command_t, length))
                 = data.size();
         }
         else {
             m_payload.at(offsetof(COMMANDS::NRF24L01_WRITE::command_t, length))
-                = COMMANDS::NRF24L01_WRITE::MAX_DATA_LENGTH;
+                = sizeof(command.data);
         }
 
         for (int i = 0; i < data.size(); i++) {
-            if (i >= COMMANDS::NRF24L01_WRITE::MAX_DATA_LENGTH) {
+            if (i >= sizeof(command.data)) {
                 std::cout << "WARNING: NRF24L01 payload truncated after "
                           << static_cast<int>(
-                                 COMMANDS::NRF24L01_WRITE::MAX_DATA_LENGTH)
+                                 sizeof(command.data))
                           << " bytes" << std::endl;
                 break;
             }
@@ -48,7 +50,7 @@ public:
         out << std::setfill('0') << std::setw(2) << std::hex << std::uppercase;
 
         for (int i = 0;
-             (i < response.length) && (i < COMMANDS::NRF24L01_WRITE::MAX_DATA_LENGTH);
+             (i < response.length) && (i < sizeof(response.data));
              i++) {
             out << " 0x" << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << static_cast<int>(response.data[i]);
         }
