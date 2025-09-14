@@ -13,6 +13,12 @@ namespace SPI_WRITE {
     static_assert(RESPONSE_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "RESPONSE_LENGTH larger than max payload");
 
     typedef struct command {
+        command()
+        {
+            OI = static_cast<uint8_t>(COMMANDS::OI::SPI_WRITE);
+            OL = COMMAND_LENGTH;
+        }
+
         command(uint8_t* cmd)
         {
             OI = cmd[0];
