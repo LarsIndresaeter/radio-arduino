@@ -9,9 +9,11 @@ public:
             static_cast<uint8_t>(COMMANDS::OI::SSD1306),
             COMMANDS::SSD1306::COMMAND_LENGTH)
     {
+        COMMANDS::SSD1306::command_t command;
+
         m_payload.at(offsetof(COMMANDS::SSD1306::command_t, line)) = line;
 
-        for (int i = 0; i < data.size() && i < COMMANDS::SSD1306::STRING_LENGTH; i++) {
+        for (int i = 0; i < data.size() && i < sizeof(command.data); i++) {
             m_payload.at(offsetof(COMMANDS::SSD1306::command_t, data) + i)
                 = data.at(i);
         }

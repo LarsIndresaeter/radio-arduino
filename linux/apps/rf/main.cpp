@@ -364,10 +364,12 @@ void parseOpt(int argc, char* argv[], monitor& mon)
 
         } break;
         case 'L': {
-            std::string s(optarg);
-            std::vector<uint8_t> lcd(COMMANDS::SSD1306::STRING_LENGTH, ' ');
+            COMMANDS::SSD1306::command_t command;
 
-            for (uint8_t i = 0; i < s.size() && i < COMMANDS::SSD1306::STRING_LENGTH; i++) {
+            std::string s(optarg);
+            std::vector<uint8_t> lcd(sizeof(command.data), ' ');
+
+            for (uint8_t i = 0; i < s.size() && i < static_cast<uint8_t>(sizeof(command.data)); i++) {
                 lcd.at(i) = s.at(i);
             }
 

@@ -81,10 +81,11 @@ void DigitalTwin::readGpioAndPublish()
 
 void DigitalTwin::updateDisplayText()
 {
-    std::vector<uint8_t> lcd(COMMANDS::SSD1306::STRING_LENGTH, ' ');
+    COMMANDS::SSD1306::command_t command;
+    std::vector<uint8_t> lcd(sizeof(command.data), ' ');
     std::string displayText = m_desiredState->getDesiredDisplayText();
 
-    for (uint8_t i = 0; i < displayText.size() && i < COMMANDS::SSD1306::STRING_LENGTH; i++) {
+    for (uint8_t i = 0; i < displayText.size() && i < static_cast<uint8_t>(sizeof(command.data)); i++) {
         lcd.at(i) = displayText.at(i);
     }
 
