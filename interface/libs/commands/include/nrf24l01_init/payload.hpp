@@ -5,8 +5,7 @@
 namespace COMMANDS {
 
 namespace NRF24L01_INIT {
-    constexpr uint8_t ADDR_SIZE = 5;
-    constexpr uint8_t COMMAND_LENGTH = 2*ADDR_SIZE + 2;
+    constexpr uint8_t COMMAND_LENGTH = 12;
     constexpr uint8_t RESPONSE_LENGTH = 1;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");

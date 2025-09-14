@@ -407,7 +407,7 @@ void commandSsd1306(uint8_t* commandPayload, uint8_t* responsePayload)
 
     Framebuffer fb;
 
-    for (uint8_t x = 0; x < COMMANDS::SSD1306::STRING_LENGTH; x++) {
+    for (uint8_t x = 0; x < static_cast<uint8_t>(sizeof(command.data)); x++) {
         fb.drawChar(x, command.line, command.data[x]);
     }
 
@@ -615,8 +615,8 @@ void commandI2cWrite(uint8_t* commandPayload, uint8_t* responsePayload)
     I2C_Start(command.device);       // write address
     I2C_Write(command.registerLow);  // first word address
     I2C_Write(command.registerHigh); // second word address
-    for (int i = 0;
-         (i < command.length) && (i < sizeof(command.data));
+    for (uint8_t i = 0;
+         (i < command.length) && (i < static_cast<uint8_t>(sizeof(command.data)));
          i++) {
         response.status = I2C_Write(command.data[i]);
         if (0 != response.status) {
@@ -720,8 +720,8 @@ void commandI2cRead(uint8_t* commandPayload, uint8_t* responsePayload)
     response.status = I2C_Repeated_Start(command.device + 1);
     // if(0 == response.status)
     //{
-    for (int i = 0;
-         (i < command.length) && (i < sizeof(response.data));
+    for (uint8_t i = 0;
+         (i < command.length) && (i < static_cast<uint8_t>(sizeof(response.data)));
          i++) {
         response.data[i] = I2C_Read_Ack();
     }

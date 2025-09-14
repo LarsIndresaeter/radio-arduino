@@ -13,6 +13,8 @@ public:
             static_cast<uint8_t>(COMMANDS::OI::NRF24L01_INIT),
             COMMANDS::NRF24L01_INIT::COMMAND_LENGTH)
     {
+        COMMANDS::NRF24L01_INIT::command_t command;
+
         m_payload.at(offsetof(COMMANDS::NRF24L01_INIT::command_t, rf_channel))
             = rf_channel;
         if (gateway) {
@@ -25,10 +27,10 @@ public:
         }
 
         for (int i = 0; i < tx_addr.size(); i++) {
-            if (i >= COMMANDS::NRF24L01_INIT::ADDR_SIZE) {
+            if (i >= sizeof(command.tx_addr)) {
                 std::cout << "WARNING: NRF24L01 payload truncated after "
                           << static_cast<int>(
-                                 COMMANDS::NRF24L01_INIT::ADDR_SIZE)
+                                 sizeof(command.tx_addr))
                           << " bytes" << std::endl;
                 break;
             }
@@ -38,10 +40,10 @@ public:
         }
 
         for (int i = 0; i < rx_addr.size(); i++) {
-            if (i >= COMMANDS::NRF24L01_INIT::ADDR_SIZE) {
+            if (i >= sizeof(command.rx_addr)) {
                 std::cout << "WARNING: NRF24L01 payload truncated after "
                           << static_cast<int>(
-                                 COMMANDS::NRF24L01_INIT::ADDR_SIZE)
+                                 sizeof(command.rx_addr))
                           << " bytes" << std::endl;
                 break;
             }

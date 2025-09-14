@@ -5,8 +5,7 @@
 namespace COMMANDS {
 
 namespace SSD1306 {
-    constexpr uint8_t STRING_LENGTH = 16;
-    constexpr uint8_t COMMAND_LENGTH = STRING_LENGTH + 1;
+    constexpr uint8_t COMMAND_LENGTH = 17;
     constexpr uint8_t RESPONSE_LENGTH = 0;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
@@ -33,7 +32,7 @@ namespace SSD1306 {
         uint8_t OI;
         uint8_t OL;
         uint8_t line;
-        uint8_t data[COMMAND_LENGTH];
+        uint8_t data[16];
     } command_t;
 
     typedef struct response {
