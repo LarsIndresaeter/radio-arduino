@@ -17,11 +17,13 @@ namespace NRF24L01_INIT {
         {
             OI = cmd[0];
             OL = cmd[1];
-            for (int i = 0; i < ADDR_SIZE; i++) {
+            for(uint8_t i=0; i<5; i++)
+            {
                 tx_addr[i] = cmd[2 + i];
             }
-            for (int j = 0; j < ADDR_SIZE; j++) {
-                rx_addr[j] = cmd[7 + j];
+            for(uint8_t i=0; i<5; i++)
+            {
+                rx_addr[i] = cmd[7 + i];
             }
             rf_channel = cmd[12];
             gateway = cmd[13];
@@ -29,24 +31,24 @@ namespace NRF24L01_INIT {
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t tx_addr[ADDR_SIZE];
-        uint8_t rx_addr[ADDR_SIZE];
+        uint8_t tx_addr[5];
+        uint8_t rx_addr[5];
         uint8_t rf_channel;
         uint8_t gateway;
     } command_t;
 
     typedef struct response {
+        response()
+        {
+            OI = static_cast<uint8_t>(COMMANDS::OI::NRF24L01_INIT);
+            OL = RESPONSE_LENGTH;
+        }
+
         response(uint8_t* res)
         {
             OI = res[0];
             OL = res[1];
             status = res[2];
-        }
-
-        response()
-        {
-            OI = static_cast<uint8_t>(COMMANDS::OI::NRF24L01_INIT);
-            OL = RESPONSE_LENGTH;
         }
 
         void serialize(uint8_t* response)

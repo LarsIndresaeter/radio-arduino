@@ -27,6 +27,12 @@ namespace EEPROM_READ {
     } command_t;
 
     typedef struct response {
+        response()
+        {
+            OI = static_cast<uint8_t>(COMMANDS::OI::EEPROM_READ);
+            OL = RESPONSE_LENGTH;
+        }
+
         response(uint8_t* res)
         {
             OI = res[0];
@@ -34,12 +40,6 @@ namespace EEPROM_READ {
             addressHigh = res[2];
             addressLow = res[3];
             data = res[4];
-        }
-
-        response()
-        {
-            OI = static_cast<uint8_t>(COMMANDS::OI::EEPROM_READ);
-            OL = RESPONSE_LENGTH;
         }
 
         void serialize(uint8_t* response)

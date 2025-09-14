@@ -33,13 +33,13 @@ namespace GET_DEVICE_INFO {
         {
             OI = res[0];
             OL = res[1];
-            for(uint8_t i=0;i<16;i++)
+            for(uint8_t i=0; i<16; i++)
             {
-                name[i] = res[2+i];
+                name[i] = res[2 + i];
             }
-            for(uint8_t i=0;i<32;i++)
+            for(uint8_t i=0; i<32; i++)
             {
-                version[i] = res[18+i];
+                version[i] = res[18 + i];
             }
             status = res[50];
         }
@@ -48,15 +48,14 @@ namespace GET_DEVICE_INFO {
         {
             response[0] = OI;
             response[1] = OL;
-            for(uint8_t i=0;i<16;i++)
+            for(uint8_t i=0; i<16; i++)
             {
-                response[2+i] = name[i];
+                response[2 + i] = name[i];
             }
-            for(uint8_t i=0;i<32;i++)
+            for(uint8_t i=0; i<32; i++)
             {
-                response[18+i] = version[i];
+                response[18 + i] = version[i];
             }
-
             response[50] = status;
         }
 

@@ -49,6 +49,7 @@ namespace TIMER {
         uint8_t OL;
         uint8_t pulse_width_high;
         uint8_t pulse_width_low;
+
     } response_t;
 }
 

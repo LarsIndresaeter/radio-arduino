@@ -61,10 +61,10 @@ namespace QUADRATURE_ENCODER {
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t cnt_pos_high;
-        uint8_t cnt_pos_low;
         uint8_t cnt_neg_high;
         uint8_t cnt_neg_low;
+        uint8_t cnt_pos_high;
+        uint8_t cnt_pos_low;
         uint8_t sw_pos;
         uint8_t sw_cnt_high;
         uint8_t sw_cnt_low;

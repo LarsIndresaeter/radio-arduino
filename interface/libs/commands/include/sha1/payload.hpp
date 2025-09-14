@@ -5,7 +5,7 @@
 namespace COMMANDS {
 
 namespace SHA1 {
-    constexpr uint8_t COMMAND_LENGTH = 16;
+    constexpr uint8_t COMMAND_LENGTH = 20;
     constexpr uint8_t RESPONSE_LENGTH = 20;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
@@ -16,18 +16,15 @@ namespace SHA1 {
         {
             OI = cmd[0];
             OL = cmd[1];
-
-            for (int i = 0; i < OL; i++) {
-                if (i >= COMMAND_LENGTH) {
-                    break;
-                }
-                data[i] = cmd[i + 2];
+            for(uint8_t i=0; i<20; i++)
+            {
+                data[i] = cmd[2 + i];
             }
         }
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t data[COMMAND_LENGTH];
+        uint8_t data[20];
     } command_t;
 
     typedef struct response {
@@ -41,12 +38,9 @@ namespace SHA1 {
         {
             OI = res[0];
             OL = res[1];
-
-            for (int i = 0; i < RESPONSE_LENGTH; i++) {
-                if (i >= RESPONSE_LENGTH) {
-                    break;
-                }
-                data[i] = res[i + 2];
+            for(uint8_t i=0; i<20; i++)
+            {
+                data[i] = res[2 + i];
             }
         }
 
@@ -54,14 +48,15 @@ namespace SHA1 {
         {
             response[0] = OI;
             response[1] = OL;
-            for (int i = 0; i < OL; i++) {
-                response[i + 2] = data[i];
+            for(uint8_t i=0; i<20; i++)
+            {
+                response[2 + i] = data[i];
             }
         }
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t data[RESPONSE_LENGTH];
+        uint8_t data[20];
 
     } response_t;
 }

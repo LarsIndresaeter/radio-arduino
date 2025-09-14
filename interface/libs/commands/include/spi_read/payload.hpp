@@ -28,21 +28,22 @@ namespace SPI_READ {
     } command_t;
 
     typedef struct response {
+        response()
+        {
+            OI = static_cast<uint8_t>(COMMANDS::OI::SPI_READ);
+            OL = RESPONSE_LENGTH;
+        }
+
         response(uint8_t* res)
         {
             OI = res[0];
             OL = res[1];
             reg = res[2];
             length = res[3];
-            for (int i = 0; i < MAX_DATA_LENGTH; i++) {
+            for(uint8_t i=0; i<32; i++)
+            {
                 data[i] = res[4 + i];
             }
-        }
-
-        response()
-        {
-            OI = static_cast<uint8_t>(COMMANDS::OI::SPI_READ);
-            OL = RESPONSE_LENGTH;
         }
 
         void serialize(uint8_t* response)
@@ -51,7 +52,8 @@ namespace SPI_READ {
             response[1] = OL;
             response[2] = reg;
             response[3] = length;
-            for (int i = 0; i < MAX_DATA_LENGTH; i++) {
+            for(uint8_t i=0; i<32; i++)
+            {
                 response[4 + i] = data[i];
             }
         }
@@ -60,7 +62,7 @@ namespace SPI_READ {
         uint8_t OL;
         uint8_t reg;
         uint8_t length;
-        uint8_t data[MAX_DATA_LENGTH];
+        uint8_t data[32];
 
     } response_t;
 }

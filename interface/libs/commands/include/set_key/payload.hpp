@@ -24,8 +24,8 @@ namespace SET_KEY {
             OI = cmd[0];
             OL = cmd[1];
             key_id = cmd[2];
-
-            for (int i = 0; i < 16; i++) {
+            for(uint8_t i=0; i<16; i++)
+            {
                 key_value[i] = cmd[3 + i];
             }
         }
