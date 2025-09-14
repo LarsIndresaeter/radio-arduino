@@ -10,13 +10,16 @@ public:
             static_cast<uint8_t>(COMMANDS::OI::NRF24L01_READ),
             COMMANDS::NRF24L01_READ::COMMAND_LENGTH)
     {
+        COMMANDS::NRF24L01_READ::command_t command;
+
         if (data.size() < COMMANDS::NRF24L01_READ::MAX_DATA_LENGTH) {
             m_payload.at(offsetof(COMMANDS::NRF24L01_READ::command_t, length))
                 = data.size();
         }
         else {
             m_payload.at(offsetof(COMMANDS::NRF24L01_READ::command_t, length))
-                = COMMANDS::NRF24L01_READ::MAX_DATA_LENGTH;
+                //= COMMANDS::NRF24L01_READ::MAX_DATA_LENGTH;
+                = sizeof(command.data);
         }
 
         for (int i = 0; i < data.size(); i++) {
