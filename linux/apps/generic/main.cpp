@@ -290,6 +290,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             break;
         case 'W': {
             UartCommandWs2812b ws2812b;
+            COMMANDS::WS2812B::command_t command;
             std::string s(optarg);
 
             if (s.at(0) == 'a') {
@@ -301,7 +302,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
                         % 90
                     + 45;
                 for (int k = 0; k < random_variable; k++) {
-                    for (int i = 0; i < COMMANDS::WS2812B::LEDS; i++) {
+                    for (int i = 0; i < sizeof(command.red); i++) {
                         if (i % 9 < 3) {
                             ws2812b.setLed(i, 1, 0, 0);
                         }
@@ -312,13 +313,13 @@ void parseOpt(int argc, char* argv[], monitor& mon)
                             ws2812b.setLed(i, 0, 0, 1);
                         }
                     }
-                    ws2812b.setLed(k % (COMMANDS::WS2812B::LEDS), 8, 8, 8);
+                    ws2812b.setLed(k % (sizeof(command.red)), 8, 8, 8);
                     mon.get<>(ws2812b);
                     std::this_thread::sleep_for((k + 5) * 1ms);
                 }
             }
             else {
-                for (uint8_t i = 0; i < s.size() & i < COMMANDS::WS2812B::LEDS;
+                for (uint8_t i = 0; i < s.size() & i < sizeof(command.red);
                      i++) {
                     if (s.at(i) == 'w') {
                         ws2812b.setLed(i, 32, 32, 32);
