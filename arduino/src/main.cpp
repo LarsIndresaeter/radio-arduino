@@ -616,7 +616,7 @@ void commandI2cWrite(uint8_t* commandPayload, uint8_t* responsePayload)
     I2C_Write(command.registerLow);  // first word address
     I2C_Write(command.registerHigh); // second word address
     for (int i = 0;
-         (i < command.length) && (i < COMMANDS::I2C_READ::MAX_DATA_LENGTH);
+         (i < command.length) && (i < sizeof(command.data));
          i++) {
         response.status = I2C_Write(command.data[i]);
         if (0 != response.status) {
@@ -721,7 +721,7 @@ void commandI2cRead(uint8_t* commandPayload, uint8_t* responsePayload)
     // if(0 == response.status)
     //{
     for (int i = 0;
-         (i < command.length) && (i < COMMANDS::I2C_READ::MAX_DATA_LENGTH);
+         (i < command.length) && (i < sizeof(response.data));
          i++) {
         response.data[i] = I2C_Read_Ack();
     }
@@ -748,7 +748,7 @@ void commandSpiRead(uint8_t* commandPayload, uint8_t* responsePayload)
     SPI_masterTransmitByte(command.reg);
 
     for (uint8_t i = 0;
-         i < command.length && i < COMMANDS::SPI_READ::MAX_DATA_LENGTH;
+         i < command.length && i < sizeof(response.data);
          i++) {
         response.data[i] = SPI_masterReceive();
     }
@@ -770,7 +770,7 @@ void commandSpiWrite(uint8_t* commandPayload, uint8_t* responsePayload)
     SPI_masterTransmitByte(0x20 | command.reg);
 
     for (uint8_t i = 0;
-         i < command.length && i < COMMANDS::SPI_WRITE::MAX_DATA_LENGTH;
+         i < command.length && i < sizeof(command.data);
          i++) {
         SPI_masterTransmitByte(command.data[i]);
     }
