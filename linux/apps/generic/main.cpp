@@ -180,9 +180,8 @@ void readCurrentAndVoltage(monitor& mon, int samples)
         voltageData.clear();
         while (time > timePrev) {
             ina219 = mon.get<>(UartCommandIna219());
-            intval = (int16_t)(
-                ((uint16_t)ina219.responseStruct().current[0]) << 8
-                | ina219.responseStruct().current[1]);
+            intval = (int16_t)
+                ina219.responseStruct().getCurrent();
             current = intval * 0.001;
 
             intval = (int16_t)(
@@ -289,7 +288,9 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             mon.setTransportEncryption(true);
             break;
         case 'W': {
-            UartCommandWs2812b ws2812b;
+            std::vector<uint8_t> red(45);
+            std::vector<uint8_t> green(45);
+            std::vector<uint8_t> blue(45);
             COMMANDS::WS2812B::command_t command;
             std::string s(optarg);
 
@@ -304,42 +305,25 @@ void parseOpt(int argc, char* argv[], monitor& mon)
                 for (int k = 0; k < random_variable; k++) {
                     for (int i = 0; i < sizeof(command.red); i++) {
                         if (i % 9 < 3) {
-                            ws2812b.setLed(i, 1, 0, 0);
+                            red.at(i) = 1;
                         }
                         else if (i % 9 > 5) {
-                            ws2812b.setLed(i, 0, 1, 0);
+                            green.at(i) = 1;
                         }
                         else {
-                            ws2812b.setLed(i, 0, 0, 1);
+                            blue.at(i) = 1;
                         }
                     }
-                    ws2812b.setLed(k % (sizeof(command.red)), 8, 8, 8);
+
+                    red.at(k) = 8;
+                    green.at(k) = 8;
+                    blue.at(k) = 8;
+                    UartCommandWs2812b ws2812b(red, green, blue);
                     mon.get<>(ws2812b);
                     std::this_thread::sleep_for((k + 5) * 1ms);
                 }
             }
-            else {
-                for (uint8_t i = 0; i < s.size() & i < sizeof(command.red);
-                     i++) {
-                    if (s.at(i) == 'w') {
-                        ws2812b.setLed(i, 32, 32, 32);
-                    }
-                    else if (s.at(i) == 'r') {
-                        ws2812b.setLed(i, 32, 0, 0);
-                    }
-                    else if (s.at(i) == 'g') {
-                        ws2812b.setLed(i, 0, 32, 0);
-                    }
-                    else if (s.at(i) == 'b') {
-                        ws2812b.setLed(i, 0, 0, 32);
-                    }
-                    else if (s.at(i) == 'd') {
-                        ws2812b.setLed(i, 0, 0, 0);
-                    }
-                }
-            }
 
-            mon.get<>(ws2812b);
         } break;
         case 'v':
             mon.printDebug(false);
@@ -354,7 +338,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
            
                 std::vector<uint8_t> ackPayload;
                 for(int i = 0; i<1000;i++){
-                    auto rec = mon.get<>(UartCommandNrf24l01Read(ackPayload));
+                    auto rec = mon.get<>(UartCommandNrf24l01Read(ackPayload.size(), ackPayload));
                     ackPayload.clear();
 
                     std::this_thread::sleep_for(100ms);
@@ -459,18 +443,23 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             while (true) {
                 auto r = mon.get<>(UartCommandTimer());
 
-                uint16_t pulse_width = r.responseStruct().pulse_width_high << 8;
-                pulse_width |= r.responseStruct().pulse_width_low;
+                uint16_t pulse_width = r.responseStruct().getPulsewidth();
 
                 std::cout << "pulse_width=" << pulse_width << std::endl;
 
                 if ((pulse_width > 1000) && (pulse_width < 2000)) {
-                    UartCommandWs2812b ws2812b;
+                    std::vector<uint8_t> red(45);
+                    std::vector<uint8_t> green(45);
+                    std::vector<uint8_t> blue(45);
+
                     int v = (pulse_width - 1000) / 22;
                     for (int i = 0; i < v; i++) {
-                        ws2812b.setLed(i, 1, 1, 1);
+                        red.at(i) = 1;
+                        green.at(i) = 1;
+                        blue.at(i) = 1;
                     }
 
+                    UartCommandWs2812b ws2812b(red, green, blue);
                     mon.get<>(ws2812b);
                 }
             }
@@ -488,7 +477,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             std::string s(optarg);
             std::vector<uint8_t> vec(s.begin(), s.end());
             std::cout << mon.get<>(
-                UartCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec))
+                UartCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec.size(), vec))
                       << std::endl;
         } break;
         case 'I':

@@ -1,5 +1,7 @@
 #pragma once
 
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
 #include <common/command_id.hpp>
 
 namespace COMMANDS {
@@ -22,12 +24,22 @@ namespace SET_NODE_ADDRESS {
         {
             OI = cmd[0];
             OL = cmd[1];
-            node_address = cmd[2];
+            nodeAddress = cmd[2];
+        }
+
+        uint8_t getNodeaddress()
+        {
+            return(nodeAddress);
+        }
+
+        void setNodeaddress(uint8_t value)
+        {
+            nodeAddress = value;
         }
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t node_address;
+        uint8_t nodeAddress;
     } command_t;
 
     typedef struct response {
@@ -49,6 +61,16 @@ namespace SET_NODE_ADDRESS {
             response[0] = OI;
             response[1] = OL;
             response[2] = status;
+        }
+
+        uint8_t getStatus()
+        {
+            return(status);
+        }
+
+        void setStatus(uint8_t value)
+        {
+            status = value;
         }
 
         uint8_t OI;

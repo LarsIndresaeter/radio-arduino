@@ -49,8 +49,7 @@ bool DigitalTwin::readVccAndPublish()
     auto nodeVcc = m_monitor.getRadio<>(UartCommandVcc());
 
     if (nodeVcc.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
-        uint16_t vcc_mv = (uint16_t)(nodeVcc.responseStruct().vcc_h << 8)
-            | nodeVcc.responseStruct().vcc_l;
+        uint16_t vcc_mv = nodeVcc.responseStruct().getVcc();
         publishVcc(std::to_string(vcc_mv / 1000.0));
         retval = true;
     }

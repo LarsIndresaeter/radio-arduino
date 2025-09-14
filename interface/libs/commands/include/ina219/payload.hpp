@@ -1,5 +1,7 @@
 #pragma once
 
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
 #include <common/command_id.hpp>
 
 namespace COMMANDS {
@@ -63,6 +65,38 @@ namespace INA219 {
                 response[4 + i] = voltage[i];
             }
             response[6] = status;
+        }
+
+        uint16_t getCurrent()
+        {
+            return(((uint16_t)current[1]) << 8 | current[0]);
+        }
+
+        void setCurrent(uint16_t value)
+        {
+            current[1] = (uint8_t)(value >> 8);
+            current[0] = (uint8_t)value;
+        }
+
+        uint16_t getVoltage()
+        {
+            return(((uint16_t)voltage[1]) << 8 | voltage[0]);
+        }
+
+        void setVoltage(uint16_t value)
+        {
+            voltage[1] = (uint8_t)(value >> 8);
+            voltage[0] = (uint8_t)value;
+        }
+
+        uint8_t getStatus()
+        {
+            return(status);
+        }
+
+        void setStatus(uint8_t value)
+        {
+            status = value;
         }
 
         uint8_t OI;

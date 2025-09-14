@@ -1,5 +1,7 @@
 #pragma once
 
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
 #include <common/command_id.hpp>
 
 namespace COMMANDS {
@@ -24,21 +26,41 @@ namespace NRF24L01_INIT {
             OL = cmd[1];
             for(uint8_t i=0; i<5; i++)
             {
-                tx_addr[i] = cmd[2 + i];
+                txAddr[i] = cmd[2 + i];
             }
             for(uint8_t i=0; i<5; i++)
             {
-                rx_addr[i] = cmd[7 + i];
+                rxAddr[i] = cmd[7 + i];
             }
-            rf_channel = cmd[12];
+            rfChannel = cmd[12];
             gateway = cmd[13];
+        }
+
+        uint8_t getRfchannel()
+        {
+            return(rfChannel);
+        }
+
+        void setRfchannel(uint8_t value)
+        {
+            rfChannel = value;
+        }
+
+        uint8_t getGateway()
+        {
+            return(gateway);
+        }
+
+        void setGateway(uint8_t value)
+        {
+            gateway = value;
         }
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t tx_addr[5];
-        uint8_t rx_addr[5];
-        uint8_t rf_channel;
+        uint8_t txAddr[5];
+        uint8_t rxAddr[5];
+        uint8_t rfChannel;
         uint8_t gateway;
     } command_t;
 
@@ -61,6 +83,16 @@ namespace NRF24L01_INIT {
             response[0] = OI;
             response[1] = OL;
             response[2] = status;
+        }
+
+        uint8_t getStatus()
+        {
+            return(status);
+        }
+
+        void setStatus(uint8_t value)
+        {
+            status = value;
         }
 
         uint8_t OI;

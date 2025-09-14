@@ -7,23 +7,33 @@ public:
     UartCommandDebug()
         : UartCommandBase(
             static_cast<uint8_t>(COMMANDS::OI::DEBUG),
-            COMMANDS::DEBUG::COMMAND_LENGTH) {};
+            COMMANDS::DEBUG::COMMAND_LENGTH)
+    {
+        COMMANDS::DEBUG::command_t command;
 
-    void print(std::ostream& out) const override
+    };
+
+    void printResponse(std::ostream& out, COMMANDS::DEBUG::response_t response) const
     {
         out << "DEBUG         : ";
         UartCommandBase::print(out);
     };
 
+    void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
+    {
+        if (m_response.size() >= (COMMANDS::DEBUG::RESPONSE_LENGTH + 4)) {
+            COMMANDS::DEBUG::response_t response(
+                (uint8_t*)&responsePayload.data()[0]);
+            printResponse(out, response);
+        } else
+        {
+            std::cout << "DEBUG: insufficient data" << std::endl;
+        }
+    };
+
     COMMANDS::DEBUG::response_t responseStruct()
     {
-        if(m_response.size() >= sizeof(COMMANDS::DEBUG::response_t))
-        {
-            return {(uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH]};
-        }
-        else{
-            return((uint8_t*){});
-        }
-    }
+        return { (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH] };
+    };
 };
 

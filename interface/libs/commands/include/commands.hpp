@@ -1,5 +1,7 @@
 #pragma once
 
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
 #include <common/uartCommandBase.hpp>
 
 #include <aes/command.hpp>

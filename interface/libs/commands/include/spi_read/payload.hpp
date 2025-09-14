@@ -1,5 +1,7 @@
 #pragma once
 
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
 #include <common/command_id.hpp>
 
 namespace COMMANDS {
@@ -24,6 +26,26 @@ namespace SPI_READ {
             OL = cmd[1];
             reg = cmd[2];
             length = cmd[3];
+        }
+
+        uint8_t getReg()
+        {
+            return(reg);
+        }
+
+        void setReg(uint8_t value)
+        {
+            reg = value;
+        }
+
+        uint8_t getLength()
+        {
+            return(length);
+        }
+
+        void setLength(uint8_t value)
+        {
+            length = value;
         }
 
         uint8_t OI;
@@ -61,6 +83,26 @@ namespace SPI_READ {
             {
                 response[4 + i] = data[i];
             }
+        }
+
+        uint8_t getReg()
+        {
+            return(reg);
+        }
+
+        void setReg(uint8_t value)
+        {
+            reg = value;
+        }
+
+        uint8_t getLength()
+        {
+            return(length);
+        }
+
+        void setLength(uint8_t value)
+        {
+            length = value;
         }
 
         uint8_t OI;

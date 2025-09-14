@@ -1,5 +1,7 @@
 #pragma once
 
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
 #include <common/command_id.hpp>
 
 namespace COMMANDS {
@@ -27,6 +29,16 @@ namespace SSD1306 {
             {
                 data[i] = cmd[3 + i];
             }
+        }
+
+        uint8_t getLine()
+        {
+            return(line);
+        }
+
+        void setLine(uint8_t value)
+        {
+            line = value;
         }
 
         uint8_t OI;

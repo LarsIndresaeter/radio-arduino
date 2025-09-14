@@ -1,5 +1,7 @@
 #pragma once
 
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
 #include <common/command_id.hpp>
 
 namespace COMMANDS {
@@ -22,12 +24,22 @@ namespace WAKEUP {
         {
             OI = cmd[0];
             OL = cmd[1];
-            check_attention_flag = cmd[2];
+            checkAttentionFlag = cmd[2];
+        }
+
+        uint8_t getCheckattentionflag()
+        {
+            return(checkAttentionFlag);
+        }
+
+        void setCheckattentionflag(uint8_t value)
+        {
+            checkAttentionFlag = value;
         }
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t check_attention_flag;
+        uint8_t checkAttentionFlag;
     } command_t;
 
     typedef struct response {
@@ -51,6 +63,26 @@ namespace WAKEUP {
             response[1] = OL;
             response[2] = status;
             response[3] = attention;
+        }
+
+        uint8_t getStatus()
+        {
+            return(status);
+        }
+
+        void setStatus(uint8_t value)
+        {
+            status = value;
+        }
+
+        uint8_t getAttention()
+        {
+            return(attention);
+        }
+
+        void setAttention(uint8_t value)
+        {
+            attention = value;
         }
 
         uint8_t OI;

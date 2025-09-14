@@ -1,5 +1,7 @@
 #pragma once
 
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
 #include <common/command_id.hpp>
 
 namespace COMMANDS {
@@ -22,17 +24,27 @@ namespace SET_KEY {
         {
             OI = cmd[0];
             OL = cmd[1];
-            key_id = cmd[2];
+            keyId = cmd[2];
             for(uint8_t i=0; i<16; i++)
             {
-                key_value[i] = cmd[3 + i];
+                keyValue[i] = cmd[3 + i];
             }
+        }
+
+        uint8_t getKeyid()
+        {
+            return(keyId);
+        }
+
+        void setKeyid(uint8_t value)
+        {
+            keyId = value;
         }
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t key_id;
-        uint8_t key_value[16];
+        uint8_t keyId;
+        uint8_t keyValue[16];
     } command_t;
 
     typedef struct response {
@@ -54,6 +66,16 @@ namespace SET_KEY {
             response[0] = OI;
             response[1] = OL;
             response[2] = status;
+        }
+
+        uint8_t getStatus()
+        {
+            return(status);
+        }
+
+        void setStatus(uint8_t value)
+        {
+            status = value;
         }
 
         uint8_t OI;

@@ -1,5 +1,7 @@
 #pragma once
 
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
 #include <common/command_id.hpp>
 
 namespace COMMANDS {
@@ -27,6 +29,16 @@ namespace AES {
             {
                 data[i] = cmd[3 + i];
             }
+        }
+
+        uint8_t getType()
+        {
+            return(type);
+        }
+
+        void setType(uint8_t value)
+        {
+            type = value;
         }
 
         uint8_t OI;
@@ -62,6 +74,16 @@ namespace AES {
             {
                 response[3 + i] = data[i];
             }
+        }
+
+        uint8_t getType()
+        {
+            return(type);
+        }
+
+        void setType(uint8_t value)
+        {
+            type = value;
         }
 
         uint8_t OI;

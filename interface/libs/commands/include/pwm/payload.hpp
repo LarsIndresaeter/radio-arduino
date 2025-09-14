@@ -1,5 +1,7 @@
 #pragma once
 
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
 #include <common/command_id.hpp>
 
 namespace COMMANDS {
@@ -25,6 +27,36 @@ namespace PWM {
             port = cmd[2];
             pin = cmd[3];
             value = cmd[4];
+        }
+
+        uint8_t getPort()
+        {
+            return(port);
+        }
+
+        void setPort(uint8_t value)
+        {
+            port = value;
+        }
+
+        uint8_t getPin()
+        {
+            return(pin);
+        }
+
+        void setPin(uint8_t value)
+        {
+            pin = value;
+        }
+
+        uint8_t getValue()
+        {
+            return(value);
+        }
+
+        void setValue(uint8_t value)
+        {
+            value = value;
         }
 
         uint8_t OI;
@@ -57,6 +89,36 @@ namespace PWM {
             response[2] = port;
             response[3] = pin;
             response[4] = value;
+        }
+
+        uint8_t getPort()
+        {
+            return(port);
+        }
+
+        void setPort(uint8_t value)
+        {
+            port = value;
+        }
+
+        uint8_t getPin()
+        {
+            return(pin);
+        }
+
+        void setPin(uint8_t value)
+        {
+            pin = value;
+        }
+
+        uint8_t getValue()
+        {
+            return(value);
+        }
+
+        void setValue(uint8_t value)
+        {
+            value = value;
         }
 
         uint8_t OI;

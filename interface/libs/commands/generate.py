@@ -1,5 +1,15 @@
 import os
 
+def snakecaseToCamelCase(variableName):
+    result = variableName.capitalize()
+    
+    idx = result.find("_")
+    while idx > 0:
+        result = result[:idx] + result[idx + 1:].capitalize()
+        idx = result.find("_")
+
+    return result
+
 def arraySizeFromVariableName(variableName):
     result = 1
 
@@ -37,18 +47,116 @@ def calculateStructSizeFromNames(commandPayloadByteNames):
 
     return length 
 
+def generateCommandFile(commandName,
+                 commandPayloadByteNames, 
+                 responsePayloadByteNames):
+    with open("include/" + commandName + "/command.hpp", 'w') as outfile:
+        outfile.write("#pragma once\n")
+        outfile.write("\n")
+        outfile.write("#include <common/uartCommandBase.hpp>\n")
+        outfile.write("\n")
+        outfile.write("class UartCommand" + snakecaseToCamelCase(commandName) + " : public UartCommandBase {\n")
+        outfile.write("public:\n")
+        outfile.write("    UartCommand" + snakecaseToCamelCase(commandName) + "(")
+        # add parameters
+        items = len(commandPayloadByteNames)
+        for item in commandPayloadByteNames:
+            arraySize = arraySizeFromVariableName(item)
+            if(arraySize == 1):
+                outfile.write("uint8_t " + item)
+            if(arraySize == 2):
+                outfile.write("uint16_t " + arrayBasenameFromVariableName(item))
+            if(arraySize == 4):
+                outfile.write("uint32_t " + arrayBasenameFromVariableName(item))
+            if(arraySize > 4):
+                outfile.write("std::vector<uint8_t> " + arrayBasenameFromVariableName(item))
+            items = items - 1
+            if items > 0:
+                outfile.write(", ")
+ 
+        outfile.write(")\n")
+        outfile.write("        : UartCommandBase(\n")
+        outfile.write("            static_cast<uint8_t>(COMMANDS::OI::" + commandName.upper() + "),\n")
+        outfile.write("            COMMANDS::" + commandName.upper() + "::COMMAND_LENGTH)\n")
+        outfile.write("    {\n")
+        # initialize command
+        outfile.write("        COMMANDS::" + commandName.upper() + "::command_t command;\n")
+        outfile.write("\n")
+        for item in commandPayloadByteNames:
+            arraySize = arraySizeFromVariableName(item)
+            if(arraySize == 1):
+                outfile.write("        m_payload.at(offsetof(COMMANDS::" + commandName.upper() + "::command_t, " + item + ")) = " + item + ";\n")
+                outfile.write("\n")
+            if(arraySize == 2):
+                outfile.write("        m_payload.at(offsetof(COMMANDS::" + commandName.upper() + "::command_t, " + arrayBasenameFromVariableName(item) + ") + 1) = " + arrayBasenameFromVariableName(item) + ">>8;\n")
+                outfile.write("        m_payload.at(offsetof(COMMANDS::" + commandName.upper() + "::command_t, " + arrayBasenameFromVariableName(item) + ")) = " + arrayBasenameFromVariableName(item) + ";\n")
+                outfile.write("\n")
+            if(arraySize == 4):
+                outfile.write("        m_payload.at(offsetof(COMMANDS::" + commandName.upper() + "::command_t, " + arrayBasenameFromVariableName(item) + ") + 3) = " + arrayBasenameFromVariableName(item) + ">>24;\n")
+                outfile.write("        m_payload.at(offsetof(COMMANDS::" + commandName.upper() + "::command_t, " + arrayBasenameFromVariableName(item) + ") + 2) = " + arrayBasenameFromVariableName(item) + ">>16;\n")
+                outfile.write("        m_payload.at(offsetof(COMMANDS::" + commandName.upper() + "::command_t, " + arrayBasenameFromVariableName(item) + ") + 1) = " + arrayBasenameFromVariableName(item) + ">>8;\n")
+                outfile.write("        m_payload.at(offsetof(COMMANDS::" + commandName.upper() + "::command_t, " + arrayBasenameFromVariableName(item) + ")) = " + arrayBasenameFromVariableName(item) + ";\n")
+                outfile.write("\n")
+            if(arraySize > 4):
+                outfile.write("        for (int i = 0; i < " + arrayBasenameFromVariableName(item) + ".size(); i++) {\n")
+                outfile.write("            if (i >= sizeof(command." + arrayBasenameFromVariableName(item) + ")) {\n")
+                outfile.write("                break;\n")
+                outfile.write("            }\n")
+                outfile.write("            m_payload.at(\n")
+                outfile.write("                offsetof(COMMANDS::" + commandName.upper() + "::command_t, " + arrayBasenameFromVariableName(item) + "[0]) + i)\n")
+                outfile.write("                = " + arrayBasenameFromVariableName(item) + ".at(i);\n")
+                outfile.write("        }\n")
+                outfile.write("\n")
+        outfile.write("    };\n")
+
+        outfile.write("\n")
+        outfile.write("    void printResponse(std::ostream& out, COMMANDS::" + commandName.upper() + "::response_t response) const\n") 
+        outfile.write("    {\n")
+        outfile.write("        out << \"" + commandName.upper() + "   : \";\n")
+        # seher
+        for item in responsePayloadByteNames:
+            arraySize = arraySizeFromVariableName(item)
+            if(arraySize == 1):
+                outfile.write("        out << \" " + arrayBasenameFromVariableName(item) + "=\" << " + "response.get" + arrayBasenameFromVariableName(item).capitalize() + "();\n");
+            if(arraySize == 2):
+                outfile.write("        out << \" " + arrayBasenameFromVariableName(item) + "=\" << " + "response.get" + arrayBasenameFromVariableName(item).capitalize() + "();\n");
+            if(arraySize == 4):
+                outfile.write("        out << \" " + arrayBasenameFromVariableName(item) + "=\" << " + "response.get" + arrayBasenameFromVariableName(item).capitalize() + "();\n");
+
+        outfile.write("    }\n")
+        outfile.write("\n")
+        outfile.write("    void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override\n")
+        outfile.write("    {\n")
+        outfile.write("        if (m_response.size() >= (COMMANDS::" + commandName.upper() + "::RESPONSE_LENGTH + 4)) {\n")
+        outfile.write("            COMMANDS::" + commandName.upper() + "::response_t response(\n")
+        outfile.write("                (uint8_t*)&responsePayload.data()[0]);\n")
+        outfile.write("            printResponse(out, response);\n")
+        outfile.write("        } else\n")
+        outfile.write("        {\n")
+        outfile.write("            std::cout << \"" + commandName.upper() + ": insufficient data\" << std::endl;\n")
+        outfile.write("        }\n")
+        outfile.write("    };\n")
+        outfile.write("\n")
+        outfile.write("    COMMANDS::" + commandName.upper() + "::response_t responseStruct()\n")
+        outfile.write("    {\n")
+        outfile.write("        return { (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH] };\n")
+        outfile.write("    };\n")
+        outfile.write("};\n")
+        outfile.write("\n")
+
 def generateFile(commandName, 
                  commandPayloadByteNames, 
-                 responsePayloadByteNames,
-                 includeFiles):
+                 responsePayloadByteNames):
+
+    generateCommandFile(commandName, commandPayloadByteNames, responsePayloadByteNames)
 
     # add include to payloads.hpp
     with open("include/payloads.hpp", 'a') as outfile:
-        outfile.write("#include <" + commandName + "/payload.hpp>\n")
+        outfile.write(f"#include <{commandName}/payload.hpp>\n")
 
     # add include to commands.hpp
     with open("include/commands.hpp", 'a') as outfile:
-        outfile.write("#include <" + commandName + "/command.hpp>\n")
+        outfile.write(f"#include <{commandName}/command.hpp>\n")
 
     payloadFile = f"include/{commandName}/payload.hpp"
 
@@ -56,11 +164,8 @@ def generateFile(commandName,
     with open(payloadFile, 'w') as outfile:
         outfile.write("#pragma once\n")
         outfile.write("\n")
-
-        if len(includeFiles) > 0:
-            for item in includeFiles:
-                outfile.write("#include <" + item + ">\n")
-            outfile.write("\n")
+        outfile.write("// This file is generated with the script: `interface/libs/commands/generate.py`\n")
+        outfile.write("\n")
 
         outfile.write("#include <common/command_id.hpp>\n")
         outfile.write("\n")
@@ -106,6 +211,35 @@ def generateFile(commandName,
 
         outfile.write("        }\n")
         outfile.write("\n")
+
+        # autogenerated getters and setters
+        for item in commandPayloadByteNames:
+
+            arraySize = arraySizeFromVariableName(item)
+            if(arraySize == 1):
+                outfile.write("        uint8_t get" + item.capitalize() + "()\n")
+                outfile.write("        {\n")
+                outfile.write("            return(" + item + ");\n")
+                outfile.write("        }\n")
+                outfile.write("\n")
+                outfile.write("        void set" + item.capitalize() + "(uint8_t value)\n")
+                outfile.write("        {\n")
+                outfile.write("            " + item + " = value;\n")
+                outfile.write("        }\n")
+                outfile.write("\n")
+            if(arraySize == 2):
+                outfile.write("        uint16_t get" + arrayBasenameFromVariableName(item).capitalize() + "()\n")
+                outfile.write("        {\n")
+                outfile.write("            return(((uint16_t)" + arrayBasenameFromVariableName(item) + "[1]) << 8 | " + arrayBasenameFromVariableName(item) + "[0]);\n")
+                outfile.write("        }\n")
+                outfile.write("\n")
+                outfile.write("        void set" + arrayBasenameFromVariableName(item).capitalize() + "(uint16_t value)\n")
+                outfile.write("        {\n")
+                outfile.write("            " + arrayBasenameFromVariableName(item) + "[1] = (uint8_t)(value >> 8);\n")
+                outfile.write("            " + arrayBasenameFromVariableName(item) + "[0] = (uint8_t)value;\n")
+                outfile.write("        }\n")
+                outfile.write("\n")
+
         outfile.write("        uint8_t OI;\n")
         outfile.write("        uint8_t OL;\n")
 
@@ -167,13 +301,42 @@ def generateFile(commandName,
 
         outfile.write("        }\n")
         outfile.write("\n")
+
+        # autogenerated getters and setters
+        for item in responsePayloadByteNames:
+
+            arraySize = arraySizeFromVariableName(item)
+            if(arraySize == 1):
+                outfile.write("        uint8_t get" + item.capitalize() + "()\n")
+                outfile.write("        {\n")
+                outfile.write("            return(" + item + ");\n")
+                outfile.write("        }\n")
+                outfile.write("\n")
+                outfile.write("        void set" + item.capitalize() + "(uint8_t value)\n")
+                outfile.write("        {\n")
+                outfile.write("            " + item + " = value;\n")
+                outfile.write("        }\n")
+                outfile.write("\n")
+            if(arraySize == 2):
+                outfile.write("        uint16_t get" + arrayBasenameFromVariableName(item).capitalize() + "()\n")
+                outfile.write("        {\n")
+                outfile.write("            return(((uint16_t)" + arrayBasenameFromVariableName(item) + "[1]) << 8 | " + arrayBasenameFromVariableName(item) + "[0]);\n")
+                outfile.write("        }\n")
+                outfile.write("\n")
+                outfile.write("        void set" + arrayBasenameFromVariableName(item).capitalize() + "(uint16_t value)\n")
+                outfile.write("        {\n")
+                outfile.write("            " + arrayBasenameFromVariableName(item) + "[1] = (uint8_t)(value >> 8);\n")
+                outfile.write("            " + arrayBasenameFromVariableName(item) + "[0] = (uint8_t)value;\n")
+                outfile.write("        }\n")
+                outfile.write("\n")
+
         outfile.write("        uint8_t OI;\n")
         outfile.write("        uint8_t OL;\n")
 
         # loop through responsePayloadByteNames
         index = 2
         for item in responsePayloadByteNames:
-            outfile.write("        uint8_t " + item + ";\n")
+            outfile.write(f"        uint8_t {item};\n")
             index = index + 1
 
         outfile.write("\n")
@@ -185,11 +348,12 @@ def generateFile(commandName,
         outfile.write("\n")
         outfile.write("} // namespace commands\n")
 
-
 def generateCommonHeaderFiles(): 
     # add include to payloads.hpp
     with open("include/payloads.hpp", 'w') as outfile:
         outfile.write("#pragma once\n")
+        outfile.write("\n")
+        outfile.write("// This file is generated with the script: `interface/libs/commands/generate.py`\n")
         outfile.write("\n")
         outfile.write("#include <stdint.h>\n")
         outfile.write("\n")
@@ -199,42 +363,47 @@ def generateCommonHeaderFiles():
     with open("include/commands.hpp", 'w') as outfile:
         outfile.write("#pragma once\n")
         outfile.write("\n")
+        outfile.write("// This file is generated with the script: `interface/libs/commands/generate.py`\n")
+        outfile.write("\n")
         outfile.write("#include <common/uartCommandBase.hpp>\n")
         outfile.write("\n")
 
 generateCommonHeaderFiles()
 
-generateFile("aes", ["type", "data[16]"], ["type", "data[16]"], [])
-generateFile("blink", [], [], [])
-generateFile("debug", [], ["data[32]"], [])
-generateFile("ds18b20", [], ["temperature[2]", "status"], [])
-generateFile("eeprom_read", ["addressHigh", "addressLow"], ["addressHigh", "addressLow", "data"], [])
-generateFile("eeprom_write", ["addressHigh", "addressLow", "data"], ["addressHigh", "addressLow", "data"], [])
-generateFile("get_device_info", [], ["name[16]", "version[32]", "status"], [])
-generateFile("gpio", [], ["portB", "portC", "portD"], [])
-generateFile("hotp", [], ["data[16]"], [])
-generateFile("i2c_read", ["device", "registerHigh", "registerLow", "length"], ["device", "registerHigh", "registerLow", "status", "length", "data[16]"], [])
-generateFile("i2c_write", ["device", "registerHigh", "registerLow", "length", "data[16]"], ["status"], [])
-generateFile("ina219", [], ["current[2]", "voltage[2]", "status"], [])
-generateFile("keep_alive", ["time"], ["status"], [])
-generateFile("nrf24l01_init", ["tx_addr[5]", "rx_addr[5]", "rf_channel", "gateway"], ["status"], [])
-generateFile("nrf24l01_read", ["length", "data[128]"], ["length", "data[128]"], [])
-generateFile("nrf24l01_write", ["length", "data[128]"], ["status", "length", "data[128]"], [])
-generateFile("ping", [], [], [])
-generateFile("pwm", ["port", "pin", "value"], ["port", "pin", "value"], [])
-generateFile("quadrature_encoder", [], ["cnt_neg_high", "cnt_neg_low", "cnt_pos_high", "cnt_pos_low", "sw_pos", "sw_cnt_high", "sw_cnt_low", "status"], [])
-generateFile("radio_uart", ["mode"], ["status"], [])
-generateFile("random", [], ["data[16]"], [])
-generateFile("set_device_info", ["name[16]"], ["status"], [])
-generateFile("set_key", ["key_id", "key_value[16]"], ["status"], [])
-generateFile("set_node_address", ["node_address"], ["status"], [])
-generateFile("sha1", ["data[20]"], ["data[20]"], [])
-generateFile("sleep", ["delay_0", "delay_1", "delay_2", "delay_3"], ["status"], [])
-generateFile("spi_read", ["reg", "length"], ["reg", "length", "data[32]"], [])
-generateFile("spi_write", ["reg", "length", "data[32]"], ["status"], [])
-generateFile("ssd1306", ["line", "data[16]"], [], [])
-generateFile("timer", [], ["pulse_width_high", "pulse_width_low"], [])
-generateFile("vcc", [], ["vcc_h", "vcc_l"], [])
-generateFile("wakeup", ["check_attention_flag"], ["status", "attention"], [])
-generateFile("ws2812b", ["red[45]", "green[45]", "blue[45]"], [], [])
+# command definitions. Parameters:
+# generateFile(commandName, commandData, responseData)
+
+generateFile("aes", ["type", "data[16]"], ["type", "data[16]"])
+generateFile("blink", [], [])
+generateFile("debug", [], ["data[32]"])
+generateFile("ds18b20", [], ["temperature[2]", "status"])
+generateFile("eeprom_read", ["address[2]"], ["address[2]", "data"])
+generateFile("eeprom_write", ["address[2]", "data"], ["address[2]", "data"])
+generateFile("get_device_info", [], ["name[16]", "version[32]", "status"])
+generateFile("gpio", [], ["portB", "portC", "portD"])
+generateFile("hotp", [], ["data[16]"])
+generateFile("i2c_read", ["device", "registerAddress[2]", "length"], ["device", "registerAddress[2]", "status", "length", "data[16]"])
+generateFile("i2c_write", ["device", "registerAddress[2]", "length", "data[16]"], ["status"])
+generateFile("ina219", [], ["current[2]", "voltage[2]", "status"])
+generateFile("keep_alive", ["time"], ["status"])
+generateFile("nrf24l01_init", ["txAddr[5]", "rxAddr[5]", "rfChannel", "gateway"], ["status"])
+generateFile("nrf24l01_read", ["length", "data[128]"], ["length", "data[128]"])
+generateFile("nrf24l01_write", ["length", "data[128]"], ["status", "length", "data[128]"])
+generateFile("ping", [], [])
+generateFile("pwm", ["port", "pin", "value"], ["port", "pin", "value"])
+generateFile("quadrature_encoder", [], ["countnegative[2]", "countpositive[2]", "switchposition", "switchcount[2]", "status"])
+generateFile("radio_uart", ["mode"], ["status"])
+generateFile("random", [], ["data[16]"])
+generateFile("set_device_info", ["name[16]"], ["status"])
+generateFile("set_key", ["keyId", "keyValue[16]"], ["status"])
+generateFile("set_node_address", ["nodeAddress"], ["status"])
+generateFile("sha1", ["data[20]"], ["data[20]"])
+generateFile("sleep", ["delay[4]"], ["status"])
+generateFile("spi_read", ["reg", "length"], ["reg", "length", "data[32]"])
+generateFile("spi_write", ["reg", "length", "data[32]"], ["status"])
+generateFile("ssd1306", ["line", "data[16]"], [])
+generateFile("timer", [], ["pulseWidth[2]"])
+generateFile("vcc", [], ["vcc[2]"])
+generateFile("wakeup", ["checkAttentionFlag"], ["status", "attention"])
+generateFile("ws2812b", ["red[45]", "green[45]", "blue[45]"], [])
 

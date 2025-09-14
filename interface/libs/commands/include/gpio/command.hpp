@@ -9,22 +9,34 @@ public:
             static_cast<uint8_t>(COMMANDS::OI::GPIO),
             COMMANDS::GPIO::COMMAND_LENGTH)
     {
+        COMMANDS::GPIO::command_t command;
+
     };
 
-    void print(std::ostream& out) const override
+    void printResponse(std::ostream& out, COMMANDS::GPIO::response_t response) const
     {
-        COMMANDS::GPIO::response_t response(
-            (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH]);
+        out << "GPIO   : ";
 
-        out << "GPIO          : ";
         out << "portB=" << static_cast<int>(response.portB)
             << ", portC=" << static_cast<int>(response.portC)
             << ", portD=" << static_cast<int>(response.portD);
     };
 
+    void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
+    {
+        if (m_response.size() >= (COMMANDS::GPIO::RESPONSE_LENGTH + 4)) {
+            COMMANDS::GPIO::response_t response(
+                (uint8_t*)&responsePayload.data()[0]);
+            printResponse(out, response);
+        } else
+        {
+            std::cout << "GPIO: insufficient data" << std::endl;
+        }
+    };
+
     COMMANDS::GPIO::response_t responseStruct()
     {
-        return {(uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH]};
+        return { (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH] };
     };
 };
 

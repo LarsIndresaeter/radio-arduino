@@ -1,5 +1,7 @@
 #pragma once
 
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
 #include <common/command_id.hpp>
 
 namespace COMMANDS {
@@ -27,6 +29,16 @@ namespace NRF24L01_READ {
             {
                 data[i] = cmd[3 + i];
             }
+        }
+
+        uint8_t getLength()
+        {
+            return(length);
+        }
+
+        void setLength(uint8_t value)
+        {
+            length = value;
         }
 
         uint8_t OI;
@@ -62,6 +74,16 @@ namespace NRF24L01_READ {
             {
                 response[3 + i] = data[i];
             }
+        }
+
+        uint8_t getLength()
+        {
+            return(length);
+        }
+
+        void setLength(uint8_t value)
+        {
+            length = value;
         }
 
         uint8_t OI;
