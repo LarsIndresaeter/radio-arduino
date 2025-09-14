@@ -9,25 +9,27 @@ public:
             static_cast<uint8_t>(COMMANDS::OI::I2C_WRITE),
             COMMANDS::I2C_WRITE::COMMAND_LENGTH)
     {
+        COMMANDS::I2C_WRITE::command_t command;
+
         m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, device)) = device;
         m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, registerHigh))
             = static_cast<uint16_t>(registerAddress) >> 8;
         m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, registerLow))
             = registerAddress;
 
-        if (data.size() < COMMANDS::I2C_WRITE::MAX_DATA_LENGTH) {
+        if (data.size() < sizeof(command.data)) {
             m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, length))
                 = data.size();
         }
         else {
-            m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, length)) = COMMANDS::I2C_WRITE::MAX_DATA_LENGTH;
+            m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, length)) = sizeof(command.data);
         }
 
         for (int i = 0; i < data.size(); i++) {
-            if (i >= COMMANDS::I2C_WRITE::MAX_DATA_LENGTH) {
+            if (i >= sizeof(command.data)) {
                 std::cout << "WARNING: I2C payload truncated after "
                           << static_cast<int>(
-                                 COMMANDS::I2C_WRITE::MAX_DATA_LENGTH)
+                                 sizeof(command.data))
                           << " bytes" << std::endl;
                 break;
             }
