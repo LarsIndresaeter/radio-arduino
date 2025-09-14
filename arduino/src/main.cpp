@@ -576,15 +576,15 @@ void commandWs2812b(uint8_t* commandPayload, uint8_t* responsePayload)
 
     Ws2812b ws2812b;
 
-    rgb_color colors[COMMANDS::WS2812B::LEDS];
+    rgb_color colors[sizeof(command.red)];
 
-    for (uint16_t i = 0; i < COMMANDS::WS2812B::LEDS; i++) {
-        colors[i].red = command.data[i].red;
-        colors[i].green = command.data[i].green;
-        colors[i].blue = command.data[i].blue;
+    for (uint16_t i = 0; i < sizeof(command.red); i++) {
+        colors[i].red = command.red[i];
+        colors[i].green = command.green[i];
+        colors[i].blue = command.blue[i];
     }
 
-    ws2812b.led_strip_write(colors, COMMANDS::WS2812B::LEDS);
+    ws2812b.led_strip_write(colors, sizeof(command.red));
 
     response.serialize(responsePayload);
 }
