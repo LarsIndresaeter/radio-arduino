@@ -198,7 +198,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             }
 
             // set key
-            mon.get<>(UartCommandSetKey(COMMANDS::SET_KEY::EK, key));
+            mon.get<>(UartCommandSetKey('E', key));
 
             // debug
             // for (int i = 0; i < 16; i++) {

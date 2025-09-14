@@ -7,13 +7,6 @@ namespace COMMANDS {
 namespace SET_KEY {
     constexpr uint8_t COMMAND_LENGTH = 17;
     constexpr uint8_t RESPONSE_LENGTH = 1;
-    constexpr uint8_t UNKNOWN_KEY_ID = 0; // Unknown Key ID
-    constexpr uint8_t TK = 1; // Transport Key
-    constexpr uint8_t HK = 2; // HMAC Key
-    constexpr uint8_t HOTP_KEY = 3; // HMAC Key
-    constexpr uint8_t EK = 4; // Encryption Key, used for AES commands
-    //constexpr uint8_t KEK = 3; // Key Encryption Key
-    //constexpr uint8_t SK = 4; // Storage Key
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
     static_assert(RESPONSE_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "RESPONSE_LENGTH larger than max payload");

@@ -467,7 +467,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             }
 
             // set key
-            mon.getRadio<>(UartCommandSetKey(COMMANDS::SET_KEY::EK, key));
+            mon.getRadio<>(UartCommandSetKey('E', key));
         } break;
         case 'Z': {
             std::string s(optarg);
