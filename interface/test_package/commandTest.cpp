@@ -54,8 +54,8 @@ public:
                     COMMANDS::EEPROM_WRITE::command_t command(
                         commandPayload.data());
                     COMMANDS::EEPROM_WRITE::response_t response {};
-                    response.addressHigh = command.addressHigh;
-                    response.addressLow = command.addressLow;
+                    response.address[1] = command.address[1];
+                    response.address[0] = command.address[0];
                     response.data = command.data;
                     response.serialize(responsePayload.data());
                 } break;
@@ -63,9 +63,9 @@ public:
                     COMMANDS::EEPROM_READ::command_t command(
                         commandPayload.data());
                     COMMANDS::EEPROM_READ::response_t response {};
-                    response.addressHigh = command.addressHigh;
-                    response.addressLow = command.addressLow;
-                    response.data = command.addressLow + 1;
+                    response.address[1] = command.address[1];
+                    response.address[0] = command.address[0];
+                    response.data = command.address[0] + 1;
                     response.serialize(responsePayload.data());
                 } break;
                 case static_cast<int>(COMMANDS::OI::AES): {
@@ -213,8 +213,8 @@ TEST_F(commandTest, commandEepromWriteLow)
 
     EXPECT_EQ(5, cmd.responseStruct().OI);
     EXPECT_EQ(3, cmd.responseStruct().OL);
-    EXPECT_EQ(0, cmd.responseStruct().addressHigh);
-    EXPECT_EQ(12, cmd.responseStruct().addressLow);
+    EXPECT_EQ(0, cmd.responseStruct().address[1]);
+    EXPECT_EQ(12, cmd.responseStruct().address[0]);
     EXPECT_EQ(13, cmd.responseStruct().data);
 }
 
@@ -230,8 +230,9 @@ TEST_F(commandTest, commandEepromWriteHigh)
 
     EXPECT_EQ(5, cmd.responseStruct().OI);
     EXPECT_EQ(3, cmd.responseStruct().OL);
-    EXPECT_EQ(2, cmd.responseStruct().addressHigh);
-    EXPECT_EQ(88, cmd.responseStruct().addressLow);
+    EXPECT_EQ(2, cmd.responseStruct().address[1]);
+    EXPECT_EQ(88, cmd.responseStruct().address[0]);
+    EXPECT_EQ(600, cmd.responseStruct().getAddress());
     EXPECT_EQ(13, cmd.responseStruct().data);
 }
 
@@ -247,8 +248,9 @@ TEST_F(commandTest, commandEepromReadLow)
 
     EXPECT_EQ(6, cmd.responseStruct().OI);
     EXPECT_EQ(3, cmd.responseStruct().OL);
-    EXPECT_EQ(0, cmd.responseStruct().addressHigh);
-    EXPECT_EQ(22, cmd.responseStruct().addressLow);
+    EXPECT_EQ(0, cmd.responseStruct().address[1]);
+    EXPECT_EQ(22, cmd.responseStruct().address[0]);
+    EXPECT_EQ(22, cmd.responseStruct().getAddress());
     EXPECT_EQ(23, cmd.responseStruct().data);
 }
 
@@ -264,8 +266,9 @@ TEST_F(commandTest, commandEepromReadHigh)
 
     EXPECT_EQ(6, cmd.responseStruct().OI);
     EXPECT_EQ(3, cmd.responseStruct().OL);
-    EXPECT_EQ(2, cmd.responseStruct().addressHigh);
-    EXPECT_EQ(88, cmd.responseStruct().addressLow);
+    EXPECT_EQ(2, cmd.responseStruct().address[1]);
+    EXPECT_EQ(88, cmd.responseStruct().address[0]);
+    EXPECT_EQ(600, cmd.responseStruct().getAddress());
     EXPECT_EQ(89, cmd.responseStruct().data);
 }
 

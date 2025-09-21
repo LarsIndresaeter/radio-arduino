@@ -166,7 +166,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             std::string s(optarg);
             std::vector<uint8_t> vec(s.begin(), s.end());
             std::cout << mon.get<>(
-                UartCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec))
+                UartCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec.size(), vec))
                       << std::endl;
         } break;
         case 'I':

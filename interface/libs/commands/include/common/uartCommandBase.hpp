@@ -38,6 +38,11 @@ public:
     virtual void setResponse(const std::vector<uint8_t> response)
     {
         m_response.insert(m_response.end(), response.begin(), response.end());
+
+        if (response.size() > 4) {
+            std::copy(response.begin() + 4, response.end(),
+                std::back_inserter(m_responsePayload));
+        }
     };
 
     void setReplyStatus(ReplyStatus status)
@@ -82,7 +87,7 @@ public:
     friend std::ostream& operator<<(std::ostream& out, UartCommandBase const& u)
     {
         if (u.m_replyStatus == ReplyStatus::Complete) {
-            u.print(out);
+            u.print(out, u.m_responsePayload);
         }
 
         return out;
@@ -112,11 +117,16 @@ protected:
                 }
             }
         }
+    }
+
+    virtual void print(std::ostream& out, std::vector<uint8_t> responsePayload) const
+    {
     };
 
     uint64_t m_responseTimeUs;
     ReplyStatus m_replyStatus;
     std::vector<uint8_t> m_payload;
+    std::vector<uint8_t> m_responsePayload;
     std::vector<uint8_t> m_response;
     uint8_t m_cmdId;
 };

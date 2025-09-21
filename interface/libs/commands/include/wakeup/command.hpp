@@ -1,45 +1,43 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
 class UartCommandWakeup : public UartCommandBase {
 public:
-    UartCommandWakeup(bool wakeup_if_data_flag_is_set)
+    UartCommandWakeup(uint8_t checkAttentionFlag)
         : UartCommandBase(
             static_cast<uint8_t>(COMMANDS::OI::WAKEUP),
             COMMANDS::WAKEUP::COMMAND_LENGTH)
     {
-        if (wakeup_if_data_flag_is_set) {
-            m_payload.at(offsetof(COMMANDS::WAKEUP::command_t, check_attention_flag))
-                = 1;
-        }
-        else {
-            m_payload.at(offsetof(COMMANDS::WAKEUP::command_t, check_attention_flag))
-                = 0;
-        }
+        COMMANDS::WAKEUP::command_t command;
+
+        m_payload.at(offsetof(COMMANDS::WAKEUP::command_t, checkAttentionFlag)) = checkAttentionFlag;
+
     };
 
-    void print(std::ostream& out) const override
+    void printResponse(std::ostream& out, COMMANDS::WAKEUP::response_t response) const
     {
-        COMMANDS::WAKEUP::response_t response(
-            (uint8_t*)&m_response.data()[4]);
-        out << "WAKEUP          : ";
+        out << "WAKEUP                 : ";
+        out << " status=" << static_cast<int>(response.getStatus());
+        out << " attention=" << static_cast<int>(response.getAttention());
+    }
 
-        if(response.status == 1)
+    void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
+    {
+        if (m_response.size() >= (COMMANDS::WAKEUP::RESPONSE_LENGTH + 4)) {
+            COMMANDS::WAKEUP::response_t response(
+                (uint8_t*)&responsePayload.data()[0]);
+            printResponse(out, response);
+        } else
         {
-            out << "OK";
-
-            out << " (attention=" << std::to_string(response.attention) << ")";
-        }
-        else
-        {
-            out << "FAILED";
+            std::cout << "WAKEUP: insufficient data" << std::endl;
         }
     };
 
     COMMANDS::WAKEUP::response_t responseStruct()
     {
-        return {(uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH]};
+        return { (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH] };
     };
 };
 

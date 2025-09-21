@@ -1,5 +1,7 @@
 #pragma once
 
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
 #include <common/command_id.hpp>
 
 namespace COMMANDS {
@@ -52,6 +54,16 @@ namespace SET_DEVICE_INFO {
             response[0] = OI;
             response[1] = OL;
             response[2] = status;
+        }
+
+        uint8_t getStatus()
+        {
+            return(status);
+        }
+
+        void setStatus(uint8_t value)
+        {
+            status = value;
         }
 
         uint8_t OI;

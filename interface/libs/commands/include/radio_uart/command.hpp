@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -9,21 +10,33 @@ public:
             static_cast<uint8_t>(COMMANDS::OI::RADIO_UART),
             COMMANDS::RADIO_UART::COMMAND_LENGTH)
     {
-        m_payload.at(offsetof(COMMANDS::RADIO_UART::command_t, mode))
-            = mode;
+        COMMANDS::RADIO_UART::command_t command;
+
+        m_payload.at(offsetof(COMMANDS::RADIO_UART::command_t, mode)) = mode;
+
     };
 
-    void print(std::ostream& out) const override
+    void printResponse(std::ostream& out, COMMANDS::RADIO_UART::response_t response) const
     {
-        COMMANDS::RADIO_UART::response_t response(
-            (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH]);
+        out << "RADIO_UART             : ";
+        out << " status=" << static_cast<int>(response.getStatus());
+    }
 
-        out << "RADIO_UART          : status=" << static_cast<int>(response.status);
+    void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
+    {
+        if (m_response.size() >= (COMMANDS::RADIO_UART::RESPONSE_LENGTH + 4)) {
+            COMMANDS::RADIO_UART::response_t response(
+                (uint8_t*)&responsePayload.data()[0]);
+            printResponse(out, response);
+        } else
+        {
+            std::cout << "RADIO_UART: insufficient data" << std::endl;
+        }
     };
 
     COMMANDS::RADIO_UART::response_t responseStruct()
     {
-        return {(uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH]};
+        return { (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH] };
     };
 };
 

@@ -1,32 +1,66 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
-#include <cstdint>
 
 class UartCommandWs2812b : public UartCommandBase {
 public:
-    UartCommandWs2812b()
+    UartCommandWs2812b(std::vector<uint8_t> red, std::vector<uint8_t> green, std::vector<uint8_t> blue)
         : UartCommandBase(
             static_cast<uint8_t>(COMMANDS::OI::WS2812B),
             COMMANDS::WS2812B::COMMAND_LENGTH)
     {
+        COMMANDS::WS2812B::command_t command;
+
+        for (int i = 0; i < red.size(); i++) {
+            if (i >= sizeof(command.red)) {
+                break;
+            }
+            m_payload.at(
+                offsetof(COMMANDS::WS2812B::command_t, red[0]) + i)
+                = red.at(i);
+        }
+
+        for (int i = 0; i < green.size(); i++) {
+            if (i >= sizeof(command.green)) {
+                break;
+            }
+            m_payload.at(
+                offsetof(COMMANDS::WS2812B::command_t, green[0]) + i)
+                = green.at(i);
+        }
+
+        for (int i = 0; i < blue.size(); i++) {
+            if (i >= sizeof(command.blue)) {
+                break;
+            }
+            m_payload.at(
+                offsetof(COMMANDS::WS2812B::command_t, blue[0]) + i)
+                = blue.at(i);
+        }
+
     };
 
-    void print(std::ostream& out) const override
+    void printResponse(std::ostream& out, COMMANDS::WS2812B::response_t response) const
     {
-        out << "WS2812B : ";
+        out << "WS2812B                : ";
+    }
+
+    void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
+    {
+        if (m_response.size() >= (COMMANDS::WS2812B::RESPONSE_LENGTH + 4)) {
+            COMMANDS::WS2812B::response_t response(
+                (uint8_t*)&responsePayload.data()[0]);
+            printResponse(out, response);
+        } else
+        {
+            std::cout << "WS2812B: insufficient data" << std::endl;
+        }
     };
 
     COMMANDS::WS2812B::response_t responseStruct()
     {
-        return {(uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH]};
+        return { (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH] };
     };
-
-    void setLed(uint8_t pos, uint8_t red, uint8_t green, uint8_t blue)
-    {
-        m_payload.at(offsetof(COMMANDS::WS2812B::command_t, red) + pos) = red;
-        m_payload.at(offsetof(COMMANDS::WS2812B::command_t, green) + pos) = green;
-        m_payload.at(offsetof(COMMANDS::WS2812B::command_t, blue) + pos) = blue;
-    }
 };
 

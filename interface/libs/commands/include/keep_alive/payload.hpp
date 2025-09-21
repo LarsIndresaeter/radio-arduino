@@ -1,5 +1,7 @@
 #pragma once
 
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
 #include <common/command_id.hpp>
 
 namespace COMMANDS {
@@ -23,6 +25,16 @@ namespace KEEP_ALIVE {
             OI = cmd[0];
             OL = cmd[1];
             time = cmd[2];
+        }
+
+        uint8_t getTime()
+        {
+            return(time);
+        }
+
+        void setTime(uint8_t value)
+        {
+            time = value;
         }
 
         uint8_t OI;
@@ -49,6 +61,16 @@ namespace KEEP_ALIVE {
             response[0] = OI;
             response[1] = OL;
             response[2] = status;
+        }
+
+        uint8_t getStatus()
+        {
+            return(status);
+        }
+
+        void setStatus(uint8_t value)
+        {
+            status = value;
         }
 
         uint8_t OI;

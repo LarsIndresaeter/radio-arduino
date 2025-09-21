@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -9,28 +10,33 @@ public:
             static_cast<uint8_t>(COMMANDS::OI::KEEP_ALIVE),
             COMMANDS::KEEP_ALIVE::COMMAND_LENGTH)
     {
+        COMMANDS::KEEP_ALIVE::command_t command;
+
         m_payload.at(offsetof(COMMANDS::KEEP_ALIVE::command_t, time)) = time;
+
     };
 
-    void print(std::ostream& out) const override
+    void printResponse(std::ostream& out, COMMANDS::KEEP_ALIVE::response_t response) const
     {
-        COMMANDS::SET_NODE_ADDRESS::response_t response(
-            (uint8_t*)&m_response.data()[4]);
-        out << "KEEP_ALIVE           : ";
+        out << "KEEP_ALIVE             : ";
+        out << " status=" << static_cast<int>(response.getStatus());
+    }
 
-        if(response.status == 1)
+    void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
+    {
+        if (m_response.size() >= (COMMANDS::KEEP_ALIVE::RESPONSE_LENGTH + 4)) {
+            COMMANDS::KEEP_ALIVE::response_t response(
+                (uint8_t*)&responsePayload.data()[0]);
+            printResponse(out, response);
+        } else
         {
-            out << "OK";
-        }
-        else
-        {
-            out << "FAILED";
+            std::cout << "KEEP_ALIVE: insufficient data" << std::endl;
         }
     };
 
     COMMANDS::KEEP_ALIVE::response_t responseStruct()
     {
-        return {(uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH]};
+        return { (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH] };
     };
 };
 

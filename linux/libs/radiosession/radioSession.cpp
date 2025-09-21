@@ -149,8 +149,8 @@ std::string RadioSession::readNodeName(monitor& mon)
     if (nodeDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
         auto response = nodeDeviceInfo.responseStruct();
 
-        for (int i = 0; i < 16 && response.name[i] != 0; i++) {
-            nodeName += response.name[i];
+        for (int i = 0; i < 16 && response.nameString[i] != 0; i++) {
+            nodeName += response.nameString[i];
         }
     }
 
@@ -170,8 +170,9 @@ std::string RadioSession::getNodeName()
     if (nodeDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
         auto response = nodeDeviceInfo.responseStruct();
 
-        for (int i = 0; i < 16 && response.name[i] != 0; i++) {
-            nodeName += response.name[i];
+        // refactor this: use getNameString() when it is completed
+        for (int i = 0; i < 16 && response.nameString[i] != 0; i++) {
+            nodeName += response.nameString[i];
         }
     }
 

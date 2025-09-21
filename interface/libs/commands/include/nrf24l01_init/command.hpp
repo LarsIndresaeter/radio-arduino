@@ -1,63 +1,57 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
 class UartCommandNrf24l01Init : public UartCommandBase {
 public:
-    UartCommandNrf24l01Init(
-        std::vector<uint8_t> tx_addr,
-        std::vector<uint8_t> rx_addr,
-        uint8_t rf_channel,
-        bool gateway)
+    UartCommandNrf24l01Init(std::vector<uint8_t> txAddr, std::vector<uint8_t> rxAddr, uint8_t rfChannel, uint8_t gateway)
         : UartCommandBase(
             static_cast<uint8_t>(COMMANDS::OI::NRF24L01_INIT),
             COMMANDS::NRF24L01_INIT::COMMAND_LENGTH)
     {
         COMMANDS::NRF24L01_INIT::command_t command;
 
-        m_payload.at(offsetof(COMMANDS::NRF24L01_INIT::command_t, rf_channel))
-            = rf_channel;
-        if (gateway) {
-            m_payload.at(offsetof(COMMANDS::NRF24L01_INIT::command_t, gateway))
-                = 0x01;
-        }
-        else {
-            m_payload.at(offsetof(COMMANDS::NRF24L01_INIT::command_t, gateway))
-                = 0x00;
-        }
-
-        for (int i = 0; i < tx_addr.size(); i++) {
-            if (i >= sizeof(command.tx_addr)) {
-                std::cout << "WARNING: NRF24L01 payload truncated after "
-                          << static_cast<int>(
-                                 sizeof(command.tx_addr))
-                          << " bytes" << std::endl;
+        for (int i = 0; i < txAddr.size(); i++) {
+            if (i >= sizeof(command.txAddr)) {
                 break;
             }
             m_payload.at(
-                offsetof(COMMANDS::NRF24L01_INIT::command_t, tx_addr[0]) + i)
-                = tx_addr.at(i);
+                offsetof(COMMANDS::NRF24L01_INIT::command_t, txAddr[0]) + i)
+                = txAddr.at(i);
         }
 
-        for (int i = 0; i < rx_addr.size(); i++) {
-            if (i >= sizeof(command.rx_addr)) {
-                std::cout << "WARNING: NRF24L01 payload truncated after "
-                          << static_cast<int>(
-                                 sizeof(command.rx_addr))
-                          << " bytes" << std::endl;
+        for (int i = 0; i < rxAddr.size(); i++) {
+            if (i >= sizeof(command.rxAddr)) {
                 break;
             }
             m_payload.at(
-                offsetof(COMMANDS::NRF24L01_INIT::command_t, rx_addr[0]) + i)
-                = rx_addr.at(i);
+                offsetof(COMMANDS::NRF24L01_INIT::command_t, rxAddr[0]) + i)
+                = rxAddr.at(i);
         }
+
+        m_payload.at(offsetof(COMMANDS::NRF24L01_INIT::command_t, rfChannel)) = rfChannel;
+
+        m_payload.at(offsetof(COMMANDS::NRF24L01_INIT::command_t, gateway)) = gateway;
+
     };
 
-    void print(std::ostream& out) const override
+    void printResponse(std::ostream& out, COMMANDS::NRF24L01_INIT::response_t response) const
     {
-        COMMANDS::NRF24L01_INIT::response_t response(
-            (uint8_t*)&m_response.data()[4]);
-        out << "nRF24L01_INIT  :";
+        out << "NRF24L01_INIT          : ";
+        out << " status=" << static_cast<int>(response.getStatus());
+    }
+
+    void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
+    {
+        if (m_response.size() >= (COMMANDS::NRF24L01_INIT::RESPONSE_LENGTH + 4)) {
+            COMMANDS::NRF24L01_INIT::response_t response(
+                (uint8_t*)&responsePayload.data()[0]);
+            printResponse(out, response);
+        } else
+        {
+            std::cout << "NRF24L01_INIT: insufficient data" << std::endl;
+        }
     };
 
     COMMANDS::NRF24L01_INIT::response_t responseStruct()

@@ -1,10 +1,11 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
 class UartCommandI2cWrite : public UartCommandBase {
 public:
-    UartCommandI2cWrite(uint8_t device, uint16_t registerAddress, std::vector<uint8_t> data)
+    UartCommandI2cWrite(uint8_t device, uint16_t registerAddress, uint8_t length, std::vector<uint8_t> data)
         : UartCommandBase(
             static_cast<uint8_t>(COMMANDS::OI::I2C_WRITE),
             COMMANDS::I2C_WRITE::COMMAND_LENGTH)
@@ -12,52 +13,38 @@ public:
         COMMANDS::I2C_WRITE::command_t command;
 
         m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, device)) = device;
-        m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, registerHigh))
-            = static_cast<uint16_t>(registerAddress) >> 8;
-        m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, registerLow))
-            = registerAddress;
 
-        if (data.size() < sizeof(command.data)) {
-            m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, length))
-                = data.size();
-        }
-        else {
-            m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, length)) = sizeof(command.data);
-        }
+        m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, registerAddress) + 1) = registerAddress>>8;
+        m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, registerAddress)) = registerAddress;
+
+        m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, length)) = length;
 
         for (int i = 0; i < data.size(); i++) {
             if (i >= sizeof(command.data)) {
-                std::cout << "WARNING: I2C payload truncated after "
-                          << static_cast<int>(
-                                 sizeof(command.data))
-                          << " bytes" << std::endl;
                 break;
             }
-            m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, data[0]) + i)
+            m_payload.at(
+                offsetof(COMMANDS::I2C_WRITE::command_t, data[0]) + i)
                 = data.at(i);
-
-            // std::cout << "DEBUG: data[" << static_cast<int>(i) << "]=" <<
-            // static_cast<int>(data.at(i)) << std::endl;
         }
+
     };
 
-    void print(std::ostream& out) const override
+    void printResponse(std::ostream& out, COMMANDS::I2C_WRITE::response_t response) const
     {
-        COMMANDS::I2C_WRITE::response_t response(
-            (uint8_t*)&m_response.data()[4]);
-        out << "I2C_WRITE : status=" << static_cast<int>(response.status) << " ";
+        out << "I2C_WRITE              : ";
+        out << " status=" << static_cast<int>(response.getStatus());
+    }
 
-        if (0 == response.status)
+    void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
+    {
+        if (m_response.size() >= (COMMANDS::I2C_WRITE::RESPONSE_LENGTH + 4)) {
+            COMMANDS::I2C_WRITE::response_t response(
+                (uint8_t*)&responsePayload.data()[0]);
+            printResponse(out, response);
+        } else
         {
-            out << "OK";
-        }
-        else if (1 == response.status)
-        {
-            out << "nack";
-        }
-        else if (2 == response.status)
-        {
-            out << "transmission failure";
+            std::cout << "I2C_WRITE: insufficient data" << std::endl;
         }
     };
 

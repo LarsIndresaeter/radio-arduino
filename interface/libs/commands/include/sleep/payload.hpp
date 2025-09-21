@@ -1,5 +1,7 @@
 #pragma once
 
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
 #include <common/command_id.hpp>
 
 namespace COMMANDS {
@@ -22,18 +24,15 @@ namespace SLEEP {
         {
             OI = cmd[0];
             OL = cmd[1];
-            delay_0 = cmd[2];
-            delay_1 = cmd[3];
-            delay_2 = cmd[4];
-            delay_3 = cmd[5];
+            for(uint8_t i=0; i<4; i++)
+            {
+                delay[i] = cmd[2 + i];
+            }
         }
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t delay_0;
-        uint8_t delay_1;
-        uint8_t delay_2;
-        uint8_t delay_3;
+        uint8_t delay[4];
     } command_t;
 
     typedef struct response {
@@ -55,6 +54,16 @@ namespace SLEEP {
             response[0] = OI;
             response[1] = OL;
             response[2] = status;
+        }
+
+        uint8_t getStatus()
+        {
+            return(status);
+        }
+
+        void setStatus(uint8_t value)
+        {
+            status = value;
         }
 
         uint8_t OI;

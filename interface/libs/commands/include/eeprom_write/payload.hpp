@@ -1,5 +1,7 @@
 #pragma once
 
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
 #include <common/command_id.hpp>
 
 namespace COMMANDS {
@@ -22,15 +24,37 @@ namespace EEPROM_WRITE {
         {
             OI = cmd[0];
             OL = cmd[1];
-            addressHigh = cmd[2];
-            addressLow = cmd[3];
+            for(uint8_t i=0; i<2; i++)
+            {
+                address[i] = cmd[2 + i];
+            }
             data = cmd[4];
+        }
+
+        uint16_t getAddress()
+        {
+            return(((uint16_t)address[1]) << 8 | address[0]);
+        }
+
+        void setAddress(uint16_t value)
+        {
+            address[1] = (uint8_t)(value >> 8);
+            address[0] = (uint8_t)value;
+        }
+
+        uint8_t getData()
+        {
+            return(data);
+        }
+
+        void setData(uint8_t value)
+        {
+            data = value;
         }
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t addressHigh;
-        uint8_t addressLow;
+        uint8_t address[2];
         uint8_t data;
     } command_t;
 
@@ -45,8 +69,10 @@ namespace EEPROM_WRITE {
         {
             OI = res[0];
             OL = res[1];
-            addressHigh = res[2];
-            addressLow = res[3];
+            for(uint8_t i=0; i<2; i++)
+            {
+                address[i] = res[2 + i];
+            }
             data = res[4];
         }
 
@@ -54,15 +80,37 @@ namespace EEPROM_WRITE {
         {
             response[0] = OI;
             response[1] = OL;
-            response[2] = addressHigh;
-            response[3] = addressLow;
+            for(uint8_t i=0; i<2; i++)
+            {
+                response[2 + i] = address[i];
+            }
             response[4] = data;
+        }
+
+        uint16_t getAddress()
+        {
+            return(((uint16_t)address[1]) << 8 | address[0]);
+        }
+
+        void setAddress(uint16_t value)
+        {
+            address[1] = (uint8_t)(value >> 8);
+            address[0] = (uint8_t)value;
+        }
+
+        uint8_t getData()
+        {
+            return(data);
+        }
+
+        void setData(uint8_t value)
+        {
+            data = value;
         }
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t addressHigh;
-        uint8_t addressLow;
+        uint8_t address[2];
         uint8_t data;
 
     } response_t;

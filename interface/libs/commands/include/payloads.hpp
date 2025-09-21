@@ -1,5 +1,7 @@
 #pragma once
 
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
 #include <stdint.h>
 
 #include <common/command_id.hpp>

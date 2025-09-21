@@ -1,5 +1,7 @@
 #pragma once
 
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
 #include <common/command_id.hpp>
 
 namespace COMMANDS {
@@ -51,6 +53,36 @@ namespace GPIO {
             response[2] = portB;
             response[3] = portC;
             response[4] = portD;
+        }
+
+        uint8_t getPortb()
+        {
+            return(portB);
+        }
+
+        void setPortb(uint8_t value)
+        {
+            portB = value;
+        }
+
+        uint8_t getPortc()
+        {
+            return(portC);
+        }
+
+        void setPortc(uint8_t value)
+        {
+            portC = value;
+        }
+
+        uint8_t getPortd()
+        {
+            return(portD);
+        }
+
+        void setPortd(uint8_t value)
+        {
+            portD = value;
         }
 
         uint8_t OI;

@@ -1,5 +1,7 @@
 #pragma once
 
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
 #include <common/command_id.hpp>
 
 namespace COMMANDS {
@@ -39,13 +41,19 @@ namespace QUADRATURE_ENCODER {
         {
             OI = res[0];
             OL = res[1];
-            cnt_neg_high = res[2];
-            cnt_neg_low = res[3];
-            cnt_pos_high = res[4];
-            cnt_pos_low = res[5];
-            sw_pos = res[6];
-            sw_cnt_high = res[7];
-            sw_cnt_low = res[8];
+            for(uint8_t i=0; i<2; i++)
+            {
+                countnegative[i] = res[2 + i];
+            }
+            for(uint8_t i=0; i<2; i++)
+            {
+                countpositive[i] = res[4 + i];
+            }
+            switchposition = res[6];
+            for(uint8_t i=0; i<2; i++)
+            {
+                switchcount[i] = res[7 + i];
+            }
             status = res[9];
         }
 
@@ -53,25 +61,81 @@ namespace QUADRATURE_ENCODER {
         {
             response[0] = OI;
             response[1] = OL;
-            response[2] = cnt_neg_high;
-            response[3] = cnt_neg_low;
-            response[4] = cnt_pos_high;
-            response[5] = cnt_pos_low;
-            response[6] = sw_pos;
-            response[7] = sw_cnt_high;
-            response[8] = sw_cnt_low;
+            for(uint8_t i=0; i<2; i++)
+            {
+                response[2 + i] = countnegative[i];
+            }
+            for(uint8_t i=0; i<2; i++)
+            {
+                response[4 + i] = countpositive[i];
+            }
+            response[6] = switchposition;
+            for(uint8_t i=0; i<2; i++)
+            {
+                response[7 + i] = switchcount[i];
+            }
             response[9] = status;
+        }
+
+        uint16_t getCountnegative()
+        {
+            return(((uint16_t)countnegative[1]) << 8 | countnegative[0]);
+        }
+
+        void setCountnegative(uint16_t value)
+        {
+            countnegative[1] = (uint8_t)(value >> 8);
+            countnegative[0] = (uint8_t)value;
+        }
+
+        uint16_t getCountpositive()
+        {
+            return(((uint16_t)countpositive[1]) << 8 | countpositive[0]);
+        }
+
+        void setCountpositive(uint16_t value)
+        {
+            countpositive[1] = (uint8_t)(value >> 8);
+            countpositive[0] = (uint8_t)value;
+        }
+
+        uint8_t getSwitchposition()
+        {
+            return(switchposition);
+        }
+
+        void setSwitchposition(uint8_t value)
+        {
+            switchposition = value;
+        }
+
+        uint16_t getSwitchcount()
+        {
+            return(((uint16_t)switchcount[1]) << 8 | switchcount[0]);
+        }
+
+        void setSwitchcount(uint16_t value)
+        {
+            switchcount[1] = (uint8_t)(value >> 8);
+            switchcount[0] = (uint8_t)value;
+        }
+
+        uint8_t getStatus()
+        {
+            return(status);
+        }
+
+        void setStatus(uint8_t value)
+        {
+            status = value;
         }
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t cnt_neg_high;
-        uint8_t cnt_neg_low;
-        uint8_t cnt_pos_high;
-        uint8_t cnt_pos_low;
-        uint8_t sw_pos;
-        uint8_t sw_cnt_high;
-        uint8_t sw_cnt_low;
+        uint8_t countnegative[2];
+        uint8_t countpositive[2];
+        uint8_t switchposition;
+        uint8_t switchcount[2];
         uint8_t status;
 
     } response_t;

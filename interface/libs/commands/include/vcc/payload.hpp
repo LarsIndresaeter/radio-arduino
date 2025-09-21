@@ -1,5 +1,7 @@
 #pragma once
 
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
 #include <common/command_id.hpp>
 
 namespace COMMANDS {
@@ -39,22 +41,36 @@ namespace VCC {
         {
             OI = res[0];
             OL = res[1];
-            vcc_h = res[2];
-            vcc_l = res[3];
+            for(uint8_t i=0; i<2; i++)
+            {
+                vcc[i] = res[2 + i];
+            }
         }
 
         void serialize(uint8_t* response)
         {
             response[0] = OI;
             response[1] = OL;
-            response[2] = vcc_h;
-            response[3] = vcc_l;
+            for(uint8_t i=0; i<2; i++)
+            {
+                response[2 + i] = vcc[i];
+            }
+        }
+
+        uint16_t getVcc()
+        {
+            return(((uint16_t)vcc[1]) << 8 | vcc[0]);
+        }
+
+        void setVcc(uint16_t value)
+        {
+            vcc[1] = (uint8_t)(value >> 8);
+            vcc[0] = (uint8_t)value;
         }
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t vcc_h;
-        uint8_t vcc_l;
+        uint8_t vcc[2];
 
     } response_t;
 }

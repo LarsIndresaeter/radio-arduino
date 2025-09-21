@@ -360,10 +360,10 @@ void commandSleep(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::SLEEP::command_t command(commandPayload);
     COMMANDS::SLEEP::response_t response;
 
-    uint32_t delay = (uint32_t)(command.delay_0) << 24;
-    delay += (uint32_t)(command.delay_1) << 16;
-    delay += (uint32_t)(command.delay_2) << 8;
-    delay += command.delay_3;
+    uint32_t delay = (uint32_t)(command.delay[3]) << 24;
+    delay += (uint32_t)(command.delay[2]) << 16;
+    delay += (uint32_t)(command.delay[1]) << 8;
+    delay += command.delay[0];
 
     powerDownRadioAndSleep(delay);
 
@@ -486,8 +486,7 @@ void commandTimer(uint8_t* commandPayload, uint8_t* responsePayload)
 
     pulse_width = pulse_width >> 4; // divide by 16 to get micro seconds
 
-    response.pulse_width_high = pulse_width >> 8;
-    response.pulse_width_low = pulse_width;
+    response.setPulsewidth(pulse_width);
 
     response.serialize(responsePayload);
 }
@@ -531,8 +530,7 @@ void commandVcc(uint8_t* commandPayload, uint8_t* responsePayload)
     }
     vcc = vcc >> 5;
     
-    response.vcc_h = vcc >> 8;
-    response.vcc_l = vcc;
+    response.setVcc(vcc);
 
     response.serialize(responsePayload);
 }
@@ -561,10 +559,9 @@ void commandEepromRead(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::EEPROM_READ::response_t response;
     Eeprom eeprom;
 
-    response.addressHigh = command.addressHigh;
-    response.addressLow = command.addressLow;
+    response.setAddress(command.getAddress());
     response.data
-        = eeprom.read(command.addressHigh * 256 + command.addressLow);
+        = eeprom.read(command.getAddress());
 
     response.serialize(responsePayload);
 }
@@ -595,13 +592,11 @@ void commandEepromWrite(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::EEPROM_WRITE::response_t response;
     Eeprom eeprom;
 
-    eeprom.write(
-        command.addressHigh * 256 + command.addressLow, command.data);
+    eeprom.write(command.getAddress(), command.data);
 
-    response.addressHigh = command.addressHigh;
-    response.addressLow = command.addressLow;
+    response.setAddress(command.getAddress());
     response.data
-        = eeprom.read(command.addressHigh * 256 + command.addressLow);
+        = eeprom.read(command.getAddress());
 
     response.serialize(responsePayload);
 }
@@ -613,8 +608,8 @@ void commandI2cWrite(uint8_t* commandPayload, uint8_t* responsePayload)
 
     I2C_Init();
     I2C_Start(command.device);       // write address
-    I2C_Write(command.registerLow);  // first word address
-    I2C_Write(command.registerHigh); // second word address
+    I2C_Write(command.registerAddress[0]);  // first word address
+    I2C_Write(command.registerAddress[1]); // second word address
     for (uint8_t i = 0;
          (i < command.length) && (i < static_cast<uint8_t>(sizeof(command.data)));
          i++) {
@@ -636,22 +631,22 @@ void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
 
     uint16_t address = 0;
 
-    if (command.key_id == 'T') {
+    if (command.keyId == 'T') {
         address = offsetof(eeprom_data, TK_KEY);
     }
-    else if (command.key_id == 'H') {
+    else if (command.keyId == 'H') {
         address = offsetof(eeprom_data_t, HMAC_KEY);
     }
-    else if (command.key_id == 'O') {
+    else if (command.keyId == 'O') {
         address = offsetof(eeprom_data_t, HOTP_KEY);
     }
-    else if (command.key_id == 'E') {
+    else if (command.keyId == 'E') {
         address = offsetof(eeprom_data_t, EK_KEY);
     }
 
-    if (command.key_id != 'U') {
+    if (command.keyId != 'U') {
         for (uint8_t i = 0; i < 16; i++) {
-            eeprom.write(address + i, command.key_value[i]);
+            eeprom.write(address + i, command.keyValue[i]);
         }
         response.status = 1;
     }
@@ -682,15 +677,15 @@ void commandGetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
     Eeprom eeprom;
 
     for (uint8_t i = 0; i < 16; i++) {
-        response.name[i] = eeprom.read(offsetof(eeprom_data_t, NAME) + i);
+        response.nameString[i] = eeprom.read(offsetof(eeprom_data_t, NAME) + i);
     }
 
     for (int i = 0; i < 32; i++) {
-        response.version[i] = 0;
+        response.versionString[i] = 0;
     }
 
     for (int i = 0; i < 32 && ARDUINO_VERSION[i] != 0; i++) {
-        response.version[i] = ARDUINO_VERSION[i];
+        response.versionString[i] = ARDUINO_VERSION[i];
     }
 
     response.status = 1;
@@ -704,16 +699,15 @@ void commandI2cRead(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::I2C_READ::response_t response;
 
     response.device = command.device;
-    response.registerHigh = command.registerHigh;
-    response.registerLow = command.registerLow;
+    response.setRegisteraddress(command.getRegisteraddress());
     response.length = command.length;
 
     I2C_Init();
     I2C_Start(command.device);                        // read address
-    response.status = I2C_Write(command.registerLow); // first word address
+    response.status = I2C_Write(command.registerAddress[0]); // first word address
     // if(0 != response.status)
     //{
-    response.status = I2C_Write(command.registerHigh); // second word address
+    response.status = I2C_Write(command.registerAddress[1]); // second word address
                                                        //}
     // if(0 == response.status)
     //{
@@ -841,9 +835,9 @@ void commandNrf24l01Init(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::NRF24L01_INIT::response_t response;
 
     NRF24L01_init(
-        &command.rx_addr[0],
-        &command.tx_addr[0],
-        command.rf_channel,
+        &command.rxAddr[0],
+        &command.txAddr[0],
+        command.rfChannel,
         command.gateway == 1);
 
     response.status = 1;
@@ -1007,7 +1001,7 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
         {
             response.attention = read_discover_package[31];
 
-            if ((0 != command.check_attention_flag) && (0 == read_discover_package[31])) {
+            if ((0 != command.checkAttentionFlag) && (0 == read_discover_package[31])) {
                 // received discover package but about wakeup since data available flag was not set
                 break;
             }
@@ -1060,13 +1054,10 @@ void commandQuadratureEncoder(uint8_t* commandPayload, uint8_t* responsePayload)
         sei();
     }
 
-    response.cnt_pos_high = cnt_pos >> 8;
-    response.cnt_pos_low = cnt_pos;
-    response.cnt_neg_high = cnt_neg >> 8;
-    response.cnt_neg_low = cnt_neg;
-    response.sw_cnt_high = sw_cnt >> 8;
-    response.sw_cnt_low = sw_cnt;
-    response.sw_pos = sw_pos;
+    response.setCountpositive(cnt_pos);
+    response.setCountnegative(cnt_neg);
+    response.setSwitchcount(sw_cnt);
+    response.setSwitchposition(sw_pos);
 
     response.serialize(responsePayload);
 }
@@ -1077,11 +1068,11 @@ void commandSetNodeAddress(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::SET_NODE_ADDRESS::response_t response;
     response.status = 0;
 
-    rx_tx_addr[NRF24L01_ADDR_SIZE - 1] = command.node_address;
+    rx_tx_addr[NRF24L01_ADDR_SIZE - 1] = command.nodeAddress;
 
     // update wakeup command and discover package
-    rf_link_wakeup_command[31] = command.node_address;
-    rf_link_discover_package[30] = command.node_address;
+    rf_link_wakeup_command[31] = command.nodeAddress;
+    rf_link_discover_package[30] = command.nodeAddress;
 
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
 
