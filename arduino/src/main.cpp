@@ -15,7 +15,7 @@
 #include <eeprom.hpp>
 #include <i2c.hpp>
 #include <nrf24l01.hpp>
-#include <payloads.hpp>
+#include <cmd/payloads.hpp>
 #include <pwm.hpp>
 #include <random.hpp>
 #include <sha1.hpp>
@@ -242,7 +242,7 @@ void commandSha1(uint8_t* commandPayload, uint8_t* responsePayload)
     SHA1Context sha;
 
     SHA1Reset(&sha);
-    SHA1Input(&sha, command.data, command.OL);
+    SHA1Input(&sha, command.data, sizeof(command.data));
     SHA1Result(&sha, response.data);
 
     response.serialize(responsePayload);

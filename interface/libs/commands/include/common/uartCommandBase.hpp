@@ -4,7 +4,7 @@
 #include <iomanip>
 #include <iostream>
 #include <ostream>
-#include <payloads.hpp>
+#include <cmd/payloads.hpp>
 #include <protocolBase.hpp>
 #include <stdint.h>
 #include <vector>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <payloads.hpp>
+#include <cmd/payloads.hpp>
 #include <protocolBase.hpp>
 #include <string>
 #include <vector>
