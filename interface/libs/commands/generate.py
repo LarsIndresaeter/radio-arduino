@@ -50,6 +50,8 @@ def calculateStructSizeFromNames(commandPayloadByteNames):
 def generateCommandFile(commandName,
                  commandPayloadByteNames, 
                  responsePayloadByteNames):
+    os.makedirs("include/" + commandName, exist_ok=True)
+
     with open("include/" + commandName + "/command.hpp", 'w') as outfile:
         outfile.write("#pragma once\n")
         outfile.write("// This file is generated with the script: `interface/libs/commands/generate.py`\n")
@@ -169,6 +171,8 @@ def generateFile(commandName,
 
     generateCommandFile(commandName, commandPayloadByteNames, responsePayloadByteNames)
 
+    os.makedirs("include", exist_ok=True)
+
     # add include to payloads.hpp
     with open("include/payloads.hpp", 'a') as outfile:
         outfile.write(f"#include <{commandName}/payload.hpp>\n")
@@ -176,6 +180,8 @@ def generateFile(commandName,
     # add include to commands.hpp
     with open("include/commands.hpp", 'a') as outfile:
         outfile.write(f"#include <{commandName}/command.hpp>\n")
+
+    os.makedirs("include/" + commandName, exist_ok=True)
 
     payloadFile = f"include/{commandName}/payload.hpp"
 
@@ -369,6 +375,9 @@ def generateFile(commandName,
 
 def generateCommonHeaderFiles(): 
     # add include to payloads.hpp
+
+    os.makedirs("include", exist_ok=True)
+
     with open("include/payloads.hpp", 'w') as outfile:
         outfile.write("#pragma once\n")
         outfile.write("\n")
