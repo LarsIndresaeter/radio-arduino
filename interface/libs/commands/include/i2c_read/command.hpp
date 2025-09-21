@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -22,34 +23,20 @@ public:
 
     void printResponse(std::ostream& out, COMMANDS::I2C_READ::response_t response) const
     {
-        out << "I2C_READ   : ";
-
-        out << " device=" << static_cast<int>(response.device);
+        out << "I2C_READ               : ";
+        out << " device=" << static_cast<int>(response.getDevice());
         out << " registerAddress=" << static_cast<int>(response.getRegisteraddress());
-        out << " length=" << static_cast<int>(response.length);
-        out << " status=" << static_cast<int>(response.status) << " ";
-
-        if (0 == response.status)
+        out << " status=" << static_cast<int>(response.getStatus());
+        out << " length=" << static_cast<int>(response.getLength());
+        out << " data=[ ";
+        out << std::setfill('0') << std::hex << std::uppercase;
+        for(uint8_t i=0; i<16; i++)
         {
-            out << "OK";
+            out << std::setw(2) << static_cast<int>(response.data[i]) << " ";
         }
-        else if (1 == response.status)
-        {
-            out << "nack";
-        }
-        else if (2 == response.status)
-        {
-            out << "transmission failure";
-        }
-
-        out << std::endl;
-
-        uint16_t registerOffset = response.getRegisteraddress();
-        for (int i = 0; (i < response.length) && (i < sizeof(response.data)); i++) {
-            out << " data[" << static_cast<int>(i) << "] [" << static_cast<int>(registerOffset + i) << "]="
-                << static_cast<int>(response.data[i]) << std::endl;
-        }
-    };
+        out << "]";
+        out << std::dec;
+    }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {

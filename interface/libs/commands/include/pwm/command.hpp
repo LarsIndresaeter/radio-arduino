@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -21,9 +22,11 @@ public:
 
     void printResponse(std::ostream& out, COMMANDS::PWM::response_t response) const
     {
-        out << "PWM   : ";
-        UartCommandBase::print(out);
-    };
+        out << "PWM                    : ";
+        out << " port=" << static_cast<int>(response.getPort());
+        out << " pin=" << static_cast<int>(response.getPin());
+        out << " value=" << static_cast<int>(response.getValue());
+    }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {

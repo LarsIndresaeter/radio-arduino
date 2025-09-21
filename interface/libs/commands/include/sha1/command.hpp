@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -24,11 +25,15 @@ public:
 
     void printResponse(std::ostream& out, COMMANDS::SHA1::response_t response) const
     {
-        out << "SHA1   : ";
-        UartCommandBase::print(out);
-        //for (int i = 0; i < sizeof(response.data); i++) {
-            //out << " " + std::to_string(response.data[i]) + " ";
-        //}
+        out << "SHA1                   : ";
+        out << " data=[ ";
+        out << std::setfill('0') << std::hex << std::uppercase;
+        for(uint8_t i=0; i<20; i++)
+        {
+            out << std::setw(2) << static_cast<int>(response.data[i]) << " ";
+        }
+        out << "]";
+        out << std::dec;
     }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

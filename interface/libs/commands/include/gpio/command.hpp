@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -15,12 +16,11 @@ public:
 
     void printResponse(std::ostream& out, COMMANDS::GPIO::response_t response) const
     {
-        out << "GPIO   : ";
-
-        out << "portB=" << static_cast<int>(response.portB)
-            << ", portC=" << static_cast<int>(response.portC)
-            << ", portD=" << static_cast<int>(response.portD);
-    };
+        out << "GPIO                   : ";
+        out << " portB=" << static_cast<int>(response.getPortb());
+        out << " portC=" << static_cast<int>(response.getPortc());
+        out << " portD=" << static_cast<int>(response.getPortd());
+    }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {

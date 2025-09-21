@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -15,19 +16,11 @@ public:
 
     void printResponse(std::ostream& out, COMMANDS::INA219::response_t response) const
     {
-        out << "INA219   : ";
-
-        int16_t voltage = response.getVoltage();
-        voltage = voltage >> 3; // ignore 3 LSB
-        float voltageFloat = voltage*0.004; // LSB = 4 mV
-
-        int16_t current = response.getCurrent();
-        float currentFloat = current*0.001;
-
-        out << "INA219   : V=";
-        out << voltageFloat << " ";
-        out << " I=" << currentFloat;
-    };
+        out << "INA219                 : ";
+        out << " current=" << static_cast<int>(response.getCurrent());
+        out << " voltage=" << static_cast<int>(response.getVoltage());
+        out << " status=" << static_cast<int>(response.getStatus());
+    }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {

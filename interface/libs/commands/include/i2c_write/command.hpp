@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -31,22 +32,9 @@ public:
 
     void printResponse(std::ostream& out, COMMANDS::I2C_WRITE::response_t response) const
     {
-        out << "I2C_WRITE   : ";
-        out << " status=" << static_cast<int>(response.status) << " ";
-
-        if (0 == response.status)
-        {
-            out << "OK";
-        }
-        else if (1 == response.status)
-        {
-            out << "nack";
-        }
-        else if (2 == response.status)
-        {
-            out << "transmission failure";
-        }
-    };
+        out << "I2C_WRITE              : ";
+        out << " status=" << static_cast<int>(response.getStatus());
+    }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {

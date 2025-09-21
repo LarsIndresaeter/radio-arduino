@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -15,24 +16,12 @@ public:
 
     void printResponse(std::ostream& out, COMMANDS::QUADRATURE_ENCODER::response_t response) const
     {
-        out << "QUADRATURE_ENCODER   : ";
-
-        if (response.status == 1) {
-            uint16_t countPositive = response.getCountpositive();
-            uint16_t countNegative = response.getCountnegative();
-            uint16_t switchCount = response.getSwitchcount();
-
-            out << "OK (";
-            out << "countPositive=" << std::to_string(countPositive);
-            out << " countNegative=" << std::to_string(countNegative);
-            out << " value=" << std::to_string(countPositive - countNegative);
-            out << " switchCount=" << std::to_string(switchCount);
-            out << " switchPosition=" << std::to_string(response.getSwitchposition());
-            out << ")";
-        }
-        else {
-            out << "FAILED";
-        }
+        out << "QUADRATURE_ENCODER     : ";
+        out << " countnegative=" << static_cast<int>(response.getCountnegative());
+        out << " countpositive=" << static_cast<int>(response.getCountpositive());
+        out << " switchposition=" << static_cast<int>(response.getSwitchposition());
+        out << " switchcount=" << static_cast<int>(response.getSwitchcount());
+        out << " status=" << static_cast<int>(response.getStatus());
     }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

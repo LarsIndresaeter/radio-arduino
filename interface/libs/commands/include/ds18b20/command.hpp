@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -15,16 +16,10 @@ public:
 
     void printResponse(std::ostream& out, COMMANDS::DS18B20::response_t response) const
     {
-        out << "DS18B20   : ";
-
-        uint16_t temperature = response.getTemperature();
-        float temperatureFloat = 0.0;
-        if (temperature > 0) {
-            temperatureFloat = temperature / 16.0;
-        }
-
-        out << " " << temperatureFloat << " ";
-    };
+        out << "DS18B20                : ";
+        out << " temperature=" << static_cast<int>(response.getTemperature());
+        out << " status=" << static_cast<int>(response.getStatus());
+    }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {

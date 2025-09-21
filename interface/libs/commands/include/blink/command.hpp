@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -15,11 +16,8 @@ public:
 
     void printResponse(std::ostream& out, COMMANDS::BLINK::response_t response) const
     {
-        out << "BLINK   : ";
-        uint8_t c;
-        out << "BLINK         : ";
-        UartCommandBase::print(out);
-    };
+        out << "BLINK                  : ";
+    }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {

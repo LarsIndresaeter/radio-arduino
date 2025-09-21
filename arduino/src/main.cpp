@@ -677,15 +677,15 @@ void commandGetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
     Eeprom eeprom;
 
     for (uint8_t i = 0; i < 16; i++) {
-        response.name[i] = eeprom.read(offsetof(eeprom_data_t, NAME) + i);
+        response.nameString[i] = eeprom.read(offsetof(eeprom_data_t, NAME) + i);
     }
 
     for (int i = 0; i < 32; i++) {
-        response.version[i] = 0;
+        response.versionString[i] = 0;
     }
 
     for (int i = 0; i < 32 && ARDUINO_VERSION[i] != 0; i++) {
-        response.version[i] = ARDUINO_VERSION[i];
+        response.versionString[i] = ARDUINO_VERSION[i];
     }
 
     response.status = 1;

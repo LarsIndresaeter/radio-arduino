@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -26,24 +27,17 @@ public:
 
     void printResponse(std::ostream& out, COMMANDS::NRF24L01_WRITE::response_t response) const
     {
-        out << "NRF24L01_WRITE   : ";
-        if(response.status == 1)
+        out << "NRF24L01_WRITE         : ";
+        out << " status=" << static_cast<int>(response.getStatus());
+        out << " length=" << static_cast<int>(response.getLength());
+        out << " data=[ ";
+        out << std::setfill('0') << std::hex << std::uppercase;
+        for(uint8_t i=0; i<128; i++)
         {
-            out << "OK";
+            out << std::setw(2) << static_cast<int>(response.data[i]) << " ";
         }
-        else
-        {
-            out << "FAILED";
-        }
-
-        out << std::setfill('0') << std::setw(2) << std::hex << std::uppercase;
-
-        for (int i = 0;
-             (i < response.length) && (i < sizeof(response.data));
-             i++) {
-            out << " 0x" << std::setfill('0') << std::setw(2) << std::hex << std::uppercase << static_cast<int>(response.data[i]);
-        }
-        out << " ]";
+        out << "]";
+        out << std::dec;
     }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

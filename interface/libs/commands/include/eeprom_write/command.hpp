@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -20,10 +21,10 @@ public:
 
     void printResponse(std::ostream& out, COMMANDS::EEPROM_WRITE::response_t response) const
     {
-        out << "EEPROM_WRITE   : ";
-        out << "addr=" << static_cast<int>(response.getAddress())
-            << ", data=" << static_cast<int>(response.getData());
-    };
+        out << "EEPROM_WRITE           : ";
+        out << " address=" << static_cast<int>(response.getAddress());
+        out << " data=" << static_cast<int>(response.getData());
+    }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {

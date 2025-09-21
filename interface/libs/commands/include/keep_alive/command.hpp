@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -17,17 +18,9 @@ public:
 
     void printResponse(std::ostream& out, COMMANDS::KEEP_ALIVE::response_t response) const
     {
-        out << "KEEP_ALIVE   : ";
-
-        if(response.status == 1)
-        {
-            out << "OK";
-        }
-        else
-        {
-            out << "FAILED";
-        }
-    };
+        out << "KEEP_ALIVE             : ";
+        out << " status=" << static_cast<int>(response.getStatus());
+    }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {

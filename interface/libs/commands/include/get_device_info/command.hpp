@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -15,21 +16,27 @@ public:
 
     void printResponse(std::ostream& out, COMMANDS::GET_DEVICE_INFO::response_t response) const
     {
-        out << "GET_DEVICE_INFO   : ";
-
-        out << "name=";
-        //seher
-
-        for (int i = 0; i < sizeof(response.name) && response.name[i] != 0; i++) {
-            out << response.name[i];
+        out << "GET_DEVICE_INFO        : ";
+        out << " nameString=\"";
+        for(uint8_t i=0; i<16; i++)
+        {
+            if(response.nameString[i])
+            {
+                out << static_cast<char>(response.nameString[i]);
+            }
         }
-
-        out << " , version=";
-
-        for (int i = 0; i < sizeof(response.version) && response.version[i] != 0; i++) {
-            out << response.version[i];
+        out << "\"";
+        out << " versionString=\"";
+        for(uint8_t i=0; i<32; i++)
+        {
+            if(response.versionString[i])
+            {
+                out << static_cast<char>(response.versionString[i]);
+            }
         }
-    };
+        out << "\"";
+        out << " status=" << static_cast<int>(response.getStatus());
+    }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {

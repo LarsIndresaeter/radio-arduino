@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -15,9 +16,8 @@ public:
 
     void printResponse(std::ostream& out, COMMANDS::TIMER::response_t response) const
     {
-        out << "TIMER   : ";
-
-        out << " pulse_width=" << std::dec << static_cast<int>(response.getPulsewidth()) << " us";
+        out << "TIMER                  : ";
+        out << " pulseWidth=" << static_cast<int>(response.getPulsewidth());
     }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

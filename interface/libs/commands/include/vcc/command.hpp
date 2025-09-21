@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -15,9 +16,8 @@ public:
 
     void printResponse(std::ostream& out, COMMANDS::VCC::response_t response) const
     {
-        out << "VCC   : ";
-
-        out << ": " << std::dec << static_cast<int>(response.getVcc()) << " mV";
+        out << "VCC                    : ";
+        out << " vcc=" << static_cast<int>(response.getVcc());
     }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

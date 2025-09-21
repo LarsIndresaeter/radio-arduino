@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -17,18 +18,9 @@ public:
 
     void printResponse(std::ostream& out, COMMANDS::WAKEUP::response_t response) const
     {
-        out << "WAKEUP   : ";
-
-        if(response.status == 1)
-        {
-            out << "OK";
-
-            out << " (attention=" << std::to_string(response.attention) << ")";
-        }
-        else
-        {
-            out << "FAILED";
-        }
+        out << "WAKEUP                 : ";
+        out << " status=" << static_cast<int>(response.getStatus());
+        out << " attention=" << static_cast<int>(response.getAttention());
     }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

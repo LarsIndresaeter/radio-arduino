@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -9,25 +10,19 @@ public:
             static_cast<uint8_t>(COMMANDS::OI::SLEEP),
             COMMANDS::SLEEP::COMMAND_LENGTH)
     {
-        m_payload.at(offsetof(COMMANDS::SLEEP::command_t, delay) + 3)
-            = static_cast<uint8_t>(delay >> 24);
-        m_payload.at(offsetof(COMMANDS::SLEEP::command_t, delay) + 2)
-            = static_cast<uint8_t>(delay >> 16);
-        m_payload.at(offsetof(COMMANDS::SLEEP::command_t, delay) + 1)
-            = static_cast<uint8_t>(delay >> 8);
-        m_payload.at(offsetof(COMMANDS::SLEEP::command_t, delay))
-            = static_cast<uint8_t>(delay);
+        COMMANDS::SLEEP::command_t command;
+
+        m_payload.at(offsetof(COMMANDS::SLEEP::command_t, delay) + 3) = delay>>24;
+        m_payload.at(offsetof(COMMANDS::SLEEP::command_t, delay) + 2) = delay>>16;
+        m_payload.at(offsetof(COMMANDS::SLEEP::command_t, delay) + 1) = delay>>8;
+        m_payload.at(offsetof(COMMANDS::SLEEP::command_t, delay)) = delay;
+
     };
 
     void printResponse(std::ostream& out, COMMANDS::SLEEP::response_t response) const
     {
-        out << "SLEEP   : ";
-        if (response.status == 0) {
-            out << "ERROR";
-        }
-        else {
-            out << "OK";
-        }
+        out << "SLEEP                  : ";
+        out << " status=" << static_cast<int>(response.getStatus());
     }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

@@ -52,6 +52,7 @@ def generateCommandFile(commandName,
                  responsePayloadByteNames):
     with open("include/" + commandName + "/command.hpp", 'w') as outfile:
         outfile.write("#pragma once\n")
+        outfile.write("// This file is generated with the script: `interface/libs/commands/generate.py`\n")
         outfile.write("\n")
         outfile.write("#include <common/uartCommandBase.hpp>\n")
         outfile.write("\n")
@@ -112,16 +113,34 @@ def generateCommandFile(commandName,
         outfile.write("\n")
         outfile.write("    void printResponse(std::ostream& out, COMMANDS::" + commandName.upper() + "::response_t response) const\n") 
         outfile.write("    {\n")
-        outfile.write("        out << \"" + commandName.upper() + "   : \";\n")
-        # seher
+        outfile.write("        out << \"" + commandName.upper().ljust(20) + "   : \";\n")
+
         for item in responsePayloadByteNames:
             arraySize = arraySizeFromVariableName(item)
-            if(arraySize == 1):
-                outfile.write("        out << \" " + arrayBasenameFromVariableName(item) + "=\" << " + "response.get" + arrayBasenameFromVariableName(item).capitalize() + "();\n");
-            if(arraySize == 2):
-                outfile.write("        out << \" " + arrayBasenameFromVariableName(item) + "=\" << " + "response.get" + arrayBasenameFromVariableName(item).capitalize() + "();\n");
-            if(arraySize == 4):
-                outfile.write("        out << \" " + arrayBasenameFromVariableName(item) + "=\" << " + "response.get" + arrayBasenameFromVariableName(item).capitalize() + "();\n");
+            if(arraySize <= 4):
+                outfile.write("        out << \" " + arrayBasenameFromVariableName(item) + "=\" << " + "static_cast<int>(response.get" + arrayBasenameFromVariableName(item).capitalize() + "());\n");
+            else:
+                # seher: check if variableName contains 'string', if so then print as string
+
+                if(arrayBasenameFromVariableName(item).lower().find("string") > 0):
+                    outfile.write("        out << \" " + arrayBasenameFromVariableName(item) + "=\\\"\";\n")
+                    outfile.write("        for(uint8_t i=0; i<" + str(arraySize) + "; i++)\n")
+                    outfile.write("        {\n")
+                    outfile.write("            if(response." + arrayBasenameFromVariableName(item) + "[i])\n")
+                    outfile.write("            {\n")
+                    outfile.write("                out << static_cast<char>(response." + arrayBasenameFromVariableName(item) + "[i]);\n")
+                    outfile.write("            }\n")
+                    outfile.write("        }\n")
+                    outfile.write("        out << \"\\\"\";\n")
+                else:
+                    outfile.write("        out << \" " + arrayBasenameFromVariableName(item) + "=[ \";\n")
+                    outfile.write("        out << std::setfill('0') << std::hex << std::uppercase;\n")
+                    outfile.write("        for(uint8_t i=0; i<" + str(arraySize) + "; i++)\n")
+                    outfile.write("        {\n")
+                    outfile.write("            out << std::setw(2) << static_cast<int>(response." + arrayBasenameFromVariableName(item) + "[i]) << \" \";\n")
+                    outfile.write("        }\n")
+                    outfile.write("        out << \"]\";\n")
+                    outfile.write("        out << std::dec;\n")
 
         outfile.write("    }\n")
         outfile.write("\n")
@@ -379,7 +398,7 @@ generateFile("debug", [], ["data[32]"])
 generateFile("ds18b20", [], ["temperature[2]", "status"])
 generateFile("eeprom_read", ["address[2]"], ["address[2]", "data"])
 generateFile("eeprom_write", ["address[2]", "data"], ["address[2]", "data"])
-generateFile("get_device_info", [], ["name[16]", "version[32]", "status"])
+generateFile("get_device_info", [], ["nameString[16]", "versionString[32]", "status"])
 generateFile("gpio", [], ["portB", "portC", "portD"])
 generateFile("hotp", [], ["data[16]"])
 generateFile("i2c_read", ["device", "registerAddress[2]", "length"], ["device", "registerAddress[2]", "status", "length", "data[16]"])

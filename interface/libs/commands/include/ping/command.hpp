@@ -1,4 +1,5 @@
 #pragma once
+// This file is generated with the script: `interface/libs/commands/generate.py`
 
 #include <common/uartCommandBase.hpp>
 
@@ -15,18 +16,8 @@ public:
 
     void printResponse(std::ostream& out, COMMANDS::PING::response_t response) const
     {
-        out << "PING   : ";
-        if (m_replyStatus == ReplyStatus::Complete) {
-            out << "OK";
-
-            out << " (" << std::to_string(m_responseTimeUs/1000);
-            out << "." << std::to_string((m_responseTimeUs%1000)/100);
-            out << " ms)";
-        }
-        else {
-            out << "FAILED";
-        }
-    };
+        out << "PING                   : ";
+    }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {
