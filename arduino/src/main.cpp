@@ -15,7 +15,7 @@
 #include <eeprom.hpp>
 #include <i2c.hpp>
 #include <nrf24l01.hpp>
-#include <payloads.hpp>
+#include <cmd/payloads.hpp>
 #include <pwm.hpp>
 #include <random.hpp>
 #include <sha1.hpp>

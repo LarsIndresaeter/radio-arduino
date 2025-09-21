@@ -6,7 +6,7 @@
 #include <radioSession.hpp>
 #include <chrono>
 #include <cmath>
-#include <commands.hpp>
+#include <cmd/commands.hpp>
 #include <eventprocess.hpp>
 #include <filesystem>
 #include <iomanip>
