@@ -17,7 +17,7 @@ public:
         m_payload.at(offsetof(COMMANDS::SPI_WRITE::command_t, length)) = length;
 
         for (int i = 0; i < data.size(); i++) {
-            if (i >= sizeof(command.data)) {
+            if (i >= data.size()) {
                 break;
             }
             m_payload.at(

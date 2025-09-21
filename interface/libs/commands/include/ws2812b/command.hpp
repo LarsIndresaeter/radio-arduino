@@ -13,7 +13,7 @@ public:
         COMMANDS::WS2812B::command_t command;
 
         for (int i = 0; i < red.size(); i++) {
-            if (i >= sizeof(command.red)) {
+            if (i >= red.size()) {
                 break;
             }
             m_payload.at(
@@ -22,7 +22,7 @@ public:
         }
 
         for (int i = 0; i < green.size(); i++) {
-            if (i >= sizeof(command.green)) {
+            if (i >= green.size()) {
                 break;
             }
             m_payload.at(
@@ -31,7 +31,7 @@ public:
         }
 
         for (int i = 0; i < blue.size(); i++) {
-            if (i >= sizeof(command.blue)) {
+            if (i >= blue.size()) {
                 break;
             }
             m_payload.at(

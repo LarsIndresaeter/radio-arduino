@@ -13,7 +13,7 @@ public:
         COMMANDS::SET_DEVICE_INFO::command_t command;
 
         for (int i = 0; i < name.size(); i++) {
-            if (i >= sizeof(command.name)) {
+            if (i >= name.size()) {
                 break;
             }
             m_payload.at(

@@ -125,7 +125,7 @@ def generateCommandFile(commandName,
                 outfile.write("\n")
             if(arraySize > 4):
                 outfile.write("        for (int i = 0; i < " + arrayBasenameFromVariableName(item) + ".size(); i++) {\n")
-                outfile.write("            if (i >= sizeof(command." + arrayBasenameFromVariableName(item) + ")) {\n")
+                outfile.write("            if (i >= " + arrayBasenameFromVariableName(item) + ".size()) {\n")
                 outfile.write("                break;\n")
                 outfile.write("            }\n")
                 outfile.write("            m_payload.at(\n")

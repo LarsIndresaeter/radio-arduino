@@ -13,7 +13,7 @@ public:
         COMMANDS::SHA1::command_t command;
 
         for (int i = 0; i < data.size(); i++) {
-            if (i >= sizeof(command.data)) {
+            if (i >= data.size()) {
                 break;
             }
             m_payload.at(

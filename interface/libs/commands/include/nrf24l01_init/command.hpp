@@ -13,7 +13,7 @@ public:
         COMMANDS::NRF24L01_INIT::command_t command;
 
         for (int i = 0; i < txAddr.size(); i++) {
-            if (i >= sizeof(command.txAddr)) {
+            if (i >= txAddr.size()) {
                 break;
             }
             m_payload.at(
@@ -22,7 +22,7 @@ public:
         }
 
         for (int i = 0; i < rxAddr.size(); i++) {
-            if (i >= sizeof(command.rxAddr)) {
+            if (i >= rxAddr.size()) {
                 break;
             }
             m_payload.at(

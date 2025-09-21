@@ -15,7 +15,7 @@ public:
         m_payload.at(offsetof(COMMANDS::SET_KEY::command_t, keyId)) = keyId;
 
         for (int i = 0; i < keyValue.size(); i++) {
-            if (i >= sizeof(command.keyValue)) {
+            if (i >= keyValue.size()) {
                 break;
             }
             m_payload.at(
