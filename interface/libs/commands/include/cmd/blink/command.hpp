@@ -7,8 +7,8 @@ class UartCommandBlink : public UartCommandBase {
 public:
     UartCommandBlink()
         : UartCommandBase(
-            static_cast<uint8_t>(COMMANDS::OI::BLINK),
-            COMMANDS::BLINK::COMMAND_LENGTH)
+              static_cast<uint8_t>(COMMANDS::OI::BLINK),
+              COMMANDS::BLINK::COMMAND_LENGTH)
     {
         COMMANDS::BLINK::command_t command;
 
@@ -25,15 +25,21 @@ public:
             COMMANDS::BLINK::response_t response(
                 (uint8_t*)&responsePayload.data()[0]);
             printResponse(out, response);
-        } else
-        {
+        }
+        else {
             std::cout << "BLINK: insufficient data" << std::endl;
         }
     };
 
     COMMANDS::BLINK::response_t responseStruct()
     {
-        return { (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH] };
+        COMMANDS::BLINK::response_t response;
+
+        if (m_responsePayload.size() >= sizeof(response)) {
+            return { (uint8_t*)&m_responsePayload[0] };
+        }
+
+        return (response);
     };
 };
 

@@ -24,16 +24,13 @@ namespace WS2812B {
         {
             OI = cmd[0];
             OL = cmd[1];
-            for(uint8_t i=0; i<45; i++)
-            {
+            for (uint8_t i = 0; i < 45; i++) {
                 red[i] = cmd[2 + i];
             }
-            for(uint8_t i=0; i<45; i++)
-            {
+            for (uint8_t i = 0; i < 45; i++) {
                 green[i] = cmd[47 + i];
             }
-            for(uint8_t i=0; i<45; i++)
-            {
+            for (uint8_t i = 0; i < 45; i++) {
                 blue[i] = cmd[92 + i];
             }
         }

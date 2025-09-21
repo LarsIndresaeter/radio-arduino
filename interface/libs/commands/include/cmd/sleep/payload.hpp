@@ -24,8 +24,7 @@ namespace SLEEP {
         {
             OI = cmd[0];
             OL = cmd[1];
-            for(uint8_t i=0; i<4; i++)
-            {
+            for (uint8_t i = 0; i < 4; i++) {
                 delay[i] = cmd[2 + i];
             }
         }
@@ -58,7 +57,7 @@ namespace SLEEP {
 
         uint8_t getStatus()
         {
-            return(status);
+            return (status);
         }
 
         void setStatus(uint8_t value)

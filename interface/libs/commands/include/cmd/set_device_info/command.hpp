@@ -7,12 +7,12 @@ class UartCommandSetDeviceInfo : public UartCommandBase {
 public:
     UartCommandSetDeviceInfo(std::vector<uint8_t> name)
         : UartCommandBase(
-            static_cast<uint8_t>(COMMANDS::OI::SET_DEVICE_INFO),
-            COMMANDS::SET_DEVICE_INFO::COMMAND_LENGTH)
+              static_cast<uint8_t>(COMMANDS::OI::SET_DEVICE_INFO),
+              COMMANDS::SET_DEVICE_INFO::COMMAND_LENGTH)
     {
         COMMANDS::SET_DEVICE_INFO::command_t command;
 
-        for (int i = 0; i < name.size(); i++) {
+        for (int i = 0; i < sizeof(command.name); i++) {
             if (i >= name.size()) {
                 break;
             }
@@ -35,15 +35,21 @@ public:
             COMMANDS::SET_DEVICE_INFO::response_t response(
                 (uint8_t*)&responsePayload.data()[0]);
             printResponse(out, response);
-        } else
-        {
+        }
+        else {
             std::cout << "SET_DEVICE_INFO: insufficient data" << std::endl;
         }
     };
 
     COMMANDS::SET_DEVICE_INFO::response_t responseStruct()
     {
-        return { (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH] };
+        COMMANDS::SET_DEVICE_INFO::response_t response;
+
+        if (m_responsePayload.size() >= sizeof(response)) {
+            return { (uint8_t*)&m_responsePayload[0] };
+        }
+
+        return (response);
     };
 };
 

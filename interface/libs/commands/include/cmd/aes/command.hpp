@@ -7,14 +7,14 @@ class UartCommandAes : public UartCommandBase {
 public:
     UartCommandAes(uint8_t type, std::vector<uint8_t> data)
         : UartCommandBase(
-            static_cast<uint8_t>(COMMANDS::OI::AES),
-            COMMANDS::AES::COMMAND_LENGTH)
+              static_cast<uint8_t>(COMMANDS::OI::AES),
+              COMMANDS::AES::COMMAND_LENGTH)
     {
         COMMANDS::AES::command_t command;
 
         m_payload.at(offsetof(COMMANDS::AES::command_t, type)) = type;
 
-        for (int i = 0; i < data.size(); i++) {
+        for (int i = 0; i < sizeof(command.data); i++) {
             if (i >= data.size()) {
                 break;
             }
@@ -31,8 +31,7 @@ public:
         out << " type=" << static_cast<int>(response.getType());
         out << " data=[ ";
         out << std::setfill('0') << std::hex << std::uppercase;
-        for(uint8_t i=0; i<16; i++)
-        {
+        for (uint8_t i = 0; i < 16; i++) {
             out << std::setw(2) << static_cast<int>(response.data[i]) << " ";
         }
         out << "]";
@@ -45,15 +44,21 @@ public:
             COMMANDS::AES::response_t response(
                 (uint8_t*)&responsePayload.data()[0]);
             printResponse(out, response);
-        } else
-        {
+        }
+        else {
             std::cout << "AES: insufficient data" << std::endl;
         }
     };
 
     COMMANDS::AES::response_t responseStruct()
     {
-        return { (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH] };
+        COMMANDS::AES::response_t response;
+
+        if (m_responsePayload.size() >= sizeof(response)) {
+            return { (uint8_t*)&m_responsePayload[0] };
+        }
+
+        return (response);
     };
 };
 

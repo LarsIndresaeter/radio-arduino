@@ -7,12 +7,12 @@ class UartCommandSha1 : public UartCommandBase {
 public:
     UartCommandSha1(std::vector<uint8_t> data)
         : UartCommandBase(
-            static_cast<uint8_t>(COMMANDS::OI::SHA1),
-            COMMANDS::SHA1::COMMAND_LENGTH)
+              static_cast<uint8_t>(COMMANDS::OI::SHA1),
+              COMMANDS::SHA1::COMMAND_LENGTH)
     {
         COMMANDS::SHA1::command_t command;
 
-        for (int i = 0; i < data.size(); i++) {
+        for (int i = 0; i < sizeof(command.data); i++) {
             if (i >= data.size()) {
                 break;
             }
@@ -28,8 +28,7 @@ public:
         out << "SHA1                   : ";
         out << " data=[ ";
         out << std::setfill('0') << std::hex << std::uppercase;
-        for(uint8_t i=0; i<20; i++)
-        {
+        for (uint8_t i = 0; i < 20; i++) {
             out << std::setw(2) << static_cast<int>(response.data[i]) << " ";
         }
         out << "]";
@@ -42,15 +41,21 @@ public:
             COMMANDS::SHA1::response_t response(
                 (uint8_t*)&responsePayload.data()[0]);
             printResponse(out, response);
-        } else
-        {
+        }
+        else {
             std::cout << "SHA1: insufficient data" << std::endl;
         }
     };
 
     COMMANDS::SHA1::response_t responseStruct()
     {
-        return { (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH] };
+        COMMANDS::SHA1::response_t response;
+
+        if (m_responsePayload.size() >= sizeof(response)) {
+            return { (uint8_t*)&m_responsePayload[0] };
+        }
+
+        return (response);
     };
 };
 

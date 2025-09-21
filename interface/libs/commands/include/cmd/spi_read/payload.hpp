@@ -30,7 +30,7 @@ namespace SPI_READ {
 
         uint8_t getReg()
         {
-            return(reg);
+            return (reg);
         }
 
         void setReg(uint8_t value)
@@ -40,7 +40,7 @@ namespace SPI_READ {
 
         uint8_t getLength()
         {
-            return(length);
+            return (length);
         }
 
         void setLength(uint8_t value)
@@ -67,8 +67,7 @@ namespace SPI_READ {
             OL = res[1];
             reg = res[2];
             length = res[3];
-            for(uint8_t i=0; i<32; i++)
-            {
+            for (uint8_t i = 0; i < 32; i++) {
                 data[i] = res[4 + i];
             }
         }
@@ -79,15 +78,14 @@ namespace SPI_READ {
             response[1] = OL;
             response[2] = reg;
             response[3] = length;
-            for(uint8_t i=0; i<32; i++)
-            {
+            for (uint8_t i = 0; i < 32; i++) {
                 response[4 + i] = data[i];
             }
         }
 
         uint8_t getReg()
         {
-            return(reg);
+            return (reg);
         }
 
         void setReg(uint8_t value)
@@ -97,7 +95,7 @@ namespace SPI_READ {
 
         uint8_t getLength()
         {
-            return(length);
+            return (length);
         }
 
         void setLength(uint8_t value)

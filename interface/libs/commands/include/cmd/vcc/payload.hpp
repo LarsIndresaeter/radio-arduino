@@ -41,8 +41,7 @@ namespace VCC {
         {
             OI = res[0];
             OL = res[1];
-            for(uint8_t i=0; i<2; i++)
-            {
+            for (uint8_t i = 0; i < 2; i++) {
                 vcc[i] = res[2 + i];
             }
         }
@@ -51,15 +50,14 @@ namespace VCC {
         {
             response[0] = OI;
             response[1] = OL;
-            for(uint8_t i=0; i<2; i++)
-            {
+            for (uint8_t i = 0; i < 2; i++) {
                 response[2 + i] = vcc[i];
             }
         }
 
         uint16_t getVcc()
         {
-            return(((uint16_t)vcc[1]) << 8 | vcc[0]);
+            return (((uint16_t)vcc[1]) << 8 | vcc[0]);
         }
 
         void setVcc(uint16_t value)

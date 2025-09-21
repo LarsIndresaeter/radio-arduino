@@ -25,15 +25,14 @@ namespace SET_KEY {
             OI = cmd[0];
             OL = cmd[1];
             keyId = cmd[2];
-            for(uint8_t i=0; i<16; i++)
-            {
+            for (uint8_t i = 0; i < 16; i++) {
                 keyValue[i] = cmd[3 + i];
             }
         }
 
         uint8_t getKeyid()
         {
-            return(keyId);
+            return (keyId);
         }
 
         void setKeyid(uint8_t value)
@@ -70,7 +69,7 @@ namespace SET_KEY {
 
         uint8_t getStatus()
         {
-            return(status);
+            return (status);
         }
 
         void setStatus(uint8_t value)

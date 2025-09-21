@@ -25,15 +25,14 @@ namespace SSD1306 {
             OI = cmd[0];
             OL = cmd[1];
             line = cmd[2];
-            for(uint8_t i=0; i<16; i++)
-            {
+            for (uint8_t i = 0; i < 16; i++) {
                 data[i] = cmd[3 + i];
             }
         }
 
         uint8_t getLine()
         {
-            return(line);
+            return (line);
         }
 
         void setLine(uint8_t value)

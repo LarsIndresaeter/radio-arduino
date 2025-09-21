@@ -41,8 +41,7 @@ namespace DEBUG {
         {
             OI = res[0];
             OL = res[1];
-            for(uint8_t i=0; i<32; i++)
-            {
+            for (uint8_t i = 0; i < 32; i++) {
                 data[i] = res[2 + i];
             }
         }
@@ -51,8 +50,7 @@ namespace DEBUG {
         {
             response[0] = OI;
             response[1] = OL;
-            for(uint8_t i=0; i<32; i++)
-            {
+            for (uint8_t i = 0; i < 32; i++) {
                 response[2 + i] = data[i];
             }
         }

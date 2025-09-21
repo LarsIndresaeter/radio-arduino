@@ -24,12 +24,10 @@ namespace NRF24L01_INIT {
         {
             OI = cmd[0];
             OL = cmd[1];
-            for(uint8_t i=0; i<5; i++)
-            {
+            for (uint8_t i = 0; i < 5; i++) {
                 txAddr[i] = cmd[2 + i];
             }
-            for(uint8_t i=0; i<5; i++)
-            {
+            for (uint8_t i = 0; i < 5; i++) {
                 rxAddr[i] = cmd[7 + i];
             }
             rfChannel = cmd[12];
@@ -38,7 +36,7 @@ namespace NRF24L01_INIT {
 
         uint8_t getRfchannel()
         {
-            return(rfChannel);
+            return (rfChannel);
         }
 
         void setRfchannel(uint8_t value)
@@ -48,7 +46,7 @@ namespace NRF24L01_INIT {
 
         uint8_t getGateway()
         {
-            return(gateway);
+            return (gateway);
         }
 
         void setGateway(uint8_t value)
@@ -87,7 +85,7 @@ namespace NRF24L01_INIT {
 
         uint8_t getStatus()
         {
-            return(status);
+            return (status);
         }
 
         void setStatus(uint8_t value)

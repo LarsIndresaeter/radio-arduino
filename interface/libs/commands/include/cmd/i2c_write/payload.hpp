@@ -25,20 +25,18 @@ namespace I2C_WRITE {
             OI = cmd[0];
             OL = cmd[1];
             device = cmd[2];
-            for(uint8_t i=0; i<2; i++)
-            {
+            for (uint8_t i = 0; i < 2; i++) {
                 registerAddress[i] = cmd[3 + i];
             }
             length = cmd[5];
-            for(uint8_t i=0; i<16; i++)
-            {
+            for (uint8_t i = 0; i < 16; i++) {
                 data[i] = cmd[6 + i];
             }
         }
 
         uint8_t getDevice()
         {
-            return(device);
+            return (device);
         }
 
         void setDevice(uint8_t value)
@@ -48,7 +46,7 @@ namespace I2C_WRITE {
 
         uint16_t getRegisteraddress()
         {
-            return(((uint16_t)registerAddress[1]) << 8 | registerAddress[0]);
+            return (((uint16_t)registerAddress[1]) << 8 | registerAddress[0]);
         }
 
         void setRegisteraddress(uint16_t value)
@@ -59,7 +57,7 @@ namespace I2C_WRITE {
 
         uint8_t getLength()
         {
-            return(length);
+            return (length);
         }
 
         void setLength(uint8_t value)
@@ -98,7 +96,7 @@ namespace I2C_WRITE {
 
         uint8_t getStatus()
         {
-            return(status);
+            return (status);
         }
 
         void setStatus(uint8_t value)

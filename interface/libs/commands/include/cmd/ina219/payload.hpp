@@ -41,12 +41,10 @@ namespace INA219 {
         {
             OI = res[0];
             OL = res[1];
-            for(uint8_t i=0; i<2; i++)
-            {
+            for (uint8_t i = 0; i < 2; i++) {
                 current[i] = res[2 + i];
             }
-            for(uint8_t i=0; i<2; i++)
-            {
+            for (uint8_t i = 0; i < 2; i++) {
                 voltage[i] = res[4 + i];
             }
             status = res[6];
@@ -56,12 +54,10 @@ namespace INA219 {
         {
             response[0] = OI;
             response[1] = OL;
-            for(uint8_t i=0; i<2; i++)
-            {
+            for (uint8_t i = 0; i < 2; i++) {
                 response[2 + i] = current[i];
             }
-            for(uint8_t i=0; i<2; i++)
-            {
+            for (uint8_t i = 0; i < 2; i++) {
                 response[4 + i] = voltage[i];
             }
             response[6] = status;
@@ -69,7 +65,7 @@ namespace INA219 {
 
         uint16_t getCurrent()
         {
-            return(((uint16_t)current[1]) << 8 | current[0]);
+            return (((uint16_t)current[1]) << 8 | current[0]);
         }
 
         void setCurrent(uint16_t value)
@@ -80,7 +76,7 @@ namespace INA219 {
 
         uint16_t getVoltage()
         {
-            return(((uint16_t)voltage[1]) << 8 | voltage[0]);
+            return (((uint16_t)voltage[1]) << 8 | voltage[0]);
         }
 
         void setVoltage(uint16_t value)
@@ -91,7 +87,7 @@ namespace INA219 {
 
         uint8_t getStatus()
         {
-            return(status);
+            return (status);
         }
 
         void setStatus(uint8_t value)

@@ -41,8 +41,7 @@ namespace TIMER {
         {
             OI = res[0];
             OL = res[1];
-            for(uint8_t i=0; i<2; i++)
-            {
+            for (uint8_t i = 0; i < 2; i++) {
                 pulseWidth[i] = res[2 + i];
             }
         }
@@ -51,15 +50,14 @@ namespace TIMER {
         {
             response[0] = OI;
             response[1] = OL;
-            for(uint8_t i=0; i<2; i++)
-            {
+            for (uint8_t i = 0; i < 2; i++) {
                 response[2 + i] = pulseWidth[i];
             }
         }
 
         uint16_t getPulsewidth()
         {
-            return(((uint16_t)pulseWidth[1]) << 8 | pulseWidth[0]);
+            return (((uint16_t)pulseWidth[1]) << 8 | pulseWidth[0]);
         }
 
         void setPulsewidth(uint16_t value)

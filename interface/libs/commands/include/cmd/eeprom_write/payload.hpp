@@ -24,8 +24,7 @@ namespace EEPROM_WRITE {
         {
             OI = cmd[0];
             OL = cmd[1];
-            for(uint8_t i=0; i<2; i++)
-            {
+            for (uint8_t i = 0; i < 2; i++) {
                 address[i] = cmd[2 + i];
             }
             data = cmd[4];
@@ -33,7 +32,7 @@ namespace EEPROM_WRITE {
 
         uint16_t getAddress()
         {
-            return(((uint16_t)address[1]) << 8 | address[0]);
+            return (((uint16_t)address[1]) << 8 | address[0]);
         }
 
         void setAddress(uint16_t value)
@@ -44,7 +43,7 @@ namespace EEPROM_WRITE {
 
         uint8_t getData()
         {
-            return(data);
+            return (data);
         }
 
         void setData(uint8_t value)
@@ -69,8 +68,7 @@ namespace EEPROM_WRITE {
         {
             OI = res[0];
             OL = res[1];
-            for(uint8_t i=0; i<2; i++)
-            {
+            for (uint8_t i = 0; i < 2; i++) {
                 address[i] = res[2 + i];
             }
             data = res[4];
@@ -80,8 +78,7 @@ namespace EEPROM_WRITE {
         {
             response[0] = OI;
             response[1] = OL;
-            for(uint8_t i=0; i<2; i++)
-            {
+            for (uint8_t i = 0; i < 2; i++) {
                 response[2 + i] = address[i];
             }
             response[4] = data;
@@ -89,7 +86,7 @@ namespace EEPROM_WRITE {
 
         uint16_t getAddress()
         {
-            return(((uint16_t)address[1]) << 8 | address[0]);
+            return (((uint16_t)address[1]) << 8 | address[0]);
         }
 
         void setAddress(uint16_t value)
@@ -100,7 +97,7 @@ namespace EEPROM_WRITE {
 
         uint8_t getData()
         {
-            return(data);
+            return (data);
         }
 
         void setData(uint8_t value)

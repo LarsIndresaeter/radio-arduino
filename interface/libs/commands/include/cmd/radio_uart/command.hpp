@@ -7,8 +7,8 @@ class UartCommandRadioUart : public UartCommandBase {
 public:
     UartCommandRadioUart(uint8_t mode)
         : UartCommandBase(
-            static_cast<uint8_t>(COMMANDS::OI::RADIO_UART),
-            COMMANDS::RADIO_UART::COMMAND_LENGTH)
+              static_cast<uint8_t>(COMMANDS::OI::RADIO_UART),
+              COMMANDS::RADIO_UART::COMMAND_LENGTH)
     {
         COMMANDS::RADIO_UART::command_t command;
 
@@ -28,15 +28,21 @@ public:
             COMMANDS::RADIO_UART::response_t response(
                 (uint8_t*)&responsePayload.data()[0]);
             printResponse(out, response);
-        } else
-        {
+        }
+        else {
             std::cout << "RADIO_UART: insufficient data" << std::endl;
         }
     };
 
     COMMANDS::RADIO_UART::response_t responseStruct()
     {
-        return { (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH] };
+        COMMANDS::RADIO_UART::response_t response;
+
+        if (m_responsePayload.size() >= sizeof(response)) {
+            return { (uint8_t*)&m_responsePayload[0] };
+        }
+
+        return (response);
     };
 };
 

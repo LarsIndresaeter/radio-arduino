@@ -7,12 +7,12 @@ class UartCommandNrf24l01Init : public UartCommandBase {
 public:
     UartCommandNrf24l01Init(std::vector<uint8_t> txAddr, std::vector<uint8_t> rxAddr, uint8_t rfChannel, uint8_t gateway)
         : UartCommandBase(
-            static_cast<uint8_t>(COMMANDS::OI::NRF24L01_INIT),
-            COMMANDS::NRF24L01_INIT::COMMAND_LENGTH)
+              static_cast<uint8_t>(COMMANDS::OI::NRF24L01_INIT),
+              COMMANDS::NRF24L01_INIT::COMMAND_LENGTH)
     {
         COMMANDS::NRF24L01_INIT::command_t command;
 
-        for (int i = 0; i < txAddr.size(); i++) {
+        for (int i = 0; i < sizeof(command.txAddr); i++) {
             if (i >= txAddr.size()) {
                 break;
             }
@@ -21,7 +21,7 @@ public:
                 = txAddr.at(i);
         }
 
-        for (int i = 0; i < rxAddr.size(); i++) {
+        for (int i = 0; i < sizeof(command.rxAddr); i++) {
             if (i >= rxAddr.size()) {
                 break;
             }
@@ -48,15 +48,21 @@ public:
             COMMANDS::NRF24L01_INIT::response_t response(
                 (uint8_t*)&responsePayload.data()[0]);
             printResponse(out, response);
-        } else
-        {
+        }
+        else {
             std::cout << "NRF24L01_INIT: insufficient data" << std::endl;
         }
     };
 
     COMMANDS::NRF24L01_INIT::response_t responseStruct()
     {
-        return { (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH] };
+        COMMANDS::NRF24L01_INIT::response_t response;
+
+        if (m_responsePayload.size() >= sizeof(response)) {
+            return { (uint8_t*)&m_responsePayload[0] };
+        }
+
+        return (response);
     };
 };
 

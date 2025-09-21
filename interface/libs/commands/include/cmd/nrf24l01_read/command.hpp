@@ -7,14 +7,14 @@ class UartCommandNrf24l01Read : public UartCommandBase {
 public:
     UartCommandNrf24l01Read(uint8_t length, std::vector<uint8_t> data)
         : UartCommandBase(
-            static_cast<uint8_t>(COMMANDS::OI::NRF24L01_READ),
-            COMMANDS::NRF24L01_READ::COMMAND_LENGTH)
+              static_cast<uint8_t>(COMMANDS::OI::NRF24L01_READ),
+              COMMANDS::NRF24L01_READ::COMMAND_LENGTH)
     {
         COMMANDS::NRF24L01_READ::command_t command;
 
         m_payload.at(offsetof(COMMANDS::NRF24L01_READ::command_t, length)) = length;
 
-        for (int i = 0; i < data.size(); i++) {
+        for (int i = 0; i < sizeof(command.data); i++) {
             if (i >= data.size()) {
                 break;
             }
@@ -31,8 +31,7 @@ public:
         out << " length=" << static_cast<int>(response.getLength());
         out << " data=[ ";
         out << std::setfill('0') << std::hex << std::uppercase;
-        for(uint8_t i=0; i<128; i++)
-        {
+        for (uint8_t i = 0; i < 128; i++) {
             out << std::setw(2) << static_cast<int>(response.data[i]) << " ";
         }
         out << "]";
@@ -45,15 +44,21 @@ public:
             COMMANDS::NRF24L01_READ::response_t response(
                 (uint8_t*)&responsePayload.data()[0]);
             printResponse(out, response);
-        } else
-        {
+        }
+        else {
             std::cout << "NRF24L01_READ: insufficient data" << std::endl;
         }
     };
 
     COMMANDS::NRF24L01_READ::response_t responseStruct()
     {
-        return { (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH] };
+        COMMANDS::NRF24L01_READ::response_t response;
+
+        if (m_responsePayload.size() >= sizeof(response)) {
+            return { (uint8_t*)&m_responsePayload[0] };
+        }
+
+        return (response);
     };
 };
 

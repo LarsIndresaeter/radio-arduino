@@ -29,7 +29,7 @@ namespace RADIO_UART {
 
         uint8_t getMode()
         {
-            return(mode);
+            return (mode);
         }
 
         void setMode(uint8_t value)
@@ -65,7 +65,7 @@ namespace RADIO_UART {
 
         uint8_t getStatus()
         {
-            return(status);
+            return (status);
         }
 
         void setStatus(uint8_t value)

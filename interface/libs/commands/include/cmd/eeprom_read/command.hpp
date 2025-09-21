@@ -7,8 +7,8 @@ class UartCommandEepromRead : public UartCommandBase {
 public:
     UartCommandEepromRead(uint16_t address)
         : UartCommandBase(
-            static_cast<uint8_t>(COMMANDS::OI::EEPROM_READ),
-            COMMANDS::EEPROM_READ::COMMAND_LENGTH)
+              static_cast<uint8_t>(COMMANDS::OI::EEPROM_READ),
+              COMMANDS::EEPROM_READ::COMMAND_LENGTH)
     {
         COMMANDS::EEPROM_READ::command_t command;
 
@@ -30,15 +30,21 @@ public:
             COMMANDS::EEPROM_READ::response_t response(
                 (uint8_t*)&responsePayload.data()[0]);
             printResponse(out, response);
-        } else
-        {
+        }
+        else {
             std::cout << "EEPROM_READ: insufficient data" << std::endl;
         }
     };
 
     COMMANDS::EEPROM_READ::response_t responseStruct()
     {
-        return { (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH] };
+        COMMANDS::EEPROM_READ::response_t response;
+
+        if (m_responsePayload.size() >= sizeof(response)) {
+            return { (uint8_t*)&m_responsePayload[0] };
+        }
+
+        return (response);
     };
 };
 

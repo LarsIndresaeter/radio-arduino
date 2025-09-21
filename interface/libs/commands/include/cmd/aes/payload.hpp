@@ -25,15 +25,14 @@ namespace AES {
             OI = cmd[0];
             OL = cmd[1];
             type = cmd[2];
-            for(uint8_t i=0; i<16; i++)
-            {
+            for (uint8_t i = 0; i < 16; i++) {
                 data[i] = cmd[3 + i];
             }
         }
 
         uint8_t getType()
         {
-            return(type);
+            return (type);
         }
 
         void setType(uint8_t value)
@@ -59,8 +58,7 @@ namespace AES {
             OI = res[0];
             OL = res[1];
             type = res[2];
-            for(uint8_t i=0; i<16; i++)
-            {
+            for (uint8_t i = 0; i < 16; i++) {
                 data[i] = res[3 + i];
             }
         }
@@ -70,15 +68,14 @@ namespace AES {
             response[0] = OI;
             response[1] = OL;
             response[2] = type;
-            for(uint8_t i=0; i<16; i++)
-            {
+            for (uint8_t i = 0; i < 16; i++) {
                 response[3 + i] = data[i];
             }
         }
 
         uint8_t getType()
         {
-            return(type);
+            return (type);
         }
 
         void setType(uint8_t value)

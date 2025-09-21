@@ -57,7 +57,7 @@ namespace GPIO {
 
         uint8_t getPortb()
         {
-            return(portB);
+            return (portB);
         }
 
         void setPortb(uint8_t value)
@@ -67,7 +67,7 @@ namespace GPIO {
 
         uint8_t getPortc()
         {
-            return(portC);
+            return (portC);
         }
 
         void setPortc(uint8_t value)
@@ -77,7 +77,7 @@ namespace GPIO {
 
         uint8_t getPortd()
         {
-            return(portD);
+            return (portD);
         }
 
         void setPortd(uint8_t value)

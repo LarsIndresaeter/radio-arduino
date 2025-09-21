@@ -7,8 +7,8 @@ class UartCommandI2cWrite : public UartCommandBase {
 public:
     UartCommandI2cWrite(uint8_t device, uint16_t registerAddress, uint8_t length, std::vector<uint8_t> data)
         : UartCommandBase(
-            static_cast<uint8_t>(COMMANDS::OI::I2C_WRITE),
-            COMMANDS::I2C_WRITE::COMMAND_LENGTH)
+              static_cast<uint8_t>(COMMANDS::OI::I2C_WRITE),
+              COMMANDS::I2C_WRITE::COMMAND_LENGTH)
     {
         COMMANDS::I2C_WRITE::command_t command;
 
@@ -19,7 +19,7 @@ public:
 
         m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, length)) = length;
 
-        for (int i = 0; i < data.size(); i++) {
+        for (int i = 0; i < sizeof(command.data); i++) {
             if (i >= data.size()) {
                 break;
             }
@@ -42,15 +42,21 @@ public:
             COMMANDS::I2C_WRITE::response_t response(
                 (uint8_t*)&responsePayload.data()[0]);
             printResponse(out, response);
-        } else
-        {
+        }
+        else {
             std::cout << "I2C_WRITE: insufficient data" << std::endl;
         }
     };
 
     COMMANDS::I2C_WRITE::response_t responseStruct()
     {
-        return { (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH] };
+        COMMANDS::I2C_WRITE::response_t response;
+
+        if (m_responsePayload.size() >= sizeof(response)) {
+            return { (uint8_t*)&m_responsePayload[0] };
+        }
+
+        return (response);
     };
 };
 

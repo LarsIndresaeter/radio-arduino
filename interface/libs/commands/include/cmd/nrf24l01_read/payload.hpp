@@ -25,15 +25,14 @@ namespace NRF24L01_READ {
             OI = cmd[0];
             OL = cmd[1];
             length = cmd[2];
-            for(uint8_t i=0; i<128; i++)
-            {
+            for (uint8_t i = 0; i < 128; i++) {
                 data[i] = cmd[3 + i];
             }
         }
 
         uint8_t getLength()
         {
-            return(length);
+            return (length);
         }
 
         void setLength(uint8_t value)
@@ -59,8 +58,7 @@ namespace NRF24L01_READ {
             OI = res[0];
             OL = res[1];
             length = res[2];
-            for(uint8_t i=0; i<128; i++)
-            {
+            for (uint8_t i = 0; i < 128; i++) {
                 data[i] = res[3 + i];
             }
         }
@@ -70,15 +68,14 @@ namespace NRF24L01_READ {
             response[0] = OI;
             response[1] = OL;
             response[2] = length;
-            for(uint8_t i=0; i<128; i++)
-            {
+            for (uint8_t i = 0; i < 128; i++) {
                 response[3 + i] = data[i];
             }
         }
 
         uint8_t getLength()
         {
-            return(length);
+            return (length);
         }
 
         void setLength(uint8_t value)

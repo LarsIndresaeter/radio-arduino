@@ -25,15 +25,14 @@ namespace NRF24L01_WRITE {
             OI = cmd[0];
             OL = cmd[1];
             length = cmd[2];
-            for(uint8_t i=0; i<128; i++)
-            {
+            for (uint8_t i = 0; i < 128; i++) {
                 data[i] = cmd[3 + i];
             }
         }
 
         uint8_t getLength()
         {
-            return(length);
+            return (length);
         }
 
         void setLength(uint8_t value)
@@ -60,8 +59,7 @@ namespace NRF24L01_WRITE {
             OL = res[1];
             status = res[2];
             length = res[3];
-            for(uint8_t i=0; i<128; i++)
-            {
+            for (uint8_t i = 0; i < 128; i++) {
                 data[i] = res[4 + i];
             }
         }
@@ -72,15 +70,14 @@ namespace NRF24L01_WRITE {
             response[1] = OL;
             response[2] = status;
             response[3] = length;
-            for(uint8_t i=0; i<128; i++)
-            {
+            for (uint8_t i = 0; i < 128; i++) {
                 response[4 + i] = data[i];
             }
         }
 
         uint8_t getStatus()
         {
-            return(status);
+            return (status);
         }
 
         void setStatus(uint8_t value)
@@ -90,7 +87,7 @@ namespace NRF24L01_WRITE {
 
         uint8_t getLength()
         {
-            return(length);
+            return (length);
         }
 
         void setLength(uint8_t value)

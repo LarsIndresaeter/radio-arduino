@@ -29,7 +29,7 @@ namespace KEEP_ALIVE {
 
         uint8_t getTime()
         {
-            return(time);
+            return (time);
         }
 
         void setTime(uint8_t value)
@@ -65,7 +65,7 @@ namespace KEEP_ALIVE {
 
         uint8_t getStatus()
         {
-            return(status);
+            return (status);
         }
 
         void setStatus(uint8_t value)

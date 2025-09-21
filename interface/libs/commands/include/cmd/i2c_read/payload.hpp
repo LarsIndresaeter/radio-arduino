@@ -25,8 +25,7 @@ namespace I2C_READ {
             OI = cmd[0];
             OL = cmd[1];
             device = cmd[2];
-            for(uint8_t i=0; i<2; i++)
-            {
+            for (uint8_t i = 0; i < 2; i++) {
                 registerAddress[i] = cmd[3 + i];
             }
             length = cmd[5];
@@ -34,7 +33,7 @@ namespace I2C_READ {
 
         uint8_t getDevice()
         {
-            return(device);
+            return (device);
         }
 
         void setDevice(uint8_t value)
@@ -44,7 +43,7 @@ namespace I2C_READ {
 
         uint16_t getRegisteraddress()
         {
-            return(((uint16_t)registerAddress[1]) << 8 | registerAddress[0]);
+            return (((uint16_t)registerAddress[1]) << 8 | registerAddress[0]);
         }
 
         void setRegisteraddress(uint16_t value)
@@ -55,7 +54,7 @@ namespace I2C_READ {
 
         uint8_t getLength()
         {
-            return(length);
+            return (length);
         }
 
         void setLength(uint8_t value)
@@ -82,14 +81,12 @@ namespace I2C_READ {
             OI = res[0];
             OL = res[1];
             device = res[2];
-            for(uint8_t i=0; i<2; i++)
-            {
+            for (uint8_t i = 0; i < 2; i++) {
                 registerAddress[i] = res[3 + i];
             }
             status = res[5];
             length = res[6];
-            for(uint8_t i=0; i<16; i++)
-            {
+            for (uint8_t i = 0; i < 16; i++) {
                 data[i] = res[7 + i];
             }
         }
@@ -99,21 +96,19 @@ namespace I2C_READ {
             response[0] = OI;
             response[1] = OL;
             response[2] = device;
-            for(uint8_t i=0; i<2; i++)
-            {
+            for (uint8_t i = 0; i < 2; i++) {
                 response[3 + i] = registerAddress[i];
             }
             response[5] = status;
             response[6] = length;
-            for(uint8_t i=0; i<16; i++)
-            {
+            for (uint8_t i = 0; i < 16; i++) {
                 response[7 + i] = data[i];
             }
         }
 
         uint8_t getDevice()
         {
-            return(device);
+            return (device);
         }
 
         void setDevice(uint8_t value)
@@ -123,7 +118,7 @@ namespace I2C_READ {
 
         uint16_t getRegisteraddress()
         {
-            return(((uint16_t)registerAddress[1]) << 8 | registerAddress[0]);
+            return (((uint16_t)registerAddress[1]) << 8 | registerAddress[0]);
         }
 
         void setRegisteraddress(uint16_t value)
@@ -134,7 +129,7 @@ namespace I2C_READ {
 
         uint8_t getStatus()
         {
-            return(status);
+            return (status);
         }
 
         void setStatus(uint8_t value)
@@ -144,7 +139,7 @@ namespace I2C_READ {
 
         uint8_t getLength()
         {
-            return(length);
+            return (length);
         }
 
         void setLength(uint8_t value)

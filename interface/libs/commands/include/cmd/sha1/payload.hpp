@@ -24,8 +24,7 @@ namespace SHA1 {
         {
             OI = cmd[0];
             OL = cmd[1];
-            for(uint8_t i=0; i<20; i++)
-            {
+            for (uint8_t i = 0; i < 20; i++) {
                 data[i] = cmd[2 + i];
             }
         }
@@ -46,8 +45,7 @@ namespace SHA1 {
         {
             OI = res[0];
             OL = res[1];
-            for(uint8_t i=0; i<20; i++)
-            {
+            for (uint8_t i = 0; i < 20; i++) {
                 data[i] = res[2 + i];
             }
         }
@@ -56,8 +54,7 @@ namespace SHA1 {
         {
             response[0] = OI;
             response[1] = OL;
-            for(uint8_t i=0; i<20; i++)
-            {
+            for (uint8_t i = 0; i < 20; i++) {
                 response[2 + i] = data[i];
             }
         }

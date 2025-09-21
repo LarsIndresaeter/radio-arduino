@@ -7,8 +7,8 @@ class UartCommandWakeup : public UartCommandBase {
 public:
     UartCommandWakeup(uint8_t checkAttentionFlag)
         : UartCommandBase(
-            static_cast<uint8_t>(COMMANDS::OI::WAKEUP),
-            COMMANDS::WAKEUP::COMMAND_LENGTH)
+              static_cast<uint8_t>(COMMANDS::OI::WAKEUP),
+              COMMANDS::WAKEUP::COMMAND_LENGTH)
     {
         COMMANDS::WAKEUP::command_t command;
 
@@ -29,15 +29,21 @@ public:
             COMMANDS::WAKEUP::response_t response(
                 (uint8_t*)&responsePayload.data()[0]);
             printResponse(out, response);
-        } else
-        {
+        }
+        else {
             std::cout << "WAKEUP: insufficient data" << std::endl;
         }
     };
 
     COMMANDS::WAKEUP::response_t responseStruct()
     {
-        return { (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH] };
+        COMMANDS::WAKEUP::response_t response;
+
+        if (m_responsePayload.size() >= sizeof(response)) {
+            return { (uint8_t*)&m_responsePayload[0] };
+        }
+
+        return (response);
     };
 };
 

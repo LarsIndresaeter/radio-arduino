@@ -26,15 +26,14 @@ namespace SPI_WRITE {
             OL = cmd[1];
             reg = cmd[2];
             length = cmd[3];
-            for(uint8_t i=0; i<32; i++)
-            {
+            for (uint8_t i = 0; i < 32; i++) {
                 data[i] = cmd[4 + i];
             }
         }
 
         uint8_t getReg()
         {
-            return(reg);
+            return (reg);
         }
 
         void setReg(uint8_t value)
@@ -44,7 +43,7 @@ namespace SPI_WRITE {
 
         uint8_t getLength()
         {
-            return(length);
+            return (length);
         }
 
         void setLength(uint8_t value)
@@ -82,7 +81,7 @@ namespace SPI_WRITE {
 
         uint8_t getStatus()
         {
-            return(status);
+            return (status);
         }
 
         void setStatus(uint8_t value)

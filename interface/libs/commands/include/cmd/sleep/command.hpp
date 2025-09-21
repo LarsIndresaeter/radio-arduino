@@ -7,8 +7,8 @@ class UartCommandSleep : public UartCommandBase {
 public:
     UartCommandSleep(uint32_t delay)
         : UartCommandBase(
-            static_cast<uint8_t>(COMMANDS::OI::SLEEP),
-            COMMANDS::SLEEP::COMMAND_LENGTH)
+              static_cast<uint8_t>(COMMANDS::OI::SLEEP),
+              COMMANDS::SLEEP::COMMAND_LENGTH)
     {
         COMMANDS::SLEEP::command_t command;
 
@@ -31,15 +31,21 @@ public:
             COMMANDS::SLEEP::response_t response(
                 (uint8_t*)&responsePayload.data()[0]);
             printResponse(out, response);
-        } else
-        {
+        }
+        else {
             std::cout << "SLEEP: insufficient data" << std::endl;
         }
     };
 
     COMMANDS::SLEEP::response_t responseStruct()
     {
-        return { (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH] };
+        COMMANDS::SLEEP::response_t response;
+
+        if (m_responsePayload.size() >= sizeof(response)) {
+            return { (uint8_t*)&m_responsePayload[0] };
+        }
+
+        return (response);
     };
 };
 

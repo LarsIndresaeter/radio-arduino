@@ -41,8 +41,7 @@ namespace DS18B20 {
         {
             OI = res[0];
             OL = res[1];
-            for(uint8_t i=0; i<2; i++)
-            {
+            for (uint8_t i = 0; i < 2; i++) {
                 temperature[i] = res[2 + i];
             }
             status = res[4];
@@ -52,8 +51,7 @@ namespace DS18B20 {
         {
             response[0] = OI;
             response[1] = OL;
-            for(uint8_t i=0; i<2; i++)
-            {
+            for (uint8_t i = 0; i < 2; i++) {
                 response[2 + i] = temperature[i];
             }
             response[4] = status;
@@ -61,7 +59,7 @@ namespace DS18B20 {
 
         uint16_t getTemperature()
         {
-            return(((uint16_t)temperature[1]) << 8 | temperature[0]);
+            return (((uint16_t)temperature[1]) << 8 | temperature[0]);
         }
 
         void setTemperature(uint16_t value)
@@ -72,7 +70,7 @@ namespace DS18B20 {
 
         uint8_t getStatus()
         {
-            return(status);
+            return (status);
         }
 
         void setStatus(uint8_t value)

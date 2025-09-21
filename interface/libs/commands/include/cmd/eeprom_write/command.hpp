@@ -7,8 +7,8 @@ class UartCommandEepromWrite : public UartCommandBase {
 public:
     UartCommandEepromWrite(uint16_t address, uint8_t data)
         : UartCommandBase(
-            static_cast<uint8_t>(COMMANDS::OI::EEPROM_WRITE),
-            COMMANDS::EEPROM_WRITE::COMMAND_LENGTH)
+              static_cast<uint8_t>(COMMANDS::OI::EEPROM_WRITE),
+              COMMANDS::EEPROM_WRITE::COMMAND_LENGTH)
     {
         COMMANDS::EEPROM_WRITE::command_t command;
 
@@ -32,15 +32,21 @@ public:
             COMMANDS::EEPROM_WRITE::response_t response(
                 (uint8_t*)&responsePayload.data()[0]);
             printResponse(out, response);
-        } else
-        {
+        }
+        else {
             std::cout << "EEPROM_WRITE: insufficient data" << std::endl;
         }
     };
 
     COMMANDS::EEPROM_WRITE::response_t responseStruct()
     {
-        return { (uint8_t*)&m_response.data()[PROTOCOL::HEADER::LENGTH] };
+        COMMANDS::EEPROM_WRITE::response_t response;
+
+        if (m_responsePayload.size() >= sizeof(response)) {
+            return { (uint8_t*)&m_responsePayload[0] };
+        }
+
+        return (response);
     };
 };
 

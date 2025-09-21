@@ -29,7 +29,7 @@ namespace SET_NODE_ADDRESS {
 
         uint8_t getNodeaddress()
         {
-            return(nodeAddress);
+            return (nodeAddress);
         }
 
         void setNodeaddress(uint8_t value)
@@ -65,7 +65,7 @@ namespace SET_NODE_ADDRESS {
 
         uint8_t getStatus()
         {
-            return(status);
+            return (status);
         }
 
         void setStatus(uint8_t value)
