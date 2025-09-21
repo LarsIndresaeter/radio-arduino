@@ -398,15 +398,17 @@ void parseOpt(int argc, char* argv[], monitor& mon)
 
         } break;
         case 'S': {
+            // printf "best\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" | xxd
+            // printf "best\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" | sha1sum
             std::string s { "best" };
             std::vector<uint8_t> v { s.begin(), s.end() };
             std::cout << mon.get<>(UartCommandSha1(v)) << std::endl;
             compareResult(
-                0xc5, mon.get<>(UartCommandSha1(v)).responseStruct().data[0]);
+                0x31, mon.get<>(UartCommandSha1(v)).responseStruct().data[0]);
             compareResult(
-                0xf5, mon.get<>(UartCommandSha1(v)).responseStruct().data[1]);
+                0x02, mon.get<>(UartCommandSha1(v)).responseStruct().data[1]);
             compareResult(
-                0xe4, mon.get<>(UartCommandSha1(v)).responseStruct().data[2]);
+                0xcf, mon.get<>(UartCommandSha1(v)).responseStruct().data[2]);
         } break;
         case 'L': {
             COMMANDS::SSD1306::command_t command;
