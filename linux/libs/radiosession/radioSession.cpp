@@ -97,7 +97,6 @@ bool RadioSession::wakeupNotRespondingTryOnce()
         m_isAlive = true;
     } else {
         UartCommandWakeup result = m_monitor.get<>(UartCommandWakeup(false), static_cast<std::chrono::milliseconds>(6000));
-        COMMANDS::WAKEUP::response_t response_struct = result.responseStruct();
 
         if (m_monitor.lastCommandReturnedValidResponse()) {
             m_isAlive = true;
@@ -149,7 +148,7 @@ std::string RadioSession::readNodeName(monitor& mon)
     if (nodeDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
         auto response = nodeDeviceInfo.responseStruct();
 
-        for (int i = 0; i < 16 && response.nameString[i] != 0; i++) {
+        for (int i = 0; i < sizeof(response.nameString) && response.nameString[i] != 0; i++) {
             nodeName += response.nameString[i];
         }
     }
@@ -171,7 +170,7 @@ std::string RadioSession::getNodeName()
         auto response = nodeDeviceInfo.responseStruct();
 
         // refactor this: use getNameString() when it is completed
-        for (int i = 0; i < 16 && response.nameString[i] != 0; i++) {
+        for (int i = 0; i < sizeof(response.nameString) && response.nameString[i] != 0; i++) {
             nodeName += response.nameString[i];
         }
     }

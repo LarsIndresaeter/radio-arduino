@@ -55,15 +55,11 @@ void readCurrentAndVoltage(monitor& mon, mqtt::async_client& mqtt_client, int sa
         // read data for 1 second
         while (time > timePrev) {
             ina219 = mon.get<>(UartCommandIna219());
-            int16_t current_intval
-                = (int16_t)(((uint16_t)ina219.responseStruct().current[0]) << 8
-                    | ina219.responseStruct().current[1]);
+            int16_t current_intval = ina219.responseStruct().getCurrent();
             float current = current_intval * 0.001;
             currentData.push_back(current);
 
-            int16_t voltage_intval
-                = (int16_t)(((uint16_t)ina219.responseStruct().voltage[0]) << 8
-                    | ina219.responseStruct().voltage[1]);
+            int16_t voltage_intval = ina219.responseStruct().getVoltage();
             voltage_intval = voltage_intval >> 3; // ignore 3 LSB
             float voltage = voltage_intval * 0.004; // LSB = 4 mV
             voltageData.push_back(voltage);

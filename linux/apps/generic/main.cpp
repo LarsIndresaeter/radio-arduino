@@ -180,13 +180,10 @@ void readCurrentAndVoltage(monitor& mon, int samples)
         voltageData.clear();
         while (time > timePrev) {
             ina219 = mon.get<>(UartCommandIna219());
-            intval = (int16_t)
-                ina219.responseStruct().getCurrent();
+            intval = ina219.responseStruct().getCurrent();
             current = intval * 0.001;
 
-            intval = (int16_t)(
-                ((uint16_t)ina219.responseStruct().voltage[0]) << 8
-                | ina219.responseStruct().voltage[1]);
+            intval = ina219.responseStruct().getVoltage();
             intval = intval >> 3; // ignore 3 LSB
             voltage = intval * 0.004;
 
