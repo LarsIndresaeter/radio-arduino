@@ -39,7 +39,6 @@ public:
     void printResponse(std::ostream& out, COMMANDS::NRF24L01_INIT::response_t response) const
     {
         out << "NRF24L01_INIT          : ";
-        out << " status=" << static_cast<int>(response.getStatus());
     }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

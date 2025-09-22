@@ -26,7 +26,6 @@ public:
         out << "I2C_READ               : ";
         out << " device=" << static_cast<int>(response.getDevice());
         out << " registerAddress=" << static_cast<int>(response.getRegisteraddress());
-        out << " status=" << static_cast<int>(response.getStatus());
         out << " length=" << static_cast<int>(response.getLength());
         out << " data=[ ";
         out << std::setfill('0') << std::hex << std::uppercase;

@@ -8,7 +8,7 @@ namespace COMMANDS {
 
 namespace I2C_READ {
     constexpr uint8_t COMMAND_LENGTH = 4;
-    constexpr uint8_t RESPONSE_LENGTH = 21;
+    constexpr uint8_t RESPONSE_LENGTH = 20;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
     static_assert(RESPONSE_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "RESPONSE_LENGTH larger than max payload");
@@ -84,10 +84,9 @@ namespace I2C_READ {
             for (uint8_t i = 0; i < 2; i++) {
                 registerAddress[i] = res[3 + i];
             }
-            status = res[5];
-            length = res[6];
+            length = res[5];
             for (uint8_t i = 0; i < 16; i++) {
-                data[i] = res[7 + i];
+                data[i] = res[6 + i];
             }
         }
 
@@ -99,10 +98,9 @@ namespace I2C_READ {
             for (uint8_t i = 0; i < 2; i++) {
                 response[3 + i] = registerAddress[i];
             }
-            response[5] = status;
-            response[6] = length;
+            response[5] = length;
             for (uint8_t i = 0; i < 16; i++) {
-                response[7 + i] = data[i];
+                response[6 + i] = data[i];
             }
         }
 
@@ -127,16 +125,6 @@ namespace I2C_READ {
             registerAddress[0] = (uint8_t)value;
         }
 
-        uint8_t getStatus()
-        {
-            return (status);
-        }
-
-        void setStatus(uint8_t value)
-        {
-            status = value;
-        }
-
         uint8_t getLength()
         {
             return (length);
@@ -151,7 +139,6 @@ namespace I2C_READ {
         uint8_t OL;
         uint8_t device;
         uint8_t registerAddress[2];
-        uint8_t status;
         uint8_t length;
         uint8_t data[16];
 

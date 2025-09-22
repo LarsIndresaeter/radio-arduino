@@ -8,7 +8,7 @@ namespace COMMANDS {
 
 namespace QUADRATURE_ENCODER {
     constexpr uint8_t COMMAND_LENGTH = 0;
-    constexpr uint8_t RESPONSE_LENGTH = 8;
+    constexpr uint8_t RESPONSE_LENGTH = 7;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
     static_assert(RESPONSE_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "RESPONSE_LENGTH larger than max payload");
@@ -51,7 +51,6 @@ namespace QUADRATURE_ENCODER {
             for (uint8_t i = 0; i < 2; i++) {
                 switchcount[i] = res[7 + i];
             }
-            status = res[9];
         }
 
         void serialize(uint8_t* response)
@@ -68,7 +67,6 @@ namespace QUADRATURE_ENCODER {
             for (uint8_t i = 0; i < 2; i++) {
                 response[7 + i] = switchcount[i];
             }
-            response[9] = status;
         }
 
         uint16_t getCountnegative()
@@ -114,23 +112,12 @@ namespace QUADRATURE_ENCODER {
             switchcount[0] = (uint8_t)value;
         }
 
-        uint8_t getStatus()
-        {
-            return (status);
-        }
-
-        void setStatus(uint8_t value)
-        {
-            status = value;
-        }
-
         uint8_t OI;
         uint8_t OL;
         uint8_t countnegative[2];
         uint8_t countpositive[2];
         uint8_t switchposition;
         uint8_t switchcount[2];
-        uint8_t status;
 
     } response_t;
 }

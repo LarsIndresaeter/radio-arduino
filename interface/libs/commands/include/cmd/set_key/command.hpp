@@ -28,7 +28,6 @@ public:
     void printResponse(std::ostream& out, COMMANDS::SET_KEY::response_t response) const
     {
         out << "SET_KEY                : ";
-        out << " status=" << static_cast<int>(response.getStatus());
     }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

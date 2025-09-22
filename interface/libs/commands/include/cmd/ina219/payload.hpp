@@ -8,7 +8,7 @@ namespace COMMANDS {
 
 namespace INA219 {
     constexpr uint8_t COMMAND_LENGTH = 0;
-    constexpr uint8_t RESPONSE_LENGTH = 5;
+    constexpr uint8_t RESPONSE_LENGTH = 4;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
     static_assert(RESPONSE_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "RESPONSE_LENGTH larger than max payload");
@@ -47,7 +47,6 @@ namespace INA219 {
             for (uint8_t i = 0; i < 2; i++) {
                 voltage[i] = res[4 + i];
             }
-            status = res[6];
         }
 
         void serialize(uint8_t* response)
@@ -60,7 +59,6 @@ namespace INA219 {
             for (uint8_t i = 0; i < 2; i++) {
                 response[4 + i] = voltage[i];
             }
-            response[6] = status;
         }
 
         uint16_t getCurrent()
@@ -85,21 +83,10 @@ namespace INA219 {
             voltage[0] = (uint8_t)value;
         }
 
-        uint8_t getStatus()
-        {
-            return (status);
-        }
-
-        void setStatus(uint8_t value)
-        {
-            status = value;
-        }
-
         uint8_t OI;
         uint8_t OL;
         uint8_t current[2];
         uint8_t voltage[2];
-        uint8_t status;
 
     } response_t;
 }

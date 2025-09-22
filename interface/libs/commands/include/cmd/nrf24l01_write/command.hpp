@@ -28,7 +28,6 @@ public:
     void printResponse(std::ostream& out, COMMANDS::NRF24L01_WRITE::response_t response) const
     {
         out << "NRF24L01_WRITE         : ";
-        out << " status=" << static_cast<int>(response.getStatus());
         out << " length=" << static_cast<int>(response.getLength());
         out << " data=[ ";
         out << std::setfill('0') << std::hex << std::uppercase;

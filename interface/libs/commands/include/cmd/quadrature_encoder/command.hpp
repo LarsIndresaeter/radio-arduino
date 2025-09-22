@@ -21,7 +21,6 @@ public:
         out << " countpositive=" << static_cast<int>(response.getCountpositive());
         out << " switchposition=" << static_cast<int>(response.getSwitchposition());
         out << " switchcount=" << static_cast<int>(response.getSwitchcount());
-        out << " status=" << static_cast<int>(response.getStatus());
     }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

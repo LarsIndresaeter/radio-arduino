@@ -19,7 +19,6 @@ public:
         out << "INA219                 : ";
         out << " current=" << static_cast<int>(response.getCurrent());
         out << " voltage=" << static_cast<int>(response.getVoltage());
-        out << " status=" << static_cast<int>(response.getStatus());
     }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

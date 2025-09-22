@@ -18,7 +18,6 @@ public:
     {
         out << "DS18B20                : ";
         out << " temperature=" << static_cast<int>(response.getTemperature());
-        out << " status=" << static_cast<int>(response.getStatus());
     }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

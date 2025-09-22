@@ -197,7 +197,7 @@ void commandDs18b20(uint8_t* commandPayload, uint8_t* responsePayload)
 
     _delay_ms(1000);
 
-    response.status = ds18b20read(&PORTB, &DDRB, &PINB, (1 << 0), NULL, &temp);
+    ds18b20read(&PORTB, &DDRB, &PINB, (1 << 0), NULL, &temp);
 
     response.setTemperature(temp);
 
@@ -360,8 +360,6 @@ void commandSleep(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::SLEEP::response_t response;
 
     powerDownRadioAndSleep(command.getDelay());
-
-    response.status = 1;
 
     response.serialize(responsePayload);
 }
@@ -603,8 +601,7 @@ void commandI2cWrite(uint8_t* commandPayload, uint8_t* responsePayload)
     for (uint8_t i = 0;
          (i < command.length) && (i < sizeof(command.data));
          i++) {
-        response.status = I2C_Write(command.data[i]);
-        if (0 != response.status) {
+        if (0 != I2C_Write(command.data[i])) {
             break;
         }
     }
@@ -638,10 +635,7 @@ void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
         for (uint8_t i = 0; i < sizeof(command.keyValue); i++) {
             eeprom.write(address + i, command.keyValue[i]);
         }
-        response.status = 1;
     }
-
-    response.status = 0;
 
     response.serialize(responsePayload);
 }
@@ -655,7 +649,6 @@ void commandSetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
     for (uint8_t i = 0; i < sizeof(command.name); i++) {
         eeprom.write(offsetof(eeprom_data_t, NAME) + i, command.name[i]);
     }
-    response.status = 1;
 
     response.serialize(responsePayload);
 }
@@ -700,10 +693,10 @@ void commandI2cRead(uint8_t* commandPayload, uint8_t* responsePayload)
 
     I2C_Init();
     I2C_Start(command.device);                        // read address
-    response.status = I2C_Write(command.registerAddress[0]); // first word address
-    response.status = I2C_Write(command.registerAddress[1]); // second word address
+    I2C_Write(command.registerAddress[0]); // first word address
+    I2C_Write(command.registerAddress[1]); // second word address
 
-    response.status = I2C_Repeated_Start(command.device + 1);
+    I2C_Repeated_Start(command.device + 1);
 
     for (uint8_t i = 0;
          (i < command.length) && (i < sizeof(response.data));
@@ -761,8 +754,6 @@ void commandSpiWrite(uint8_t* commandPayload, uint8_t* responsePayload)
 
     SPI_ChipSelectHigh();
 
-    response.status = 1;
-
     response.serialize(responsePayload);
 }
 
@@ -814,8 +805,6 @@ void commandRadioUart(
         }
     }
 
-    response.status = command.mode;
-
     response.serialize(responsePayload);
 }
 
@@ -829,8 +818,6 @@ void commandNrf24l01Init(uint8_t* commandPayload, uint8_t* responsePayload)
         &command.txAddr[0],
         command.rfChannel,
         command.gateway == 1);
-
-    response.status = 1;
 
     response.serialize(responsePayload);
 }
@@ -859,16 +846,6 @@ void commandNrf24l01Write(uint8_t* commandPayload, uint8_t* responsePayload)
 
     if (rx_mode_gateway) {
         uint8_t status = NRF24L01_read_register(NRF24L01_REGISTER_STATUS);
-
-        if (status & 0x20) {
-            response.status = 1;
-        }
-        else {
-            response.status = 0;
-        }
-    }
-    else {
-        response.status = 1;
     }
 
     response.serialize(responsePayload);
@@ -934,7 +911,6 @@ void commandIna219(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::INA219::command_t command(commandPayload);
     COMMANDS::INA219::response_t response;
-    response.status = 0;
 
     static bool ina219NotConfigured = true;
     uint8_t address = 0x80;
@@ -975,7 +951,6 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::WAKEUP::command_t command(commandPayload);
     COMMANDS::WAKEUP::response_t response;
-    response.status = 0;
     response.attention = 0;
 
     // only gateway should execute this command
@@ -997,16 +972,14 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
             else
             {
                 NRF24L01_tx(&rf_link_wakeup_command[0], 32);
-                response.status = 1;
                                                                     
                 for(uint8_t j=0; j<31; j++)
                 {
                     if(read_discover_package[j] != rf_link_discover_package[j])
                     {
-                        response.status = 0;
+                        i=10000;
+                        break;
                     }
-                    i=10000;
-                    break;
                 }
             }
         }
@@ -1024,7 +997,6 @@ void commandQuadratureEncoder(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::QUADRATURE_ENCODER::command_t command(commandPayload);
     COMMANDS::QUADRATURE_ENCODER::response_t response;
-    response.status = 1;
 
     attention_flag = 0;
 
@@ -1055,7 +1027,6 @@ void commandSetNodeAddress(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::SET_NODE_ADDRESS::command_t command(commandPayload);
     COMMANDS::SET_NODE_ADDRESS::response_t response;
-    response.status = 0;
 
     rx_tx_addr[NRF24L01_ADDR_SIZE - 1] = command.nodeAddress;
 
@@ -1065,8 +1036,6 @@ void commandSetNodeAddress(uint8_t* commandPayload, uint8_t* responsePayload)
 
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
 
-    response.status = 1;
-
     response.serialize(responsePayload);
 }
 
@@ -1074,7 +1043,6 @@ void commandKeepAlive(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::KEEP_ALIVE::command_t command(commandPayload);
     COMMANDS::KEEP_ALIVE::response_t response;
-    response.status = 0;
 
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
     keep_alive_interval_ms = 100 + command.time * 100;
@@ -1084,8 +1052,6 @@ void commandKeepAlive(uint8_t* commandPayload, uint8_t* responsePayload)
         idle_loop_cnt_ms = keep_alive_interval_ms;
     }
 #endif
-
-    response.status = 1;
 
     response.serialize(responsePayload);
 }

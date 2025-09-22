@@ -8,7 +8,7 @@ namespace COMMANDS {
 
 namespace SLEEP {
     constexpr uint8_t COMMAND_LENGTH = 4;
-    constexpr uint8_t RESPONSE_LENGTH = 1;
+    constexpr uint8_t RESPONSE_LENGTH = 0;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
     static_assert(RESPONSE_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "RESPONSE_LENGTH larger than max payload");
@@ -58,29 +58,16 @@ namespace SLEEP {
         {
             OI = res[0];
             OL = res[1];
-            status = res[2];
         }
 
         void serialize(uint8_t* response)
         {
             response[0] = OI;
             response[1] = OL;
-            response[2] = status;
-        }
-
-        uint8_t getStatus()
-        {
-            return (status);
-        }
-
-        void setStatus(uint8_t value)
-        {
-            status = value;
         }
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t status;
 
     } response_t;
 }

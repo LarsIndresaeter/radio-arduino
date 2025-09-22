@@ -19,7 +19,6 @@ public:
     void printResponse(std::ostream& out, COMMANDS::WAKEUP::response_t response) const
     {
         out << "WAKEUP                 : ";
-        out << " status=" << static_cast<int>(response.getStatus());
         out << " attention=" << static_cast<int>(response.getAttention());
     }
 

@@ -8,7 +8,7 @@ namespace COMMANDS {
 
 namespace NRF24L01_WRITE {
     constexpr uint8_t COMMAND_LENGTH = 129;
-    constexpr uint8_t RESPONSE_LENGTH = 130;
+    constexpr uint8_t RESPONSE_LENGTH = 129;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
     static_assert(RESPONSE_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "RESPONSE_LENGTH larger than max payload");
@@ -57,10 +57,9 @@ namespace NRF24L01_WRITE {
         {
             OI = res[0];
             OL = res[1];
-            status = res[2];
-            length = res[3];
+            length = res[2];
             for (uint8_t i = 0; i < 128; i++) {
-                data[i] = res[4 + i];
+                data[i] = res[3 + i];
             }
         }
 
@@ -68,21 +67,10 @@ namespace NRF24L01_WRITE {
         {
             response[0] = OI;
             response[1] = OL;
-            response[2] = status;
-            response[3] = length;
+            response[2] = length;
             for (uint8_t i = 0; i < 128; i++) {
-                response[4 + i] = data[i];
+                response[3 + i] = data[i];
             }
-        }
-
-        uint8_t getStatus()
-        {
-            return (status);
-        }
-
-        void setStatus(uint8_t value)
-        {
-            status = value;
         }
 
         uint8_t getLength()
@@ -97,7 +85,6 @@ namespace NRF24L01_WRITE {
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t status;
         uint8_t length;
         uint8_t data[128];
 

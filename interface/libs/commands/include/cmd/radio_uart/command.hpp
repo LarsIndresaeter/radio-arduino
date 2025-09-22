@@ -19,7 +19,6 @@ public:
     void printResponse(std::ostream& out, COMMANDS::RADIO_UART::response_t response) const
     {
         out << "RADIO_UART             : ";
-        out << " status=" << static_cast<int>(response.getStatus());
     }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
