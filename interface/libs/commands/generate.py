@@ -439,7 +439,7 @@ def generateCommandAndPayloadFile(commandId, commandName,
 def commandDefinitions():
     generateCommandAndPayloadFile(2, "blink", [], [])
     generateCommandAndPayloadFile(3, "sha1", ["data[20]"], ["data[20]"])
-    generateCommandAndPayloadFile(4, "hotp", [], ["data[16]"])
+    generateCommandAndPayloadFile(4, "hotp", [], ["data[20]"])
     generateCommandAndPayloadFile(5, "eeprom_write", ["address[2]", "data"], ["address[2]", "data"])
     generateCommandAndPayloadFile(6, "eeprom_read", ["address[2]"], ["address[2]", "data"])
     generateCommandAndPayloadFile(7, "aes", ["type", "data[16]"], ["type", "data[16]"])

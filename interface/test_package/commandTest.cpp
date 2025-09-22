@@ -45,7 +45,7 @@ public:
                 case static_cast<int>(COMMANDS::OI::HOTP): {
                     COMMANDS::HOTP::command_t command(commandPayload.data());
                     COMMANDS::HOTP::response_t response {};
-                    for (int i = 0; i < 16; i++) {
+                    for (int i = 0; i < 20; i++) {
                         response.data[i] = i + 200;
                     }
                     response.serialize(responsePayload.data());
@@ -182,7 +182,7 @@ TEST_F(commandTest, commandHotp)
     EXPECT_TRUE(cmd.getReplyStatus() == UartCommandBase::ReplyStatus::Complete);
 
     EXPECT_EQ(4, cmd.responseStruct().OI);
-    EXPECT_EQ(16, cmd.responseStruct().OL);
+    EXPECT_EQ(20, cmd.responseStruct().OL);
     EXPECT_EQ(200, cmd.responseStruct().data[0]);
     EXPECT_EQ(201, cmd.responseStruct().data[1]);
     EXPECT_EQ(202, cmd.responseStruct().data[2]);
@@ -199,6 +199,10 @@ TEST_F(commandTest, commandHotp)
     EXPECT_EQ(213, cmd.responseStruct().data[13]);
     EXPECT_EQ(214, cmd.responseStruct().data[14]);
     EXPECT_EQ(215, cmd.responseStruct().data[15]);
+    EXPECT_EQ(216, cmd.responseStruct().data[16]);
+    EXPECT_EQ(217, cmd.responseStruct().data[17]);
+    EXPECT_EQ(218, cmd.responseStruct().data[18]);
+    EXPECT_EQ(219, cmd.responseStruct().data[19]);
 }
 
 TEST_F(commandTest, commandEepromWriteLow)

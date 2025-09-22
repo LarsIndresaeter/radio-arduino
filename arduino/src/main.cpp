@@ -254,7 +254,7 @@ void commandHotp(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::HOTP::response_t response;
 
     static uint16_t cnt = 0;
-    uint8_t HOTP_message[16];
+    uint8_t HOTP_message[20];
 
     HOTP_message[0] = cnt >> 8;
     HOTP_message[1] = cnt++;

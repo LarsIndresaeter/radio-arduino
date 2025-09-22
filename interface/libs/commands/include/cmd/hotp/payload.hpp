@@ -8,7 +8,7 @@ namespace COMMANDS {
 
 namespace HOTP {
     constexpr uint8_t COMMAND_LENGTH = 0;
-    constexpr uint8_t RESPONSE_LENGTH = 16;
+    constexpr uint8_t RESPONSE_LENGTH = 20;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
     static_assert(RESPONSE_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "RESPONSE_LENGTH larger than max payload");
@@ -41,7 +41,7 @@ namespace HOTP {
         {
             OI = res[0];
             OL = res[1];
-            for (uint8_t i = 0; i < 16; i++) {
+            for (uint8_t i = 0; i < 20; i++) {
                 data[i] = res[2 + i];
             }
         }
@@ -50,14 +50,14 @@ namespace HOTP {
         {
             response[0] = OI;
             response[1] = OL;
-            for (uint8_t i = 0; i < 16; i++) {
+            for (uint8_t i = 0; i < 20; i++) {
                 response[2 + i] = data[i];
             }
         }
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t data[16];
+        uint8_t data[20];
 
     } response_t;
 }

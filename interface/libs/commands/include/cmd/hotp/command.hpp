@@ -19,7 +19,7 @@ public:
         out << "HOTP                   : ";
         out << " data=[ ";
         out << std::setfill('0') << std::hex << std::uppercase;
-        for (uint8_t i = 0; i < 16; i++) {
+        for (uint8_t i = 0; i < 20; i++) {
             out << std::setw(2) << static_cast<int>(response.data[i]) << " ";
         }
         out << "]";
