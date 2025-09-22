@@ -38,3 +38,4 @@
 #include <cmd/keep_alive/payload.hpp>
 #include <cmd/ping/payload.hpp>
 #include <cmd/quadrature_encoder/payload.hpp>
+#include <cmd/get_version/payload.hpp>

@@ -500,6 +500,7 @@ def commandDefinitions():
     generateCommandAndPayloadFile(32, "keep_alive", ["time"], ["status"])
     generateCommandAndPayloadFile(33, "ping", [], [])
     generateCommandAndPayloadFile(34, "quadrature_encoder", [], ["countnegative[2]", "countpositive[2]", "switchposition", "switchcount[2]", "status"])
+    generateCommandAndPayloadFile(35, "get_version", [], ["versionString[32]"])
 
 def main():
     generateCommonHeaderFilesOpen()

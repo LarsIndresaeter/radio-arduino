@@ -37,3 +37,4 @@
 #include <cmd/keep_alive/command.hpp>
 #include <cmd/ping/command.hpp>
 #include <cmd/quadrature_encoder/command.hpp>
+#include <cmd/get_version/command.hpp>

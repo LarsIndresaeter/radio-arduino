@@ -43,6 +43,7 @@ enum class OI
     KEEP_ALIVE = 32,
     PING = 33,
     QUADRATURE_ENCODER = 34,
+    GET_VERSION = 35,
 };
 
 } // namespace COMMANDS

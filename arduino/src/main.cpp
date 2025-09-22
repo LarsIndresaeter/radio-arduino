@@ -683,6 +683,22 @@ void commandGetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
+void commandGetVersion(uint8_t* commandPayload, uint8_t* responsePayload)
+{
+    COMMANDS::GET_VERSION::command_t command(commandPayload);
+    COMMANDS::GET_VERSION::response_t response;
+
+    for (uint8_t i = 0; i < sizeof(response.versionString); i++) {
+        response.versionString[i] = 0;
+    }
+
+    for (uint8_t i = 0; i < sizeof(response.versionString) && ARDUINO_VERSION[i] != 0; i++) {
+        response.versionString[i] = ARDUINO_VERSION[i];
+    }
+
+    response.serialize(responsePayload);
+}
+
 void commandI2cRead(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::I2C_READ::command_t command(commandPayload);
@@ -1179,6 +1195,9 @@ void parseCommand(
         break;
     case COMMANDS::OI::GET_DEVICE_INFO:
         commandGetDeviceInfo(commandPayload, responsePayload);
+        break;
+    case COMMANDS::OI::GET_VERSION:
+        commandGetVersion(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::WAKEUP:
         commandWakeup(commandPayload, responsePayload);
