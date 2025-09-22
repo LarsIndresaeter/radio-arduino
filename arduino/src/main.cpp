@@ -648,8 +648,8 @@ void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
 
 void commandSetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
 {
-    COMMANDS::SET_DEVICE_INFO::command_t command(commandPayload);
-    COMMANDS::SET_DEVICE_INFO::response_t response;
+    COMMANDS::SET_DEVICE_NAME::command_t command(commandPayload);
+    COMMANDS::SET_DEVICE_NAME::response_t response;
     Eeprom eeprom;
 
     for (uint8_t i = 0; i < sizeof(command.name); i++) {
@@ -662,8 +662,8 @@ void commandSetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
 
 void commandGetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
 {
-    COMMANDS::GET_DEVICE_INFO::command_t command(commandPayload);
-    COMMANDS::GET_DEVICE_INFO::response_t response;
+    COMMANDS::GET_DEVICE_NAME::command_t command(commandPayload);
+    COMMANDS::GET_DEVICE_NAME::response_t response;
     Eeprom eeprom;
 
     for (uint8_t i = 0; i < sizeof(response.nameString); i++) {
@@ -1180,10 +1180,10 @@ void parseCommand(
     case COMMANDS::OI::SET_KEY:
         commandSetKey(commandPayload, responsePayload);
         break;
-    case COMMANDS::OI::SET_DEVICE_INFO:
+    case COMMANDS::OI::SET_DEVICE_NAME:
         commandSetDeviceInfo(commandPayload, responsePayload);
         break;
-    case COMMANDS::OI::GET_DEVICE_INFO:
+    case COMMANDS::OI::GET_DEVICE_NAME:
         commandGetDeviceInfo(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::GET_VERSION:

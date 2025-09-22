@@ -144,7 +144,7 @@ std::string RadioSession::readNodeName(monitor& mon)
 {
     std::string nodeName;
 
-    auto nodeDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
+    auto nodeDeviceInfo = mon.getRadio<>(UartCommandGetDeviceName());
     if (nodeDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
         auto response = nodeDeviceInfo.responseStruct();
 
@@ -160,10 +160,10 @@ std::string RadioSession::getNodeName()
 {
     std::string nodeName("");
 
-    auto nodeDeviceInfo = m_monitor.getRadio<>(UartCommandGetDeviceInfo());
+    auto nodeDeviceInfo = m_monitor.getRadio<>(UartCommandGetDeviceName());
 
     if (nodeDeviceInfo.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
-        nodeDeviceInfo = m_monitor.getRadio<>(UartCommandGetDeviceInfo());
+        nodeDeviceInfo = m_monitor.getRadio<>(UartCommandGetDeviceName());
     }
 
     if (nodeDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {

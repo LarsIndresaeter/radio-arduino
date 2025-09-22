@@ -19,8 +19,8 @@
 #include <cmd/ina219/command.hpp>
 #include <cmd/ds18b20/command.hpp>
 #include <cmd/set_key/command.hpp>
-#include <cmd/set_device_info/command.hpp>
-#include <cmd/get_device_info/command.hpp>
+#include <cmd/set_device_name/command.hpp>
+#include <cmd/get_device_name/command.hpp>
 #include <cmd/ws2812b/command.hpp>
 #include <cmd/ssd1306/command.hpp>
 #include <cmd/timer/command.hpp>

@@ -6,9 +6,9 @@
 
 namespace COMMANDS {
 
-namespace SET_DEVICE_INFO {
-    constexpr uint8_t COMMAND_LENGTH = 16;
-    constexpr uint8_t RESPONSE_LENGTH = 1;
+namespace GET_DEVICE_NAME {
+    constexpr uint8_t COMMAND_LENGTH = 0;
+    constexpr uint8_t RESPONSE_LENGTH = 16;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
     static_assert(RESPONSE_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "RESPONSE_LENGTH larger than max payload");
@@ -16,7 +16,7 @@ namespace SET_DEVICE_INFO {
     typedef struct command {
         command()
         {
-            OI = static_cast<uint8_t>(COMMANDS::OI::SET_DEVICE_INFO);
+            OI = static_cast<uint8_t>(COMMANDS::OI::GET_DEVICE_NAME);
             OL = COMMAND_LENGTH;
         }
 
@@ -24,20 +24,16 @@ namespace SET_DEVICE_INFO {
         {
             OI = cmd[0];
             OL = cmd[1];
-            for (uint8_t i = 0; i < 16; i++) {
-                name[i] = cmd[2 + i];
-            }
         }
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t name[16];
     } command_t;
 
     typedef struct response {
         response()
         {
-            OI = static_cast<uint8_t>(COMMANDS::OI::SET_DEVICE_INFO);
+            OI = static_cast<uint8_t>(COMMANDS::OI::GET_DEVICE_NAME);
             OL = RESPONSE_LENGTH;
         }
 
@@ -45,29 +41,23 @@ namespace SET_DEVICE_INFO {
         {
             OI = res[0];
             OL = res[1];
-            status = res[2];
+            for (uint8_t i = 0; i < 16; i++) {
+                nameString[i] = res[2 + i];
+            }
         }
 
         void serialize(uint8_t* response)
         {
             response[0] = OI;
             response[1] = OL;
-            response[2] = status;
-        }
-
-        uint8_t getStatus()
-        {
-            return (status);
-        }
-
-        void setStatus(uint8_t value)
-        {
-            status = value;
+            for (uint8_t i = 0; i < 16; i++) {
+                response[2 + i] = nameString[i];
+            }
         }
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t status;
+        uint8_t nameString[16];
 
     } response_t;
 }

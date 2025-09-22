@@ -20,8 +20,8 @@
 #include <cmd/ina219/payload.hpp>
 #include <cmd/ds18b20/payload.hpp>
 #include <cmd/set_key/payload.hpp>
-#include <cmd/set_device_info/payload.hpp>
-#include <cmd/get_device_info/payload.hpp>
+#include <cmd/set_device_name/payload.hpp>
+#include <cmd/get_device_name/payload.hpp>
 #include <cmd/ws2812b/payload.hpp>
 #include <cmd/ssd1306/payload.hpp>
 #include <cmd/timer/payload.hpp>

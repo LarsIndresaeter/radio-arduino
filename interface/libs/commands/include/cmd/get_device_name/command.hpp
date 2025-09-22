@@ -3,20 +3,20 @@
 
 #include <common/uartCommandBase.hpp>
 
-class UartCommandGetDeviceInfo : public UartCommandBase {
+class UartCommandGetDeviceName : public UartCommandBase {
 public:
-    UartCommandGetDeviceInfo()
+    UartCommandGetDeviceName()
         : UartCommandBase(
-              static_cast<uint8_t>(COMMANDS::OI::GET_DEVICE_INFO),
-              COMMANDS::GET_DEVICE_INFO::COMMAND_LENGTH)
+              static_cast<uint8_t>(COMMANDS::OI::GET_DEVICE_NAME),
+              COMMANDS::GET_DEVICE_NAME::COMMAND_LENGTH)
     {
-        COMMANDS::GET_DEVICE_INFO::command_t command;
+        COMMANDS::GET_DEVICE_NAME::command_t command;
 
     };
 
-    void printResponse(std::ostream& out, COMMANDS::GET_DEVICE_INFO::response_t response) const
+    void printResponse(std::ostream& out, COMMANDS::GET_DEVICE_NAME::response_t response) const
     {
-        out << "GET_DEVICE_INFO        : ";
+        out << "GET_DEVICE_NAME        : ";
         out << " nameString=\"";
         for (uint8_t i = 0; i < 16; i++) {
             if(response.nameString[i])
@@ -29,19 +29,19 @@ public:
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {
-        if (m_response.size() >= (COMMANDS::GET_DEVICE_INFO::RESPONSE_LENGTH + 4)) {
-            COMMANDS::GET_DEVICE_INFO::response_t response(
+        if (m_response.size() >= (COMMANDS::GET_DEVICE_NAME::RESPONSE_LENGTH + 4)) {
+            COMMANDS::GET_DEVICE_NAME::response_t response(
                 (uint8_t*)&responsePayload.data()[0]);
             printResponse(out, response);
         }
         else {
-            std::cout << "GET_DEVICE_INFO: insufficient data" << std::endl;
+            std::cout << "GET_DEVICE_NAME: insufficient data" << std::endl;
         }
     };
 
-    COMMANDS::GET_DEVICE_INFO::response_t responseStruct()
+    COMMANDS::GET_DEVICE_NAME::response_t responseStruct()
     {
-        COMMANDS::GET_DEVICE_INFO::response_t response;
+        COMMANDS::GET_DEVICE_NAME::response_t response;
 
         if (m_responsePayload.size() >= sizeof(response)) {
             return { (uint8_t*)&m_responsePayload[0] };

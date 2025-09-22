@@ -536,7 +536,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             }
 
             // set name
-            mon.get<>(UartCommandSetDeviceInfo(name));
+            mon.get<>(UartCommandSetDeviceName(name));
 
             // debug
             // for (int i = 0; i < 16; i++) {
@@ -545,7 +545,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             //}
         } break;
         case 'z':
-            std::cout << mon.get<>(UartCommandGetDeviceInfo()) << std::endl;
+            std::cout << mon.get<>(UartCommandGetDeviceName()) << std::endl;
             break;
         case 'a':
             std::cout << mon.get<>(UartCommandGetVersion()) << std::endl;

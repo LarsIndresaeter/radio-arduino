@@ -242,7 +242,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
                 std::cout << "gpio  : " << mon.getRadio<>(UartCommandGpio()) << std::endl;
                 std::cout << "blink : " << mon.getRadio<>(UartCommandBlink()) << std::endl;
                 std::cout << "gpio  : " << mon.getRadio<>(UartCommandGpio()) << std::endl;
-                std::cout << "device: " << mon.getRadio<>(UartCommandGetDeviceInfo()) << std::endl;
+                std::cout << "device: " << mon.getRadio<>(UartCommandGetDeviceName()) << std::endl;
             }
             break;
         case 'J':
@@ -402,13 +402,13 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             }
 
             // set name
-            mon.getRadio<>(UartCommandSetDeviceInfo(name));
+            mon.getRadio<>(UartCommandSetDeviceName(name));
         } break;
         case 'z': {
             RadioSession radioSession(mon, radioAddress);
             radioSession.setKeepAliveInterval(keepAliveInterval);
             radioSession.wakeupNotResponding();
-            std::cout << mon.getRadio<>(UartCommandGetDeviceInfo()) << std::endl;
+            std::cout << mon.getRadio<>(UartCommandGetDeviceName()) << std::endl;
         } break;
         case 'h':
             print_usage();

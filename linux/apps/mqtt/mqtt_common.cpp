@@ -80,10 +80,10 @@ std::string getNodeNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_cl
 {
     std::string nodeName("");
 
-    auto nodeDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
+    auto nodeDeviceInfo = mon.getRadio<>(UartCommandGetDeviceName());
 
     if (nodeDeviceInfo.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
-        nodeDeviceInfo = mon.getRadio<>(UartCommandGetDeviceInfo());
+        nodeDeviceInfo = mon.getRadio<>(UartCommandGetDeviceName());
     }
 
     if (nodeDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
@@ -103,10 +103,10 @@ std::string getGatewayNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt
 {
     std::string gatewayName("");
 
-    auto nodeDeviceInfo = mon.get<>(UartCommandGetDeviceInfo());
+    auto nodeDeviceInfo = mon.get<>(UartCommandGetDeviceName());
 
     if (nodeDeviceInfo.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
-        nodeDeviceInfo = mon.get<>(UartCommandGetDeviceInfo());
+        nodeDeviceInfo = mon.get<>(UartCommandGetDeviceName());
     }
 
     if (nodeDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
