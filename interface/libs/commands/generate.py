@@ -321,6 +321,21 @@ def generatePayloadFile(commandId, commandName,
                 outfile.write("            " + arrayBasenameFromVariableName(item) + "[0] = (uint8_t)value;\n")
                 outfile.write("        }\n")
                 outfile.write("\n")
+            if(arraySize == 4):
+                outfile.write("        uint32_t get" + arrayBasenameFromVariableName(item).capitalize() + "()\n")
+                outfile.write("        {\n")
+                outfile.write("            return (((uint32_t)" + arrayBasenameFromVariableName(item) + "[2]) << 16 | ((uint32_t)" + arrayBasenameFromVariableName(item) + "[2]) << 16 | ((uint32_t)" + arrayBasenameFromVariableName(item) + "[1]) << 8 | " + arrayBasenameFromVariableName(item) + "[0]);\n")
+                outfile.write("        }\n")
+                outfile.write("\n")
+                outfile.write("        void set" + arrayBasenameFromVariableName(item).capitalize() + "(uint32_t value)\n")
+                outfile.write("        {\n")
+                outfile.write("            " + arrayBasenameFromVariableName(item) + "[3] = (uint8_t)(value >> 24);\n")
+                outfile.write("            " + arrayBasenameFromVariableName(item) + "[2] = (uint8_t)(value >> 15);\n")
+                outfile.write("            " + arrayBasenameFromVariableName(item) + "[1] = (uint8_t)(value >> 8);\n")
+                outfile.write("            " + arrayBasenameFromVariableName(item) + "[0] = (uint8_t)value;\n")
+                outfile.write("        }\n")
+                outfile.write("\n")
+
 
         outfile.write("        uint8_t OI;\n")
         outfile.write("        uint8_t OL;\n")
@@ -409,6 +424,21 @@ def generatePayloadFile(commandId, commandName,
                 outfile.write("            " + arrayBasenameFromVariableName(item) + "[0] = (uint8_t)value;\n")
                 outfile.write("        }\n")
                 outfile.write("\n")
+            if(arraySize == 4):
+                outfile.write("        uint32_t get" + arrayBasenameFromVariableName(item).capitalize() + "()\n")
+                outfile.write("        {\n")
+                outfile.write("            return ((((uint32_t)" + arrayBasenameFromVariableName(item) + "[3]) << 24 | (((uint32_t)" + arrayBasenameFromVariableName(item) + "[2]) << 16 | uint32_t)" + arrayBasenameFromVariableName(item) + "[1]) << 8 | " + arrayBasenameFromVariableName(item) + "[0]);\n")
+                outfile.write("        }\n")
+                outfile.write("\n")
+                outfile.write("        void set" + arrayBasenameFromVariableName(item).capitalize() + "(uint32_t value)\n")
+                outfile.write("        {\n")
+                outfile.write("            " + arrayBasenameFromVariableName(item) + "[3] = (uint8_t)(value >> 24);\n")
+                outfile.write("            " + arrayBasenameFromVariableName(item) + "[2] = (uint8_t)(value >> 16);\n")
+                outfile.write("            " + arrayBasenameFromVariableName(item) + "[1] = (uint8_t)(value >> 8);\n")
+                outfile.write("            " + arrayBasenameFromVariableName(item) + "[0] = (uint8_t)value;\n")
+                outfile.write("        }\n")
+                outfile.write("\n")
+
 
         outfile.write("        uint8_t OI;\n")
         outfile.write("        uint8_t OL;\n")

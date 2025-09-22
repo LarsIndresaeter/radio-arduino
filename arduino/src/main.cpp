@@ -199,8 +199,7 @@ void commandDs18b20(uint8_t* commandPayload, uint8_t* responsePayload)
 
     response.status = ds18b20read(&PORTB, &DDRB, &PINB, (1 << 0), NULL, &temp);
 
-    response.temperature[0] = temp >> 8;
-    response.temperature[1] = temp;
+    response.setTemperature(temp);
 
     response.serialize(responsePayload);
 }
@@ -227,7 +226,7 @@ void commandRandom(uint8_t* commandPayload, uint8_t* responsePayload)
     random.addEntropy(AtmelAdc::getRandomByte());
     random.mix();
 
-    for (uint8_t i = 0; i < 16; i++) {
+    for (uint8_t i = 0; i < sizeof(response.data); i++) {
         response.data[i] = random.getRandomByte();
     }
 
@@ -289,7 +288,7 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
     uint8_t aes_iv[16] = {0};
 
     // copy data to response buffer
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < sizeof(response.data); i++) {
         response.data[i] = command.data[i];
     }
 
@@ -360,12 +359,7 @@ void commandSleep(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::SLEEP::command_t command(commandPayload);
     COMMANDS::SLEEP::response_t response;
 
-    uint32_t delay = (uint32_t)(command.delay[3]) << 24;
-    delay += (uint32_t)(command.delay[2]) << 16;
-    delay += (uint32_t)(command.delay[1]) << 8;
-    delay += command.delay[0];
-
-    powerDownRadioAndSleep(delay);
+    powerDownRadioAndSleep(command.getDelay());
 
     response.status = 1;
 
@@ -407,7 +401,7 @@ void commandSsd1306(uint8_t* commandPayload, uint8_t* responsePayload)
 
     Framebuffer fb;
 
-    for (uint8_t x = 0; x < static_cast<uint8_t>(sizeof(command.data)); x++) {
+    for (uint8_t x = 0; x < sizeof(command.data); x++) {
         fb.drawChar(x, command.line, command.data[x]);
     }
 
@@ -484,9 +478,7 @@ void commandTimer(uint8_t* commandPayload, uint8_t* responsePayload)
     _delay_ms(25);
     timerStop();
 
-    pulse_width = pulse_width >> 4; // divide by 16 to get micro seconds
-
-    response.setPulsewidth(pulse_width);
+    response.setPulsewidth(pulse_width >> 4); // divide by 16 to get micro seconds
 
     response.serialize(responsePayload);
 }
@@ -540,7 +532,7 @@ void commandDebug(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::DEBUG::command_t command(commandPayload);
     COMMANDS::DEBUG::response_t response;
 
-    for (int i = 0; i < COMMANDS::DEBUG::RESPONSE_LENGTH; i++) {
+    for (int i = 0; i < sizeof(response.data); i++) {
         response.data[i] = i;
     }
 
@@ -560,8 +552,7 @@ void commandEepromRead(uint8_t* commandPayload, uint8_t* responsePayload)
     Eeprom eeprom;
 
     response.setAddress(command.getAddress());
-    response.data
-        = eeprom.read(command.getAddress());
+    response.setData(eeprom.read(command.getAddress()));
 
     response.serialize(responsePayload);
 }
@@ -595,8 +586,7 @@ void commandEepromWrite(uint8_t* commandPayload, uint8_t* responsePayload)
     eeprom.write(command.getAddress(), command.data);
 
     response.setAddress(command.getAddress());
-    response.data
-        = eeprom.read(command.getAddress());
+    response.setData(eeprom.read(command.getAddress()));
 
     response.serialize(responsePayload);
 }
@@ -611,7 +601,7 @@ void commandI2cWrite(uint8_t* commandPayload, uint8_t* responsePayload)
     I2C_Write(command.registerAddress[0]);  // first word address
     I2C_Write(command.registerAddress[1]); // second word address
     for (uint8_t i = 0;
-         (i < command.length) && (i < static_cast<uint8_t>(sizeof(command.data)));
+         (i < command.length) && (i < sizeof(command.data));
          i++) {
         response.status = I2C_Write(command.data[i]);
         if (0 != response.status) {
@@ -645,7 +635,7 @@ void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
     }
 
     if (command.keyId != 'U') {
-        for (uint8_t i = 0; i < 16; i++) {
+        for (uint8_t i = 0; i < sizeof(command.keyValue); i++) {
             eeprom.write(address + i, command.keyValue[i]);
         }
         response.status = 1;
@@ -662,7 +652,7 @@ void commandSetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::SET_DEVICE_INFO::response_t response;
     Eeprom eeprom;
 
-    for (uint8_t i = 0; i < 16; i++) {
+    for (uint8_t i = 0; i < sizeof(command.name); i++) {
         eeprom.write(offsetof(eeprom_data_t, NAME) + i, command.name[i]);
     }
     response.status = 1;
@@ -676,15 +666,15 @@ void commandGetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::GET_DEVICE_INFO::response_t response;
     Eeprom eeprom;
 
-    for (uint8_t i = 0; i < 16; i++) {
+    for (uint8_t i = 0; i < sizeof(response.nameString); i++) {
         response.nameString[i] = eeprom.read(offsetof(eeprom_data_t, NAME) + i);
     }
 
-    for (int i = 0; i < 32; i++) {
+    for (int i = 0; i < sizeof(response.versionString); i++) {
         response.versionString[i] = 0;
     }
 
-    for (int i = 0; i < 32 && ARDUINO_VERSION[i] != 0; i++) {
+    for (int i = 0; i < sizeof(response.versionString) && ARDUINO_VERSION[i] != 0; i++) {
         response.versionString[i] = ARDUINO_VERSION[i];
     }
 
@@ -698,29 +688,23 @@ void commandI2cRead(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::I2C_READ::command_t command(commandPayload);
     COMMANDS::I2C_READ::response_t response;
 
-    response.device = command.device;
+    response.setDevice(command.getDevice());
     response.setRegisteraddress(command.getRegisteraddress());
-    response.length = command.length;
+    response.setLength(command.getLength());
 
     I2C_Init();
     I2C_Start(command.device);                        // read address
     response.status = I2C_Write(command.registerAddress[0]); // first word address
-    // if(0 != response.status)
-    //{
     response.status = I2C_Write(command.registerAddress[1]); // second word address
-                                                       //}
-    // if(0 == response.status)
-    //{
+
     response.status = I2C_Repeated_Start(command.device + 1);
-    // if(0 == response.status)
-    //{
+
     for (uint8_t i = 0;
-         (i < command.length) && (i < static_cast<uint8_t>(sizeof(response.data)));
+         (i < command.length) && (i < sizeof(response.data));
          i++) {
         response.data[i] = I2C_Read_Ack();
     }
-    //}
-    //}
+
     I2C_Read_Nack(); /* Read flush data with nack */
     I2C_Stop();
 
@@ -732,8 +716,8 @@ void commandSpiRead(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::SPI_READ::command_t command(commandPayload);
     COMMANDS::SPI_READ::response_t response;
 
-    response.reg = command.reg;
-    response.length = command.length;
+    response.setReg(command.getReg());
+    response.setLength(command.getLength());
 
     SPI_init();
 
@@ -852,8 +836,7 @@ void commandNrf24l01Read(uint8_t* commandPayload, uint8_t* responsePayload)
 
     SPI_init();
 
-    response.length
-        = NRF24L01_rx(response.data);
+    response.setLength(NRF24L01_rx(response.data));
 
     response.serialize(responsePayload);
 }
@@ -866,7 +849,7 @@ void commandNrf24l01Write(uint8_t* commandPayload, uint8_t* responsePayload)
     SPI_init();
 
     NRF24L01_tx(&command.data[0], command.length);
-    response.length = NRF24L01_rx(&response.data[0]);
+    response.setLength(NRF24L01_rx(&response.data[0]));
 
     if (rx_mode_gateway) {
         uint8_t status = NRF24L01_read_register(NRF24L01_REGISTER_STATUS);
