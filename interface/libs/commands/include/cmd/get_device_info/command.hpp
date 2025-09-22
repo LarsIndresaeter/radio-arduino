@@ -25,15 +25,6 @@ public:
             }
         }
         out << "\"";
-        out << " versionString=\"";
-        for (uint8_t i = 0; i < 32; i++) {
-            if(response.versionString[i])
-            {
-                out << static_cast<char>(response.versionString[i]);
-            }
-        }
-        out << "\"";
-        out << " status=" << static_cast<int>(response.getStatus());
     }
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

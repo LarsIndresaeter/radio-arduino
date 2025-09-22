@@ -483,7 +483,7 @@ def commandDefinitions():
     generateCommandAndPayloadFile(15, "ds18b20", [], ["temperature[2]", "status"])
     generateCommandAndPayloadFile(16, "set_key", ["keyId", "keyValue[16]"], ["status"])
     generateCommandAndPayloadFile(17, "set_device_info", ["name[16]"], ["status"])
-    generateCommandAndPayloadFile(18, "get_device_info", [], ["nameString[16]", "versionString[32]", "status"])
+    generateCommandAndPayloadFile(18, "get_device_info", [], ["nameString[16]"])
     generateCommandAndPayloadFile(19, "ws2812b", ["red[45]", "green[45]", "blue[45]"], [])
     generateCommandAndPayloadFile(20, "ssd1306", ["line", "data[16]"], [])
     generateCommandAndPayloadFile(21, "timer", [], ["pulseWidth[2]"])

@@ -8,7 +8,7 @@ namespace COMMANDS {
 
 namespace GET_DEVICE_INFO {
     constexpr uint8_t COMMAND_LENGTH = 0;
-    constexpr uint8_t RESPONSE_LENGTH = 49;
+    constexpr uint8_t RESPONSE_LENGTH = 16;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
     static_assert(RESPONSE_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "RESPONSE_LENGTH larger than max payload");
@@ -44,10 +44,6 @@ namespace GET_DEVICE_INFO {
             for (uint8_t i = 0; i < 16; i++) {
                 nameString[i] = res[2 + i];
             }
-            for (uint8_t i = 0; i < 32; i++) {
-                versionString[i] = res[18 + i];
-            }
-            status = res[50];
         }
 
         void serialize(uint8_t* response)
@@ -57,27 +53,11 @@ namespace GET_DEVICE_INFO {
             for (uint8_t i = 0; i < 16; i++) {
                 response[2 + i] = nameString[i];
             }
-            for (uint8_t i = 0; i < 32; i++) {
-                response[18 + i] = versionString[i];
-            }
-            response[50] = status;
-        }
-
-        uint8_t getStatus()
-        {
-            return (status);
-        }
-
-        void setStatus(uint8_t value)
-        {
-            status = value;
         }
 
         uint8_t OI;
         uint8_t OL;
         uint8_t nameString[16];
-        uint8_t versionString[32];
-        uint8_t status;
 
     } response_t;
 }

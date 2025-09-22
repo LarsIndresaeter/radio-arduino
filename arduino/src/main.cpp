@@ -670,16 +670,6 @@ void commandGetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
         response.nameString[i] = eeprom.read(offsetof(eeprom_data_t, NAME) + i);
     }
 
-    for (uint8_t i = 0; i < sizeof(response.versionString); i++) {
-        response.versionString[i] = 0;
-    }
-
-    for (uint8_t i = 0; i < sizeof(response.versionString) && ARDUINO_VERSION[i] != 0; i++) {
-        response.versionString[i] = ARDUINO_VERSION[i];
-    }
-
-    response.status = 1;
-
     response.serialize(responsePayload);
 }
 
