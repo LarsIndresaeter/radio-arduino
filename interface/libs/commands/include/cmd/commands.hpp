@@ -38,3 +38,4 @@
 #include <cmd/ping/command.hpp>
 #include <cmd/quadrature_encoder/command.hpp>
 #include <cmd/get_version/command.hpp>
+#include <cmd/get_statistics/command.hpp>

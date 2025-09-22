@@ -44,6 +44,7 @@ enum class OI
     PING = 33,
     QUADRATURE_ENCODER = 34,
     GET_VERSION = 35,
+    GET_STATISTICS = 36,
 };
 
 } // namespace COMMANDS

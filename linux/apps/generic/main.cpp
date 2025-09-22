@@ -132,6 +132,7 @@ void print_usage()
     std::cout << "       -Z : set device name" << std::endl;
     std::cout << "       -z : get device name" << std::endl;
     std::cout << "       -a : get device version" << std::endl;
+    std::cout << "       -x : get statistics" << std::endl;
     std::cout << "       -W : WS2812B <string>" << std::endl;
     std::cout << "       -F : Read servo PWM signal and display on ws2812b ring"
               << std::endl;
@@ -260,7 +261,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     uint8_t i2cDeviceAddress = 0b10100000;
 
     while ((option
-            = getopt(argc, argv, "P:DBSHEACs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:L:FJU:jpa"))
+            = getopt(argc, argv, "P:DBSHEACs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:L:FJU:jpax"))
            != -1) {
         switch (option) {
         case 'd':
@@ -549,6 +550,9 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             break;
         case 'a':
             std::cout << mon.get<>(UartCommandGetVersion()) << std::endl;
+            break;
+        case 'x':
+            std::cout << mon.get<>(UartCommandGetStatistics()) << std::endl;
             break;
         case 'h':
             print_usage();

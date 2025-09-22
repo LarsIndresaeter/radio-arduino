@@ -501,6 +501,7 @@ def commandDefinitions():
     generateCommandAndPayloadFile(33, "ping", [], [])
     generateCommandAndPayloadFile(34, "quadrature_encoder", [], ["countnegative[2]", "countpositive[2]", "switchposition", "switchcount[2]"])
     generateCommandAndPayloadFile(35, "get_version", [], ["versionString[32]"])
+    generateCommandAndPayloadFile(36, "get_statistics", [], ["commandsParsed[2]", "bytesReceived[2]", "bytesSent[2]"])
 
 def main():
     generateCommonHeaderFilesOpen()
