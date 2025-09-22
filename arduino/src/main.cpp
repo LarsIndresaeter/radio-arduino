@@ -288,7 +288,7 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
     uint8_t aes_iv[16] = {0};
 
     // copy data to response buffer
-    for (int i = 0; i < sizeof(response.data); i++) {
+    for (uint8_t i = 0; i < sizeof(response.data); i++) {
         response.data[i] = command.data[i];
     }
 
@@ -532,7 +532,7 @@ void commandDebug(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::DEBUG::command_t command(commandPayload);
     COMMANDS::DEBUG::response_t response;
 
-    for (int i = 0; i < sizeof(response.data); i++) {
+    for (uint8_t i = 0; i < sizeof(response.data); i++) {
         response.data[i] = i;
     }
 
@@ -670,11 +670,11 @@ void commandGetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
         response.nameString[i] = eeprom.read(offsetof(eeprom_data_t, NAME) + i);
     }
 
-    for (int i = 0; i < sizeof(response.versionString); i++) {
+    for (uint8_t i = 0; i < sizeof(response.versionString); i++) {
         response.versionString[i] = 0;
     }
 
-    for (int i = 0; i < sizeof(response.versionString) && ARDUINO_VERSION[i] != 0; i++) {
+    for (uint8_t i = 0; i < sizeof(response.versionString) && ARDUINO_VERSION[i] != 0; i++) {
         response.versionString[i] = ARDUINO_VERSION[i];
     }
 
