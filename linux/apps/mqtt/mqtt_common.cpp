@@ -89,7 +89,7 @@ std::string getNodeNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_cl
     if (nodeDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
         auto response = nodeDeviceInfo.responseStruct();
 
-        for (int i = 0; i < 16 && response.nameString[i] != 0; i++) {
+        for (int i = 0; i < sizeof(response.nameString) && response.nameString[i] != 0; i++) {
             nodeName += response.nameString[i];
         }
 
@@ -112,7 +112,7 @@ std::string getGatewayNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt
     if (nodeDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
         auto response = nodeDeviceInfo.responseStruct();
 
-        for (int i = 0; i < 16 && response.nameString[i] != 0; i++) {
+        for (int i = 0; i < sizeof(response.nameString) && response.nameString[i] != 0; i++) {
             gatewayName += response.nameString[i];
         }
 
