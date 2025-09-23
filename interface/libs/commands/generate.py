@@ -258,10 +258,10 @@ def generateCommandFile(commandName,
         outfile.write("    std::string getJson() {\n");
         outfile.write("        std::string json;\n");
         outfile.write("        json.append(\"{\");\n");
-        outfile.write("        json.append(\"\\\"timestamp\\\":\");\n")
-        outfile.write("        json.append(std::to_string(getTimeStamp()));\n")
         outfile.write("        json.append(\"\\\"name\\\":\");\n")
         outfile.write("        json.append(\"\\\"" + commandName + "\\\", \");\n")
+        outfile.write("        json.append(\"\\\"timestamp\\\":\");\n")
+        outfile.write("        json.append(std::to_string(getTimeStamp()));\n")
         outfile.write("        json.append(\", \");\n")
 
         index = 0

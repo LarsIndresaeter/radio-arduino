@@ -28,10 +28,10 @@ public:
     std::string getJson() {
         std::string json;
         json.append("{");
-        json.append("\"timestamp\":");
-        json.append(std::to_string(getTimeStamp()));
         json.append("\"name\":");
         json.append("\"get_statistics\", ");
+        json.append("\"timestamp\":");
+        json.append(std::to_string(getTimeStamp()));
         json.append(", ");
         json.append("\"commandsParsed\":");
         json.append(std::to_string(responseStruct().getCommandsparsed()));

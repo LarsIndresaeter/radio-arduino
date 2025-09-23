@@ -28,10 +28,10 @@ public:
     std::string getJson() {
         std::string json;
         json.append("{");
-        json.append("\"timestamp\":");
-        json.append(std::to_string(getTimeStamp()));
         json.append("\"name\":");
         json.append("\"gpio\", ");
+        json.append("\"timestamp\":");
+        json.append(std::to_string(getTimeStamp()));
         json.append(", ");
         json.append("\"portB\":");
         json.append(std::to_string(responseStruct().getPortb()));

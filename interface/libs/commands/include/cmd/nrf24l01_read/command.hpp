@@ -63,10 +63,10 @@ public:
     std::string getJson() {
         std::string json;
         json.append("{");
-        json.append("\"timestamp\":");
-        json.append(std::to_string(getTimeStamp()));
         json.append("\"name\":");
         json.append("\"nrf24l01_read\", ");
+        json.append("\"timestamp\":");
+        json.append(std::to_string(getTimeStamp()));
         json.append(", ");
         json.append("\"length\":");
         json.append(std::to_string(responseStruct().getLength()));
