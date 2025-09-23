@@ -84,6 +84,13 @@ public:
 
     uint8_t getCommandId() { return (m_cmdId); };
 
+    void setTimeStamp(uint64_t timestamp) { m_timeStamp = timestamp;};
+    uint64_t getTimeStamp() { return (m_timeStamp); };
+
+    std::string getCommandName() { return ("UNDEFINED"); };
+
+    std::string getJson() { return ("{}"); };
+
     friend std::ostream& operator<<(std::ostream& out, UartCommandBase const& u)
     {
         if (u.m_replyStatus == ReplyStatus::Complete) {
@@ -123,6 +130,7 @@ protected:
     {
     };
 
+    uint64_t m_timeStamp;
     uint64_t m_responseTimeUs;
     ReplyStatus m_replyStatus;
     std::vector<uint8_t> m_payload;

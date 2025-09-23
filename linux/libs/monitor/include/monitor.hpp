@@ -125,6 +125,8 @@ public:
         auto dur = end - start;
         auto i_millis
             = std::chrono::duration_cast<std::chrono::microseconds>(dur);
+        uint64_t time_since_epoch_ms = std::chrono::duration_cast<std::chrono::milliseconds>(start.time_since_epoch()).count();
+        cmd.setTimeStamp(time_since_epoch_ms);
         cmd.setResponseTimeUs(i_millis.count());
         if (m_printResponseTime) {
             std::cout << "[" << std::dec
