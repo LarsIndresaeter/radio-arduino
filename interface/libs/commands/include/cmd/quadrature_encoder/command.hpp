@@ -23,6 +23,32 @@ public:
         out << " switchcount=" << static_cast<int>(response.getSwitchcount());
     }
 
+
+    std::string getCommandName() { return "quadrature_encoder";}
+
+    std::string getJson() {
+        std::string json;
+        json.append("{");
+        json.append("\"timestamp\":");
+        json.append(std::to_string(getTimeStamp()));
+        json.append("\"name\":");
+        json.append("\"quadrature_encoder\", ");
+        json.append(", ");
+        json.append("\"countnegative\":");
+        json.append(std::to_string(responseStruct().getCountnegative()));
+        json.append(", ");
+        json.append("\"countpositive\":");
+        json.append(std::to_string(responseStruct().getCountpositive()));
+        json.append(", ");
+        json.append("\"switchposition\":");
+        json.append(std::to_string(responseStruct().getSwitchposition()));
+        json.append(", ");
+        json.append("\"switchcount\":");
+        json.append(std::to_string(responseStruct().getSwitchcount()));
+        json.append("}");
+        return(json);
+    };
+
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {
         if (m_response.size() >= (COMMANDS::QUADRATURE_ENCODER::RESPONSE_LENGTH + 4)) {

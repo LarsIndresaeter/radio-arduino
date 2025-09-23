@@ -19,6 +19,21 @@ public:
         out << "PING                   : ";
     }
 
+
+    std::string getCommandName() { return "ping";}
+
+    std::string getJson() {
+        std::string json;
+        json.append("{");
+        json.append("\"timestamp\":");
+        json.append(std::to_string(getTimeStamp()));
+        json.append("\"name\":");
+        json.append("\"ping\", ");
+        json.append(", ");
+        json.append("}");
+        return(json);
+    };
+
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {
         if (m_response.size() >= (COMMANDS::PING::RESPONSE_LENGTH + 4)) {

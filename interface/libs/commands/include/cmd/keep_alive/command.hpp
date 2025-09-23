@@ -21,6 +21,21 @@ public:
         out << "KEEP_ALIVE             : ";
     }
 
+
+    std::string getCommandName() { return "keep_alive";}
+
+    std::string getJson() {
+        std::string json;
+        json.append("{");
+        json.append("\"timestamp\":");
+        json.append(std::to_string(getTimeStamp()));
+        json.append("\"name\":");
+        json.append("\"keep_alive\", ");
+        json.append(", ");
+        json.append("}");
+        return(json);
+    };
+
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {
         if (m_response.size() >= (COMMANDS::KEEP_ALIVE::RESPONSE_LENGTH + 4)) {

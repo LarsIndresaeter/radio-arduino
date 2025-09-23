@@ -22,6 +22,29 @@ public:
         out << " portD=" << static_cast<int>(response.getPortd());
     }
 
+
+    std::string getCommandName() { return "gpio";}
+
+    std::string getJson() {
+        std::string json;
+        json.append("{");
+        json.append("\"timestamp\":");
+        json.append(std::to_string(getTimeStamp()));
+        json.append("\"name\":");
+        json.append("\"gpio\", ");
+        json.append(", ");
+        json.append("\"portB\":");
+        json.append(std::to_string(responseStruct().getPortb()));
+        json.append(", ");
+        json.append("\"portC\":");
+        json.append(std::to_string(responseStruct().getPortc()));
+        json.append(", ");
+        json.append("\"portD\":");
+        json.append(std::to_string(responseStruct().getPortd()));
+        json.append("}");
+        return(json);
+    };
+
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {
         if (m_response.size() >= (COMMANDS::GPIO::RESPONSE_LENGTH + 4)) {

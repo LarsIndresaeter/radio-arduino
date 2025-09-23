@@ -26,6 +26,43 @@ public:
         out << std::dec;
     }
 
+    std::string getData() {
+        std::string retval;
+        COMMANDS::HOTP::response_t response = responseStruct();
+
+        retval.append("[");
+        for (uint8_t i = 0; i < 32; i++) {
+            retval.append(" \"");
+            retval.append(std::to_string(static_cast<int>(response.data[i])));
+            if(i < (32 - 1)) {
+                retval.append("\",");
+            }
+            else {
+                retval.append("\"");
+            }
+        }
+        retval.append(" ]");
+
+        return(retval);
+    }
+
+    std::string getCommandName() { return "hotp";}
+
+    std::string getJson() {
+        std::string json;
+        json.append("{");
+        json.append("\"timestamp\":");
+        json.append(std::to_string(getTimeStamp()));
+        json.append("\"name\":");
+        json.append("\"hotp\", ");
+        json.append(", ");
+        json.append("\"data\": ");
+        json.append(getData());
+        json.append("");
+        json.append("}");
+        return(json);
+    };
+
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {
         if (m_response.size() >= (COMMANDS::HOTP::RESPONSE_LENGTH + 4)) {

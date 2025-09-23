@@ -22,6 +22,23 @@ public:
         out << " attention=" << static_cast<int>(response.getAttention());
     }
 
+
+    std::string getCommandName() { return "wakeup";}
+
+    std::string getJson() {
+        std::string json;
+        json.append("{");
+        json.append("\"timestamp\":");
+        json.append(std::to_string(getTimeStamp()));
+        json.append("\"name\":");
+        json.append("\"wakeup\", ");
+        json.append(", ");
+        json.append("\"attention\":");
+        json.append(std::to_string(responseStruct().getAttention()));
+        json.append("}");
+        return(json);
+    };
+
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {
         if (m_response.size() >= (COMMANDS::WAKEUP::RESPONSE_LENGTH + 4)) {

@@ -30,6 +30,21 @@ public:
         out << "SET_KEY                : ";
     }
 
+
+    std::string getCommandName() { return "set_key";}
+
+    std::string getJson() {
+        std::string json;
+        json.append("{");
+        json.append("\"timestamp\":");
+        json.append(std::to_string(getTimeStamp()));
+        json.append("\"name\":");
+        json.append("\"set_key\", ");
+        json.append(", ");
+        json.append("}");
+        return(json);
+    };
+
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {
         if (m_response.size() >= (COMMANDS::SET_KEY::RESPONSE_LENGTH + 4)) {

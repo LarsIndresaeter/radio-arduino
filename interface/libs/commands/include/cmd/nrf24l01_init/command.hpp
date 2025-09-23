@@ -41,6 +41,21 @@ public:
         out << "NRF24L01_INIT          : ";
     }
 
+
+    std::string getCommandName() { return "nrf24l01_init";}
+
+    std::string getJson() {
+        std::string json;
+        json.append("{");
+        json.append("\"timestamp\":");
+        json.append(std::to_string(getTimeStamp()));
+        json.append("\"name\":");
+        json.append("\"nrf24l01_init\", ");
+        json.append(", ");
+        json.append("}");
+        return(json);
+    };
+
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {
         if (m_response.size() >= (COMMANDS::NRF24L01_INIT::RESPONSE_LENGTH + 4)) {

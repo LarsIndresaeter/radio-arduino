@@ -21,6 +21,21 @@ public:
         out << "SET_NODE_ADDRESS       : ";
     }
 
+
+    std::string getCommandName() { return "set_node_address";}
+
+    std::string getJson() {
+        std::string json;
+        json.append("{");
+        json.append("\"timestamp\":");
+        json.append(std::to_string(getTimeStamp()));
+        json.append("\"name\":");
+        json.append("\"set_node_address\", ");
+        json.append(", ");
+        json.append("}");
+        return(json);
+    };
+
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {
         if (m_response.size() >= (COMMANDS::SET_NODE_ADDRESS::RESPONSE_LENGTH + 4)) {

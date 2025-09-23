@@ -22,6 +22,29 @@ public:
         out << " bytesSent=" << static_cast<int>(response.getBytessent());
     }
 
+
+    std::string getCommandName() { return "get_statistics";}
+
+    std::string getJson() {
+        std::string json;
+        json.append("{");
+        json.append("\"timestamp\":");
+        json.append(std::to_string(getTimeStamp()));
+        json.append("\"name\":");
+        json.append("\"get_statistics\", ");
+        json.append(", ");
+        json.append("\"commandsParsed\":");
+        json.append(std::to_string(responseStruct().getCommandsparsed()));
+        json.append(", ");
+        json.append("\"bytesReceived\":");
+        json.append(std::to_string(responseStruct().getBytesreceived()));
+        json.append(", ");
+        json.append("\"bytesSent\":");
+        json.append(std::to_string(responseStruct().getBytessent()));
+        json.append("}");
+        return(json);
+    };
+
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {
         if (m_response.size() >= (COMMANDS::GET_STATISTICS::RESPONSE_LENGTH + 4)) {

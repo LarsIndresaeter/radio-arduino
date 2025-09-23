@@ -206,8 +206,82 @@ def generateCommandFile(commandName,
                     outfile.write("        }\n")
                     outfile.write("        out << \"]\";\n")
                     outfile.write("        out << std::dec;\n")
-
         outfile.write("    }\n")
+        outfile.write("\n")
+
+        # seher
+        # getters for arrays
+        for item in responsePayloadByteNames:
+            arraySize = arraySizeFromVariableName(item)
+            if(arraySize > 4):
+                if(arrayBasenameFromVariableName(item).lower().find("string") > 0):
+                    outfile.write("    std::string get" + arrayBasenameFromVariableName(item).capitalize() + "() {\n")
+                    outfile.write("        std::string retval;\n")
+                    outfile.write("        COMMANDS::" + arrayBasenameFromVariableName(commandName).upper() + "::response_t response = responseStruct();\n")
+                    outfile.write("\n")
+                    outfile.write("        retval.append(\"\\\"\");\n")
+                    outfile.write("        for (uint8_t i = 0; i < " + str(arraySizeFromVariableName(item)) + "; i++) {\n")
+                    outfile.write("            if(response." + arrayBasenameFromVariableName(item) + "[i])\n")
+                    outfile.write("            {\n")
+                    outfile.write("                retval.push_back(static_cast<char>(response." + arrayBasenameFromVariableName(item) + "[i]));\n")
+                    outfile.write("            }\n")
+                    outfile.write("        }\n")
+                    outfile.write("        retval.append(\"\\\"\");\n")
+                    outfile.write("\n")
+                    outfile.write("        return(retval);\n")
+                    outfile.write("    }\n")
+                else:
+                    outfile.write("    std::string get" + arrayBasenameFromVariableName(item).capitalize() + "() {\n")
+                    outfile.write("        std::string retval;\n")
+                    outfile.write("        COMMANDS::" + arrayBasenameFromVariableName(commandName).upper() + "::response_t response = responseStruct();\n")
+                    outfile.write("\n")
+                    outfile.write("        retval.append(\"[\");\n")
+                    outfile.write("        for (uint8_t i = 0; i < 32; i++) {\n")
+                    outfile.write("            retval.append(\" \\\"\");\n")
+                    outfile.write("            retval.append(std::to_string(static_cast<int>(response." + arrayBasenameFromVariableName(item) + "[i])));\n")
+                    outfile.write("            if(i < (32 - 1)) {\n")
+                    outfile.write("                retval.append(\"\\\",\");\n")
+                    outfile.write("            }\n")
+                    outfile.write("            else {\n")
+                    outfile.write("                retval.append(\"\\\"\");\n")
+                    outfile.write("            }\n")
+                    outfile.write("        }\n")
+                    outfile.write("        retval.append(\" ]\");\n")
+                    outfile.write("\n")
+                    outfile.write("        return(retval);\n")
+                    outfile.write("    }\n")
+
+        outfile.write("\n")
+
+        outfile.write("    std::string getCommandName() { return \"" + commandName + "\";}\n");
+        outfile.write("\n")
+        outfile.write("    std::string getJson() {\n");
+        outfile.write("        std::string json;\n");
+        outfile.write("        json.append(\"{\");\n");
+        outfile.write("        json.append(\"\\\"timestamp\\\":\");\n")
+        outfile.write("        json.append(std::to_string(getTimeStamp()));\n")
+        outfile.write("        json.append(\"\\\"name\\\":\");\n")
+        outfile.write("        json.append(\"\\\"" + commandName + "\\\", \");\n")
+        outfile.write("        json.append(\", \");\n")
+
+        index = 0
+        for item in responsePayloadByteNames:
+            index = index + 1
+            arraySize = arraySizeFromVariableName(item)
+            if(arraySize <= 4):
+                outfile.write("        json.append(\"\\\"" + arrayBasenameFromVariableName(item) + "\\\":\");\n");
+                outfile.write("        json.append(std::to_string(responseStruct().get" + arrayBasenameFromVariableName(item).capitalize() + "()));\n");
+            else:
+                outfile.write("        json.append(\"\\\"" + arrayBasenameFromVariableName(item) + "\\\": \");\n");
+                outfile.write("        json.append(get" + arrayBasenameFromVariableName(item).capitalize() + "());\n");
+                outfile.write("        json.append(\"\");\n")
+
+            if index < len(responsePayloadByteNames):
+                outfile.write("        json.append(\", \");\n");
+
+        outfile.write("        json.append(\"}\");\n");
+        outfile.write("        return(json);\n");
+        outfile.write("    };\n");
         outfile.write("\n")
         outfile.write("    void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override\n")
         outfile.write("    {\n")

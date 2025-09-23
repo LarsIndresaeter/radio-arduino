@@ -35,6 +35,21 @@ public:
         out << "I2C_WRITE              : ";
     }
 
+
+    std::string getCommandName() { return "i2c_write";}
+
+    std::string getJson() {
+        std::string json;
+        json.append("{");
+        json.append("\"timestamp\":");
+        json.append(std::to_string(getTimeStamp()));
+        json.append("\"name\":");
+        json.append("\"i2c_write\", ");
+        json.append(", ");
+        json.append("}");
+        return(json);
+    };
+
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {
         if (m_response.size() >= (COMMANDS::I2C_WRITE::RESPONSE_LENGTH + 4)) {

@@ -20,6 +20,23 @@ public:
         out << " temperature=" << static_cast<int>(response.getTemperature());
     }
 
+
+    std::string getCommandName() { return "ds18b20";}
+
+    std::string getJson() {
+        std::string json;
+        json.append("{");
+        json.append("\"timestamp\":");
+        json.append(std::to_string(getTimeStamp()));
+        json.append("\"name\":");
+        json.append("\"ds18b20\", ");
+        json.append(", ");
+        json.append("\"temperature\":");
+        json.append(std::to_string(responseStruct().getTemperature()));
+        json.append("}");
+        return(json);
+    };
+
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {
         if (m_response.size() >= (COMMANDS::DS18B20::RESPONSE_LENGTH + 4)) {

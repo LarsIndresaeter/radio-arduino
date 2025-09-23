@@ -20,6 +20,23 @@ public:
         out << " vcc=" << static_cast<int>(response.getVcc());
     }
 
+
+    std::string getCommandName() { return "vcc";}
+
+    std::string getJson() {
+        std::string json;
+        json.append("{");
+        json.append("\"timestamp\":");
+        json.append(std::to_string(getTimeStamp()));
+        json.append("\"name\":");
+        json.append("\"vcc\", ");
+        json.append(", ");
+        json.append("\"vcc\":");
+        json.append(std::to_string(responseStruct().getVcc()));
+        json.append("}");
+        return(json);
+    };
+
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {
         if (m_response.size() >= (COMMANDS::VCC::RESPONSE_LENGTH + 4)) {

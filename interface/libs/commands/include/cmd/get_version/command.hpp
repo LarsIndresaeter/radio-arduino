@@ -27,6 +27,39 @@ public:
         out << "\"";
     }
 
+    std::string getVersionstring() {
+        std::string retval;
+        COMMANDS::GET_VERSION::response_t response = responseStruct();
+
+        retval.append("\"");
+        for (uint8_t i = 0; i < 32; i++) {
+            if(response.versionString[i])
+            {
+                retval.push_back(static_cast<char>(response.versionString[i]));
+            }
+        }
+        retval.append("\"");
+
+        return(retval);
+    }
+
+    std::string getCommandName() { return "get_version";}
+
+    std::string getJson() {
+        std::string json;
+        json.append("{");
+        json.append("\"timestamp\":");
+        json.append(std::to_string(getTimeStamp()));
+        json.append("\"name\":");
+        json.append("\"get_version\", ");
+        json.append(", ");
+        json.append("\"versionString\": ");
+        json.append(getVersionstring());
+        json.append("");
+        json.append("}");
+        return(json);
+    };
+
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
     {
         if (m_response.size() >= (COMMANDS::GET_VERSION::RESPONSE_LENGTH + 4)) {
