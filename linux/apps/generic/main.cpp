@@ -131,6 +131,7 @@ void print_usage()
     std::cout << "       -g : dump eeprom from mega328p" << std::endl;
     std::cout << "       -Z : set device name" << std::endl;
     std::cout << "       -z : get device name" << std::endl;
+    std::cout << "       -b : test json formatter" << std::endl;
     std::cout << "       -a : get device version" << std::endl;
     std::cout << "       -x : get statistics" << std::endl;
     std::cout << "       -W : WS2812B <string>" << std::endl;
@@ -261,7 +262,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     uint8_t i2cDeviceAddress = 0b10100000;
 
     while ((option
-            = getopt(argc, argv, "P:DBSHEACs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:L:FJU:jpax"))
+            = getopt(argc, argv, "P:DBSHEACs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:L:FJU:jpaxb"))
            != -1) {
         switch (option) {
         case 'd':
@@ -547,6 +548,16 @@ void parseOpt(int argc, char* argv[], monitor& mon)
         } break;
         case 'z':
             std::cout << mon.get<>(UartCommandGetDeviceName()) << std::endl;
+            std::cout << mon.get<>(UartCommandGpio()).getJson() << std::endl;
+            std::cout << mon.get<>(UartCommandDebug()).getJson() << std::endl;
+            std::cout << mon.get<>(UartCommandGetVersion()).getJson() << std::endl;
+            break;
+         case 'b':
+            std::cout << mon.get<>(UartCommandGpio()).getJson() << std::endl;
+            std::cout << mon.get<>(UartCommandDebug()).getJson() << std::endl;
+            std::cout << mon.get<>(UartCommandGetVersion()).getJson() << std::endl;
+            std::cout << mon.get<>(UartCommandVcc()).getJson() << std::endl;
+            std::cout << mon.get<>(UartCommandGetStatistics()).getJson() << std::endl;
             break;
         case 'a':
             std::cout << mon.get<>(UartCommandGetVersion()) << std::endl;
