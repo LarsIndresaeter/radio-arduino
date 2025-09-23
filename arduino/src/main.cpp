@@ -42,9 +42,13 @@ bool rx_mode_gateway = false;
 bool rx_mode_gateway = true;
 #endif
 
-uint16_t bytesReceived = 0;
-uint16_t bytesSent = 0;
 uint16_t commandsParsed = 0;
+
+extern uint16_t uart_tx;
+extern uint16_t uart_rx;
+
+extern uint16_t rf_tx;
+extern uint16_t rf_rx;
 
 uint16_t cnt_pos = 0;
 uint16_t cnt_neg = 0;
@@ -167,7 +171,6 @@ void sendMessage(Protocol protocol, ComBusInterface* comBus, uint8_t* payload)
             &packet[0],
             PROTOCOL::HEADER::LENGTH + PROTOCOL::CHECKSUM::LENGTH + length
                 + PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD);
-        bytesReceived += PROTOCOL::HEADER::LENGTH + PROTOCOL::CHECKSUM::LENGTH + length + PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD;
 #endif
     }
     else if (
@@ -184,12 +187,10 @@ void sendMessage(Protocol protocol, ComBusInterface* comBus, uint8_t* payload)
         NRF24L01_tx(
             &packet[0],
             PROTOCOL::HEADER::LENGTH + PROTOCOL::CHECKSUM::LENGTH + length);
-        bytesSent += PROTOCOL::HEADER::LENGTH + PROTOCOL::CHECKSUM::LENGTH + length;
 #else
         comBus->writeBuffer(
             &packet[0],
             PROTOCOL::HEADER::LENGTH + PROTOCOL::CHECKSUM::LENGTH + length);
-        bytesSent += PROTOCOL::HEADER::LENGTH + PROTOCOL::CHECKSUM::LENGTH + length;
 #endif
     }
 }
@@ -694,13 +695,14 @@ void commandGetStatistics(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::GET_STATISTICS::command_t command(commandPayload);
     COMMANDS::GET_STATISTICS::response_t response;
 
-    response.setBytesreceived(bytesReceived);
-    response.setBytessent(bytesSent);
+    response.setUart_rx(uart_rx);
+    response.setUart_tx(uart_tx);
+    response.setRf_rx(rf_rx);
+    response.setRf_tx(rf_tx);
     response.setCommandsparsed(commandsParsed);
 
     response.serialize(responsePayload);
 }
-
 
 void commandI2cRead(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -805,7 +807,6 @@ void commandRadioUart(
         while (true) {
             while (comBus->has_data()) {
                 c = comBus->getChar();
-                bytesReceived++;
                 package[len++] = c;
 
                 if (c == ' ' || len >= 32) {
@@ -822,7 +823,6 @@ void commandRadioUart(
         while (true) {
             if (uartRadio.has_data()) {
                 comBus->putChar(uartRadio.getChar());
-                bytesReceived++;
             }
         }
     }
@@ -867,7 +867,7 @@ void commandNrf24l01Write(uint8_t* commandPayload, uint8_t* responsePayload)
     response.setLength(NRF24L01_rx(&response.data[0]));
 
     if (rx_mode_gateway) {
-        uint8_t status = NRF24L01_read_register(NRF24L01_REGISTER_STATUS);
+        NRF24L01_read_register(NRF24L01_REGISTER_STATUS);
     }
 
     response.serialize(responsePayload);
@@ -1248,7 +1248,6 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
         cnt++;
         if (comBus->has_data()) {
             c = comBus->getChar();
-            bytesReceived++;
 
             protocolVersionLastReceivedMessage
                 = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
@@ -1313,7 +1312,6 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
             RadioUart uartRadio;
             if (uartRadio.has_data()) {
                 comBus->putChar(uartRadio.getChar());
-                bytesReceived++;
             }
 
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE

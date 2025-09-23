@@ -13,6 +13,9 @@
 #define UBRR0_57600 16
 #define UBRR0_9600 103
 
+uint16_t uart_tx = 0;
+uint16_t uart_rx = 0;
+
 namespace UART {
 constexpr uint8_t RINGBUFFER_SIZE = 64;
 uint8_t ringbuffer[UART::RINGBUFFER_SIZE] = { 0 };
@@ -66,12 +69,13 @@ void Uart::init()
     sei();
 }
 
-ISR(USART_RX_vect) { UART::rb_put(UDR0); }
+ISR(USART_RX_vect) { UART::rb_put(UDR0); uart_rx++;}
 
 void Uart::putChar(char c)
 {
     loop_until_bit_is_set(UCSR0A, UDRE0);
     UDR0 = c;
+    uart_tx++;
 }
 
 void Uart::writeBuffer(uint8_t* msg, uint16_t length)

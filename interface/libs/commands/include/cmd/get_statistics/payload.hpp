@@ -8,7 +8,7 @@ namespace COMMANDS {
 
 namespace GET_STATISTICS {
     constexpr uint8_t COMMAND_LENGTH = 0;
-    constexpr uint8_t RESPONSE_LENGTH = 6;
+    constexpr uint8_t RESPONSE_LENGTH = 10;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
     static_assert(RESPONSE_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "RESPONSE_LENGTH larger than max payload");
@@ -45,10 +45,16 @@ namespace GET_STATISTICS {
                 commandsParsed[i] = res[2 + i];
             }
             for (uint8_t i = 0; i < 2; i++) {
-                bytesReceived[i] = res[4 + i];
+                uart_rx[i] = res[4 + i];
             }
             for (uint8_t i = 0; i < 2; i++) {
-                bytesSent[i] = res[6 + i];
+                uart_tx[i] = res[6 + i];
+            }
+            for (uint8_t i = 0; i < 2; i++) {
+                rf_rx[i] = res[8 + i];
+            }
+            for (uint8_t i = 0; i < 2; i++) {
+                rf_tx[i] = res[10 + i];
             }
         }
 
@@ -60,10 +66,16 @@ namespace GET_STATISTICS {
                 response[2 + i] = commandsParsed[i];
             }
             for (uint8_t i = 0; i < 2; i++) {
-                response[4 + i] = bytesReceived[i];
+                response[4 + i] = uart_rx[i];
             }
             for (uint8_t i = 0; i < 2; i++) {
-                response[6 + i] = bytesSent[i];
+                response[6 + i] = uart_tx[i];
+            }
+            for (uint8_t i = 0; i < 2; i++) {
+                response[8 + i] = rf_rx[i];
+            }
+            for (uint8_t i = 0; i < 2; i++) {
+                response[10 + i] = rf_tx[i];
             }
         }
 
@@ -78,33 +90,57 @@ namespace GET_STATISTICS {
             commandsParsed[0] = (uint8_t)value;
         }
 
-        uint16_t getBytesreceived()
+        uint16_t getUart_rx()
         {
-            return (((uint16_t)bytesReceived[1]) << 8 | bytesReceived[0]);
+            return (((uint16_t)uart_rx[1]) << 8 | uart_rx[0]);
         }
 
-        void setBytesreceived(uint16_t value)
+        void setUart_rx(uint16_t value)
         {
-            bytesReceived[1] = (uint8_t)(value >> 8);
-            bytesReceived[0] = (uint8_t)value;
+            uart_rx[1] = (uint8_t)(value >> 8);
+            uart_rx[0] = (uint8_t)value;
         }
 
-        uint16_t getBytessent()
+        uint16_t getUart_tx()
         {
-            return (((uint16_t)bytesSent[1]) << 8 | bytesSent[0]);
+            return (((uint16_t)uart_tx[1]) << 8 | uart_tx[0]);
         }
 
-        void setBytessent(uint16_t value)
+        void setUart_tx(uint16_t value)
         {
-            bytesSent[1] = (uint8_t)(value >> 8);
-            bytesSent[0] = (uint8_t)value;
+            uart_tx[1] = (uint8_t)(value >> 8);
+            uart_tx[0] = (uint8_t)value;
+        }
+
+        uint16_t getRf_rx()
+        {
+            return (((uint16_t)rf_rx[1]) << 8 | rf_rx[0]);
+        }
+
+        void setRf_rx(uint16_t value)
+        {
+            rf_rx[1] = (uint8_t)(value >> 8);
+            rf_rx[0] = (uint8_t)value;
+        }
+
+        uint16_t getRf_tx()
+        {
+            return (((uint16_t)rf_tx[1]) << 8 | rf_tx[0]);
+        }
+
+        void setRf_tx(uint16_t value)
+        {
+            rf_tx[1] = (uint8_t)(value >> 8);
+            rf_tx[0] = (uint8_t)value;
         }
 
         uint8_t OI;
         uint8_t OL;
         uint8_t commandsParsed[2];
-        uint8_t bytesReceived[2];
-        uint8_t bytesSent[2];
+        uint8_t uart_rx[2];
+        uint8_t uart_tx[2];
+        uint8_t rf_rx[2];
+        uint8_t rf_tx[2];
 
     } response_t;
 }

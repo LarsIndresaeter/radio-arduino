@@ -556,6 +556,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             std::cout << mon.get<>(UartCommandGpio()).getJson() << std::endl;
             std::cout << mon.get<>(UartCommandDebug()).getJson() << std::endl;
             std::cout << mon.get<>(UartCommandGetVersion()).getJson() << std::endl;
+            std::cout << mon.get<>(UartCommandGetDeviceName()).getJson() << std::endl;
             std::cout << mon.get<>(UartCommandVcc()).getJson() << std::endl;
             std::cout << mon.get<>(UartCommandGetStatistics()).getJson() << std::endl;
             break;

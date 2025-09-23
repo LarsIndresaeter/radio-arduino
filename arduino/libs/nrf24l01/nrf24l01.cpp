@@ -2,6 +2,9 @@
 #include <spi.hpp>
 #include <util/delay.h>
 
+uint16_t rf_tx = 0;
+uint16_t rf_rx = 0;
+
 // do not expose these functions
 void NRF24L01_wait_for_tx_complete();
 
@@ -159,11 +162,15 @@ uint8_t NRF24L01_read_rx_payload(uint8_t* arr)
         SPI_ChipSelectHigh();
     }
 
+    rf_rx += length;
+
     return length;
 }
 
 void NRF24L01_write_tx_payload(uint8_t* arr, uint8_t length)
 {
+    rf_tx += length;
+
     if (length > NRF24L01_PACKET_SIZE) {
         length = NRF24L01_PACKET_SIZE;
     }
@@ -198,6 +205,8 @@ void NRF24L01_write_ack_payload(uint8_t* arr, uint8_t length)
 
 void NRF24L01_tx(uint8_t* tx_buffer, uint8_t length)
 {
+    rf_tx += length;
+
     NRF24L01_write_register(
         NRF24L01_REGISTER_STATUS, 0x70); // clear RX_DR, TX_DS and MAX_TR
 

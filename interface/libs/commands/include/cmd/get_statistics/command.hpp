@@ -18,8 +18,10 @@ public:
     {
         out << "GET_STATISTICS         : ";
         out << " commandsParsed=" << static_cast<int>(response.getCommandsparsed());
-        out << " bytesReceived=" << static_cast<int>(response.getBytesreceived());
-        out << " bytesSent=" << static_cast<int>(response.getBytessent());
+        out << " uart_rx=" << static_cast<int>(response.getUart_rx());
+        out << " uart_tx=" << static_cast<int>(response.getUart_tx());
+        out << " rf_rx=" << static_cast<int>(response.getRf_rx());
+        out << " rf_tx=" << static_cast<int>(response.getRf_tx());
     }
 
 
@@ -36,11 +38,17 @@ public:
         json.append("\"commandsParsed\":");
         json.append(std::to_string(responseStruct().getCommandsparsed()));
         json.append(", ");
-        json.append("\"bytesReceived\":");
-        json.append(std::to_string(responseStruct().getBytesreceived()));
+        json.append("\"uart_rx\":");
+        json.append(std::to_string(responseStruct().getUart_rx()));
         json.append(", ");
-        json.append("\"bytesSent\":");
-        json.append(std::to_string(responseStruct().getBytessent()));
+        json.append("\"uart_tx\":");
+        json.append(std::to_string(responseStruct().getUart_tx()));
+        json.append(", ");
+        json.append("\"rf_rx\":");
+        json.append(std::to_string(responseStruct().getRf_rx()));
+        json.append(", ");
+        json.append("\"rf_tx\":");
+        json.append(std::to_string(responseStruct().getRf_tx()));
         json.append("}");
         return(json);
     };
