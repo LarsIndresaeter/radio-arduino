@@ -93,6 +93,20 @@ public:
 
     friend std::ostream& operator<<(std::ostream& out, UartCommandBase const& u)
     {
+        uint8_t c;
+        if (u.m_replyStatus == ReplyStatus::Timeout) {
+            out << "timeout  : ";
+        }
+        else if (u.m_replyStatus == ReplyStatus::Error) {
+            out << "error    : ";
+        }
+        else if (u.m_replyStatus == ReplyStatus::Pending) {
+            out << "pending  : ";
+        }
+        else if (u.m_replyStatus == ReplyStatus::Complete) {
+            out << "complete : ";
+        }
+ 
         if (u.m_replyStatus == ReplyStatus::Complete) {
             u.print(out, u.m_responsePayload);
         }
@@ -103,28 +117,7 @@ public:
 protected:
     virtual void print(std::ostream& out) const
     {
-        uint8_t c;
-        if (m_replyStatus == ReplyStatus::Timeout) {
-            out << "timeout : ";
-        }
-        else if (m_replyStatus == ReplyStatus::Error) {
-            out << "error   : ";
-        }
-        else if (m_replyStatus == ReplyStatus::Pending) {
-            out << "pending : ";
-        }
-        else if (m_replyStatus == ReplyStatus::Complete) {
-            if (m_response.size() > PROTOCOL::PAYLOAD::PAYLOAD_OFFSET) {
-                for (uint i = PROTOCOL::PAYLOAD::PAYLOAD_OFFSET;
-                     i < m_response.size() - PROTOCOL::PAYLOAD::PAYLOAD_OFFSET;
-                     i++) {
-                    c = m_response.at(i);
-                    out << std::setfill('0') << std::setw(2) << std::uppercase
-                        << std::hex << static_cast<int>(c) << " ";
-                }
-            }
-        }
-    }
+   }
 
     virtual void print(std::ostream& out, std::vector<uint8_t> responsePayload) const
     {
