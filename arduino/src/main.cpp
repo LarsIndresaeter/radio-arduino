@@ -170,14 +170,14 @@ void commandSleep(uint8_t* commandPayload, uint8_t* responsePayload)
 
 void commandPwm(uint8_t* commandPayload, uint8_t* responsePayload)
 {
-    Pwm pwm;
     COMMANDS::PWM::command_t command(commandPayload);
     COMMANDS::PWM::response_t response;
 
-    response.port = command.port;
-    response.pin = command.pin;
-    response.value = command.value;
+    response.setPort(command.getPort());
+    response.setPin(command.getPin());
+    response.setValue(command.getValue());
 
+    Pwm pwm;
     pwm.write(command.port, command.pin, command.value);
 
     response.serialize(responsePayload);
@@ -185,13 +185,13 @@ void commandPwm(uint8_t* commandPayload, uint8_t* responsePayload)
 
 void commandGpio(uint8_t* commandPayload, uint8_t* responsePayload)
 {
-    Gpio gpio;
     COMMANDS::GPIO::command_t command(commandPayload);
     COMMANDS::GPIO::response_t response;
 
-    response.portB = gpio.readPortB();
-    response.portC = gpio.readPortC();
-    response.portD = gpio.readPortD();
+    Gpio gpio;
+    response.setPortb(gpio.readPortB());
+    response.setPortc(gpio.readPortC());
+    response.setPortd(gpio.readPortD());
 
     response.serialize(responsePayload);
 }
@@ -208,10 +208,6 @@ void commandSsd1306(uint8_t* commandPayload, uint8_t* responsePayload)
     }
 
     fb.show();
-
-    // Invert uses direct hardware commands
-    // So no need to send the framebuffer again
-    // => no need to fb.show();
     fb.invert(0);
 
     response.serialize(responsePayload);
@@ -451,8 +447,6 @@ void commandGetVersion(uint8_t* commandPayload, uint8_t* responsePayload)
     for (uint8_t i = 0; i < sizeof(response.versionString) && ARDUINO_VERSION[i] != 0; i++) {
         response.versionString[i] = ARDUINO_VERSION[i];
     }
-
-    response.serialize(responsePayload);
 }
 
 void commandGetStatistics(uint8_t* commandPayload, uint8_t* responsePayload)
