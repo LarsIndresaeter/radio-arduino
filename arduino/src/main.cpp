@@ -21,6 +21,7 @@
 #include <sha1.hpp>
 #include <spi.hpp>
 #include <parser.hpp>
+#include <sleep.hpp>
 
 #include <Framebuffer.hpp>
 #include <avr/sleep.h>
