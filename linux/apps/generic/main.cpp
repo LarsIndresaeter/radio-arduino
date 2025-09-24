@@ -548,9 +548,6 @@ void parseOpt(int argc, char* argv[], monitor& mon)
         } break;
         case 'z':
             std::cout << mon.get<>(UartCommandGetDeviceName()) << std::endl;
-            std::cout << mon.get<>(UartCommandGpio()).getJson() << std::endl;
-            std::cout << mon.get<>(UartCommandDebug()).getJson() << std::endl;
-            std::cout << mon.get<>(UartCommandGetVersion()).getJson() << std::endl;
             break;
          case 'b':
             std::cout << mon.get<>(UartCommandGpio()).getJson() << std::endl;
