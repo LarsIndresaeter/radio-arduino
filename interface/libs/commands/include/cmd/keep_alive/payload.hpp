@@ -32,9 +32,9 @@ namespace KEEP_ALIVE {
             return (time);
         }
 
-        void setTime(uint8_t value)
+        void setTime(uint8_t val)
         {
-            time = value;
+            time = val;
         }
 
         uint8_t OI;

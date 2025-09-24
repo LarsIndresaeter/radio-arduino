@@ -32,9 +32,9 @@ namespace SET_NODE_ADDRESS {
             return (nodeAddress);
         }
 
-        void setNodeaddress(uint8_t value)
+        void setNodeaddress(uint8_t val)
         {
-            nodeAddress = value;
+            nodeAddress = val;
         }
 
         uint8_t OI;

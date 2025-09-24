@@ -66,10 +66,10 @@ namespace INA219 {
             return (((uint16_t)current[1]) << 8 | current[0]);
         }
 
-        void setCurrent(uint16_t value)
+        void setCurrent(uint16_t val)
         {
-            current[1] = (uint8_t)(value >> 8);
-            current[0] = (uint8_t)value;
+            current[1] = (uint8_t)(val >> 8);
+            current[0] = (uint8_t)val;
         }
 
         uint16_t getVoltage()
@@ -77,10 +77,10 @@ namespace INA219 {
             return (((uint16_t)voltage[1]) << 8 | voltage[0]);
         }
 
-        void setVoltage(uint16_t value)
+        void setVoltage(uint16_t val)
         {
-            voltage[1] = (uint8_t)(value >> 8);
-            voltage[0] = (uint8_t)value;
+            voltage[1] = (uint8_t)(val >> 8);
+            voltage[0] = (uint8_t)val;
         }
 
         uint8_t OI;

@@ -32,9 +32,9 @@ namespace WAKEUP {
             return (checkAttentionFlag);
         }
 
-        void setCheckattentionflag(uint8_t value)
+        void setCheckattentionflag(uint8_t val)
         {
-            checkAttentionFlag = value;
+            checkAttentionFlag = val;
         }
 
         uint8_t OI;
@@ -68,9 +68,9 @@ namespace WAKEUP {
             return (attention);
         }
 
-        void setAttention(uint8_t value)
+        void setAttention(uint8_t val)
         {
-            attention = value;
+            attention = val;
         }
 
         uint8_t OI;

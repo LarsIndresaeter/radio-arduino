@@ -84,10 +84,10 @@ namespace GET_STATISTICS {
             return (((uint16_t)commandsParsed[1]) << 8 | commandsParsed[0]);
         }
 
-        void setCommandsparsed(uint16_t value)
+        void setCommandsparsed(uint16_t val)
         {
-            commandsParsed[1] = (uint8_t)(value >> 8);
-            commandsParsed[0] = (uint8_t)value;
+            commandsParsed[1] = (uint8_t)(val >> 8);
+            commandsParsed[0] = (uint8_t)val;
         }
 
         uint16_t getUart_rx()
@@ -95,10 +95,10 @@ namespace GET_STATISTICS {
             return (((uint16_t)uart_rx[1]) << 8 | uart_rx[0]);
         }
 
-        void setUart_rx(uint16_t value)
+        void setUart_rx(uint16_t val)
         {
-            uart_rx[1] = (uint8_t)(value >> 8);
-            uart_rx[0] = (uint8_t)value;
+            uart_rx[1] = (uint8_t)(val >> 8);
+            uart_rx[0] = (uint8_t)val;
         }
 
         uint16_t getUart_tx()
@@ -106,10 +106,10 @@ namespace GET_STATISTICS {
             return (((uint16_t)uart_tx[1]) << 8 | uart_tx[0]);
         }
 
-        void setUart_tx(uint16_t value)
+        void setUart_tx(uint16_t val)
         {
-            uart_tx[1] = (uint8_t)(value >> 8);
-            uart_tx[0] = (uint8_t)value;
+            uart_tx[1] = (uint8_t)(val >> 8);
+            uart_tx[0] = (uint8_t)val;
         }
 
         uint16_t getRf_rx()
@@ -117,10 +117,10 @@ namespace GET_STATISTICS {
             return (((uint16_t)rf_rx[1]) << 8 | rf_rx[0]);
         }
 
-        void setRf_rx(uint16_t value)
+        void setRf_rx(uint16_t val)
         {
-            rf_rx[1] = (uint8_t)(value >> 8);
-            rf_rx[0] = (uint8_t)value;
+            rf_rx[1] = (uint8_t)(val >> 8);
+            rf_rx[0] = (uint8_t)val;
         }
 
         uint16_t getRf_tx()
@@ -128,10 +128,10 @@ namespace GET_STATISTICS {
             return (((uint16_t)rf_tx[1]) << 8 | rf_tx[0]);
         }
 
-        void setRf_tx(uint16_t value)
+        void setRf_tx(uint16_t val)
         {
-            rf_tx[1] = (uint8_t)(value >> 8);
-            rf_tx[0] = (uint8_t)value;
+            rf_tx[1] = (uint8_t)(val >> 8);
+            rf_tx[0] = (uint8_t)val;
         }
 
         uint8_t OI;

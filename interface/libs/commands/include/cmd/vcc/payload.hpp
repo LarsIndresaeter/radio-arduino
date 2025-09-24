@@ -60,10 +60,10 @@ namespace VCC {
             return (((uint16_t)vcc[1]) << 8 | vcc[0]);
         }
 
-        void setVcc(uint16_t value)
+        void setVcc(uint16_t val)
         {
-            vcc[1] = (uint8_t)(value >> 8);
-            vcc[0] = (uint8_t)value;
+            vcc[1] = (uint8_t)(val >> 8);
+            vcc[0] = (uint8_t)val;
         }
 
         uint8_t OI;

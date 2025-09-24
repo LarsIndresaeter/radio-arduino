@@ -35,9 +35,9 @@ namespace AES {
             return (type);
         }
 
-        void setType(uint8_t value)
+        void setType(uint8_t val)
         {
-            type = value;
+            type = val;
         }
 
         uint8_t OI;
@@ -78,9 +78,9 @@ namespace AES {
             return (type);
         }
 
-        void setType(uint8_t value)
+        void setType(uint8_t val)
         {
-            type = value;
+            type = val;
         }
 
         uint8_t OI;

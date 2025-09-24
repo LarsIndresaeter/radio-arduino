@@ -4,6 +4,27 @@
 
 namespace AtmelAdc {
 
+uint16_t readVcc1()
+{
+    uint8_t oldADMUX = ADMUX;
+
+    // V_ref=AVCC with external capacitor at AREF pin
+    // Input Channel Selections = 1.1V (VBG)
+    ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
+
+    ADCSRA = _BV(ADEN) | _BV(ADSC) | _BV(ADPS2) | _BV(ADPS1)
+        | _BV(ADPS0); //  enable ADC, start conversion, clk/128
+
+    while (((ADCSRA & (1 << ADSC)) != 0))
+        ; // Wait for it to complete
+
+    ADMUX = oldADMUX;
+
+    uint32_t vcc = (1100 * 1023L) / ADC;
+
+    return vcc;
+}
+
 uint8_t temperature(void)
 {
     // https://microchipdeveloper.com/8avr:avradc

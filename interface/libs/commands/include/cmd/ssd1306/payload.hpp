@@ -35,9 +35,9 @@ namespace SSD1306 {
             return (line);
         }
 
-        void setLine(uint8_t value)
+        void setLine(uint8_t val)
         {
-            line = value;
+            line = val;
         }
 
         uint8_t OI;

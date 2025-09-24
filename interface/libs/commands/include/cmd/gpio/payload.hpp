@@ -60,9 +60,9 @@ namespace GPIO {
             return (portB);
         }
 
-        void setPortb(uint8_t value)
+        void setPortb(uint8_t val)
         {
-            portB = value;
+            portB = val;
         }
 
         uint8_t getPortc()
@@ -70,9 +70,9 @@ namespace GPIO {
             return (portC);
         }
 
-        void setPortc(uint8_t value)
+        void setPortc(uint8_t val)
         {
-            portC = value;
+            portC = val;
         }
 
         uint8_t getPortd()
@@ -80,9 +80,9 @@ namespace GPIO {
             return (portD);
         }
 
-        void setPortd(uint8_t value)
+        void setPortd(uint8_t val)
         {
-            portD = value;
+            portD = val;
         }
 
         uint8_t OI;

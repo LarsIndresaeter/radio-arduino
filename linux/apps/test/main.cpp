@@ -76,6 +76,7 @@ void print_usage()
     std::cout << "       -h : print this text" << std::endl;
     std::cout << "       -i : I2C write command" << std::endl;
     std::cout << "       -o : I2C device offset" << std::endl;
+    std::cout << "       -b : test json formatter" << std::endl;
 }
 
 void compareResult(uint8_t expected, uint8_t actual)
@@ -96,7 +97,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     uint8_t i2cDeviceAddress = 0b10100000;
 
     while ((option
-            = getopt(argc, argv, "ACEI:K:O:Sd:ghi:o:"))
+            = getopt(argc, argv, "ACEI:K:O:Sd:ghi:o:b"))
            != -1) {
         switch (option) {
         case 's':
@@ -187,6 +188,14 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             }
             std::cout << mon.get<>(UartCommandRadioUart(s.at(0))) << std::endl;
             }
+            break;
+         case 'b':
+            std::cout << mon.get<>(UartCommandGpio()).getJson() << std::endl;
+            std::cout << mon.get<>(UartCommandDebug()).getJson() << std::endl;
+            std::cout << mon.get<>(UartCommandGetVersion()).getJson() << std::endl;
+            std::cout << mon.get<>(UartCommandGetDeviceName()).getJson() << std::endl;
+            std::cout << mon.get<>(UartCommandVcc()).getJson() << std::endl;
+            std::cout << mon.get<>(UartCommandGetStatistics()).getJson() << std::endl;
             break;
         case 'K': {
             std::string s(optarg);

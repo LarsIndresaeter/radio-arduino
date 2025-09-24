@@ -36,9 +36,9 @@ namespace I2C_READ {
             return (device);
         }
 
-        void setDevice(uint8_t value)
+        void setDevice(uint8_t val)
         {
-            device = value;
+            device = val;
         }
 
         uint16_t getRegisteraddress()
@@ -46,10 +46,10 @@ namespace I2C_READ {
             return (((uint16_t)registerAddress[1]) << 8 | registerAddress[0]);
         }
 
-        void setRegisteraddress(uint16_t value)
+        void setRegisteraddress(uint16_t val)
         {
-            registerAddress[1] = (uint8_t)(value >> 8);
-            registerAddress[0] = (uint8_t)value;
+            registerAddress[1] = (uint8_t)(val >> 8);
+            registerAddress[0] = (uint8_t)val;
         }
 
         uint8_t getLength()
@@ -57,9 +57,9 @@ namespace I2C_READ {
             return (length);
         }
 
-        void setLength(uint8_t value)
+        void setLength(uint8_t val)
         {
-            length = value;
+            length = val;
         }
 
         uint8_t OI;
@@ -109,9 +109,9 @@ namespace I2C_READ {
             return (device);
         }
 
-        void setDevice(uint8_t value)
+        void setDevice(uint8_t val)
         {
-            device = value;
+            device = val;
         }
 
         uint16_t getRegisteraddress()
@@ -119,10 +119,10 @@ namespace I2C_READ {
             return (((uint16_t)registerAddress[1]) << 8 | registerAddress[0]);
         }
 
-        void setRegisteraddress(uint16_t value)
+        void setRegisteraddress(uint16_t val)
         {
-            registerAddress[1] = (uint8_t)(value >> 8);
-            registerAddress[0] = (uint8_t)value;
+            registerAddress[1] = (uint8_t)(val >> 8);
+            registerAddress[0] = (uint8_t)val;
         }
 
         uint8_t getLength()
@@ -130,9 +130,9 @@ namespace I2C_READ {
             return (length);
         }
 
-        void setLength(uint8_t value)
+        void setLength(uint8_t val)
         {
-            length = value;
+            length = val;
         }
 
         uint8_t OI;

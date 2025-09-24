@@ -60,10 +60,10 @@ namespace DS18B20 {
             return (((uint16_t)temperature[1]) << 8 | temperature[0]);
         }
 
-        void setTemperature(uint16_t value)
+        void setTemperature(uint16_t val)
         {
-            temperature[1] = (uint8_t)(value >> 8);
-            temperature[0] = (uint8_t)value;
+            temperature[1] = (uint8_t)(val >> 8);
+            temperature[0] = (uint8_t)val;
         }
 
         uint8_t OI;

@@ -60,10 +60,10 @@ namespace TIMER {
             return (((uint16_t)pulseWidth[1]) << 8 | pulseWidth[0]);
         }
 
-        void setPulsewidth(uint16_t value)
+        void setPulsewidth(uint16_t val)
         {
-            pulseWidth[1] = (uint8_t)(value >> 8);
-            pulseWidth[0] = (uint8_t)value;
+            pulseWidth[1] = (uint8_t)(val >> 8);
+            pulseWidth[0] = (uint8_t)val;
         }
 
         uint8_t OI;
