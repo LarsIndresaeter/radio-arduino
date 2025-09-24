@@ -89,7 +89,7 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
 
                     if (protocolVersionLastReceivedMessage
                             == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::
-                                                        RADIO_BINARY_AND_TEXT)
+                                    RADIO_BINARY_AND_TEXT)
                         && rx_mode_gateway) {
                         uint8_t data_size = 0;
                         protocol.createPacket(
@@ -153,7 +153,6 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
 #endif
 #endif
 
-            
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
             _delay_ms(1);
             idle_loop_cnt_ms++;
@@ -181,8 +180,7 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
                 }
             }
 
-            if(is_wakeup_ack == 0)
-            {
+            if (is_wakeup_ack == 0) {
                 comBus->writeBuffer(&ack_packet[0], response_length);
             }
 #endif

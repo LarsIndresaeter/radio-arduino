@@ -12,17 +12,17 @@
 #include <adc.hpp>
 #include <aes.hpp>
 #include <arduinoCryptoHandler.hpp>
+#include <cmd/payloads.hpp>
 #include <eeprom.hpp>
 #include <i2c.hpp>
+#include <ina219.hpp>
 #include <nrf24l01.hpp>
-#include <cmd/payloads.hpp>
+#include <parser.hpp>
 #include <pwm.hpp>
 #include <random.hpp>
 #include <sha1.hpp>
-#include <spi.hpp>
-#include <parser.hpp>
 #include <sleep.hpp>
-#include <ina219.hpp>
+#include <spi.hpp>
 
 #include <Framebuffer.hpp>
 #include <avr/sleep.h>
@@ -36,8 +36,8 @@
 Aes aes;
 
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    uint32_t keep_alive_interval_ms = 100; // time in idle loop before entering sleep
-    uint32_t idle_loop_cnt_ms = 0;
+uint32_t keep_alive_interval_ms = 100; // time in idle loop before entering sleep
+uint32_t idle_loop_cnt_ms = 0;
 #endif
 
 uint16_t cnt_pos = 0;
@@ -112,7 +112,7 @@ void commandHotp(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::HOTP::response_t response;
 
     static uint16_t cnt = 0;
-    uint8_t HOTP_message[20]={' ', ' ', 's', 'e', 'c', 'r', 'e', 't'};
+    uint8_t HOTP_message[20] = { ' ', ' ', 's', 'e', 'c', 'r', 'e', 't' };
 
     HOTP_message[0] = cnt >> 8;
     HOTP_message[1] = cnt++;
@@ -138,7 +138,7 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
         aes_key[i] = eeprom.read(offsetof(eeprom_data_t, EK_KEY) + i);
     }
 
-    uint8_t aes_iv[16] = {0};
+    uint8_t aes_iv[16] = { 0 };
 
     // copy data to response buffer
     for (uint8_t i = 0; i < sizeof(response.data); i++) {
@@ -247,7 +247,7 @@ void timerStart()
     pulse_width = 0;
 
     TCCR1B |= (1 << ICES1); // input capture set for rising edge
-    TCCR1B |= (1 << CS10);  // no prescaler
+    TCCR1B |= (1 << CS10); // no prescaler
     TIMSK1 |= (1 << ICIE1); // input capture interrupt enable
 }
 
@@ -282,13 +282,13 @@ void commandVcc(uint8_t* commandPayload, uint8_t* responsePayload)
     for (uint8_t i = 0; i < 32; i++) {
         AtmelAdc::readVcc1();
     }
-                      
+
     // average of measurements
     for (uint8_t i = 0; i < 32; i++) {
         vcc += AtmelAdc::readVcc1();
     }
     vcc = vcc >> 5;
-    
+
     response.setVcc(vcc);
 
     response.serialize(responsePayload);
@@ -364,8 +364,8 @@ void commandI2cWrite(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::I2C_WRITE::response_t response;
 
     I2C_Init();
-    I2C_Start(command.device);       // write address
-    I2C_Write(command.registerAddress[0]);  // first word address
+    I2C_Start(command.device); // write address
+    I2C_Write(command.registerAddress[0]); // first word address
     I2C_Write(command.registerAddress[1]); // second word address
     for (uint8_t i = 0;
          (i < command.length) && (i < sizeof(command.data));
@@ -473,7 +473,7 @@ void commandI2cRead(uint8_t* commandPayload, uint8_t* responsePayload)
     response.setLength(command.getLength());
 
     I2C_Init();
-    I2C_Start(command.device);                        // read address
+    I2C_Start(command.device); // read address
     I2C_Write(command.registerAddress[0]); // first word address
     I2C_Write(command.registerAddress[1]); // second word address
 
@@ -655,29 +655,24 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
 
     // only gateway should execute this command
 #ifndef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    uint8_t read_discover_package[32] = {0};
+    uint8_t read_discover_package[32] = { 0 };
 
-    for(uint16_t i = 0; i < 1000; i++)
-    {
+    for (uint16_t i = 0; i < 1000; i++) {
         uint8_t length = NRF24L01_read_rx_payload(&read_discover_package[0]);
 
-        if(length == 32)
-        {
+        if (length == 32) {
             response.attention = read_discover_package[31];
 
             if ((0 != command.checkAttentionFlag) && (0 == read_discover_package[31])) {
                 // received discover package but about wakeup since data available flag was not set
                 break;
             }
-            else
-            {
+            else {
                 NRF24L01_tx(&rf_link_wakeup_command[0], 32);
-                                                                    
-                for(uint8_t j=0; j<31; j++)
-                {
-                    if(read_discover_package[j] != rf_link_discover_package[j])
-                    {
-                        i=10000;
+
+                for (uint8_t j = 0; j < 31; j++) {
+                    if (read_discover_package[j] != rf_link_discover_package[j]) {
+                        i = 10000;
                         break;
                     }
                 }
@@ -699,36 +694,30 @@ ISR(PCINT1_vect)
     // PC2 = (SW)
     cli(); // disable interrupt
 
-    if((PINC & 0x03) != pinc_prev)
-    {
-        if(((PINC & 0x03) == 0x00) || ((PINC & 0x03) == 0x03))
-        {
+    if ((PINC & 0x03) != pinc_prev) {
+        if (((PINC & 0x03) == 0x00) || ((PINC & 0x03) == 0x03)) {
             cnt_pos++;
         }
-        else
-        {
+        else {
             cnt_neg++;
         }
     }
 
-    pinc_prev=PINC & 0x03;
+    pinc_prev = PINC & 0x03;
 
-    if(PINC & 0x04)
-    {
-        if(sw_pos==0)
-        {
+    if (PINC & 0x04) {
+        if (sw_pos == 0) {
             sw_cnt++;
         }
 
-        sw_pos=1;
+        sw_pos = 1;
     }
-    else{
-        if(sw_pos==1)
-        {
+    else {
+        if (sw_pos == 1) {
             sw_cnt++;
         }
 
-        sw_pos=0;
+        sw_pos = 0;
     }
 
     attention_flag = 1;
@@ -736,7 +725,7 @@ ISR(PCINT1_vect)
     sei();
 }
 
-bool quadratureEncoderIsInitialised=false;
+bool quadratureEncoderIsInitialised = false;
 void commandQuadratureEncoder(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::QUADRATURE_ENCODER::command_t command(commandPayload);
@@ -744,18 +733,17 @@ void commandQuadratureEncoder(uint8_t* commandPayload, uint8_t* responsePayload)
 
     attention_flag = 0;
 
-    if(!quadratureEncoderIsInitialised)
-    {
+    if (!quadratureEncoderIsInitialised) {
         quadratureEncoderIsInitialised = true;
 
-        DDRC &= ~(1<<PC0); // set PC0 input (CLK)
-        DDRC &= ~(1<<PC1); // set PC1 input (DT)
-        DDRC &= ~(1<<PC2); // set PC2 input (SW)
-        PCICR=0x02; // enable PCINT1
-        PCMSK1=0x05; // enable pin PCINT8 (PC0) and PCINT10 (PC2)
-                     // seher
+        DDRC &= ~(1 << PC0); // set PC0 input (CLK)
+        DDRC &= ~(1 << PC1); // set PC1 input (DT)
+        DDRC &= ~(1 << PC2); // set PC2 input (SW)
+        PCICR = 0x02; // enable PCINT1
+        PCMSK1 = 0x05; // enable pin PCINT8 (PC0) and PCINT10 (PC2)
+                       // seher
         PORTC |= 0x07; // enable pull-up resistor
-                       
+
         sei();
     }
 
@@ -925,9 +913,9 @@ int main()
 
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
     ArduinoCryptoHandler cryptoHandler(aes);
-    Protocol protocol((ComBusInterface*) &uart, &cryptoHandler);
+    Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
 
-    parseInput(protocol, (ComBusInterface*) &uart);
+    parseInput(protocol, (ComBusInterface*)&uart);
 
     return 0;
 }
