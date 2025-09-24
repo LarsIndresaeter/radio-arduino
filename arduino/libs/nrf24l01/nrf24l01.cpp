@@ -5,8 +5,37 @@
 uint16_t rf_tx = 0;
 uint16_t rf_rx = 0;
 
+uint8_t rx_tx_addr[5] = { 0xF0, 0xF0, 0xF0, 0xF0, node_address };
+uint8_t rf_channel = 121;
+
+uint8_t node_address = 0;
+
 // do not expose these functions
 void NRF24L01_wait_for_tx_complete();
+
+#ifdef USE_NRF24L01_INTTERRUPT
+ISR(PCINT0_vect)
+{
+    uint8_t rx_buf[NRF24L01_PACKET_SIZE] = { 0 };
+
+    NRF24L01_write_register(
+        NRF24L01_REGISTER_STATUS, 0x70); // clear RX_DR, TX_DS and MAX_TR
+
+    uint8_t status = NRF24L01_read_register(NRF24L01_REGISTER_STATUS);
+
+    if ((status & 0x0E) != 0x0E) { // rx_fifo not empty
+        uint8_t read_length
+            = NRF24L01_rx(&rx_buf[0]);
+
+        for (uint8_t i = 0; i < read_length; i++) {
+            NRF24L01::rb_put(rx_buf[i]);
+        }
+        NRF24L01_write_register(
+            NRF24L01_REGISTER_STATUS,
+            0x70); // clear RX_DR, TX_DS and MAX_TR
+    }
+}
+#endif
 
 void NRF24L01_write_register(uint8_t reg, uint8_t value)
 {
@@ -125,6 +154,11 @@ void NRF24L01_init(uint8_t* rx_addr, uint8_t* tx_addr, uint8_t ch, bool master)
         NRF24L01_REGISTER_TX_ADDR, &tx_addr[0], NRF24L01_ADDR_SIZE);
 
     NRF24L01_set_rx_as_master(master);
+
+#ifdef USE_NRF24L01_INTTERRUPT
+    PCICR |= _BV(PCIE0);
+    PCMSK0 |= _BV(PCINT0);
+#endif
 }
 
 uint8_t NRF24L01_read_rx_payload(uint8_t* arr)

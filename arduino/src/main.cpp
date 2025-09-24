@@ -22,6 +22,7 @@
 #include <spi.hpp>
 #include <parser.hpp>
 #include <sleep.hpp>
+#include <ina219.hpp>
 
 #include <Framebuffer.hpp>
 #include <avr/sleep.h>
@@ -33,105 +34,17 @@
 #include <ws2812b.hpp>
 
 Aes aes;
-extern Random random;
-extern uint8_t attention_flag;
-extern uint8_t protocolVersionLastReceivedMessage;
-
-extern bool rx_mode_gateway;
-extern uint8_t rf_link_wakeup_command[32];
-extern uint8_t rf_link_discover_package[32];
-
-uint16_t commandsParsed = 0;
-
-extern uint16_t uart_tx;
-extern uint16_t uart_rx;
-
-extern uint16_t rf_tx;
-extern uint16_t rf_rx;
-
-uint16_t cnt_pos = 0;
-uint16_t cnt_neg = 0;
-uint16_t sw_cnt = 0;
-uint8_t sw_pos = 0;
-
-extern uint8_t node_address;
-uint8_t rx_tx_addr[5] = { 0xF0, 0xF0, 0xF0, 0xF0, node_address };
-uint8_t rf_channel = 121;
 
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
     uint32_t keep_alive_interval_ms = 100; // time in idle loop before entering sleep
     uint32_t idle_loop_cnt_ms = 0;
 #endif
 
-#ifdef USE_NRF24L01_INTTERRUPT
-ISR(PCINT0_vect)
-{
-    uint8_t rx_buf[NRF24L01_PACKET_SIZE] = { 0 };
-
-    NRF24L01_write_register(
-        NRF24L01_REGISTER_STATUS, 0x70); // clear RX_DR, TX_DS and MAX_TR
-
-    uint8_t status = NRF24L01_read_register(NRF24L01_REGISTER_STATUS);
-
-    if ((status & 0x0E) != 0x0E) { // rx_fifo not empty
-        uint8_t read_length
-            = NRF24L01_rx(&rx_buf[0]);
-
-        for (uint8_t i = 0; i < read_length; i++) {
-            NRF24L01::rb_put(rx_buf[i]);
-        }
-        NRF24L01_write_register(
-            NRF24L01_REGISTER_STATUS,
-            0x70); // clear RX_DR, TX_DS and MAX_TR
-    }
-}
-#endif
-
+uint16_t cnt_pos = 0;
+uint16_t cnt_neg = 0;
+uint16_t sw_cnt = 0;
+uint8_t sw_pos = 0;
 static uint8_t pinc_prev;
-
-ISR(PCINT1_vect)
-{
-    // PC0 = (CLK)
-    // PC1 = (DT)
-    // PC2 = (SW)
-    cli(); // disable interrupt
-
-    if((PINC & 0x03) != pinc_prev)
-    {
-        if(((PINC & 0x03) == 0x00) || ((PINC & 0x03) == 0x03))
-        {
-            cnt_pos++;
-        }
-        else
-        {
-            cnt_neg++;
-        }
-    }
-
-    pinc_prev=PINC & 0x03;
-
-    if(PINC & 0x04)
-    {
-        if(sw_pos==0)
-        {
-            sw_cnt++;
-        }
-
-        sw_pos=1;
-    }
-    else{
-        if(sw_pos==1)
-        {
-            sw_cnt++;
-        }
-
-        sw_pos=0;
-    }
-
-    attention_flag = 1;
-
-    sei();
-}
 
 void commandDs18b20(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -199,16 +112,10 @@ void commandHotp(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::HOTP::response_t response;
 
     static uint16_t cnt = 0;
-    uint8_t HOTP_message[20];
+    uint8_t HOTP_message[20]={' ', ' ', 's', 'e', 'c', 'r', 'e', 't'};
 
     HOTP_message[0] = cnt >> 8;
     HOTP_message[1] = cnt++;
-    HOTP_message[2] = 's';
-    HOTP_message[3] = 'e';
-    HOTP_message[4] = 'c';
-    HOTP_message[5] = 'r';
-    HOTP_message[6] = 'e';
-    HOTP_message[7] = 't';
 
     SHA1Context sha;
 
@@ -318,7 +225,6 @@ ISR(TIMER1_CAPT_vect)
 {
     if (TCCR1B & (1 << ICES1)) {
         TCNT1 = 0;
-        // rising_time = ICR1;
         rising_time = TCNT1;
         falling_time = 0;
         pulse_width = 0;
@@ -328,9 +234,6 @@ ISR(TIMER1_CAPT_vect)
         TCCR1B |= (1 << ICES1);
         falling_time = TCNT1;
         pulse_width = falling_time - rising_time;
-
-        // TIMSK1 &= ~(1 << ICIE1); // input capture interrupt disable
-        // cli();
     }
 }
 
@@ -347,20 +250,14 @@ void timerStart()
     falling_time = 0;
     pulse_width = 0;
 
-    // DDRB &= (0 << PB0); // set ICP1/PB0 as input
-    // PORTB &= (0<<PB0); // disable pull-up resistor
-
     TCCR1B |= (1 << ICES1); // input capture set for rising edge
     TCCR1B |= (1 << CS10);  // no prescaler
     TIMSK1 |= (1 << ICIE1); // input capture interrupt enable
-    // sei();
 }
 
 void timerStop()
 {
-    // TIMSK1 ^= (1 << ICIE1); // input capture interrupt disable
     TIMSK1 &= ~(1 << ICIE1); // input capture interrupt disable
-    // cli();
 }
 
 void commandTimer(uint8_t* commandPayload, uint8_t* responsePayload)
@@ -378,27 +275,6 @@ void commandTimer(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-uint16_t readVcc1()
-{
-    uint8_t oldADMUX = ADMUX;
-
-    // V_ref=AVCC with external capacitor at AREF pin
-    // Input Channel Selections = 1.1V (VBG)
-    ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
-
-    ADCSRA = _BV(ADEN) | _BV(ADSC) | _BV(ADPS2) | _BV(ADPS1)
-        | _BV(ADPS0); //  enable ADC, start conversion, clk/128
-
-    while (((ADCSRA & (1 << ADSC)) != 0))
-        ; // Wait for it to complete
-
-    ADMUX = oldADMUX;
-
-    uint32_t vcc = (1100 * 1023L) / ADC;
-
-    return vcc;
-}
-
 void commandVcc(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::VCC::command_t command(commandPayload);
@@ -408,12 +284,12 @@ void commandVcc(uint8_t* commandPayload, uint8_t* responsePayload)
 
     // discard first readings
     for (uint8_t i = 0; i < 32; i++) {
-        readVcc1();
+        AtmelAdc::readVcc1();
     }
                       
     // average of measurements
     for (uint8_t i = 0; i < 32; i++) {
-        vcc += readVcc1();
+        vcc += AtmelAdc::readVcc1();
     }
     vcc = vcc >> 5;
     
@@ -550,7 +426,7 @@ void commandSetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-void commandGetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
+void commandGetDeviceName(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::GET_DEVICE_NAME::command_t command(commandPayload);
     COMMANDS::GET_DEVICE_NAME::response_t response;
@@ -762,98 +638,17 @@ void commandNrf24l01Write(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-void configureIna219(uint8_t address)
-{
-    // resisters
-    // CONFIGURATION = 0x00,
-    // SHUNT_VOLTAGE = 0x01,
-    // BUS_VOLTAGE = 0x02,
-    // POWER = 0x03,
-    // CURRENT = 0x04,
-    // CALIBRATION = 0x05,
-
-#define range_40_mV 0x00
-#define range_80_mV 0x01
-#define range_160_mv 0x10
-#define range_320_mV 0x11 // 3.2A range with 0.1 ohm resistor
-
-#define samples_1_9bit 0x0011  // 84 uS conversion time
-#define samples_1_12bit 0x0011 // 532 uS conversion time
-#define samples_1 0x1000
-#define samples_2 0x1001
-#define samples_4 0x1010
-#define samples_8 0x1011
-#define samples_16 0x1100
-#define samples_32 0x1101
-#define samples_64 0x1110
-#define samples_128 0x1111
-
-#define mode_power_down 0x000
-#define mode_shunt_voltage_triggered 0x001
-#define mode_bus_voltage_triggered 0x010
-#define mode_shunt_and_bus_triggered 0x011
-#define mode_adc_off 0x100
-#define mode_shunt_voltage_continuous 0x101
-#define mode_bus_voltage_continuous 0x110
-#define mode_shunt_and_bus_continuous 0x111
-
-    // set configuration register
-    uint16_t configurationValue = range_40_mV << 11;
-    configurationValue |= samples_2 << 3;
-    configurationValue |= mode_shunt_and_bus_triggered << 0;
-    I2C_Init();
-    I2C_Start(address);
-    I2C_Write(0x00); // register address
-    I2C_Write(configurationValue >> 8);
-    I2C_Write(configurationValue);
-    I2C_Stop();
-
-    // set calibration value
-    uint16_t calibrationValue = 2048;
-    I2C_Init();
-    I2C_Start(address);
-    I2C_Write(0x05); // register address
-    I2C_Write(calibrationValue >> 8);
-    I2C_Write(calibrationValue);
-    I2C_Stop();
-}
-
 void commandIna219(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::INA219::command_t command(commandPayload);
     COMMANDS::INA219::response_t response;
 
-    static bool ina219NotConfigured = true;
-    uint8_t address = 0x80;
+    uint16_t voltage, current;
 
-    if (ina219NotConfigured) {
-        configureIna219(address);
-        ina219NotConfigured = false;
-    }
+    readIna219(&voltage, &current);
 
-    // set register pointer to voltage register
-    I2C_Init();
-    I2C_Start(address);
-    I2C_Write(2); // voltage
-    I2C_Stop();
-
-    I2C_Init();
-    I2C_Start(address + 1);
-    response.voltage[0] = I2C_Read_Ack();
-    response.voltage[1] = I2C_Read_Nack();
-    I2C_Stop();
-
-    // set register pointer to current register
-    I2C_Init();
-    I2C_Start(address);
-    I2C_Write(4); // current
-    I2C_Stop();
-
-    I2C_Init();
-    I2C_Start(address + 1);
-    response.current[0] = I2C_Read_Ack();
-    response.current[1] = I2C_Read_Nack();
-    I2C_Stop();
+    response.setVoltage(voltage);
+    response.setCurrent(current);
 
     response.serialize(responsePayload);
 }
@@ -901,6 +696,50 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
 #endif
 
     response.serialize(responsePayload);
+}
+
+ISR(PCINT1_vect)
+{
+    // PC0 = (CLK)
+    // PC1 = (DT)
+    // PC2 = (SW)
+    cli(); // disable interrupt
+
+    if((PINC & 0x03) != pinc_prev)
+    {
+        if(((PINC & 0x03) == 0x00) || ((PINC & 0x03) == 0x03))
+        {
+            cnt_pos++;
+        }
+        else
+        {
+            cnt_neg++;
+        }
+    }
+
+    pinc_prev=PINC & 0x03;
+
+    if(PINC & 0x04)
+    {
+        if(sw_pos==0)
+        {
+            sw_cnt++;
+        }
+
+        sw_pos=1;
+    }
+    else{
+        if(sw_pos==1)
+        {
+            sw_cnt++;
+        }
+
+        sw_pos=0;
+    }
+
+    attention_flag = 1;
+
+    sei();
 }
 
 bool quadratureEncoderIsInitialised=false;
@@ -967,14 +806,9 @@ void commandKeepAlive(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-void parseCommand(
-    Protocol& protocol, ComBusInterface* comBus, uint8_t* commandPayload)
+void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInterface* comBus)
 {
-    commandsParsed++;
-    uint8_t responsePayload[COMMANDS::MAX_PAYLOAD_LENGTH] = {};
-
     uint8_t cmd_id = commandPayload[0];
-    responsePayload[0] = static_cast<uint8_t>(COMMANDS::OI::UNDEFINED);
 
     switch (static_cast<COMMANDS::OI>(cmd_id)) {
     case COMMANDS::OI::BLINK:
@@ -1062,7 +896,7 @@ void parseCommand(
         commandSetDeviceInfo(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::GET_DEVICE_NAME:
-        commandGetDeviceInfo(commandPayload, responsePayload);
+        commandGetDeviceName(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::GET_VERSION:
         commandGetVersion(commandPayload, responsePayload);
@@ -1085,30 +919,19 @@ void parseCommand(
     default:
         break;
     }
-
-    if (responsePayload[0] != static_cast<uint8_t>(COMMANDS::OI::UNDEFINED)) {
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-        _delay_ms(1); // give gateway some time to switch to listening mode
-#endif
-        sendMessage(protocol, comBus, responsePayload);
-    }
 }
 
 int main()
 {
-    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
     RadioUart uart;
 #else
     Uart uart;
 #endif
+
+    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
     ArduinoCryptoHandler cryptoHandler(aes);
     Protocol protocol((ComBusInterface*) &uart, &cryptoHandler);
-
-#ifdef USE_NRF24L01_INTTERRUPT
-    PCICR |= _BV(PCIE0);
-    PCMSK0 |= _BV(PCINT0);
-#endif
 
     parseInput(protocol, (ComBusInterface*) &uart);
 

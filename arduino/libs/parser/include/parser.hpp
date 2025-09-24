@@ -9,9 +9,28 @@
 #include <random.hpp>
 #include <sleep.hpp>
 
-extern void parseCommand(
-    Protocol& protocol, ComBusInterface* comBus, uint8_t* commandPayload);
+extern uint8_t attention_flag;
+extern bool rx_mode_gateway;
+extern uint8_t protocolVersionLastReceivedMessage;
 
-void rxNodeSleepAndPollForWakeup();
+extern uint8_t node_address;
+extern Random random;
+
+extern uint8_t rf_link_wakeup_command[32];
+extern uint8_t rf_link_discover_package[32];
+
+extern uint16_t commandsParsed;
+
+extern uint16_t uart_tx;
+extern uint16_t uart_rx;
+
+extern uint16_t rf_tx;
+extern uint16_t rf_rx;
+
+
+
+extern void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInterface* comBus);
+
 void sendMessage(Protocol protocol, ComBusInterface* comBus, uint8_t* payload);
 void parseInput(Protocol protocol, ComBusInterface* comBus);
+void parseCommand(Protocol& protocol, ComBusInterface* comBus, uint8_t* commandPayload);
