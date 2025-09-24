@@ -35,10 +35,10 @@ namespace EEPROM_WRITE {
             return (((uint16_t)address[1]) << 8 | address[0]);
         }
 
-        void setAddress(uint16_t value)
+        void setAddress(uint16_t val)
         {
-            address[1] = (uint8_t)(value >> 8);
-            address[0] = (uint8_t)value;
+            address[1] = (uint8_t)(val >> 8);
+            address[0] = (uint8_t)val;
         }
 
         uint8_t getData()
@@ -46,9 +46,9 @@ namespace EEPROM_WRITE {
             return (data);
         }
 
-        void setData(uint8_t value)
+        void setData(uint8_t val)
         {
-            data = value;
+            data = val;
         }
 
         uint8_t OI;
@@ -89,10 +89,10 @@ namespace EEPROM_WRITE {
             return (((uint16_t)address[1]) << 8 | address[0]);
         }
 
-        void setAddress(uint16_t value)
+        void setAddress(uint16_t val)
         {
-            address[1] = (uint8_t)(value >> 8);
-            address[0] = (uint8_t)value;
+            address[1] = (uint8_t)(val >> 8);
+            address[0] = (uint8_t)val;
         }
 
         uint8_t getData()
@@ -100,9 +100,9 @@ namespace EEPROM_WRITE {
             return (data);
         }
 
-        void setData(uint8_t value)
+        void setData(uint8_t val)
         {
-            data = value;
+            data = val;
         }
 
         uint8_t OI;

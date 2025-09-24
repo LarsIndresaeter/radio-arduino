@@ -34,12 +34,12 @@ namespace SLEEP {
             return (((uint32_t)delay[2]) << 16 | ((uint32_t)delay[2]) << 16 | ((uint32_t)delay[1]) << 8 | delay[0]);
         }
 
-        void setDelay(uint32_t value)
+        void setDelay(uint32_t val)
         {
-            delay[3] = (uint8_t)(value >> 24);
-            delay[2] = (uint8_t)(value >> 15);
-            delay[1] = (uint8_t)(value >> 8);
-            delay[0] = (uint8_t)value;
+            delay[3] = (uint8_t)(val >> 24);
+            delay[2] = (uint8_t)(val >> 15);
+            delay[1] = (uint8_t)(val >> 8);
+            delay[0] = (uint8_t)val;
         }
 
         uint8_t OI;

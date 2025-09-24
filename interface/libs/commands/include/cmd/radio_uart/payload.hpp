@@ -32,9 +32,9 @@ namespace RADIO_UART {
             return (mode);
         }
 
-        void setMode(uint8_t value)
+        void setMode(uint8_t val)
         {
-            mode = value;
+            mode = val;
         }
 
         uint8_t OI;

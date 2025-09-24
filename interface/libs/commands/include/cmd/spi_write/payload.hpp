@@ -36,9 +36,9 @@ namespace SPI_WRITE {
             return (reg);
         }
 
-        void setReg(uint8_t value)
+        void setReg(uint8_t val)
         {
-            reg = value;
+            reg = val;
         }
 
         uint8_t getLength()
@@ -46,9 +46,9 @@ namespace SPI_WRITE {
             return (length);
         }
 
-        void setLength(uint8_t value)
+        void setLength(uint8_t val)
         {
-            length = value;
+            length = val;
         }
 
         uint8_t OI;

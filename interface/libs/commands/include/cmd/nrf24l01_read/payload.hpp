@@ -35,9 +35,9 @@ namespace NRF24L01_READ {
             return (length);
         }
 
-        void setLength(uint8_t value)
+        void setLength(uint8_t val)
         {
-            length = value;
+            length = val;
         }
 
         uint8_t OI;
@@ -78,9 +78,9 @@ namespace NRF24L01_READ {
             return (length);
         }
 
-        void setLength(uint8_t value)
+        void setLength(uint8_t val)
         {
-            length = value;
+            length = val;
         }
 
         uint8_t OI;

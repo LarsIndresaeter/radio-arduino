@@ -39,9 +39,9 @@ namespace NRF24L01_INIT {
             return (rfChannel);
         }
 
-        void setRfchannel(uint8_t value)
+        void setRfchannel(uint8_t val)
         {
-            rfChannel = value;
+            rfChannel = val;
         }
 
         uint8_t getGateway()
@@ -49,9 +49,9 @@ namespace NRF24L01_INIT {
             return (gateway);
         }
 
-        void setGateway(uint8_t value)
+        void setGateway(uint8_t val)
         {
-            gateway = value;
+            gateway = val;
         }
 
         uint8_t OI;

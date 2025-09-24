@@ -35,9 +35,9 @@ namespace SET_KEY {
             return (keyId);
         }
 
-        void setKeyid(uint8_t value)
+        void setKeyid(uint8_t val)
         {
-            keyId = value;
+            keyId = val;
         }
 
         uint8_t OI;

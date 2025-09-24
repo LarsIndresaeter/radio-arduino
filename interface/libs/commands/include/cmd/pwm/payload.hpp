@@ -34,9 +34,9 @@ namespace PWM {
             return (port);
         }
 
-        void setPort(uint8_t value)
+        void setPort(uint8_t val)
         {
-            port = value;
+            port = val;
         }
 
         uint8_t getPin()
@@ -44,9 +44,9 @@ namespace PWM {
             return (pin);
         }
 
-        void setPin(uint8_t value)
+        void setPin(uint8_t val)
         {
-            pin = value;
+            pin = val;
         }
 
         uint8_t getValue()
@@ -54,9 +54,9 @@ namespace PWM {
             return (value);
         }
 
-        void setValue(uint8_t value)
+        void setValue(uint8_t val)
         {
-            value = value;
+            value = val;
         }
 
         uint8_t OI;
@@ -96,9 +96,9 @@ namespace PWM {
             return (port);
         }
 
-        void setPort(uint8_t value)
+        void setPort(uint8_t val)
         {
-            port = value;
+            port = val;
         }
 
         uint8_t getPin()
@@ -106,9 +106,9 @@ namespace PWM {
             return (pin);
         }
 
-        void setPin(uint8_t value)
+        void setPin(uint8_t val)
         {
-            pin = value;
+            pin = val;
         }
 
         uint8_t getValue()
@@ -116,9 +116,9 @@ namespace PWM {
             return (value);
         }
 
-        void setValue(uint8_t value)
+        void setValue(uint8_t val)
         {
-            value = value;
+            value = val;
         }
 
         uint8_t OI;

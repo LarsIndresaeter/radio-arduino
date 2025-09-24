@@ -74,10 +74,10 @@ namespace QUADRATURE_ENCODER {
             return (((uint16_t)countnegative[1]) << 8 | countnegative[0]);
         }
 
-        void setCountnegative(uint16_t value)
+        void setCountnegative(uint16_t val)
         {
-            countnegative[1] = (uint8_t)(value >> 8);
-            countnegative[0] = (uint8_t)value;
+            countnegative[1] = (uint8_t)(val >> 8);
+            countnegative[0] = (uint8_t)val;
         }
 
         uint16_t getCountpositive()
@@ -85,10 +85,10 @@ namespace QUADRATURE_ENCODER {
             return (((uint16_t)countpositive[1]) << 8 | countpositive[0]);
         }
 
-        void setCountpositive(uint16_t value)
+        void setCountpositive(uint16_t val)
         {
-            countpositive[1] = (uint8_t)(value >> 8);
-            countpositive[0] = (uint8_t)value;
+            countpositive[1] = (uint8_t)(val >> 8);
+            countpositive[0] = (uint8_t)val;
         }
 
         uint8_t getSwitchposition()
@@ -96,9 +96,9 @@ namespace QUADRATURE_ENCODER {
             return (switchposition);
         }
 
-        void setSwitchposition(uint8_t value)
+        void setSwitchposition(uint8_t val)
         {
-            switchposition = value;
+            switchposition = val;
         }
 
         uint16_t getSwitchcount()
@@ -106,10 +106,10 @@ namespace QUADRATURE_ENCODER {
             return (((uint16_t)switchcount[1]) << 8 | switchcount[0]);
         }
 
-        void setSwitchcount(uint16_t value)
+        void setSwitchcount(uint16_t val)
         {
-            switchcount[1] = (uint8_t)(value >> 8);
-            switchcount[0] = (uint8_t)value;
+            switchcount[1] = (uint8_t)(val >> 8);
+            switchcount[0] = (uint8_t)val;
         }
 
         uint8_t OI;
