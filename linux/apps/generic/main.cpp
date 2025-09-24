@@ -58,60 +58,14 @@ int timeMs()
         % 1000;
 }
 
-void testDecryptOnAvr(monitor& mon)
-{
-    // std::cout << "encrypt on PC, decrypt on AVR" << std::endl;
-    Crypto c {};
-    Crypto::AesBlock key({ 's', 'e', 'c', 'r', 'e', 't' });
-    c.setEncryptKey(key);
-
-    Crypto::AesBlock plaintext({ 'T', 'e', 's', 't' });
-
-    Crypto::AesBlock ciphertext = c.encrypt(plaintext);
-
-    UartCommandAes decryptedInAvr
-        = mon.get<>(UartCommandAes('d', c.getVector(ciphertext)));
-
-    std::string responseString { reinterpret_cast<char*>(
-        decryptedInAvr.responseStruct().data) };
-    std::cout << "pt received   : " << responseString << std::endl;
-}
-
-void testEncryptOnAvr(monitor& mon)
-{
-    // std::cout << "encrypt on AVR, decrypt on PC" << std::endl;
-    std::string s { "Test" };
-    std::vector<uint8_t> v { s.begin(), s.end() };
-    UartCommandAes encryptedInAvr = mon.get<>(UartCommandAes('c', v));
-
-    Crypto c {};
-    Crypto::AesBlock key({ 's', 'e', 'c', 'r', 'e', 't' });
-    c.setDecryptKey(key);
-
-    auto r = encryptedInAvr.responseStruct();
-    Crypto::AesBlock ciphertext(r.data);
-
-    Crypto::AesBlock plaintext = c.decrypt(ciphertext);
-
-    std::cout << "ct response   : " << plaintext.getDataAsString() << std::endl;
-}
-
-void testAes(monitor& mon)
-{
-    testDecryptOnAvr(mon);
-    testEncryptOnAvr(mon);
-}
-
 void print_usage()
 {
     std::cout << "raduino-gateway" << std::endl;
     std::cout << "       -V : Verbose on" << std::endl;
     std::cout << "       -v : Verbose off" << std::endl;
     std::cout << "       -B : Blink command" << std::endl;
-    std::cout << "       -E : EEPROM command" << std::endl;
     std::cout << "       -S : SHA1 command " << std::endl;
     std::cout << "       -H : HOTP command" << std::endl;
-    std::cout << "       -A : test AES" << std::endl;
     std::cout << "       -P : pwm command" << std::endl;
     std::cout << "       -R : get random bytes command" << std::endl;
     std::cout << "       -C : print counter values" << std::endl;
@@ -128,10 +82,8 @@ void print_usage()
               << std::endl;
     std::cout << "       -X : ds18b20 temperature sensor" << std::endl;
     std::cout << "       -K : set AES Key" << std::endl;
-    std::cout << "       -g : dump eeprom from mega328p" << std::endl;
     std::cout << "       -Z : set device name" << std::endl;
     std::cout << "       -z : get device name" << std::endl;
-    std::cout << "       -b : test json formatter" << std::endl;
     std::cout << "       -a : get device version" << std::endl;
     std::cout << "       -x : get statistics" << std::endl;
     std::cout << "       -W : WS2812B <string>" << std::endl;
@@ -262,7 +214,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     uint8_t i2cDeviceAddress = 0b10100000;
 
     while ((option
-            = getopt(argc, argv, "P:DBSHEACs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:L:FJU:jpaxb"))
+            = getopt(argc, argv, "P:DBSHCs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:L:FJU:jpax"))
            != -1) {
         switch (option) {
         case 'd':
@@ -357,46 +309,6 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             }
 
             break;
-        case 'E':
-            std::cout << mon.get<>(UartCommandEepromWrite(2, 3)) << std::endl;
-            std::cout << mon.get<>(UartCommandEepromRead(2)) << std::endl;
-            compareResult(
-                3, mon.get<>(UartCommandEepromRead(2)).responseStruct().data);
-
-            std::cout << mon.get<>(UartCommandEepromWrite(600, 3)) << std::endl;
-            std::cout << mon.get<>(UartCommandEepromRead(600)) << std::endl;
-            compareResult(
-                3, mon.get<>(UartCommandEepromRead(600)).responseStruct().data);
-
-            break;
-        case 'g': {
-            std::vector<uint8_t> eeprom;
-            for (int i = 0; i < 1024; i++) {
-                eeprom.push_back(
-                    mon.get<>(UartCommandEepromRead(i)).responseStruct().data);
-            }
-
-            for (int i = 0; i < 64; i++) {
-                std::cout.fill('0');
-                std::cout.width(4);
-                std::cout << std::hex << static_cast<int>(i * 16) << " ";
-                for (int j = 0; j < 16; j++) {
-                    std::cout.fill('0');
-                    std::cout.width(2);
-
-                    std::cout << std::hex
-                              << static_cast<int>(eeprom.at(i * 16 + j));
-                    std::cout << " ";
-                }
-                std::cout << " : ";
-                for (int j = 0; j < 16; j++) {
-                    std::cout << std::hex << std::uppercase
-                              << eeprom.at(i * 16 + j) << " ";
-                }
-                std::cout << std::endl;
-            }
-
-        } break;
         case 'S': {
             // printf "best\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" | xxd
             // printf "best\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" | sha1sum
@@ -424,9 +336,6 @@ void parseOpt(int argc, char* argv[], monitor& mon)
         } break;
         case 'H':
             std::cout << mon.get<>(UartCommandHotp()) << std::endl;
-            break;
-        case 'A':
-            testAes(mon);
             break;
         case 'P': {
             uint8_t value = atoi(optarg);
@@ -549,15 +458,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
         case 'z':
             std::cout << mon.get<>(UartCommandGetDeviceName()) << std::endl;
             break;
-         case 'b':
-            std::cout << mon.get<>(UartCommandGpio()).getJson() << std::endl;
-            std::cout << mon.get<>(UartCommandDebug()).getJson() << std::endl;
-            std::cout << mon.get<>(UartCommandGetVersion()).getJson() << std::endl;
-            std::cout << mon.get<>(UartCommandGetDeviceName()).getJson() << std::endl;
-            std::cout << mon.get<>(UartCommandVcc()).getJson() << std::endl;
-            std::cout << mon.get<>(UartCommandGetStatistics()).getJson() << std::endl;
-            break;
-        case 'a':
+       case 'a':
             std::cout << mon.get<>(UartCommandGetVersion()) << std::endl;
             break;
         case 'x':
