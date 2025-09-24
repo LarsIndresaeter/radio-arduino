@@ -5,6 +5,9 @@
 
 /* http://www.ermicro.com/blog/?p=325 */
 
+extern uint32_t uart_tx;
+extern uint32_t uart_rx;
+
 class Uart : public ComBusInterface{
 public:
     Uart();

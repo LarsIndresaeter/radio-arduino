@@ -13,8 +13,8 @@
 #define UBRR0_57600 16
 #define UBRR0_9600 103
 
-uint16_t uart_tx = 0;
-uint16_t uart_rx = 0;
+uint32_t uart_tx = 0;
+uint32_t uart_rx = 0;
 
 namespace UART {
 constexpr uint8_t RINGBUFFER_SIZE = 64;

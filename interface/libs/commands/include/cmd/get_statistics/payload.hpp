@@ -8,7 +8,7 @@ namespace COMMANDS {
 
 namespace GET_STATISTICS {
     constexpr uint8_t COMMAND_LENGTH = 0;
-    constexpr uint8_t RESPONSE_LENGTH = 10;
+    constexpr uint8_t RESPONSE_LENGTH = 18;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
     static_assert(RESPONSE_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "RESPONSE_LENGTH larger than max payload");
@@ -44,17 +44,17 @@ namespace GET_STATISTICS {
             for (uint8_t i = 0; i < 2; i++) {
                 commandsParsed[i] = res[2 + i];
             }
-            for (uint8_t i = 0; i < 2; i++) {
+            for (uint8_t i = 0; i < 4; i++) {
                 uart_rx[i] = res[4 + i];
             }
-            for (uint8_t i = 0; i < 2; i++) {
-                uart_tx[i] = res[6 + i];
+            for (uint8_t i = 0; i < 4; i++) {
+                uart_tx[i] = res[8 + i];
             }
-            for (uint8_t i = 0; i < 2; i++) {
-                rf_rx[i] = res[8 + i];
+            for (uint8_t i = 0; i < 4; i++) {
+                rf_rx[i] = res[12 + i];
             }
-            for (uint8_t i = 0; i < 2; i++) {
-                rf_tx[i] = res[10 + i];
+            for (uint8_t i = 0; i < 4; i++) {
+                rf_tx[i] = res[16 + i];
             }
         }
 
@@ -65,17 +65,17 @@ namespace GET_STATISTICS {
             for (uint8_t i = 0; i < 2; i++) {
                 response[2 + i] = commandsParsed[i];
             }
-            for (uint8_t i = 0; i < 2; i++) {
+            for (uint8_t i = 0; i < 4; i++) {
                 response[4 + i] = uart_rx[i];
             }
-            for (uint8_t i = 0; i < 2; i++) {
-                response[6 + i] = uart_tx[i];
+            for (uint8_t i = 0; i < 4; i++) {
+                response[8 + i] = uart_tx[i];
             }
-            for (uint8_t i = 0; i < 2; i++) {
-                response[8 + i] = rf_rx[i];
+            for (uint8_t i = 0; i < 4; i++) {
+                response[12 + i] = rf_rx[i];
             }
-            for (uint8_t i = 0; i < 2; i++) {
-                response[10 + i] = rf_tx[i];
+            for (uint8_t i = 0; i < 4; i++) {
+                response[16 + i] = rf_tx[i];
             }
         }
 
@@ -90,46 +90,54 @@ namespace GET_STATISTICS {
             commandsParsed[0] = (uint8_t)val;
         }
 
-        uint16_t getUart_rx()
+        uint32_t getUart_rx()
         {
-            return (((uint16_t)uart_rx[1]) << 8 | uart_rx[0]);
+            return (((uint32_t)uart_rx[3]) << 24 | ((uint32_t)uart_rx[2]) << 16 | ((uint32_t)uart_rx[1]) << 8 | uart_rx[0]);
         }
 
-        void setUart_rx(uint16_t val)
+        void setUart_rx(uint32_t val)
         {
+            uart_rx[3] = (uint8_t)(val >> 24);
+            uart_rx[2] = (uint8_t)(val >> 16);
             uart_rx[1] = (uint8_t)(val >> 8);
             uart_rx[0] = (uint8_t)val;
         }
 
-        uint16_t getUart_tx()
+        uint32_t getUart_tx()
         {
-            return (((uint16_t)uart_tx[1]) << 8 | uart_tx[0]);
+            return (((uint32_t)uart_tx[3]) << 24 | ((uint32_t)uart_tx[2]) << 16 | ((uint32_t)uart_tx[1]) << 8 | uart_tx[0]);
         }
 
-        void setUart_tx(uint16_t val)
+        void setUart_tx(uint32_t val)
         {
+            uart_tx[3] = (uint8_t)(val >> 24);
+            uart_tx[2] = (uint8_t)(val >> 16);
             uart_tx[1] = (uint8_t)(val >> 8);
             uart_tx[0] = (uint8_t)val;
         }
 
-        uint16_t getRf_rx()
+        uint32_t getRf_rx()
         {
-            return (((uint16_t)rf_rx[1]) << 8 | rf_rx[0]);
+            return (((uint32_t)rf_rx[3]) << 24 | ((uint32_t)rf_rx[2]) << 16 | ((uint32_t)rf_rx[1]) << 8 | rf_rx[0]);
         }
 
-        void setRf_rx(uint16_t val)
+        void setRf_rx(uint32_t val)
         {
+            rf_rx[3] = (uint8_t)(val >> 24);
+            rf_rx[2] = (uint8_t)(val >> 16);
             rf_rx[1] = (uint8_t)(val >> 8);
             rf_rx[0] = (uint8_t)val;
         }
 
-        uint16_t getRf_tx()
+        uint32_t getRf_tx()
         {
-            return (((uint16_t)rf_tx[1]) << 8 | rf_tx[0]);
+            return (((uint32_t)rf_tx[3]) << 24 | ((uint32_t)rf_tx[2]) << 16 | ((uint32_t)rf_tx[1]) << 8 | rf_tx[0]);
         }
 
-        void setRf_tx(uint16_t val)
+        void setRf_tx(uint32_t val)
         {
+            rf_tx[3] = (uint8_t)(val >> 24);
+            rf_tx[2] = (uint8_t)(val >> 16);
             rf_tx[1] = (uint8_t)(val >> 8);
             rf_tx[0] = (uint8_t)val;
         }
@@ -137,10 +145,10 @@ namespace GET_STATISTICS {
         uint8_t OI;
         uint8_t OL;
         uint8_t commandsParsed[2];
-        uint8_t uart_rx[2];
-        uint8_t uart_tx[2];
-        uint8_t rf_rx[2];
-        uint8_t rf_tx[2];
+        uint8_t uart_rx[4];
+        uint8_t uart_tx[4];
+        uint8_t rf_rx[4];
+        uint8_t rf_tx[4];
 
     } response_t;
 }

@@ -501,7 +501,7 @@ def generatePayloadFile(commandId, commandName,
             if(arraySize == 4):
                 outfile.write("        uint32_t get" + arrayBasenameFromVariableName(item).capitalize() + "()\n")
                 outfile.write("        {\n")
-                outfile.write("            return ((((uint32_t)" + arrayBasenameFromVariableName(item) + "[3]) << 24 | (((uint32_t)" + arrayBasenameFromVariableName(item) + "[2]) << 16 | uint32_t)" + arrayBasenameFromVariableName(item) + "[1]) << 8 | " + arrayBasenameFromVariableName(item) + "[0]);\n")
+                outfile.write("            return (((uint32_t)" + arrayBasenameFromVariableName(item) + "[3]) << 24 | ((uint32_t)" + arrayBasenameFromVariableName(item) + "[2]) << 16 | ((uint32_t)" + arrayBasenameFromVariableName(item) + "[1]) << 8 | " + arrayBasenameFromVariableName(item) + "[0]);\n")
                 outfile.write("        }\n")
                 outfile.write("\n")
                 outfile.write("        void set" + arrayBasenameFromVariableName(item).capitalize() + "(uint32_t val)\n")
@@ -575,7 +575,7 @@ def commandDefinitions():
     generateCommandAndPayloadFile(33, "ping", [], [])
     generateCommandAndPayloadFile(34, "quadrature_encoder", [], ["countnegative[2]", "countpositive[2]", "switchposition", "switchcount[2]"])
     generateCommandAndPayloadFile(35, "get_version", [], ["versionString[32]"])
-    generateCommandAndPayloadFile(36, "get_statistics", [], ["commandsParsed[2]", "uart_rx[2]", "uart_tx[2]", "rf_rx[2]", "rf_tx[2]"])
+    generateCommandAndPayloadFile(36, "get_statistics", [], ["commandsParsed[2]", "uart_rx[4]", "uart_tx[4]", "rf_rx[4]", "rf_tx[4]"])
 
 def main():
     generateCommonHeaderFilesOpen()

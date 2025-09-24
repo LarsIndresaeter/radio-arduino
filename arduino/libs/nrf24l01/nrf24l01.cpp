@@ -2,8 +2,8 @@
 #include <spi.hpp>
 #include <util/delay.h>
 
-uint16_t rf_tx = 0;
-uint16_t rf_rx = 0;
+uint32_t rf_tx = 0;
+uint32_t rf_rx = 0;
 
 uint8_t rx_tx_addr[5] = { 0xF0, 0xF0, 0xF0, 0xF0, node_address };
 uint8_t rf_channel = 121;

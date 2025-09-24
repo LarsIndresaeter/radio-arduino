@@ -21,11 +21,8 @@ extern uint8_t rf_link_discover_package[32];
 
 extern uint16_t commandsParsed;
 
-extern uint16_t uart_tx;
-extern uint16_t uart_rx;
-
-extern uint16_t rf_tx;
-extern uint16_t rf_rx;
+extern uint32_t rf_tx;
+extern uint32_t rf_rx;
 
 extern void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInterface* comBus);
 
