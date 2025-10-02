@@ -22,4 +22,27 @@ namespace EEPROM
         EECR |= (1 << EERE);
         return EEDR;
     }
+
+   //namespace DATA_STORE {
+        //uint16_t offset_active = 0;
+        //uint16_t offset_spare = 0;
+
+        //uint16_t offsetActiveStruct()
+        //{
+            //return 0;
+        //}
+
+        //uint16_t offsetSpareStruct()
+        //{
+            //return 0;
+        //}
+
+        //void copyActiveToSpare()
+        //{// TODO
+        //}
+
+        //void calculateCrcAndSetSpareAsActive()
+        //{// TODO
+        //}
+    //} // namespace
 } // namespace
