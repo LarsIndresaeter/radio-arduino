@@ -46,6 +46,11 @@ namespace TIMER {
 
     uint16_t getPulseWidthMicroSeconds()
     {
+        _delay_ms(10);
+        timerStart();
+        _delay_ms(25);
+        timerStop();
+
         return pulse_width >> 4;
     }
 } // namespace

@@ -200,11 +200,6 @@ void commandTimer(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::TIMER::command_t command(commandPayload);
     COMMANDS::TIMER::response_t response;
 
-    _delay_ms(10);
-    TIMER::timerStart();
-    _delay_ms(25);
-    TIMER::timerStop();
-
     response.setPulsewidth(TIMER::getPulseWidthMicroSeconds());
 
     response.serialize(responsePayload);
