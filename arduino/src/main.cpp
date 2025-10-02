@@ -162,8 +162,7 @@ void commandPwm(uint8_t* commandPayload, uint8_t* responsePayload)
     response.setPin(command.getPin());
     response.setValue(command.getValue());
 
-    Pwm pwm;
-    pwm.write(command.port, command.pin, command.value);
+    PWM::write(command.port, command.pin, command.value);
 
     response.serialize(responsePayload);
 }

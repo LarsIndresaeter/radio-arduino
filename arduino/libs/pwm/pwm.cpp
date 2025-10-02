@@ -2,9 +2,10 @@
 #include <pwm.hpp>
 #include <stdint.h>
 
-Pwm::Pwm() {}
+namespace PWM
+{
 
-uint8_t Pwm::write(uint8_t port, uint8_t pin, uint8_t value)
+uint8_t write(uint8_t port, uint8_t pin, uint8_t value)
 {
     uint8_t retval = 0;
 
@@ -57,3 +58,4 @@ uint8_t Pwm::write(uint8_t port, uint8_t pin, uint8_t value)
     return (retval);
 }
 
+} // namespace
