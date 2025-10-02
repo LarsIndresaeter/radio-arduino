@@ -10,6 +10,11 @@ bool rx_mode_gateway = true;
 
 uint16_t commandsParsed = 0;
 
+//#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
+uint32_t keep_alive_interval_ms = 100; // time in idle loop before entering sleep
+uint32_t idle_loop_cnt_ms = 0;
+//#endif
+
 uint8_t protocolVersionLastReceivedMessage
     = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
 
@@ -206,3 +211,15 @@ void parseCommand(
     }
 }
 
+void setKeepAliveInterval(uint8_t interval)
+{
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
+    keep_alive_interval_ms = 100 + interval * 100;
+
+    // TODO: this is probably not what you want
+    if (0 == interval) {
+        // if keep alive interval is set to minimum the go to sleep immediately
+        idle_loop_cnt_ms = keep_alive_interval_ms;
+    }
+#endif
+}

@@ -29,3 +29,5 @@ extern void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, Com
 void sendMessage(Protocol protocol, ComBusInterface* comBus, uint8_t* payload);
 void parseInput(Protocol protocol, ComBusInterface* comBus);
 void parseCommand(Protocol& protocol, ComBusInterface* comBus, uint8_t* commandPayload);
+
+void setKeepAliveInterval(uint8_t interval);

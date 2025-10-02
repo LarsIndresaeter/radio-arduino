@@ -36,11 +36,6 @@
 
 Aes aes;
 
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-uint32_t keep_alive_interval_ms = 100; // time in idle loop before entering sleep
-uint32_t idle_loop_cnt_ms = 0;
-#endif
-
 void commandDs18b20(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::DS18B20::command_t command(commandPayload);
@@ -720,14 +715,7 @@ void commandKeepAlive(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::KEEP_ALIVE::command_t command(commandPayload);
     COMMANDS::KEEP_ALIVE::response_t response;
 
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    keep_alive_interval_ms = 100 + command.time * 100;
-
-    if (0 == command.time) {
-        // if keep alive interval is set to minimum the go to sleep immediately
-        idle_loop_cnt_ms = keep_alive_interval_ms;
-    }
-#endif
+    setKeepAliveInterval(command.time);
 
     response.serialize(responsePayload);
 }
