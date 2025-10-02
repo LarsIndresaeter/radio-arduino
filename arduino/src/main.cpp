@@ -217,20 +217,7 @@ void commandVcc(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::VCC::command_t command(commandPayload);
     COMMANDS::VCC::response_t response;
 
-    uint32_t vcc = 0;
-
-    // discard first readings
-    for (uint8_t i = 0; i < 32; i++) {
-        AtmelAdc::readVcc1();
-    }
-
-    // average of measurements
-    for (uint8_t i = 0; i < 32; i++) {
-        vcc += AtmelAdc::readVcc1();
-    }
-    vcc = vcc >> 5;
-
-    response.setVcc(vcc);
+    response.setVcc(AtmelAdc::getAverageVcc());
 
     response.serialize(responsePayload);
 }
