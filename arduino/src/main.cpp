@@ -23,6 +23,7 @@
 #include <sha1.hpp>
 #include <sleep.hpp>
 #include <spi.hpp>
+#include <quadencoder.hpp>
 
 #include <Framebuffer.hpp>
 #include <avr/sleep.h>
@@ -39,12 +40,6 @@ Aes aes;
 uint32_t keep_alive_interval_ms = 100; // time in idle loop before entering sleep
 uint32_t idle_loop_cnt_ms = 0;
 #endif
-
-uint16_t cnt_pos = 0;
-uint16_t cnt_neg = 0;
-uint16_t sw_cnt = 0;
-uint8_t sw_pos = 0;
-static uint8_t pinc_prev;
 
 void commandDs18b20(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -687,70 +682,19 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-ISR(PCINT1_vect)
-{
-    // PC0 = (CLK)
-    // PC1 = (DT)
-    // PC2 = (SW)
-    cli(); // disable interrupt
-
-    if ((PINC & 0x03) != pinc_prev) {
-        if (((PINC & 0x03) == 0x00) || ((PINC & 0x03) == 0x03)) {
-            cnt_pos++;
-        }
-        else {
-            cnt_neg++;
-        }
-    }
-
-    pinc_prev = PINC & 0x03;
-
-    if (PINC & 0x04) {
-        if (sw_pos == 0) {
-            sw_cnt++;
-        }
-
-        sw_pos = 1;
-    }
-    else {
-        if (sw_pos == 1) {
-            sw_cnt++;
-        }
-
-        sw_pos = 0;
-    }
-
-    attention_flag = 1;
-
-    sei();
-}
-
-bool quadratureEncoderIsInitialised = false;
 void commandQuadratureEncoder(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::QUADRATURE_ENCODER::command_t command(commandPayload);
     COMMANDS::QUADRATURE_ENCODER::response_t response;
 
-    attention_flag = 0;
+    QUADENCODER::initialize();
 
-    if (!quadratureEncoderIsInitialised) {
-        quadratureEncoderIsInitialised = true;
+    attention_flag = QUADENCODER::isChanged();
 
-        DDRC &= ~(1 << PC0); // set PC0 input (CLK)
-        DDRC &= ~(1 << PC1); // set PC1 input (DT)
-        DDRC &= ~(1 << PC2); // set PC2 input (SW)
-        PCICR = 0x02; // enable PCINT1
-        PCMSK1 = 0x05; // enable pin PCINT8 (PC0) and PCINT10 (PC2)
-                       // seher
-        PORTC |= 0x07; // enable pull-up resistor
-
-        sei();
-    }
-
-    response.setCountpositive(cnt_pos);
-    response.setCountnegative(cnt_neg);
-    response.setSwitchcount(sw_cnt);
-    response.setSwitchposition(sw_pos);
+    response.setCountpositive(QUADENCODER::getCountPositivePulses());
+    response.setCountnegative(QUADENCODER::getCountNegativePulses());
+    response.setSwitchcount(QUADENCODER::getSwitchCount());
+    response.setSwitchposition(QUADENCODER::getSwitchPosition());
 
     response.serialize(responsePayload);
 }
