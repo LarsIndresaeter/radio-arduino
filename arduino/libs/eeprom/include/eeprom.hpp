@@ -12,9 +12,8 @@ typedef struct eeprom_data {
     uint8_t NAME[16];
 } eeprom_data_t;
 
-class Eeprom {
-public:
-    Eeprom();
+namespace EEPROM
+{
     void write(uint16_t address, uint8_t data);
     uint8_t read(uint16_t address);
-};
+} // namespace

@@ -117,11 +117,9 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::AES::command_t command(commandPayload);
     COMMANDS::AES::response_t response;
 
-    Eeprom eeprom;
-
     uint8_t aes_key[16] = {};
     for (uint8_t i = 0; i < 16; i++) {
-        aes_key[i] = eeprom.read(offsetof(eeprom_data_t, EK_KEY) + i);
+        aes_key[i] = EEPROM::read(offsetof(eeprom_data_t, EK_KEY) + i);
     }
 
     uint8_t aes_iv[16] = { 0 };
@@ -244,10 +242,9 @@ void commandEepromRead(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::EEPROM_READ::command_t command(commandPayload);
     COMMANDS::EEPROM_READ::response_t response;
-    Eeprom eeprom;
 
     response.setAddress(command.getAddress());
-    response.setData(eeprom.read(command.getAddress()));
+    response.setData(EEPROM::read(command.getAddress()));
 
     response.serialize(responsePayload);
 }
@@ -276,12 +273,11 @@ void commandEepromWrite(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::EEPROM_WRITE::command_t command(commandPayload);
     COMMANDS::EEPROM_WRITE::response_t response;
-    Eeprom eeprom;
 
-    eeprom.write(command.getAddress(), command.data);
+    EEPROM::write(command.getAddress(), command.data);
 
     response.setAddress(command.getAddress());
-    response.setData(eeprom.read(command.getAddress()));
+    response.setData(EEPROM::read(command.getAddress()));
 
     response.serialize(responsePayload);
 }
@@ -311,7 +307,6 @@ void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::SET_KEY::command_t command(commandPayload);
     COMMANDS::SET_KEY::response_t response;
-    Eeprom eeprom;
 
     uint16_t address = 0;
 
@@ -330,7 +325,7 @@ void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
 
     if (command.keyId != 'U') {
         for (uint8_t i = 0; i < sizeof(command.keyValue); i++) {
-            eeprom.write(address + i, command.keyValue[i]);
+            EEPROM::write(address + i, command.keyValue[i]);
         }
     }
 
@@ -341,10 +336,9 @@ void commandSetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::SET_DEVICE_NAME::command_t command(commandPayload);
     COMMANDS::SET_DEVICE_NAME::response_t response;
-    Eeprom eeprom;
 
     for (uint8_t i = 0; i < sizeof(command.name); i++) {
-        eeprom.write(offsetof(eeprom_data_t, NAME) + i, command.name[i]);
+        EEPROM::write(offsetof(eeprom_data_t, NAME) + i, command.name[i]);
     }
 
     response.serialize(responsePayload);
@@ -354,10 +348,9 @@ void commandGetDeviceName(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::GET_DEVICE_NAME::command_t command(commandPayload);
     COMMANDS::GET_DEVICE_NAME::response_t response;
-    Eeprom eeprom;
 
     for (uint8_t i = 0; i < sizeof(response.nameString); i++) {
-        response.nameString[i] = eeprom.read(offsetof(eeprom_data_t, NAME) + i);
+        response.nameString[i] = EEPROM::read(offsetof(eeprom_data_t, NAME) + i);
     }
 
     response.serialize(responsePayload);
