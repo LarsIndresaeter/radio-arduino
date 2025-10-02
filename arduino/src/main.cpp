@@ -636,6 +636,9 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::WAKEUP::response_t response;
     response.attention = 0;
 
+
+    //TODO: refactor this
+
     // only gateway should execute this command
 #ifndef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
     uint8_t read_discover_package[32] = { 0 };
