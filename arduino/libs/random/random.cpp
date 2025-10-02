@@ -23,3 +23,12 @@ uint8_t Random::getRandomByte()
     return state[readPos];
 }
 
+void Random::addEntropyAndMix()
+{
+    addEntropy(AtmelAdc::getRandomByte());
+    addEntropy(AtmelAdc::getRandomByte());
+    mix();
+    addEntropy(AtmelAdc::getRandomByte());
+    addEntropy(AtmelAdc::getRandomByte());
+    mix();
+}

@@ -68,12 +68,7 @@ void commandRandom(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::RANDOM::response_t response;
 
-    random.addEntropy(AtmelAdc::getRandomByte());
-    random.addEntropy(AtmelAdc::getRandomByte());
-    random.mix();
-    random.addEntropy(AtmelAdc::getRandomByte());
-    random.addEntropy(AtmelAdc::getRandomByte());
-    random.mix();
+    random.addEntropyAndMix();
 
     for (uint8_t i = 0; i < sizeof(response.data); i++) {
         response.data[i] = random.getRandomByte();

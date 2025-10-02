@@ -1,6 +1,7 @@
 #pragma once
 
 #include <sha1.hpp>
+#include <adc.hpp>
 #include <stdint.h>
 
 constexpr uint8_t randomPoolSize = 16;
@@ -11,6 +12,7 @@ public:
     uint8_t getRandomByte();
     void mix();
     void addEntropy(uint8_t e);
+    void addEntropyAndMix();
 
 private:
     SHA1Context sha;
