@@ -24,6 +24,7 @@
 #include <sleep.hpp>
 #include <spi.hpp>
 #include <quadencoder.hpp>
+#include <gpio.hpp>
 
 #include <Framebuffer.hpp>
 #include <avr/sleep.h>
@@ -58,8 +59,7 @@ void commandBlink(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::BLINK::command_t command(commandPayload);
     COMMANDS::BLINK::response_t response;
 
-    Gpio gpio;
-    gpio.blink();
+    GPIO::blink();
 
     response.serialize(responsePayload);
 }
@@ -178,10 +178,9 @@ void commandGpio(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::GPIO::command_t command(commandPayload);
     COMMANDS::GPIO::response_t response;
 
-    Gpio gpio;
-    response.setPortb(gpio.readPortB());
-    response.setPortc(gpio.readPortC());
-    response.setPortd(gpio.readPortD());
+    response.setPortb(GPIO::readPortB());
+    response.setPortc(GPIO::readPortC());
+    response.setPortd(GPIO::readPortD());
 
     response.serialize(responsePayload);
 }
