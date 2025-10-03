@@ -22,6 +22,16 @@ uint8_t ringbuffer[UART::RINGBUFFER_SIZE] = { 0 };
 uint8_t rb_length = 0;
 uint8_t rb_idx = 0;
 
+uint32_t getUartTxBytes()
+{
+    return uart_tx;
+}
+
+uint32_t getUartRxBytes()
+{
+    return uart_rx;
+}
+
 void rb_put(uint8_t c)
 {
     if (UART::RINGBUFFER_SIZE == UART::rb_length) {

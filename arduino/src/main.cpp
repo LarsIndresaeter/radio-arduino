@@ -355,8 +355,8 @@ void commandGetStatistics(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::GET_STATISTICS::command_t command(commandPayload);
     COMMANDS::GET_STATISTICS::response_t response;
 
-    response.setUart_rx(uart_rx);
-    response.setUart_tx(uart_tx);
+    response.setUart_rx(UART::getUartRxBytes());
+    response.setUart_tx(UART::getUartTxBytes());
     response.setRf_rx(rf_rx);
     response.setRf_tx(rf_tx);
     response.setCommandsparsed(commandsParsed);
