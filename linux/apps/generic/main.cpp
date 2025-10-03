@@ -314,13 +314,14 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             // printf "best\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" | sha1sum
             std::string s { "best" };
             std::vector<uint8_t> v { s.begin(), s.end() };
-            std::cout << mon.get<>(UartCommandSha1(v)) << std::endl;
+            auto result = mon.get<>(UartCommandSha1(v));
+            std::cout << result << std::endl;
             compareResult(
-                0x31, mon.get<>(UartCommandSha1(v)).responseStruct().data[0]);
+                0x31, result.responseStruct().data[0]);
             compareResult(
-                0x02, mon.get<>(UartCommandSha1(v)).responseStruct().data[1]);
+                0x02, result.responseStruct().data[1]);
             compareResult(
-                0xcf, mon.get<>(UartCommandSha1(v)).responseStruct().data[2]);
+                0xcf, result.responseStruct().data[2]);
         } break;
         case 'L': {
             COMMANDS::SSD1306::command_t command;

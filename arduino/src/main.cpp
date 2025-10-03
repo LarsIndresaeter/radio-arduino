@@ -1,50 +1,23 @@
-#include <gpio.hpp>
-#include <protocol.hpp>
-#include <radio_uart.hpp>
-#include <stdio.h>
-#include <uart.hpp>
-
-#include <avr/interrupt.h>
-#include <avr/io.h>
 #include <stdbool.h>
-#include <util/delay.h>
-
-#include <adc.hpp>
-#include <aes.hpp>
+#include <stdio.h>
+#include <version.h>
 #include <arduinoCryptoHandler.hpp>
+#include <radio_uart.hpp>
+#include <uart.hpp>
 #include <cmd/payloads.hpp>
 #include <eeprom.hpp>
 #include <i2c.hpp>
 #include <ina219.hpp>
-#include <nrf24l01.hpp>
 #include <parser.hpp>
 #include <pwm.hpp>
 #include <random.hpp>
-#include <sha1.hpp>
-#include <sleep.hpp>
 #include <spi.hpp>
-
+#include <quadencoder.hpp>
+#include <gpio.hpp>
+#include <timer.hpp>
 #include <Framebuffer.hpp>
-#include <avr/sleep.h>
 #include <ds18b20.h>
-#include <onewire.h>
-#include <romsearch.h>
-#include <stdio.h>
-#include <version.h>
 #include <ws2812b.hpp>
-
-Aes aes;
-
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-uint32_t keep_alive_interval_ms = 100; // time in idle loop before entering sleep
-uint32_t idle_loop_cnt_ms = 0;
-#endif
-
-uint16_t cnt_pos = 0;
-uint16_t cnt_neg = 0;
-uint16_t sw_cnt = 0;
-uint8_t sw_pos = 0;
-static uint8_t pinc_prev;
 
 void commandDs18b20(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -68,8 +41,7 @@ void commandBlink(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::BLINK::command_t command(commandPayload);
     COMMANDS::BLINK::response_t response;
 
-    Gpio gpio;
-    gpio.blink();
+    GPIO::blink();
 
     response.serialize(responsePayload);
 }
@@ -78,12 +50,7 @@ void commandRandom(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::RANDOM::response_t response;
 
-    random.addEntropy(AtmelAdc::getRandomByte());
-    random.addEntropy(AtmelAdc::getRandomByte());
-    random.mix();
-    random.addEntropy(AtmelAdc::getRandomByte());
-    random.addEntropy(AtmelAdc::getRandomByte());
-    random.mix();
+    random.addEntropyAndMix();
 
     for (uint8_t i = 0; i < sizeof(response.data); i++) {
         response.data[i] = random.getRandomByte();
@@ -131,11 +98,9 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::AES::command_t command(commandPayload);
     COMMANDS::AES::response_t response;
 
-    Eeprom eeprom;
-
     uint8_t aes_key[16] = {};
     for (uint8_t i = 0; i < 16; i++) {
-        aes_key[i] = eeprom.read(offsetof(eeprom_data_t, EK_KEY) + i);
+        aes_key[i] = EEPROM::read(offsetof(eeprom_data_t, EK_KEY) + i);
     }
 
     uint8_t aes_iv[16] = { 0 };
@@ -145,12 +110,14 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
         response.data[i] = command.data[i];
     }
 
+    AES::Sanitize();
+    
     if (command.type == 'c') {
-        aes.Crypt(response.data, &aes_key[0], &aes_iv[0]);
+        AES::Crypt(response.data, &aes_key[0], &aes_iv[0]);
     }
 
     if (command.type == 'd') {
-        aes.Decrypt(response.data, &aes_key[0], &aes_iv[0]);
+        AES::Decrypt(response.data, &aes_key[0], &aes_iv[0]);
     }
 
     response.type = command.type;
@@ -177,8 +144,7 @@ void commandPwm(uint8_t* commandPayload, uint8_t* responsePayload)
     response.setPin(command.getPin());
     response.setValue(command.getValue());
 
-    Pwm pwm;
-    pwm.write(command.port, command.pin, command.value);
+    PWM::write(command.port, command.pin, command.value);
 
     response.serialize(responsePayload);
 }
@@ -188,10 +154,9 @@ void commandGpio(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::GPIO::command_t command(commandPayload);
     COMMANDS::GPIO::response_t response;
 
-    Gpio gpio;
-    response.setPortb(gpio.readPortB());
-    response.setPortc(gpio.readPortC());
-    response.setPortd(gpio.readPortD());
+    response.setPortb(GPIO::readPortB());
+    response.setPortc(GPIO::readPortC());
+    response.setPortd(GPIO::readPortD());
 
     response.serialize(responsePayload);
 }
@@ -213,60 +178,12 @@ void commandSsd1306(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-uint16_t rising_time = 0;
-uint16_t falling_time = 0;
-uint16_t pulse_width = 0;
-
-ISR(TIMER1_CAPT_vect)
-{
-    if (TCCR1B & (1 << ICES1)) {
-        TCNT1 = 0;
-        rising_time = TCNT1;
-        falling_time = 0;
-        pulse_width = 0;
-        TCCR1B &= ~(1 << ICES1); // input capture on falling edge
-    }
-    else {
-        TCCR1B |= (1 << ICES1);
-        falling_time = TCNT1;
-        pulse_width = falling_time - rising_time;
-    }
-}
-
-ISR(TIMER2_COMPA_vect)
-{
-    TIMSK2 = 0; // disable timer interrupt
-}
-
-void timerStart()
-{
-    TCNT1 = 0;
-    ICR1 = 0;
-    rising_time = 0;
-    falling_time = 0;
-    pulse_width = 0;
-
-    TCCR1B |= (1 << ICES1); // input capture set for rising edge
-    TCCR1B |= (1 << CS10); // no prescaler
-    TIMSK1 |= (1 << ICIE1); // input capture interrupt enable
-}
-
-void timerStop()
-{
-    TIMSK1 &= ~(1 << ICIE1); // input capture interrupt disable
-}
-
 void commandTimer(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::TIMER::command_t command(commandPayload);
     COMMANDS::TIMER::response_t response;
 
-    _delay_ms(10);
-    timerStart();
-    _delay_ms(25);
-    timerStop();
-
-    response.setPulsewidth(pulse_width >> 4); // divide by 16 to get micro seconds
+    response.setPulsewidth(TIMER::getPulseWidthMicroSeconds());
 
     response.serialize(responsePayload);
 }
@@ -276,20 +193,7 @@ void commandVcc(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::VCC::command_t command(commandPayload);
     COMMANDS::VCC::response_t response;
 
-    uint32_t vcc = 0;
-
-    // discard first readings
-    for (uint8_t i = 0; i < 32; i++) {
-        AtmelAdc::readVcc1();
-    }
-
-    // average of measurements
-    for (uint8_t i = 0; i < 32; i++) {
-        vcc += AtmelAdc::readVcc1();
-    }
-    vcc = vcc >> 5;
-
-    response.setVcc(vcc);
+    response.setVcc(AtmelAdc::getAverageVcc());
 
     response.serialize(responsePayload);
 }
@@ -316,10 +220,9 @@ void commandEepromRead(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::EEPROM_READ::command_t command(commandPayload);
     COMMANDS::EEPROM_READ::response_t response;
-    Eeprom eeprom;
 
     response.setAddress(command.getAddress());
-    response.setData(eeprom.read(command.getAddress()));
+    response.setData(EEPROM::read(command.getAddress()));
 
     response.serialize(responsePayload);
 }
@@ -348,12 +251,11 @@ void commandEepromWrite(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::EEPROM_WRITE::command_t command(commandPayload);
     COMMANDS::EEPROM_WRITE::response_t response;
-    Eeprom eeprom;
 
-    eeprom.write(command.getAddress(), command.data);
+    EEPROM::write(command.getAddress(), command.data);
 
     response.setAddress(command.getAddress());
-    response.setData(eeprom.read(command.getAddress()));
+    response.setData(EEPROM::read(command.getAddress()));
 
     response.serialize(responsePayload);
 }
@@ -383,7 +285,6 @@ void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::SET_KEY::command_t command(commandPayload);
     COMMANDS::SET_KEY::response_t response;
-    Eeprom eeprom;
 
     uint16_t address = 0;
 
@@ -402,7 +303,7 @@ void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
 
     if (command.keyId != 'U') {
         for (uint8_t i = 0; i < sizeof(command.keyValue); i++) {
-            eeprom.write(address + i, command.keyValue[i]);
+            EEPROM::write(address + i, command.keyValue[i]);
         }
     }
 
@@ -413,10 +314,9 @@ void commandSetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::SET_DEVICE_NAME::command_t command(commandPayload);
     COMMANDS::SET_DEVICE_NAME::response_t response;
-    Eeprom eeprom;
 
     for (uint8_t i = 0; i < sizeof(command.name); i++) {
-        eeprom.write(offsetof(eeprom_data_t, NAME) + i, command.name[i]);
+        EEPROM::write(offsetof(eeprom_data_t, NAME) + i, command.name[i]);
     }
 
     response.serialize(responsePayload);
@@ -426,10 +326,9 @@ void commandGetDeviceName(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::GET_DEVICE_NAME::command_t command(commandPayload);
     COMMANDS::GET_DEVICE_NAME::response_t response;
-    Eeprom eeprom;
 
     for (uint8_t i = 0; i < sizeof(response.nameString); i++) {
-        response.nameString[i] = eeprom.read(offsetof(eeprom_data_t, NAME) + i);
+        response.nameString[i] = EEPROM::read(offsetof(eeprom_data_t, NAME) + i);
     }
 
     response.serialize(responsePayload);
@@ -447,6 +346,8 @@ void commandGetVersion(uint8_t* commandPayload, uint8_t* responsePayload)
     for (uint8_t i = 0; i < sizeof(response.versionString) && ARDUINO_VERSION[i] != 0; i++) {
         response.versionString[i] = ARDUINO_VERSION[i];
     }
+
+    response.serialize(responsePayload);
 }
 
 void commandGetStatistics(uint8_t* commandPayload, uint8_t* responsePayload)
@@ -651,106 +552,25 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::WAKEUP::command_t command(commandPayload);
     COMMANDS::WAKEUP::response_t response;
-    response.attention = 0;
 
-    // only gateway should execute this command
-#ifndef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    uint8_t read_discover_package[32] = { 0 };
-
-    for (uint16_t i = 0; i < 1000; i++) {
-        uint8_t length = NRF24L01_read_rx_payload(&read_discover_package[0]);
-
-        if (length == 32) {
-            response.attention = read_discover_package[31];
-
-            if ((0 != command.checkAttentionFlag) && (0 == read_discover_package[31])) {
-                // received discover package but about wakeup since data available flag was not set
-                break;
-            }
-            else {
-                NRF24L01_tx(&rf_link_wakeup_command[0], 32);
-
-                for (uint8_t j = 0; j < 31; j++) {
-                    if (read_discover_package[j] != rf_link_discover_package[j]) {
-                        i = 10000;
-                        break;
-                    }
-                }
-            }
-        }
-
-        _delay_ms(10);
-    }
-    _delay_ms(10); // give rf node some time to be ready for new commands
-#endif
+    response.attention = wakeupCommand(command.checkAttentionFlag);
 
     response.serialize(responsePayload);
 }
 
-ISR(PCINT1_vect)
-{
-    // PC0 = (CLK)
-    // PC1 = (DT)
-    // PC2 = (SW)
-    cli(); // disable interrupt
-
-    if ((PINC & 0x03) != pinc_prev) {
-        if (((PINC & 0x03) == 0x00) || ((PINC & 0x03) == 0x03)) {
-            cnt_pos++;
-        }
-        else {
-            cnt_neg++;
-        }
-    }
-
-    pinc_prev = PINC & 0x03;
-
-    if (PINC & 0x04) {
-        if (sw_pos == 0) {
-            sw_cnt++;
-        }
-
-        sw_pos = 1;
-    }
-    else {
-        if (sw_pos == 1) {
-            sw_cnt++;
-        }
-
-        sw_pos = 0;
-    }
-
-    attention_flag = 1;
-
-    sei();
-}
-
-bool quadratureEncoderIsInitialised = false;
 void commandQuadratureEncoder(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::QUADRATURE_ENCODER::command_t command(commandPayload);
     COMMANDS::QUADRATURE_ENCODER::response_t response;
 
-    attention_flag = 0;
+    QUADENCODER::initialize();
 
-    if (!quadratureEncoderIsInitialised) {
-        quadratureEncoderIsInitialised = true;
+    attention_flag = QUADENCODER::isChanged();
 
-        DDRC &= ~(1 << PC0); // set PC0 input (CLK)
-        DDRC &= ~(1 << PC1); // set PC1 input (DT)
-        DDRC &= ~(1 << PC2); // set PC2 input (SW)
-        PCICR = 0x02; // enable PCINT1
-        PCMSK1 = 0x05; // enable pin PCINT8 (PC0) and PCINT10 (PC2)
-                       // seher
-        PORTC |= 0x07; // enable pull-up resistor
-
-        sei();
-    }
-
-    response.setCountpositive(cnt_pos);
-    response.setCountnegative(cnt_neg);
-    response.setSwitchcount(sw_cnt);
-    response.setSwitchposition(sw_pos);
+    response.setCountpositive(QUADENCODER::getCountPositivePulses());
+    response.setCountnegative(QUADENCODER::getCountNegativePulses());
+    response.setSwitchcount(QUADENCODER::getSwitchCount());
+    response.setSwitchposition(QUADENCODER::getSwitchPosition());
 
     response.serialize(responsePayload);
 }
@@ -760,6 +580,7 @@ void commandSetNodeAddress(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::SET_NODE_ADDRESS::command_t command(commandPayload);
     COMMANDS::SET_NODE_ADDRESS::response_t response;
 
+    // TODO: refactor this
     rx_tx_addr[NRF24L01_ADDR_SIZE - 1] = command.nodeAddress;
 
     // update wakeup command and discover package
@@ -776,14 +597,7 @@ void commandKeepAlive(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::KEEP_ALIVE::command_t command(commandPayload);
     COMMANDS::KEEP_ALIVE::response_t response;
 
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    keep_alive_interval_ms = 100 + command.time * 100;
-
-    if (0 == command.time) {
-        // if keep alive interval is set to minimum the go to sleep immediately
-        idle_loop_cnt_ms = keep_alive_interval_ms;
-    }
-#endif
+    setKeepAliveInterval(command.time);
 
     response.serialize(responsePayload);
 }
@@ -912,7 +726,7 @@ int main()
 #endif
 
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
-    ArduinoCryptoHandler cryptoHandler(aes);
+    ArduinoCryptoHandler cryptoHandler;
     Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
 
     parseInput(protocol, (ComBusInterface*)&uart);

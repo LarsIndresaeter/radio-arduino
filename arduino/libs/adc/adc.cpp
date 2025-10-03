@@ -63,4 +63,22 @@ uint8_t getRandomByte()
     return (retval);
 }
 
+uint16_t getAverageVcc()
+{
+    uint32_t vcc = 0;
+
+    // discard first readings
+    for (uint8_t i = 0; i < 32; i++) {
+        AtmelAdc::readVcc1();
+    }
+
+    // average of measurements
+    for (uint8_t i = 0; i < 32; i++) {
+        vcc += AtmelAdc::readVcc1();
+    }
+    vcc = vcc >> 5;
+
+    return(vcc);
+}
+
 }

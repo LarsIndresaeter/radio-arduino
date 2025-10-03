@@ -44,17 +44,13 @@ void print_usage()
     std::cout << "       -d : I2C device address" << std::endl;
     std::cout << "       -o : I2C device offset" << std::endl;
     std::cout << "       -M : ina219 power monitor" << std::endl;
-    std::cout << "       -N : ina219 power monitor, statistic per second for "
-                 "<N> seconds"
-              << std::endl;
+    std::cout << "       -N : get statistics" << std::endl;
     std::cout << "       -X : ds18b20 temperature sensor" << std::endl;
     std::cout << "       -K : set AES Key" << std::endl;
     std::cout << "       -g : dump eeprom from mega328p" << std::endl;
     std::cout << "       -Z : set device name" << std::endl;
     std::cout << "       -z : get device name" << std::endl;
     std::cout << "       -W : WS2812B <string>" << std::endl;
-    std::cout << "       -F : Read servo PWM signal and display on ws2812b ring"
-              << std::endl;
     std::cout << "       -U : radio uart command <s> send, <r> receive" << std::endl;
     std::cout << "       -j : read vcc" << std::endl;
     std::cout << "       -s : sleep" << std::endl;
@@ -178,7 +174,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     bool verbose = false;
 
     while ((option
-            = getopt(argc, argv, "P:DBHECs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:wxqAL:FJU:jn:a:k:p"))
+            = getopt(argc, argv, "P:DBHECs:Rd:VvhtTgGi:I:o:MNXK:Z:zW:wxqAL:JU:jn:a:k:p"))
            != -1) {
         switch (option) {
         case 'd':
@@ -361,7 +357,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             std::cout << mon.getRadio<>(UartCommandIna219()) << std::endl;
             break;
         case 'N':
-            readCurrentAndVoltage(mon, atoi(optarg));
+            std::cout << mon.get<>(UartCommandGetStatistics()) << std::endl;
             break;
         case 'X':
             std::cout << mon.getRadio<>(UartCommandDs18b20()) << std::endl;

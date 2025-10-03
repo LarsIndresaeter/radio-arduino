@@ -10,6 +10,11 @@ bool rx_mode_gateway = true;
 
 uint16_t commandsParsed = 0;
 
+//#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
+uint32_t keep_alive_interval_ms = 100; // time in idle loop before entering sleep
+uint32_t idle_loop_cnt_ms = 0;
+//#endif
+
 uint8_t protocolVersionLastReceivedMessage
     = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
 
@@ -64,11 +69,53 @@ void sendMessage(Protocol protocol, ComBusInterface* comBus, uint8_t* payload)
     }
 }
 
+void sendPayloadToRadioNode(Protocol protocol, uint8_t *payload, uint8_t length)
+{
+    uint8_t packet[COMMANDS::MAX_PACKAGE_LENGTH];
+    uint8_t data_size = 0;
+
+    if (protocolVersionLastReceivedMessage
+            == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::
+                    RADIO_BINARY_AND_TEXT)
+        && rx_mode_gateway) {
+
+        protocol.createPacket(
+            length,
+            payload,
+            &packet[0],
+            protocolVersionLastReceivedMessage);
+
+        data_size = PROTOCOL::HEADER::LENGTH
+            + PROTOCOL::CHECKSUM::LENGTH + length;
+
+        // send command to rx_node and wait for response
+        NRF24L01_tx(&packet[0], data_size);
+    }
+    else if (
+        protocolVersionLastReceivedMessage
+            == static_cast<uint8_t>(
+                PROTOCOL::HEADER::VERSION::
+                    RADIO_ENCRYPTED_BINARY_AND_TEXT)
+        && rx_mode_gateway) {
+        protocol.createEncryptedPacket(
+            length,
+            payload,
+            &packet[0],
+            protocolVersionLastReceivedMessage);
+
+        data_size = PROTOCOL::HEADER::LENGTH
+            + PROTOCOL::CHECKSUM::LENGTH + length
+            + PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD;
+
+        // send command to rx_node and wait for response
+        NRF24L01_tx(&packet[0], data_size);
+    }
+}
+
 void parseInput(Protocol protocol, ComBusInterface* comBus)
 {
     uint8_t c = ' ';
     uint8_t payload[COMMANDS::MAX_PAYLOAD_LENGTH] = {};
-    uint8_t packet[COMMANDS::MAX_PACKAGE_LENGTH];
     uint8_t length = 0;
     uint8_t cnt = 0;
 
@@ -87,42 +134,19 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
                 if (length > 0) { // found payload
                     random.addEntropy(cnt);
 
-                    if (protocolVersionLastReceivedMessage
-                            == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::
-                                    RADIO_BINARY_AND_TEXT)
+                    if ((protocolVersionLastReceivedMessage
+                                == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::
+                                        RADIO_BINARY_AND_TEXT)
+
+                            || protocolVersionLastReceivedMessage
+                                == static_cast<uint8_t>(
+                                    PROTOCOL::HEADER::VERSION::
+                                        RADIO_ENCRYPTED_BINARY_AND_TEXT)
+
+                                )
                         && rx_mode_gateway) {
-                        uint8_t data_size = 0;
-                        protocol.createPacket(
-                            length,
-                            payload,
-                            &packet[0],
-                            protocolVersionLastReceivedMessage);
 
-                        data_size = PROTOCOL::HEADER::LENGTH
-                            + PROTOCOL::CHECKSUM::LENGTH + length;
-
-                        // send command to rx_node and wait for response
-                        NRF24L01_tx(&packet[0], data_size);
-                    }
-                    else if (
-                        protocolVersionLastReceivedMessage
-                            == static_cast<uint8_t>(
-                                PROTOCOL::HEADER::VERSION::
-                                    RADIO_ENCRYPTED_BINARY_AND_TEXT)
-                        && rx_mode_gateway) {
-                        uint8_t data_size = 0;
-                        protocol.createEncryptedPacket(
-                            length,
-                            payload,
-                            &packet[0],
-                            protocolVersionLastReceivedMessage);
-
-                        data_size = PROTOCOL::HEADER::LENGTH
-                            + PROTOCOL::CHECKSUM::LENGTH + length
-                            + PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD;
-
-                        // send command to rx_node and wait for response
-                        NRF24L01_tx(&packet[0], data_size);
+                        sendPayloadToRadioNode(protocol, payload, length);
                     }
                     else {
                         parseCommand(protocol, comBus, payload);
@@ -206,3 +230,52 @@ void parseCommand(
     }
 }
 
+void setKeepAliveInterval(uint8_t interval)
+{
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
+    keep_alive_interval_ms = 100 + interval * 100;
+
+    // TODO: this is probably not what you want
+    if (0 == interval) {
+        // if keep alive interval is set to minimum the go to sleep immediately
+        idle_loop_cnt_ms = keep_alive_interval_ms;
+    }
+#endif
+}
+
+uint8_t wakeupCommand(uint8_t checkAttentionFlag)
+{
+    uint8_t read_discover_package[32] = { 0 };
+    uint8_t attention_flag = 0;
+
+#ifndef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
+    for (uint16_t i = 0; i < 1000; i++) {
+        uint8_t length = NRF24L01_read_rx_payload(&read_discover_package[0]);
+
+        if (length == 32) {
+            attention_flag = read_discover_package[31];
+
+            if ((0 != checkAttentionFlag) && (0 == read_discover_package[31])) {
+                // received discover package but about wakeup since data available flag was not set
+                break;
+            }
+            else {
+                NRF24L01_tx(&rf_link_wakeup_command[0], 32);
+
+                for (uint8_t j = 0; j < 31; j++) {
+                    if (read_discover_package[j] != rf_link_discover_package[j]) {
+                        // set status
+                    }
+                    i = 10000;
+                    break;
+                }
+            }
+        }
+
+        _delay_ms(10);
+    }
+    _delay_ms(10); // give rf node some time to be ready for new commands
+#endif
+ 
+    return attention_flag;
+}

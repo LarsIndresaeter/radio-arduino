@@ -1,8 +1,6 @@
 #include <arduinoCryptoHandler.hpp>
 
-ArduinoCryptoHandler::ArduinoCryptoHandler(
-     Aes& p_aes)
-    : m_aes(p_aes) 
+ArduinoCryptoHandler::ArduinoCryptoHandler()
 {
     uint8_t tmp[16] = { 0 };
     tmp[0]='s';
@@ -19,16 +17,18 @@ void ArduinoCryptoHandler::encryptLastBlock(uint8_t length, uint8_t* buffer)
 {
     uint8_t aes_iv[16] = { 0 };
 
-    m_aes.Crypt(&buffer[length-16], &m_tk[0], &aes_iv[0]);
+    AES::Crypt(&buffer[length-16], &m_tk[0], &aes_iv[0]);
 }
 
 void ArduinoCryptoHandler::encrypt(uint8_t length, uint8_t* buffer)
 {
     uint8_t aes_iv[16] = { 0 };
 
+    AES::Sanitize();
+
     for(int i = 0; i<(length-16); i += 16)
     {
-        m_aes.Crypt(&buffer[i], &m_tk[0], &aes_iv[0]);
+        AES::Crypt(&buffer[i], &m_tk[0], &aes_iv[0]);
 
         for(int j=0;j<16;j++){
             aes_iv[j] = buffer[i + j];
@@ -46,13 +46,15 @@ void ArduinoCryptoHandler::encrypt(uint8_t length, uint8_t* buffer)
 void ArduinoCryptoHandler::decryptLastBlock(uint8_t length, uint8_t* buffer)
 {
     uint8_t aes_iv[16] = { 0 };
-    m_aes.Decrypt(&buffer[length-16], &m_tk[0], &aes_iv[0]);
+    AES::Decrypt(&buffer[length-16], &m_tk[0], &aes_iv[0]);
 }
 
 void ArduinoCryptoHandler::decrypt(uint8_t length, uint8_t* buffer)
 {
     uint8_t aes_iv[16] = { 0 };
     uint8_t tmp[16] = { 0 };
+
+    AES::Sanitize();
 
     if((length > 16) && (length % 16 != 0))
     {
@@ -65,7 +67,7 @@ void ArduinoCryptoHandler::decrypt(uint8_t length, uint8_t* buffer)
             tmp[j] = buffer[i + j];
         }
 
-        m_aes.Decrypt(&buffer[i], &m_tk[0], &aes_iv[0]);
+        AES::Decrypt(&buffer[i], &m_tk[0], &aes_iv[0]);
         // ecb mode
         for(int j=0;j<16;j++){
             aes_iv[j] = tmp[j];

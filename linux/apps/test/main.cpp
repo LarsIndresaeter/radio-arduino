@@ -70,7 +70,6 @@ void print_usage()
     std::cout << "       -I : I2C read command" << std::endl;
     std::cout << "       -K : set AES Key" << std::endl;
     std::cout << "       -O : Test SPI commands" << std::endl;
-    std::cout << "       -S : SHA1 command " << std::endl;
     std::cout << "       -d : I2C device address" << std::endl;
     std::cout << "       -g : dump eeprom from mega328p" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
@@ -97,7 +96,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     uint8_t i2cDeviceAddress = 0b10100000;
 
     while ((option
-            = getopt(argc, argv, "ACEI:K:O:Sd:ghi:o:b"))
+            = getopt(argc, argv, "ACEI:K:O:d:ghi:o:b"))
            != -1) {
         switch (option) {
         case 's':
@@ -145,17 +144,6 @@ void parseOpt(int argc, char* argv[], monitor& mon)
                 std::cout << std::endl;
             }
 
-        } break;
-        case 'S': {
-            std::string s { "best" };
-            std::vector<uint8_t> v { s.begin(), s.end() };
-            std::cout << mon.get<>(UartCommandSha1(v)) << std::endl;
-            compareResult(
-                0xc5, mon.get<>(UartCommandSha1(v)).responseStruct().data[0]);
-            compareResult(
-                0xf5, mon.get<>(UartCommandSha1(v)).responseStruct().data[1]);
-            compareResult(
-                0xe4, mon.get<>(UartCommandSha1(v)).responseStruct().data[2]);
         } break;
         case 'A':
             testAes(mon);
