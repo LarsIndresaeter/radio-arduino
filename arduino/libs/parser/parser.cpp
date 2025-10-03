@@ -69,11 +69,53 @@ void sendMessage(Protocol protocol, ComBusInterface* comBus, uint8_t* payload)
     }
 }
 
+void sendPayloadToRadioNode(Protocol protocol, uint8_t *payload, uint8_t length)
+{
+    uint8_t packet[COMMANDS::MAX_PACKAGE_LENGTH];
+    uint8_t data_size = 0;
+
+    if (protocolVersionLastReceivedMessage
+            == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::
+                    RADIO_BINARY_AND_TEXT)
+        && rx_mode_gateway) {
+
+        protocol.createPacket(
+            length,
+            payload,
+            &packet[0],
+            protocolVersionLastReceivedMessage);
+
+        data_size = PROTOCOL::HEADER::LENGTH
+            + PROTOCOL::CHECKSUM::LENGTH + length;
+
+        // send command to rx_node and wait for response
+        NRF24L01_tx(&packet[0], data_size);
+    }
+    else if (
+        protocolVersionLastReceivedMessage
+            == static_cast<uint8_t>(
+                PROTOCOL::HEADER::VERSION::
+                    RADIO_ENCRYPTED_BINARY_AND_TEXT)
+        && rx_mode_gateway) {
+        protocol.createEncryptedPacket(
+            length,
+            payload,
+            &packet[0],
+            protocolVersionLastReceivedMessage);
+
+        data_size = PROTOCOL::HEADER::LENGTH
+            + PROTOCOL::CHECKSUM::LENGTH + length
+            + PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD;
+
+        // send command to rx_node and wait for response
+        NRF24L01_tx(&packet[0], data_size);
+    }
+}
+
 void parseInput(Protocol protocol, ComBusInterface* comBus)
 {
     uint8_t c = ' ';
     uint8_t payload[COMMANDS::MAX_PAYLOAD_LENGTH] = {};
-    uint8_t packet[COMMANDS::MAX_PACKAGE_LENGTH];
     uint8_t length = 0;
     uint8_t cnt = 0;
 
@@ -92,42 +134,19 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
                 if (length > 0) { // found payload
                     random.addEntropy(cnt);
 
-                    if (protocolVersionLastReceivedMessage
-                            == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::
-                                    RADIO_BINARY_AND_TEXT)
+                    if ((protocolVersionLastReceivedMessage
+                                == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::
+                                        RADIO_BINARY_AND_TEXT)
+
+                            || protocolVersionLastReceivedMessage
+                                == static_cast<uint8_t>(
+                                    PROTOCOL::HEADER::VERSION::
+                                        RADIO_ENCRYPTED_BINARY_AND_TEXT)
+
+                                )
                         && rx_mode_gateway) {
-                        uint8_t data_size = 0;
-                        protocol.createPacket(
-                            length,
-                            payload,
-                            &packet[0],
-                            protocolVersionLastReceivedMessage);
 
-                        data_size = PROTOCOL::HEADER::LENGTH
-                            + PROTOCOL::CHECKSUM::LENGTH + length;
-
-                        // send command to rx_node and wait for response
-                        NRF24L01_tx(&packet[0], data_size);
-                    }
-                    else if (
-                        protocolVersionLastReceivedMessage
-                            == static_cast<uint8_t>(
-                                PROTOCOL::HEADER::VERSION::
-                                    RADIO_ENCRYPTED_BINARY_AND_TEXT)
-                        && rx_mode_gateway) {
-                        uint8_t data_size = 0;
-                        protocol.createEncryptedPacket(
-                            length,
-                            payload,
-                            &packet[0],
-                            protocolVersionLastReceivedMessage);
-
-                        data_size = PROTOCOL::HEADER::LENGTH
-                            + PROTOCOL::CHECKSUM::LENGTH + length
-                            + PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD;
-
-                        // send command to rx_node and wait for response
-                        NRF24L01_tx(&packet[0], data_size);
+                        sendPayloadToRadioNode(protocol, payload, length);
                     }
                     else {
                         parseCommand(protocol, comBus, payload);
