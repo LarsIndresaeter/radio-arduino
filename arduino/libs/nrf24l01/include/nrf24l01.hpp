@@ -34,7 +34,6 @@
 #define NRF24L01_ADDR_SIZE 5
 
 extern uint8_t rx_tx_addr[5];
-extern uint8_t rf_channel;
 extern uint8_t node_address;
 
 void NRF24L01_power_down();
@@ -45,10 +44,11 @@ void NRF24L01_set_rx_as_master(bool master);
 uint8_t NRF24L01_read_rx_payload(uint8_t* arr);
 void NRF24L01_write_tx_payload(uint8_t* arr, uint8_t length);
 void NRF24L01_write_ack_payload(uint8_t* arr, uint8_t length);
-void NRF24L01_init(uint8_t* rx_addr, uint8_t* tx_addr, uint8_t ch, bool master);
+void NRF24L01_init(uint8_t* rx_addr, uint8_t* tx_addr, bool master);
 void NRF24L01_write_register(uint8_t reg, uint8_t value);
 void NRF24L01_write_register(uint8_t reg, uint8_t* arr, uint8_t length);
 uint8_t NRF24L01_read_register(uint8_t reg);
 void NRF24L01_tx(uint8_t* tx_buffer, uint8_t length);
 uint8_t NRF24L01_rx(uint8_t* rx_buffer);
 
+void NRF24L01_set_rf_channel(uint8_t ch);

@@ -451,10 +451,9 @@ void commandRadioUart(
         // illegal address, undocumented 2 byte address
         NRF24L01_write_register(NRF24L01_REGISTER_SETUP_AW, 0x00);
 
-        uint8_t tmp_rf_channel = 125;
         uint8_t addr[5] = { 0, 0, 0, 0, 0x55 };
 
-        NRF24L01_init(&addr[0], &addr[0], tmp_rf_channel, false);
+        NRF24L01_init(&addr[0], &addr[0], false);
     }
     else if (command.mode == 's') // send data read from uart over radio
     {
@@ -495,10 +494,12 @@ void commandNrf24l01Init(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::NRF24L01_INIT::command_t command(commandPayload);
     COMMANDS::NRF24L01_INIT::response_t response;
 
+
+    NRF24L01_set_rf_channel(command.rfChannel);
+
     NRF24L01_init(
         &command.rxAddr[0],
         &command.txAddr[0],
-        command.rfChannel,
         command.gateway == 1);
 
     response.serialize(responsePayload);
@@ -587,7 +588,7 @@ void commandSetNodeAddress(uint8_t* commandPayload, uint8_t* responsePayload)
     rf_link_wakeup_command[31] = command.nodeAddress;
     rf_link_discover_package[30] = command.nodeAddress;
 
-    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
+    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rx_mode_gateway);
 
     response.serialize(responsePayload);
 }
@@ -727,7 +728,7 @@ int main()
     rx_mode_gateway = true;
 #endif
 
-    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
+    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rx_mode_gateway);
     ArduinoCryptoHandler cryptoHandler;
     Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
 

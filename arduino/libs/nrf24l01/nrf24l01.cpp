@@ -93,7 +93,7 @@ void NRF24L01_set_rx_as_master(bool master)
     NRF24L01_flush_tx();
 }
 
-void NRF24L01_init(uint8_t* rx_addr, uint8_t* tx_addr, uint8_t ch, bool master)
+void NRF24L01_init(uint8_t* rx_addr, uint8_t* tx_addr, bool master)
 {
     SPI_init();
 
@@ -113,7 +113,7 @@ void NRF24L01_init(uint8_t* rx_addr, uint8_t* tx_addr, uint8_t ch, bool master)
     NRF24L01_write_register(
         NRF24L01_REGISTER_DYNPD,
         0x03); // enable dynamic payload length on pipe 0
-    NRF24L01_write_register(NRF24L01_REGISTER_RF_CHANNEL, ch);
+    NRF24L01_write_register(NRF24L01_REGISTER_RF_CHANNEL, rf_channel);
     NRF24L01_write_register(
         NRF24L01_REGISTER_RF_SETUP,
         0x06); // 1MBPS, 0dBm (max power)
@@ -276,3 +276,7 @@ uint8_t NRF24L01_rx(uint8_t* rx_buffer)
     return response_length;
 }
 
+void NRF24L01_set_rf_channel(uint8_t ch)
+{
+    rf_channel = ch;
+}
