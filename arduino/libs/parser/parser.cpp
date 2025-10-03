@@ -264,9 +264,10 @@ uint8_t wakeupCommand(uint8_t checkAttentionFlag)
 
                 for (uint8_t j = 0; j < 31; j++) {
                     if (read_discover_package[j] != rf_link_discover_package[j]) {
-                        i = 10000;
-                        break;
+                        // set status
                     }
+                    i = 10000;
+                    break;
                 }
             }
         }
