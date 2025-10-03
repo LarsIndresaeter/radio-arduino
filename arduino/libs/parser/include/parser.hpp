@@ -31,3 +31,5 @@ void parseInput(Protocol protocol, ComBusInterface* comBus);
 void parseCommand(Protocol& protocol, ComBusInterface* comBus, uint8_t* commandPayload);
 
 void setKeepAliveInterval(uint8_t interval);
+
+uint8_t wakeupCommand(uint8_t checkAttentionFlag);

@@ -550,41 +550,8 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::WAKEUP::command_t command(commandPayload);
     COMMANDS::WAKEUP::response_t response;
-    response.attention = 0;
 
-
-    //TODO: refactor this
-
-    // only gateway should execute this command
-#ifndef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    uint8_t read_discover_package[32] = { 0 };
-
-    for (uint16_t i = 0; i < 1000; i++) {
-        uint8_t length = NRF24L01_read_rx_payload(&read_discover_package[0]);
-
-        if (length == 32) {
-            response.attention = read_discover_package[31];
-
-            if ((0 != command.checkAttentionFlag) && (0 == read_discover_package[31])) {
-                // received discover package but about wakeup since data available flag was not set
-                break;
-            }
-            else {
-                NRF24L01_tx(&rf_link_wakeup_command[0], 32);
-
-                for (uint8_t j = 0; j < 31; j++) {
-                    if (read_discover_package[j] != rf_link_discover_package[j]) {
-                        i = 10000;
-                        break;
-                    }
-                }
-            }
-        }
-
-        _delay_ms(10);
-    }
-    _delay_ms(10); // give rf node some time to be ready for new commands
-#endif
+    response.attention = wakeupCommand(command.checkAttentionFlag);
 
     response.serialize(responsePayload);
 }
