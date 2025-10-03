@@ -19,8 +19,6 @@
 #include <ds18b20.h>
 #include <ws2812b.hpp>
 
-Aes aes;
-
 void commandDs18b20(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::DS18B20::command_t command(commandPayload);
@@ -112,12 +110,14 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
         response.data[i] = command.data[i];
     }
 
+    AES::Sanitize();
+    
     if (command.type == 'c') {
-        aes.Crypt(response.data, &aes_key[0], &aes_iv[0]);
+        AES::Crypt(response.data, &aes_key[0], &aes_iv[0]);
     }
 
     if (command.type == 'd') {
-        aes.Decrypt(response.data, &aes_key[0], &aes_iv[0]);
+        AES::Decrypt(response.data, &aes_key[0], &aes_iv[0]);
     }
 
     response.type = command.type;
@@ -756,7 +756,7 @@ int main()
 #endif
 
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
-    ArduinoCryptoHandler cryptoHandler(aes);
+    ArduinoCryptoHandler cryptoHandler;
     Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
 
     parseInput(protocol, (ComBusInterface*)&uart);

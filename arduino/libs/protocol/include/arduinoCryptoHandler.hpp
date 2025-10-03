@@ -7,7 +7,7 @@
 
 class ArduinoCryptoHandler : public CryptoHandlerInterface {
 public:
-    ArduinoCryptoHandler(Aes& p_aes);
+    ArduinoCryptoHandler();
     virtual void encrypt(uint8_t length, uint8_t* buffer);
     virtual void decrypt(uint8_t length, uint8_t* buffer);
     virtual uint32_t checksum(uint8_t length, uint8_t* buffer);
@@ -17,7 +17,6 @@ public:
     virtual void setMacKey(uint8_t mk[16]);
 
 private:
-    Aes& m_aes;
     uint8_t m_tk[16];
     uint8_t m_mk[16];
 
