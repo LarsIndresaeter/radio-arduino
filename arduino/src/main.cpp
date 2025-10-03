@@ -451,10 +451,10 @@ void commandRadioUart(
         // illegal address, undocumented 2 byte address
         NRF24L01_write_register(NRF24L01_REGISTER_SETUP_AW, 0x00);
 
-        uint8_t rf_channel = 125;
+        uint8_t tmp_rf_channel = 125;
         uint8_t addr[5] = { 0, 0, 0, 0, 0x55 };
 
-        NRF24L01_init(&addr[0], &addr[0], rf_channel, false);
+        NRF24L01_init(&addr[0], &addr[0], tmp_rf_channel, false);
     }
     else if (command.mode == 's') // send data read from uart over radio
     {
