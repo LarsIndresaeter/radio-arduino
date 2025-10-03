@@ -196,24 +196,6 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
         }
         else {
             // idle process
-#ifdef USE_NRF24L01_INTTERRUPT
-            RadioUart uartRadio;
-            if (uartRadio.has_data()) {
-                comBus->putChar(uartRadio.getChar());
-            }
-
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-            // radio node rely on interrupt to wake up
-            set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-            sleep_enable();
-            sleep_bod_disable();
-            sei();
-            sleep_cpu();
-            sleep_disable();
-            cli();
-#endif
-#endif
-
             if (rx_mode_gateway) {
                 gatewayIdleLoop(comBus);
             }
