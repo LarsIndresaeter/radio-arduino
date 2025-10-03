@@ -357,7 +357,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             std::cout << mon.getRadio<>(UartCommandIna219()) << std::endl;
             break;
         case 'N':
-            std::cout << mon.get<>(UartCommandGetStatistics()) << std::endl;
+            std::cout << mon.getRadio<>(UartCommandGetStatistics()) << std::endl;
             break;
         case 'X':
             std::cout << mon.getRadio<>(UartCommandDs18b20()) << std::endl;
