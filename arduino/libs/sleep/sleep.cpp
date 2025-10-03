@@ -1,5 +1,7 @@
 #include <sleep.hpp>
 
+extern bool rx_mode_gateway;
+
 uint8_t rf_link_discover_package[32]
     = { 'd', 'i', 's', 'c', 'o', 'v', 'e', 'r', ' ', 0xaa, 0xaa,
           0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
@@ -66,9 +68,10 @@ void rxNodeSleepAndPollForWakeup()
 
 void powerDownRadioAndSleep(uint16_t delay)
 {
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    NRF24L01_power_down();
-#endif
+    if(false == rx_mode_gateway)
+    {
+        NRF24L01_power_down();
+    }
 
     uint16_t i = 0;
 
@@ -86,7 +89,8 @@ void powerDownRadioAndSleep(uint16_t delay)
         }
     }
 
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    NRF24L01_power_up();
-#endif
+    if(false == rx_mode_gateway)
+    {
+        NRF24L01_power_up();
+    }
 }

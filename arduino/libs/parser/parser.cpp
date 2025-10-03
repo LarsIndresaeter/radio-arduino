@@ -2,11 +2,7 @@
 
 Random random;
 
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
 bool rx_mode_gateway = false;
-#else
-bool rx_mode_gateway = true;
-#endif
 
 uint16_t commandsParsed = 0;
 

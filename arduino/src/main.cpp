@@ -721,8 +721,10 @@ int main()
 {
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
     RadioUart uart;
+    rx_mode_gateway = false;
 #else
     Uart uart;
+    rx_mode_gateway = true;
 #endif
 
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
