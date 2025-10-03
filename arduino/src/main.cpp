@@ -578,6 +578,7 @@ void commandSetNodeAddress(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::SET_NODE_ADDRESS::command_t command(commandPayload);
     COMMANDS::SET_NODE_ADDRESS::response_t response;
 
+    // TODO: refactor this
     rx_tx_addr[NRF24L01_ADDR_SIZE - 1] = command.nodeAddress;
 
     // update wakeup command and discover package
