@@ -346,6 +346,8 @@ void commandGetVersion(uint8_t* commandPayload, uint8_t* responsePayload)
     for (uint8_t i = 0; i < sizeof(response.versionString) && ARDUINO_VERSION[i] != 0; i++) {
         response.versionString[i] = ARDUINO_VERSION[i];
     }
+
+    response.serialize(responsePayload);
 }
 
 void commandGetStatistics(uint8_t* commandPayload, uint8_t* responsePayload)
