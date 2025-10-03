@@ -1,39 +1,22 @@
-#include <gpio.hpp>
-#include <protocol.hpp>
-#include <radio_uart.hpp>
-#include <stdio.h>
-#include <uart.hpp>
-
-#include <avr/interrupt.h>
-#include <avr/io.h>
 #include <stdbool.h>
-#include <util/delay.h>
-
-#include <adc.hpp>
-#include <aes.hpp>
+#include <stdio.h>
+#include <version.h>
 #include <arduinoCryptoHandler.hpp>
+#include <radio_uart.hpp>
+#include <uart.hpp>
 #include <cmd/payloads.hpp>
 #include <eeprom.hpp>
 #include <i2c.hpp>
 #include <ina219.hpp>
-#include <nrf24l01.hpp>
 #include <parser.hpp>
 #include <pwm.hpp>
 #include <random.hpp>
-#include <sha1.hpp>
-#include <sleep.hpp>
 #include <spi.hpp>
 #include <quadencoder.hpp>
 #include <gpio.hpp>
 #include <timer.hpp>
-
 #include <Framebuffer.hpp>
-#include <avr/sleep.h>
 #include <ds18b20.h>
-#include <onewire.h>
-#include <romsearch.h>
-#include <stdio.h>
-#include <version.h>
 #include <ws2812b.hpp>
 
 Aes aes;
