@@ -112,6 +112,40 @@ void sendPayloadToRadioNode(Protocol protocol, uint8_t *payload, uint8_t length)
     }
 }
 
+void nodeIdleLoop()
+{
+    _delay_ms(1);
+    idle_loop_cnt_ms++;
+    if (idle_loop_cnt_ms > keep_alive_interval_ms) {
+        // node has been idle for too long so go to sleep and wait for wakeup command
+        rxNodeSleepAndPollForWakeup();
+        idle_loop_cnt_ms = 0;
+    }
+}
+
+void gatewayIdleLoop(ComBusInterface* comBus)
+{
+    // rx gateway reads response in idle loop
+    uint8_t ack_packet[32];
+    uint8_t response_length
+        = NRF24L01_rx(&ack_packet[0]);
+
+    // ignore messages from rx node if it is a wakeup ack packet
+    uint8_t is_wakeup_ack = 0;
+    if (response_length == 32) {
+        is_wakeup_ack = 1;
+        for (uint8_t j = 0; j < 31; j++) {
+            if (ack_packet[j] != rf_link_discover_package[j]) {
+                is_wakeup_ack = 0;
+            }
+        }
+    }
+
+    if (is_wakeup_ack == 0) {
+        comBus->writeBuffer(&ack_packet[0], response_length);
+    }
+}
+
 void parseInput(Protocol protocol, ComBusInterface* comBus)
 {
     uint8_t c = ' ';
@@ -167,6 +201,7 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
             }
 
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
+            // radio node rely on interrupt to wake up
             set_sleep_mode(SLEEP_MODE_PWR_DOWN);
             sleep_enable();
             sleep_bod_disable();
@@ -177,37 +212,12 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
 #endif
 #endif
 
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-            _delay_ms(1);
-            idle_loop_cnt_ms++;
-            if (idle_loop_cnt_ms > keep_alive_interval_ms) {
-                // node has been idle for too long so go to sleep and wait for wakeup command
-                rxNodeSleepAndPollForWakeup();
-                idle_loop_cnt_ms = 0;
+            if (rx_mode_gateway) {
+                gatewayIdleLoop(comBus);
             }
-#endif
-
-#ifndef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-            // rx gateway reads response in idle loop
-            uint8_t ack_packet[32];
-            uint8_t response_length
-                = NRF24L01_rx(&ack_packet[0]);
-
-            // ignore messages from rx node if it is a wakeup ack packet
-            uint8_t is_wakeup_ack = 0;
-            if (response_length == 32) {
-                is_wakeup_ack = 1;
-                for (uint8_t j = 0; j < 31; j++) {
-                    if (ack_packet[j] != rf_link_discover_package[j]) {
-                        is_wakeup_ack = 0;
-                    }
-                }
+            else {
+                nodeIdleLoop();
             }
-
-            if (is_wakeup_ack == 0) {
-                comBus->writeBuffer(&ack_packet[0], response_length);
-            }
-#endif
         }
     }
 }
