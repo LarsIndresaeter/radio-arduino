@@ -6,8 +6,6 @@
 #include <radio_link.hpp>
 #include <util/delay.h>
 
-extern uint8_t rf_link_wakeup_command[32];
-extern uint8_t rf_link_discover_package[32];
 extern uint8_t attention_flag;
 
 void rxNodeSleepAndPollForWakeup();

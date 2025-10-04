@@ -5,3 +5,5 @@
 #include <util/delay.h>
 
 uint8_t sendDiscoverToGateway();
+uint8_t wakeupCommand(uint8_t checkAttentionFlag);
+

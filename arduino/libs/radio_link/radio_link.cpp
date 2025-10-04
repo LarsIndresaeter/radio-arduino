@@ -1,5 +1,11 @@
 #include <radio_link.hpp>
 
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
+    constexpr bool rx_mode_gateway = false;
+#else
+    constexpr bool rx_mode_gateway = true;
+#endif
+
 uint8_t rf_link_discover_package[32]
     = { 'd', 'i', 's', 'c', 'o', 'v', 'e', 'r', ' ', 0xaa, 0xaa,
           0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
@@ -36,5 +42,42 @@ uint8_t sendDiscoverToGateway()
     }
 
     return wakeup_received_from_gateway;
+}
+
+uint8_t wakeupCommand(uint8_t checkAttentionFlag)
+{
+    uint8_t read_discover_package[32] = { 0 };
+    uint8_t attention_flag = 0;
+
+    if (rx_mode_gateway) {
+        for (uint16_t i = 0; i < 1000; i++) {
+            uint8_t length = NRF24L01_read_rx_payload(&read_discover_package[0]);
+
+            if (length == 32) {
+                attention_flag = read_discover_package[31];
+
+                if ((0 != checkAttentionFlag) && (0 == read_discover_package[31])) {
+                    // received discover package but about wakeup since data available flag was not set
+                    break;
+                }
+                else {
+                    NRF24L01_tx(&rf_link_wakeup_command[0], 32);
+
+                    for (uint8_t j = 0; j < 31; j++) {
+                        if (read_discover_package[j] != rf_link_discover_package[j]) {
+                            // set status
+                        }
+                        i = 10000;
+                        break;
+                    }
+                }
+            }
+
+            _delay_ms(10);
+        }
+        _delay_ms(10); // give rf node some time to be ready for new commands
+    }
+
+return attention_flag;
 }
 
