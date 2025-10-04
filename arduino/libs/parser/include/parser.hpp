@@ -4,6 +4,7 @@
 #include <avr/interrupt.h>
 #include <cmd/payloads.hpp>
 #include <nrf24l01.hpp>
+#include <radio_link.hpp>
 #include <protocol.hpp>
 #include <random.hpp>
 #include <sleep.hpp>

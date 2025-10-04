@@ -3,6 +3,7 @@
 #include <avr/interrupt.h>
 #include <avr/sleep.h>
 #include <nrf24l01.hpp>
+#include <radio_link.hpp>
 #include <util/delay.h>
 
 extern uint8_t rf_link_wakeup_command[32];
