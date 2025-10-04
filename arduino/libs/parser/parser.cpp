@@ -121,7 +121,7 @@ void nodeIdleLoop()
     idle_loop_cnt_ms++;
     if (idle_loop_cnt_ms > keep_alive_interval_ms) {
         // node has been idle for too long so go to sleep and wait for wakeup command
-        rxNodeSleepAndPollForWakeup();
+        SLEEP::rfNodeSleepAndPollForWakeup();
         idle_loop_cnt_ms = 0;
     }
 }
@@ -133,7 +133,7 @@ void gatewayIdleLoop(ComBusInterface* comBus)
     uint8_t response_length
         = NRF24L01_rx(&ack_packet[0]);
 
-    uint8_t is_wakeup_ack = is_discover_package(response_length, &ack_packet[0]);
+    uint8_t is_wakeup_ack = RADIOLINK::isDiscoverPackage(response_length, &ack_packet[0]);
 
     if (is_wakeup_ack == 0) {
         comBus->writeBuffer(&ack_packet[0], response_length);

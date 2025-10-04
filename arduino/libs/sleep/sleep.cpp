@@ -1,10 +1,12 @@
 #include <sleep.hpp>
 
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    constexpr bool rx_mode_gateway = false;
+constexpr bool rx_mode_gateway = false;
 #else
-    constexpr bool rx_mode_gateway = true;
+constexpr bool rx_mode_gateway = true;
 #endif
+
+namespace SLEEP {
 
 void powerSaveSleepMs(uint8_t delay_ms)
 {
@@ -27,7 +29,7 @@ void powerSaveSleepMs(uint8_t delay_ms)
     sleep_disable();
 }
 
-void rxNodeSleepAndPollForWakeup()
+void rfNodeSleepAndPollForWakeup()
 {
     // periodically poll rx gateway for wakeup command
 
@@ -36,15 +38,13 @@ void rxNodeSleepAndPollForWakeup()
     while (wakeup_received == 0) {
         powerDownRadioAndSleep(5000);
 
-        wakeup_received = sendDiscoverToGateway();
+        wakeup_received = RADIOLINK::sendDiscoverToGateway();
     }
 }
 
-
 void powerDownRadioAndSleep(uint16_t delay)
 {
-    if(false == rx_mode_gateway)
-    {
+    if (false == rx_mode_gateway) {
         NRF24L01_power_down();
     }
 
@@ -64,8 +64,9 @@ void powerDownRadioAndSleep(uint16_t delay)
         }
     }
 
-    if(false == rx_mode_gateway)
-    {
+    if (false == rx_mode_gateway) {
         NRF24L01_power_up();
     }
 }
+} // namespace
+

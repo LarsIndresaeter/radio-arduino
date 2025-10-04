@@ -6,6 +6,8 @@ constexpr bool rx_mode_gateway = false;
 constexpr bool rx_mode_gateway = true;
 #endif
 
+namespace RADIOLINK {
+
 uint8_t node_address = 0;
 uint8_t rx_tx_addr[5] = { 0xF0, 0xF0, 0xF0, 0xF0, node_address };
 
@@ -18,7 +20,6 @@ uint8_t rf_link_wakeup_command[32]
     = { 'w', 'a', 'k', 'e', 'u', 'p', ' ', 0x55, 0x55, 0x55, 0x55,
           0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
           0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, node_address };
-
 
 void setNodeAddress(uint8_t address)
 {
@@ -55,8 +56,7 @@ uint8_t sendDiscoverToGateway()
         }
     }
 
-    if(wakeup_received_from_gateway)
-    {
+    if (wakeup_received_from_gateway) {
         QUADENCODER::clearChangedFlag();
     }
 
@@ -100,7 +100,7 @@ uint8_t sendWakeupCommandToNode(uint8_t checkAttentionFlag)
     return attention_flag;
 }
 
-uint8_t is_discover_package(uint8_t response_length, uint8_t* packet)
+uint8_t isDiscoverPackage(uint8_t response_length, uint8_t* packet)
 {
     // ignore messages from rx node if it is a wakeup ack packet
     uint8_t is_wakeup_ack = 0;
@@ -115,3 +115,5 @@ uint8_t is_discover_package(uint8_t response_length, uint8_t* packet)
 
     return is_wakeup_ack;
 }
+} // namespace
+

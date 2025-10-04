@@ -136,7 +136,7 @@ void commandSleep(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::SLEEP::command_t command(commandPayload);
     COMMANDS::SLEEP::response_t response;
 
-    powerDownRadioAndSleep(command.getDelay());
+    SLEEP::powerDownRadioAndSleep(command.getDelay());
 
     response.serialize(responsePayload);
 }
@@ -560,7 +560,7 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::WAKEUP::command_t command(commandPayload);
     COMMANDS::WAKEUP::response_t response;
 
-    response.attention = sendWakeupCommandToNode(command.checkAttentionFlag);
+    response.attention = RADIOLINK::sendWakeupCommandToNode(command.checkAttentionFlag);
 
     response.serialize(responsePayload);
 }
@@ -585,7 +585,7 @@ void commandSetNodeAddress(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::SET_NODE_ADDRESS::command_t command(commandPayload);
     COMMANDS::SET_NODE_ADDRESS::response_t response;
 
-    setNodeAddress(command.nodeAddress);
+    RADIOLINK::setNodeAddress(command.nodeAddress);
 
     response.serialize(responsePayload);
 }
@@ -723,7 +723,7 @@ int main()
     Uart uart;
 #endif
 
-    setNodeAddress(0);
+    RADIOLINK::setNodeAddress(0);
     ArduinoCryptoHandler cryptoHandler;
     Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
 
