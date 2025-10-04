@@ -316,14 +316,20 @@ void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-void commandSetDeviceInfo(uint8_t* commandPayload, uint8_t* responsePayload)
+void commandSetName(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::SET_DEVICE_NAME::command_t command(commandPayload);
     COMMANDS::SET_DEVICE_NAME::response_t response;
 
-    for (uint8_t i = 0; i < sizeof(command.name); i++) {
-        EEPROM::write(offsetof(eeprom_data_t, NAME) + i, command.name[i]);
-    }
+    EEPROM::DATA_STORE::setDeviceName(&command.name[0]);
+   //eeprom_data_t settings;
+
+    //EEPROM::readMultiple(0, (uint8_t*)&settings, sizeof(eeprom_data_t));
+    //for(uint8_t i=0;i<sizeof(command.name);i++)
+    //{
+        //settings.NAME[i] = command.name[i];
+    //}
+    //EEPROM::writeMultiple(0, (uint8_t*)&settings, sizeof(eeprom_data_t));
 
     response.serialize(responsePayload);
 }
@@ -333,10 +339,15 @@ void commandGetDeviceName(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::GET_DEVICE_NAME::command_t command(commandPayload);
     COMMANDS::GET_DEVICE_NAME::response_t response;
 
-    for (uint8_t i = 0; i < sizeof(response.nameString); i++) {
-        response.nameString[i] = EEPROM::read(offsetof(eeprom_data_t, NAME) + i);
-    }
+    EEPROM::DATA_STORE::getDeviceName(&response.nameString[0]);
+    //eeprom_data_t settings;
 
+    //EEPROM::readMultiple(0, (uint8_t*)&settings, sizeof(eeprom_data_t));
+    //for(uint8_t i=0;i<sizeof(response.nameString);i++)
+    //{
+        //response.nameString[i] = settings.NAME[i];
+    //}
+ 
     response.serialize(responsePayload);
 }
 
@@ -687,7 +698,7 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
         commandSetKey(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SET_DEVICE_NAME:
-        commandSetDeviceInfo(commandPayload, responsePayload);
+        commandSetName(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::GET_DEVICE_NAME:
         commandGetDeviceName(commandPayload, responsePayload);
