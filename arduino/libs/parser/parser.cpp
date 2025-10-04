@@ -16,6 +16,11 @@ uint32_t idle_loop_cnt_ms = 0;
 uint8_t protocolVersionLastReceivedMessage
     = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
 
+uint16_t getCommandsParsedCounter()
+{
+    return commandsParsed;
+}
+
 void sendMessage(Protocol protocol, ComBusInterface* comBus, uint8_t* payload)
 {
     uint8_t packet[COMMANDS::MAX_PACKAGE_LENGTH];

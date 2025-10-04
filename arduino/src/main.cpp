@@ -365,7 +365,7 @@ void commandGetStatistics(uint8_t* commandPayload, uint8_t* responsePayload)
     response.setUart_tx(UART::getUartTxBytes());
     response.setRf_rx(NRF24L01_getRxBytes());
     response.setRf_tx(NRF24L01_getTxBytes());
-    response.setCommandsparsed(commandsParsed);
+    response.setCommandsparsed(getCommandsParsedCounter());
 
     response.serialize(responsePayload);
 }
