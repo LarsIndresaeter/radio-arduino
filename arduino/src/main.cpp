@@ -19,6 +19,12 @@
 #include <ds18b20.h>
 #include <ws2812b.hpp>
 
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
+    constexpr bool rx_mode_gateway = false;
+#else
+    constexpr bool rx_mode_gateway = true;
+#endif
+
 void commandDs18b20(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::DS18B20::command_t command(commandPayload);
@@ -50,10 +56,10 @@ void commandRandom(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::RANDOM::response_t response;
 
-    random.addEntropyAndMix();
+    RANDOM::addEntropyAndMix();
 
     for (uint8_t i = 0; i < sizeof(response.data); i++) {
-        response.data[i] = random.getRandomByte();
+        response.data[i] = RANDOM::getRandomByte();
     }
 
     response.serialize(responsePayload);
@@ -130,7 +136,7 @@ void commandSleep(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::SLEEP::command_t command(commandPayload);
     COMMANDS::SLEEP::response_t response;
 
-    powerDownRadioAndSleep(command.getDelay());
+    SLEEP::powerDownRadioAndSleep(command.getDelay());
 
     response.serialize(responsePayload);
 }
@@ -355,11 +361,11 @@ void commandGetStatistics(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::GET_STATISTICS::command_t command(commandPayload);
     COMMANDS::GET_STATISTICS::response_t response;
 
-    response.setUart_rx(uart_rx);
-    response.setUart_tx(uart_tx);
-    response.setRf_rx(rf_rx);
-    response.setRf_tx(rf_tx);
-    response.setCommandsparsed(commandsParsed);
+    response.setUart_rx(UART::getUartRxBytes());
+    response.setUart_tx(UART::getUartTxBytes());
+    response.setRf_rx(NRF24L01_getRxBytes());
+    response.setRf_tx(NRF24L01_getTxBytes());
+    response.setCommandsparsed(PARSER::getCommandsParsedCounter());
 
     response.serialize(responsePayload);
 }
@@ -451,10 +457,9 @@ void commandRadioUart(
         // illegal address, undocumented 2 byte address
         NRF24L01_write_register(NRF24L01_REGISTER_SETUP_AW, 0x00);
 
-        uint8_t rf_channel = 125;
         uint8_t addr[5] = { 0, 0, 0, 0, 0x55 };
 
-        NRF24L01_init(&addr[0], &addr[0], rf_channel, false);
+        NRF24L01_init(&addr[0], &addr[0], false);
     }
     else if (command.mode == 's') // send data read from uart over radio
     {
@@ -495,10 +500,12 @@ void commandNrf24l01Init(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::NRF24L01_INIT::command_t command(commandPayload);
     COMMANDS::NRF24L01_INIT::response_t response;
 
+
+    NRF24L01_set_rf_channel(command.rfChannel);
+
     NRF24L01_init(
         &command.rxAddr[0],
         &command.txAddr[0],
-        command.rfChannel,
         command.gateway == 1);
 
     response.serialize(responsePayload);
@@ -553,7 +560,7 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::WAKEUP::command_t command(commandPayload);
     COMMANDS::WAKEUP::response_t response;
 
-    response.attention = wakeupCommand(command.checkAttentionFlag);
+    response.attention = RADIOLINK::sendWakeupCommandToNode(command.checkAttentionFlag);
 
     response.serialize(responsePayload);
 }
@@ -564,8 +571,6 @@ void commandQuadratureEncoder(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::QUADRATURE_ENCODER::response_t response;
 
     QUADENCODER::initialize();
-
-    attention_flag = QUADENCODER::isChanged();
 
     response.setCountpositive(QUADENCODER::getCountPositivePulses());
     response.setCountnegative(QUADENCODER::getCountNegativePulses());
@@ -580,14 +585,7 @@ void commandSetNodeAddress(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::SET_NODE_ADDRESS::command_t command(commandPayload);
     COMMANDS::SET_NODE_ADDRESS::response_t response;
 
-    // TODO: refactor this
-    rx_tx_addr[NRF24L01_ADDR_SIZE - 1] = command.nodeAddress;
-
-    // update wakeup command and discover package
-    rf_link_wakeup_command[31] = command.nodeAddress;
-    rf_link_discover_package[30] = command.nodeAddress;
-
-    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
+    RADIOLINK::setNodeAddress(command.nodeAddress);
 
     response.serialize(responsePayload);
 }
@@ -597,7 +595,7 @@ void commandKeepAlive(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::KEEP_ALIVE::command_t command(commandPayload);
     COMMANDS::KEEP_ALIVE::response_t response;
 
-    setKeepAliveInterval(command.time);
+    PARSER::setKeepAliveInterval(command.time);
 
     response.serialize(responsePayload);
 }
@@ -725,11 +723,11 @@ int main()
     Uart uart;
 #endif
 
-    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rf_channel, rx_mode_gateway);
+    RADIOLINK::setNodeAddress(0);
     ArduinoCryptoHandler cryptoHandler;
     Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
 
-    parseInput(protocol, (ComBusInterface*)&uart);
+    PARSER::parseInput(protocol, (ComBusInterface*)&uart);
 
     return 0;
 }

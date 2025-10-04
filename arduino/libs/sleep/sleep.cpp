@@ -1,16 +1,12 @@
 #include <sleep.hpp>
 
-uint8_t rf_link_discover_package[32]
-    = { 'd', 'i', 's', 'c', 'o', 'v', 'e', 'r', ' ', 0xaa, 0xaa,
-          0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
-          0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, node_address, 1 };
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
+constexpr bool rx_mode_gateway = false;
+#else
+constexpr bool rx_mode_gateway = true;
+#endif
 
-uint8_t rf_link_wakeup_command[32]
-    = { 'w', 'a', 'k', 'e', 'u', 'p', ' ', 0x55, 0x55, 0x55, 0x55,
-          0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
-          0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, node_address };
-
-uint8_t attention_flag = 0;
+namespace SLEEP {
 
 void powerSaveSleepMs(uint8_t delay_ms)
 {
@@ -33,42 +29,24 @@ void powerSaveSleepMs(uint8_t delay_ms)
     sleep_disable();
 }
 
-void rxNodeSleepAndPollForWakeup()
+void rfNodeSleepAndPollForWakeup()
 {
     // periodically poll rx gateway for wakeup command
-
-    uint8_t read_wakeup_command[32] = { 0 };
 
     uint8_t wakeup_received = 0;
 
     while (wakeup_received == 0) {
         powerDownRadioAndSleep(5000);
 
-        // send command to rf gateway
-        rf_link_discover_package[31] = attention_flag;
-        NRF24L01_tx(&rf_link_discover_package[0], 32);
-
-        _delay_ms(10);
-
-        // poll gateway for wakeup command in ack packet
-        uint8_t length = NRF24L01_read_rx_payload(&read_wakeup_command[0]);
-
-        if (length == 32) {
-            wakeup_received = 1;
-            for (uint8_t i = 0; i < 32; i++) {
-                if (read_wakeup_command[i] != rf_link_wakeup_command[i]) {
-                    wakeup_received = 0;
-                }
-            }
-        }
+        wakeup_received = RADIOLINK::sendDiscoverToGateway();
     }
 }
 
 void powerDownRadioAndSleep(uint16_t delay)
 {
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    NRF24L01_power_down();
-#endif
+    if (false == rx_mode_gateway) {
+        NRF24L01_power_down();
+    }
 
     uint16_t i = 0;
 
@@ -81,12 +59,14 @@ void powerDownRadioAndSleep(uint16_t delay)
             powerSaveSleepMs(delay - i);
             i = delay;
         }
-        if (1 == attention_flag) {
+        if (1 == QUADENCODER::pollChangedFlag()) {
             break; // wake up and send discover package
         }
     }
 
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    NRF24L01_power_up();
-#endif
+    if (false == rx_mode_gateway) {
+        NRF24L01_power_up();
+    }
 }
+} // namespace
+

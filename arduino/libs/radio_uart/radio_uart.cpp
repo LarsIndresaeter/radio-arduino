@@ -56,7 +56,6 @@ uint8_t RadioUart::getChar()
 bool RadioUart::has_data()
 {
 
-#ifndef USE_NRF24L01_INTTERRUPT
     uint8_t rx_buf[NRF24L01_PACKET_SIZE] = { 0 };
 
     if (NRF24L01::rb_length == 0) {
@@ -77,7 +76,6 @@ bool RadioUart::has_data()
                 0x70); // clear RX_DR, TX_DS and MAX_TR
         }
     }
-#endif
 
     return NRF24L01::rb_length > 0;
 }
