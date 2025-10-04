@@ -25,9 +25,6 @@
     constexpr bool rx_mode_gateway = true;
 #endif
 
-extern uint8_t rf_link_wakeup_command[32];
-extern uint8_t rf_link_discover_package[32];
-
 void commandDs18b20(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::DS18B20::command_t command(commandPayload);
@@ -593,9 +590,7 @@ void commandSetNodeAddress(uint8_t* commandPayload, uint8_t* responsePayload)
     // TODO: refactor this
     rx_tx_addr[NRF24L01_ADDR_SIZE - 1] = command.nodeAddress;
 
-    // update wakeup command and discover package
-    rf_link_wakeup_command[31] = command.nodeAddress;
-    rf_link_discover_package[30] = command.nodeAddress;
+    setNodeAddress(command.nodeAddress);
 
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rx_mode_gateway);
 

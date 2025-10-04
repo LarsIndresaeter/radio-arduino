@@ -6,8 +6,8 @@ constexpr bool rx_mode_gateway = false;
 constexpr bool rx_mode_gateway = true;
 #endif
 
-uint8_t rx_tx_addr[5] = { 0xF0, 0xF0, 0xF0, 0xF0, node_address };
 uint8_t node_address = 0;
+uint8_t rx_tx_addr[5] = { 0xF0, 0xF0, 0xF0, 0xF0, node_address };
 
 uint8_t rf_link_discover_package[32]
     = { 'd', 'i', 's', 'c', 'o', 'v', 'e', 'r', ' ', 0xaa, 0xaa,
@@ -18,6 +18,15 @@ uint8_t rf_link_wakeup_command[32]
     = { 'w', 'a', 'k', 'e', 'u', 'p', ' ', 0x55, 0x55, 0x55, 0x55,
           0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
           0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, node_address };
+
+
+void setNodeAddress(uint8_t address)
+{
+    node_address = address;
+
+    rf_link_wakeup_command[31] = address;
+    rf_link_discover_package[30] = address;
+}
 
 uint8_t attention_flag = 0;
 
