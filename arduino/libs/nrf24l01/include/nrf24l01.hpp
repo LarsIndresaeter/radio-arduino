@@ -33,9 +33,6 @@
 #define NRF24L01_PACKET_SIZE 32
 #define NRF24L01_ADDR_SIZE 5
 
-extern uint8_t rx_tx_addr[5];
-extern uint8_t node_address;
-
 void NRF24L01_power_down();
 void NRF24L01_power_up();
 void NRF24L01_flush_tx();

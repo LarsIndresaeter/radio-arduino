@@ -6,6 +6,9 @@ constexpr bool rx_mode_gateway = false;
 constexpr bool rx_mode_gateway = true;
 #endif
 
+uint8_t rx_tx_addr[5] = { 0xF0, 0xF0, 0xF0, 0xF0, node_address };
+uint8_t node_address = 0;
+
 uint8_t rf_link_discover_package[32]
     = { 'd', 'i', 's', 'c', 'o', 'v', 'e', 'r', ' ', 0xaa, 0xaa,
           0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,

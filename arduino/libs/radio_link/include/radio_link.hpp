@@ -4,6 +4,9 @@
 #include <nrf24l01.hpp>
 #include <util/delay.h>
 
+extern uint8_t rx_tx_addr[5];
+extern uint8_t node_address;
+
 uint8_t sendDiscoverToGateway();
 uint8_t wakeupCommand(uint8_t checkAttentionFlag);
 
