@@ -587,9 +587,6 @@ void commandSetNodeAddress(uint8_t* commandPayload, uint8_t* responsePayload)
 
     setNodeAddress(command.nodeAddress);
 
-    //TODO: move this to radio_link
-    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rx_mode_gateway);
-
     response.serialize(responsePayload);
 }
 
@@ -726,7 +723,7 @@ int main()
     Uart uart;
 #endif
 
-    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rx_mode_gateway);
+    setNodeAddress(0);
     ArduinoCryptoHandler cryptoHandler;
     Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
 

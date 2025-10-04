@@ -28,6 +28,8 @@ void setNodeAddress(uint8_t address)
     rf_link_discover_package[30] = address;
 
     rx_tx_addr[NRF24L01_ADDR_SIZE - 1] = address;
+
+    NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rx_mode_gateway);
 }
 
 uint8_t sendDiscoverToGateway()

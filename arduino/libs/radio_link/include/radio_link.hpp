@@ -5,11 +5,8 @@
 #include <util/delay.h>
 #include <quadencoder.hpp>
 
-extern uint8_t rx_tx_addr[5];
-
 uint8_t sendDiscoverToGateway();
 uint8_t sendWakeupCommandToNode(uint8_t checkAttentionFlag);
-
 uint8_t is_discover_package(uint8_t response_length, uint8_t* _packet);
-
 void setNodeAddress(uint8_t address);
+
