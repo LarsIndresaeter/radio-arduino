@@ -10,7 +10,6 @@
 #include <util/delay.h>
 
 extern uint8_t attention_flag;
-extern bool rx_mode_gateway;
 extern uint8_t protocolVersionLastReceivedMessage;
 
 extern uint8_t node_address;

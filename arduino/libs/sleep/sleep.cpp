@@ -1,6 +1,10 @@
 #include <sleep.hpp>
 
-extern bool rx_mode_gateway;
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
+    constexpr bool rx_mode_gateway = false;
+#else
+    constexpr bool rx_mode_gateway = true;
+#endif
 
 uint8_t rf_link_discover_package[32]
     = { 'd', 'i', 's', 'c', 'o', 'v', 'e', 'r', ' ', 0xaa, 0xaa,

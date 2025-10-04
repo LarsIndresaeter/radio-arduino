@@ -19,6 +19,12 @@
 #include <ds18b20.h>
 #include <ws2812b.hpp>
 
+#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
+    constexpr bool rx_mode_gateway = false;
+#else
+    constexpr bool rx_mode_gateway = true;
+#endif
+
 void commandDs18b20(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::DS18B20::command_t command(commandPayload);
@@ -722,10 +728,8 @@ int main()
 {
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
     RadioUart uart;
-    rx_mode_gateway = false;
 #else
     Uart uart;
-    rx_mode_gateway = true;
 #endif
 
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rx_mode_gateway);
