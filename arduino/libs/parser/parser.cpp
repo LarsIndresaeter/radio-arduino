@@ -130,16 +130,7 @@ void gatewayIdleLoop(ComBusInterface* comBus)
     uint8_t response_length
         = NRF24L01_rx(&ack_packet[0]);
 
-    // ignore messages from rx node if it is a wakeup ack packet
-    uint8_t is_wakeup_ack = 0;
-    if (response_length == 32) {
-        is_wakeup_ack = 1;
-        for (uint8_t j = 0; j < 31; j++) {
-            if (ack_packet[j] != rf_link_discover_package[j]) {
-                is_wakeup_ack = 0;
-            }
-        }
-    }
+    uint8_t is_wakeup_ack = is_discover_package(response_length, &ack_packet[0]);
 
     if (is_wakeup_ack == 0) {
         comBus->writeBuffer(&ack_packet[0], response_length);

@@ -15,9 +15,6 @@ extern uint8_t protocolVersionLastReceivedMessage;
 
 extern Random random;
 
-extern uint8_t rf_link_wakeup_command[32];
-extern uint8_t rf_link_discover_package[32];
-
 extern uint16_t commandsParsed;
 
 extern uint32_t rf_tx;

@@ -1,9 +1,9 @@
 #include <radio_link.hpp>
 
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    constexpr bool rx_mode_gateway = false;
+constexpr bool rx_mode_gateway = false;
 #else
-    constexpr bool rx_mode_gateway = true;
+constexpr bool rx_mode_gateway = true;
 #endif
 
 uint8_t rf_link_discover_package[32]
@@ -78,6 +78,21 @@ uint8_t wakeupCommand(uint8_t checkAttentionFlag)
         _delay_ms(10); // give rf node some time to be ready for new commands
     }
 
-return attention_flag;
+    return attention_flag;
 }
 
+uint8_t is_discover_package(uint8_t response_length, uint8_t* packet)
+{
+    // ignore messages from rx node if it is a wakeup ack packet
+    uint8_t is_wakeup_ack = 0;
+    if (response_length == 32) {
+        is_wakeup_ack = 1;
+        for (uint8_t j = 0; j < 31; j++) {
+            if (packet[j] != rf_link_discover_package[j]) {
+                is_wakeup_ack = 0;
+            }
+        }
+    }
+
+    return is_wakeup_ack;
+}

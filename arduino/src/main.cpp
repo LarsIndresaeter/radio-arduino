@@ -25,6 +25,9 @@
     constexpr bool rx_mode_gateway = true;
 #endif
 
+extern uint8_t rf_link_wakeup_command[32];
+extern uint8_t rf_link_discover_package[32];
+
 void commandDs18b20(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::DS18B20::command_t command(commandPayload);
