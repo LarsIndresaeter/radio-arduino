@@ -26,6 +26,8 @@ void setNodeAddress(uint8_t address)
 
     rf_link_wakeup_command[31] = address;
     rf_link_discover_package[30] = address;
+
+    rx_tx_addr[NRF24L01_ADDR_SIZE - 1] = address;
 }
 
 uint8_t attention_flag = 0;

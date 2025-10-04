@@ -587,11 +587,9 @@ void commandSetNodeAddress(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::SET_NODE_ADDRESS::command_t command(commandPayload);
     COMMANDS::SET_NODE_ADDRESS::response_t response;
 
-    // TODO: refactor this
-    rx_tx_addr[NRF24L01_ADDR_SIZE - 1] = command.nodeAddress;
-
     setNodeAddress(command.nodeAddress);
 
+    //TODO: move this to radio_link
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rx_mode_gateway);
 
     response.serialize(responsePayload);
