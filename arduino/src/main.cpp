@@ -560,7 +560,7 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::WAKEUP::command_t command(commandPayload);
     COMMANDS::WAKEUP::response_t response;
 
-    response.attention = wakeupCommand(command.checkAttentionFlag);
+    response.attention = sendWakeupCommandToNode(command.checkAttentionFlag);
 
     response.serialize(responsePayload);
 }
@@ -571,8 +571,6 @@ void commandQuadratureEncoder(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::QUADRATURE_ENCODER::response_t response;
 
     QUADENCODER::initialize();
-
-    attention_flag = QUADENCODER::isChanged();
 
     response.setCountpositive(QUADENCODER::getCountPositivePulses());
     response.setCountnegative(QUADENCODER::getCountNegativePulses());

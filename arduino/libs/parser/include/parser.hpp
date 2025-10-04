@@ -10,8 +10,6 @@
 #include <sleep.hpp>
 #include <util/delay.h>
 
-extern uint8_t attention_flag;
-
 extern Random random;
 
 extern uint16_t commandsParsed;

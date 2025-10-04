@@ -59,7 +59,7 @@ void powerDownRadioAndSleep(uint16_t delay)
             powerSaveSleepMs(delay - i);
             i = delay;
         }
-        if (1 == attention_flag) {
+        if (1 == QUADENCODER::pollChangedFlag()) {
             break; // wake up and send discover package
         }
     }

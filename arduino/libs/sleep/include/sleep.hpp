@@ -5,8 +5,7 @@
 #include <nrf24l01.hpp>
 #include <radio_link.hpp>
 #include <util/delay.h>
-
-extern uint8_t attention_flag;
+#include <quadencoder.hpp>
 
 void rxNodeSleepAndPollForWakeup();
 void powerSaveSleepMs(uint8_t delay_ms);

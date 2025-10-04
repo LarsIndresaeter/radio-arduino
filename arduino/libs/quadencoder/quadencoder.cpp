@@ -49,7 +49,12 @@ ISR(PCINT1_vect)
     sei();
 }
 
-uint8_t isChanged()
+uint8_t pollChangedFlag()
+{
+    return quadencoder_updated;
+}
+
+uint8_t clearChangedFlag()
 {
     uint8_t retval = quadencoder_updated;
     quadencoder_updated = 0;

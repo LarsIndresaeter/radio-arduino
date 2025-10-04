@@ -30,15 +30,13 @@ void setNodeAddress(uint8_t address)
     rx_tx_addr[NRF24L01_ADDR_SIZE - 1] = address;
 }
 
-uint8_t attention_flag = 0;
-
 uint8_t sendDiscoverToGateway()
 {
     uint8_t wakeup_received_from_gateway = 0;
     uint8_t read_wakeup_command[32] = { 0 };
 
     // send command to rf gateway
-    rf_link_discover_package[31] = attention_flag;
+    rf_link_discover_package[31] = QUADENCODER::pollChangedFlag();
     NRF24L01_tx(&rf_link_discover_package[0], 32);
 
     _delay_ms(10);
@@ -55,10 +53,15 @@ uint8_t sendDiscoverToGateway()
         }
     }
 
+    if(wakeup_received_from_gateway)
+    {
+        QUADENCODER::clearChangedFlag();
+    }
+
     return wakeup_received_from_gateway;
 }
 
-uint8_t wakeupCommand(uint8_t checkAttentionFlag)
+uint8_t sendWakeupCommandToNode(uint8_t checkAttentionFlag)
 {
     uint8_t read_discover_package[32] = { 0 };
     uint8_t attention_flag = 0;
