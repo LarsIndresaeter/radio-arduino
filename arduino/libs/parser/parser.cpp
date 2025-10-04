@@ -1,7 +1,5 @@
 #include <parser.hpp>
 
-Random random;
-
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
     constexpr bool rx_mode_gateway = false;
 #else
@@ -162,7 +160,7 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
                     (uint8_t*)payload, &protocolVersionLastReceivedMessage);
 
                 if (length > 0) { // found payload
-                    random.addEntropy(cnt);
+                    RANDOM::addEntropy(cnt);
 
                     if ((protocolVersionLastReceivedMessage
                                 == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::

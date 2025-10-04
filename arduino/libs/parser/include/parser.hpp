@@ -10,8 +10,6 @@
 #include <sleep.hpp>
 #include <util/delay.h>
 
-extern Random random;
-
 extern void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInterface* comBus);
 
 void sendMessage(Protocol protocol, ComBusInterface* comBus, uint8_t* payload);

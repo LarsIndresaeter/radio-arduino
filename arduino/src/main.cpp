@@ -56,10 +56,10 @@ void commandRandom(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::RANDOM::response_t response;
 
-    random.addEntropyAndMix();
+    RANDOM::addEntropyAndMix();
 
     for (uint8_t i = 0; i < sizeof(response.data); i++) {
-        response.data[i] = random.getRandomByte();
+        response.data[i] = RANDOM::getRandomByte();
     }
 
     response.serialize(responsePayload);
