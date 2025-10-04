@@ -12,7 +12,6 @@
 extern uint8_t attention_flag;
 extern uint8_t protocolVersionLastReceivedMessage;
 
-extern uint8_t node_address;
 extern Random random;
 
 extern uint8_t rf_link_wakeup_command[32];
