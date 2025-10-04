@@ -49,3 +49,6 @@ void NRF24L01_tx(uint8_t* tx_buffer, uint8_t length);
 uint8_t NRF24L01_rx(uint8_t* rx_buffer);
 
 void NRF24L01_set_rf_channel(uint8_t ch);
+
+uint32_t NRF24L01_getRxBytes();
+uint32_t NRF24L01_getTxBytes();

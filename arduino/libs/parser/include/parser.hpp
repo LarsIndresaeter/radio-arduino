@@ -11,14 +11,10 @@
 #include <util/delay.h>
 
 extern uint8_t attention_flag;
-extern uint8_t protocolVersionLastReceivedMessage;
 
 extern Random random;
 
 extern uint16_t commandsParsed;
-
-extern uint32_t rf_tx;
-extern uint32_t rf_rx;
 
 extern void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInterface* comBus);
 

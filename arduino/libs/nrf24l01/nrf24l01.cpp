@@ -7,6 +7,9 @@ uint32_t rf_rx = 0;
 
 uint8_t rf_channel = 121;
 
+uint32_t NRF24L01_getRxBytes() { return rf_rx; }
+uint32_t NRF24L01_getTxBytes() { return rf_tx; }
+
 // do not expose these functions
 void NRF24L01_wait_for_tx_complete();
 
