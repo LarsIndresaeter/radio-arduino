@@ -365,7 +365,7 @@ void commandGetStatistics(uint8_t* commandPayload, uint8_t* responsePayload)
     response.setUart_tx(UART::getUartTxBytes());
     response.setRf_rx(NRF24L01_getRxBytes());
     response.setRf_tx(NRF24L01_getTxBytes());
-    response.setCommandsparsed(getCommandsParsedCounter());
+    response.setCommandsparsed(PARSER::getCommandsParsedCounter());
 
     response.serialize(responsePayload);
 }
@@ -595,7 +595,7 @@ void commandKeepAlive(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::KEEP_ALIVE::command_t command(commandPayload);
     COMMANDS::KEEP_ALIVE::response_t response;
 
-    setKeepAliveInterval(command.time);
+    PARSER::setKeepAliveInterval(command.time);
 
     response.serialize(responsePayload);
 }
@@ -727,7 +727,7 @@ int main()
     ArduinoCryptoHandler cryptoHandler;
     Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
 
-    parseInput(protocol, (ComBusInterface*)&uart);
+    PARSER::parseInput(protocol, (ComBusInterface*)&uart);
 
     return 0;
 }

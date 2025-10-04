@@ -1,11 +1,12 @@
 #include <parser.hpp>
 
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    constexpr bool rx_mode_gateway = false;
+constexpr bool rx_mode_gateway = false;
 #else
-    constexpr bool rx_mode_gateway = true;
+constexpr bool rx_mode_gateway = true;
 #endif
 
+namespace PARSER {
 uint16_t commandsParsed = 0;
 
 uint32_t keep_alive_interval_ms = 100; // time in idle loop before entering sleep
@@ -72,7 +73,7 @@ void sendMessage(Protocol protocol, ComBusInterface* comBus, uint8_t* payload)
     }
 }
 
-void sendPayloadToRadioNode(Protocol protocol, uint8_t *payload, uint8_t length)
+void sendPayloadToRadioNode(Protocol protocol, uint8_t* payload, uint8_t length)
 {
     uint8_t packet[COMMANDS::MAX_PACKAGE_LENGTH];
     uint8_t data_size = 0;
@@ -179,8 +180,7 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
                     else {
                         parseCommand(protocol, comBus, payload);
 
-                        if (false == rx_mode_gateway)
-                        {
+                        if (false == rx_mode_gateway) {
                             idle_loop_cnt_ms = 0;
                         }
                     }
@@ -231,5 +231,5 @@ void setKeepAliveInterval(uint8_t interval)
         }
     }
 }
-
+} // namespace
 
