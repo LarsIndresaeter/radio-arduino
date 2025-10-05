@@ -10,6 +10,7 @@ typedef struct eeprom_data {
     uint8_t HOTP_KEY[16];
     uint8_t EK_KEY[16];
     uint8_t NAME[16];
+    //uint8_t unused[16];
     uint32_t version;
     uint8_t padding[8];
     uint32_t crc;
@@ -30,6 +31,10 @@ void readMultiple(uint16_t address, uint8_t* buffer, uint16_t length);
 namespace DATA_STORE {
     bool validCrcA();
     bool validCrcB();
+    void calculateCrcAndSetSpareAsActive();
+    void copyActiveToSpare();
+    uint32_t calculateCrcSpare();
+    void CRC32_calculate(uint8_t* buf, uint16_t length, uint32_t* pCrc);
     void getDeviceName(uint8_t* buffer);
     void setDeviceName(uint8_t* buffer);
     void getEncryptionKey(uint8_t* buffer);
