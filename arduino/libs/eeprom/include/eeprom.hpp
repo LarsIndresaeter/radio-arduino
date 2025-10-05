@@ -32,5 +32,7 @@ namespace DATA_STORE {
     bool validCrcB();
     void getDeviceName(uint8_t* buffer);
     void setDeviceName(uint8_t* buffer);
+    void getEncryptionKey(uint8_t* buffer);
+    void setEncryptionKey(uint8_t* buffer);
 } // namespace
 } // namespace

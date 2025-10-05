@@ -105,9 +105,7 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::AES::response_t response;
 
     uint8_t aes_key[16] = {};
-    for (uint8_t i = 0; i < 16; i++) {
-        aes_key[i] = EEPROM::read(offsetof(eeprom_data_t, EK_KEY) + i);
-    }
+    EEPROM::DATA_STORE::getEncryptionKey(&aes_key[0]);
 
     uint8_t aes_iv[16] = { 0 };
 
@@ -292,25 +290,8 @@ void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::SET_KEY::command_t command(commandPayload);
     COMMANDS::SET_KEY::response_t response;
 
-    uint16_t address = 0;
-
-    if (command.keyId == 'T') {
-        address = offsetof(eeprom_data, TK_KEY);
-    }
-    else if (command.keyId == 'H') {
-        address = offsetof(eeprom_data_t, HMAC_KEY);
-    }
-    else if (command.keyId == 'O') {
-        address = offsetof(eeprom_data_t, HOTP_KEY);
-    }
-    else if (command.keyId == 'E') {
-        address = offsetof(eeprom_data_t, EK_KEY);
-    }
-
-    if (command.keyId != 'U') {
-        for (uint8_t i = 0; i < sizeof(command.keyValue); i++) {
-            EEPROM::write(address + i, command.keyValue[i]);
-        }
+    if (command.keyId == 'E') {
+        EEPROM::DATA_STORE::setEncryptionKey((uint8_t*)&command.keyValue[0]);
     }
 
     response.serialize(responsePayload);
@@ -322,14 +303,6 @@ void commandSetName(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::SET_DEVICE_NAME::response_t response;
 
     EEPROM::DATA_STORE::setDeviceName(&command.name[0]);
-   //eeprom_data_t settings;
-
-    //EEPROM::readMultiple(0, (uint8_t*)&settings, sizeof(eeprom_data_t));
-    //for(uint8_t i=0;i<sizeof(command.name);i++)
-    //{
-        //settings.NAME[i] = command.name[i];
-    //}
-    //EEPROM::writeMultiple(0, (uint8_t*)&settings, sizeof(eeprom_data_t));
 
     response.serialize(responsePayload);
 }
@@ -340,14 +313,7 @@ void commandGetDeviceName(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::GET_DEVICE_NAME::response_t response;
 
     EEPROM::DATA_STORE::getDeviceName(&response.nameString[0]);
-    //eeprom_data_t settings;
 
-    //EEPROM::readMultiple(0, (uint8_t*)&settings, sizeof(eeprom_data_t));
-    //for(uint8_t i=0;i<sizeof(response.nameString);i++)
-    //{
-        //response.nameString[i] = settings.NAME[i];
-    //}
- 
     response.serialize(responsePayload);
 }
 
