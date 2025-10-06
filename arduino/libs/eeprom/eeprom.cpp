@@ -44,6 +44,13 @@ namespace DATA_STORE {
 #define ACTIVE_PARTITION_A 1
 #define ACTIVE_PARTITION_B 2
 #define CRC32_POLY 0x04C11DB7 /* AUTODIN II, Ethernet, & FDDI */
+    bool validCrcA();
+    bool validCrcB();
+    void calculateCrcAndSetSpareAsActive();
+    void copyActiveToSpare();
+    uint32_t calculateCrcSpare();
+    void CRC32_calculate(uint8_t* buf, uint16_t length, uint32_t* pCrc);
+
     static uint8_t active = 0;
 
     uint16_t offsetActiveStruct()
@@ -52,13 +59,13 @@ namespace DATA_STORE {
             return offsetof(full_eeprom_t, B);
         }
 
-        return 0;
+        return offsetof(full_eeprom_t, A);
     }
 
     uint16_t offsetSpareStruct()
     {
         if (ACTIVE_PARTITION_B == active) {
-            return 0;
+            return offsetof(full_eeprom_t, A);
         }
 
         return offsetof(full_eeprom_t, B);
@@ -99,12 +106,14 @@ namespace DATA_STORE {
         uint32_t dataVersionB;
         EEPROM::readMultiple(offsetof(full_eeprom_t, A) + offsetof(eeprom_data_t, dataVersion), (uint8_t*)&dataVersionA, sizeof(uint32_t));
         EEPROM::readMultiple(offsetof(full_eeprom_t, B) + offsetof(eeprom_data_t, dataVersion), (uint8_t*)&dataVersionB, sizeof(uint32_t));
+        bool validA = EEPROM::DATA_STORE::validCrcA();
+        bool validB = EEPROM::DATA_STORE::validCrcB();
 
-        if ((false == EEPROM::DATA_STORE::validCrcA()) && (false == EEPROM::DATA_STORE::validCrcB())) {
+        if ((false == validA) && (false == validB)) {
             clearData();
         }
 
-        if ((true == EEPROM::DATA_STORE::validCrcA()) && (true == EEPROM::DATA_STORE::validCrcB())) {
+        if ((true == validA) && (true == validB)) {
             if (dataVersionA > dataVersionB) {
 
                 active = ACTIVE_PARTITION_A;
@@ -113,7 +122,7 @@ namespace DATA_STORE {
                 active = ACTIVE_PARTITION_B;
             }
         }
-        else if (EEPROM::DATA_STORE::validCrcA()) { // implies that B is invalid
+        else if (validA) { // implies that B is invalid
             active = ACTIVE_PARTITION_A;
         }
         else {
@@ -178,7 +187,7 @@ namespace DATA_STORE {
     bool validCrcB()
     {
         eeprom_data_t B;
-        EEPROM::readMultiple(offsetof(full_eeprom_t, B), (uint8_t*)&active, sizeof(eeprom_data_t));
+        EEPROM::readMultiple(offsetof(full_eeprom_t, B), (uint8_t*)&B, sizeof(eeprom_data_t));
 
         // calculate crc
         uint32_t crc = 0;
@@ -196,59 +205,16 @@ namespace DATA_STORE {
         findActivePartition();
     }
 
-    void getDeviceName(uint8_t* buffer)
-    {
-        //TODO: use readMultiple
-        for (uint8_t i = 0; i < 16; i++) {
-            buffer[i] = EEPROM::read(offsetActiveStruct() + offsetof(eeprom_data_t, deviceName) + i);
-        }
-    }
-
-    void setDeviceName(uint8_t* buffer)
-    {
-        copyActiveToSpare();
-        //TODO: use writeMultiple
-        for (uint8_t i = 0; i < 16; i++) {
-            EEPROM::write(offsetSpareStruct() + offsetof(eeprom_data_t, deviceName) + i, buffer[i]);
-        }
-        calculateCrcAndSetSpareAsActive();
-    }
-
-    void getEncryptionKey(uint8_t* buffer)
+    void readFromActive(uint16_t address, uint8_t* buffer, uint16_t length)
     {
         findActivePartition();
-        //TODO: use getMultiple
-        for (uint8_t i = 0; i < 16; i++) {
-            buffer[i] = EEPROM::read(offsetActiveStruct() + offsetof(eeprom_data_t, EK_KEY) + i);
-        }
+        EEPROM::readMultiple(offsetActiveStruct() + address, &buffer[0], length);
     }
 
-    void setEncryptionKey(uint8_t* buffer)
+    void writeToSpareAndSetAsActive(uint16_t address, uint8_t* buffer, uint16_t length)
     {
         copyActiveToSpare();
-        //TODO: use writeMultiple
-        for (uint8_t i = 0; i < 16; i++) {
-            EEPROM::write(offsetSpareStruct() + offsetof(eeprom_data_t, EK_KEY) + i, buffer[i]);
-        }
-        calculateCrcAndSetSpareAsActive();
-    }
-
-    void getTransportKey(uint8_t* buffer)
-    {
-        findActivePartition();
-        //TODO: use getMultiple
-        for (uint8_t i = 0; i < 16; i++) {
-            buffer[i] = EEPROM::read(offsetActiveStruct() + offsetof(eeprom_data_t, TK_KEY) + i);
-        }
-    }
-
-    void setTransportKey(uint8_t* buffer)
-    {
-        copyActiveToSpare();
-        //TODO: use writeMultiple
-        for (uint8_t i = 0; i < 16; i++) {
-            EEPROM::write(offsetSpareStruct() + offsetof(eeprom_data_t, TK_KEY) + i, buffer[i]);
-        }
+        EEPROM::writeMultiple(offsetSpareStruct() + address, &buffer[0], length);
         calculateCrcAndSetSpareAsActive();
     }
 
@@ -260,9 +226,7 @@ namespace DATA_STORE {
 
     void setRequireTransportEncryption(uint8_t flag)
     {
-        copyActiveToSpare();
-        EEPROM::write(offsetSpareStruct() + offsetof(eeprom_data_t, requireEncryption), flag);
-        calculateCrcAndSetSpareAsActive();
+        writeToSpareAndSetAsActive(offsetof(eeprom_data_t, requireEncryption), &flag, 16);
     }
 } // namespace
 } // namespace

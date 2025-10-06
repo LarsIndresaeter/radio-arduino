@@ -228,19 +228,16 @@ void parseCommand(
 
     responsePayload[0] = static_cast<uint8_t>(COMMANDS::OI::UNDEFINED);
 
-
-
-    if((false == transportEncryptionIsRequired) || lastReceivedCommandWasEncrypted())
-    {
+    if ((false == transportEncryptionIsRequired) || lastReceivedCommandWasEncrypted()) {
         commandSwitch(commandPayload, responsePayload, comBus);
-    }
 
-    if (responsePayload[0] != static_cast<uint8_t>(COMMANDS::OI::UNDEFINED)) {
-        if (false == rx_mode_gateway) {
-            _delay_ms(1); // give gateway some time to switch to listening mode
+        if (responsePayload[0] != static_cast<uint8_t>(COMMANDS::OI::UNDEFINED)) {
+            if (false == rx_mode_gateway) {
+                _delay_ms(1); // give gateway some time to switch to listening mode
+            }
+
+            sendMessage(protocol, comBus, responsePayload);
         }
-
-        sendMessage(protocol, comBus, responsePayload);
     }
 }
 
@@ -259,13 +256,11 @@ void setKeepAliveInterval(uint8_t interval)
 
 void setRequireTransportEncryption(uint8_t isRequired)
 {
-    if(lastReceivedCommandWasEncrypted())
-    {
-        if (isRequired == 1) {
+    if (lastReceivedCommandWasEncrypted()) {
+        if (1 == isRequired) {
             transportEncryptionIsRequired = true;
         }
         else {
-
             transportEncryptionIsRequired = false;
         }
     }
