@@ -228,5 +228,21 @@ namespace DATA_STORE {
         calculateCrcAndSetSpareAsActive();
     }
 
+    void getTransportKey(uint8_t* buffer)
+    {
+        for (uint8_t i = 0; i < 16; i++) {
+            buffer[i] = EEPROM::read(offsetActiveStruct() + offsetof(eeprom_data_t, TK_KEY) + i);
+        }
+    }
+
+    void setTransportKey(uint8_t* buffer)
+    {
+        copyActiveToSpare();
+        for (uint8_t i = 0; i < 16; i++) {
+            EEPROM::write(offsetSpareStruct() + offsetof(eeprom_data_t, TK_KEY) + i, buffer[i]);
+        }
+        calculateCrcAndSetSpareAsActive();
+    }
+
 } // namespace
 } // namespace

@@ -7,7 +7,7 @@
 typedef struct eeprom_data {
     uint8_t deviceName[16];
     uint8_t EK_KEY[16];
-    //uint8_t TK_KEY[16];
+    uint8_t TK_KEY[16];
     //uint8_t HMAC_KEY[16];
     //uint8_t HOTP_KEY[16];
     uint32_t dataVersion;
@@ -40,5 +40,7 @@ namespace DATA_STORE {
     void setDeviceName(uint8_t* buffer);
     void getEncryptionKey(uint8_t* buffer);
     void setEncryptionKey(uint8_t* buffer);
+    void getTransportKey(uint8_t* buffer);
+    void setTransportKey(uint8_t* buffer);
 } // namespace
 } // namespace

@@ -81,7 +81,8 @@ void print_usage()
                  "<N> seconds"
               << std::endl;
     std::cout << "       -X : ds18b20 temperature sensor" << std::endl;
-    std::cout << "       -K : set AES Key" << std::endl;
+    std::cout << "       -K : set encryption key" << std::endl;
+    std::cout << "       -A : set transport key" << std::endl;
     std::cout << "       -Z : set device name" << std::endl;
     std::cout << "       -z : get device name" << std::endl;
     std::cout << "       -a : get device version" << std::endl;
@@ -214,7 +215,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     uint8_t i2cDeviceAddress = 0b10100000;
 
     while ((option
-            = getopt(argc, argv, "P:DBSHCs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:L:FJU:jpax"))
+            = getopt(argc, argv, "P:DBSHCs:Rd:VvhtTgGi:I:o:MN:XK:A:Z:zW:L:FJU:jpax"))
            != -1) {
         switch (option) {
         case 'd':
@@ -437,6 +438,18 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             // std::cout << mon.get<>(UartCommandEepromRead(64 + i))
             //<< std::endl;
             //}
+        } break;
+        case 'A': {
+            std::string s(optarg);
+            std::vector<uint8_t> key;
+
+            // read key ascii values
+            for (uint8_t i = 0; i < s.size() & i < 16; i++) {
+                key.push_back(s.at(i));
+            }
+
+            // set key
+            mon.get<>(UartCommandSetKey('T', key));
         } break;
         case 'Z': {
             std::string s(optarg);
