@@ -66,10 +66,10 @@ namespace DATA_STORE {
 
     void increamentSpareVersion()
     {
-        uint32_t version;
-        EEPROM::readMultiple(offsetSpareStruct() + offsetof(eeprom_data_t, version), (uint8_t*)&version, sizeof(uint32_t));
-        version = version + 1;
-        EEPROM::writeMultiple(offsetSpareStruct() + offsetof(eeprom_data_t, version), (uint8_t*)&version, sizeof(uint32_t));
+        uint32_t dataVersion;
+        EEPROM::readMultiple(offsetSpareStruct() + offsetof(eeprom_data_t, dataVersion), (uint8_t*)&dataVersion, sizeof(uint32_t));
+        dataVersion = dataVersion + 1;
+        EEPROM::writeMultiple(offsetSpareStruct() + offsetof(eeprom_data_t, dataVersion), (uint8_t*)&dataVersion, sizeof(uint32_t));
     }
 
     void clearData()
@@ -81,8 +81,8 @@ namespace DATA_STORE {
         eeprom_data_t A;
         EEPROM::readMultiple(offsetof(full_eeprom_t, A), (uint8_t*)&A, sizeof(eeprom_data_t));
 
-        uint32_t version = 0;
-        EEPROM::writeMultiple(offsetof(full_eeprom_t, A) + offsetof(eeprom_data_t, version), (uint8_t*)&version, sizeof(uint32_t));
+        uint32_t dataVersion = 0;
+        EEPROM::writeMultiple(offsetof(full_eeprom_t, A) + offsetof(eeprom_data_t, dataVersion), (uint8_t*)&dataVersion, sizeof(uint32_t));
         uint32_t crc = 0;
         CRC32_calculate((uint8_t*)&A, sizeof(eeprom_data_t) - 4, &crc);
         EEPROM::writeMultiple(offsetof(full_eeprom_t, A) + offsetof(eeprom_data_t, crc), (uint8_t*)&crc, sizeof(uint32_t));
@@ -95,16 +95,25 @@ namespace DATA_STORE {
 
     void findActivePartition()
     {
-        uint32_t versionA;
-        uint32_t versionB;
-        EEPROM::readMultiple(offsetof(full_eeprom_t, A) + offsetof(eeprom_data_t, version), (uint8_t*)&versionA, sizeof(uint32_t));
-        EEPROM::readMultiple(offsetof(full_eeprom_t, B) + offsetof(eeprom_data_t, version), (uint8_t*)&versionB, sizeof(uint32_t));
+        uint32_t dataVersionA;
+        uint32_t dataVersionB;
+        EEPROM::readMultiple(offsetof(full_eeprom_t, A) + offsetof(eeprom_data_t, dataVersion), (uint8_t*)&dataVersionA, sizeof(uint32_t));
+        EEPROM::readMultiple(offsetof(full_eeprom_t, B) + offsetof(eeprom_data_t, dataVersion), (uint8_t*)&dataVersionB, sizeof(uint32_t));
 
         if ((false == EEPROM::DATA_STORE::validCrcA()) && (false == EEPROM::DATA_STORE::validCrcB())) {
             clearData();
         }
 
-        if (EEPROM::DATA_STORE::validCrcA() && (versionA > versionB)) {
+        if ((true == EEPROM::DATA_STORE::validCrcA()) && (true == EEPROM::DATA_STORE::validCrcB())) {
+            if (dataVersionA > dataVersionB) {
+
+                active = ACTIVE_PARTITION_A;
+            }
+            else {
+                active = ACTIVE_PARTITION_B;
+            }
+        }
+        else if (EEPROM::DATA_STORE::validCrcA()) { // implies that B is invalid
             active = ACTIVE_PARTITION_A;
         }
         else {
@@ -190,7 +199,7 @@ namespace DATA_STORE {
     void getDeviceName(uint8_t* buffer)
     {
         for (uint8_t i = 0; i < 16; i++) {
-            buffer[i] = EEPROM::read(offsetActiveStruct() + offsetof(eeprom_data_t, NAME) + i);
+            buffer[i] = EEPROM::read(offsetActiveStruct() + offsetof(eeprom_data_t, deviceName) + i);
         }
     }
 
@@ -198,7 +207,7 @@ namespace DATA_STORE {
     {
         copyActiveToSpare();
         for (uint8_t i = 0; i < 16; i++) {
-            EEPROM::write(offsetSpareStruct() + offsetof(eeprom_data_t, NAME) + i, buffer[i]);
+            EEPROM::write(offsetSpareStruct() + offsetof(eeprom_data_t, deviceName) + i, buffer[i]);
         }
         calculateCrcAndSetSpareAsActive();
     }
