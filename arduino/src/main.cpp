@@ -728,9 +728,7 @@ int main()
 
     Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
 
-    uint8_t tmp = EEPROM::DATA_STORE::getRequireTransportEncryption();
-    //PARSER::setRequireTransportEncryption(EEPROM::DATA_STORE::getRequireTransportEncryption());
-    PARSER::setRequireTransportEncryption(tmp);
+    PARSER::setRequireTransportEncryption(EEPROM::DATA_STORE::getRequireTransportEncryption());
 
     PARSER::parseInput(protocol, (ComBusInterface*)&uart);
 

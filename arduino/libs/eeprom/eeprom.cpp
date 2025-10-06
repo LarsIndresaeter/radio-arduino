@@ -198,57 +198,40 @@ namespace DATA_STORE {
 
     void getDeviceName(uint8_t* buffer)
     {
-        //TODO: use readMultiple
-        for (uint8_t i = 0; i < 16; i++) {
-            buffer[i] = EEPROM::read(offsetActiveStruct() + offsetof(eeprom_data_t, deviceName) + i);
-        }
+        findActivePartition();
+        EEPROM::readMultiple(offsetActiveStruct() + offsetof(eeprom_data_t, deviceName), &buffer[0], 16);
     }
 
     void setDeviceName(uint8_t* buffer)
     {
         copyActiveToSpare();
-        //TODO: use writeMultiple
-        for (uint8_t i = 0; i < 16; i++) {
-            EEPROM::write(offsetSpareStruct() + offsetof(eeprom_data_t, deviceName) + i, buffer[i]);
-        }
+        EEPROM::writeMultiple(offsetSpareStruct() + offsetof(eeprom_data_t, deviceName), &buffer[0], 16);
         calculateCrcAndSetSpareAsActive();
     }
 
     void getEncryptionKey(uint8_t* buffer)
     {
         findActivePartition();
-        //TODO: use getMultiple
-        for (uint8_t i = 0; i < 16; i++) {
-            buffer[i] = EEPROM::read(offsetActiveStruct() + offsetof(eeprom_data_t, EK_KEY) + i);
-        }
+        EEPROM::readMultiple(offsetActiveStruct() + offsetof(eeprom_data_t, EK_KEY), &buffer[0], 16);
     }
 
     void setEncryptionKey(uint8_t* buffer)
     {
         copyActiveToSpare();
-        //TODO: use writeMultiple
-        for (uint8_t i = 0; i < 16; i++) {
-            EEPROM::write(offsetSpareStruct() + offsetof(eeprom_data_t, EK_KEY) + i, buffer[i]);
-        }
+        EEPROM::writeMultiple(offsetSpareStruct() + offsetof(eeprom_data_t, EK_KEY), &buffer[0], 16);
         calculateCrcAndSetSpareAsActive();
     }
 
     void getTransportKey(uint8_t* buffer)
     {
         findActivePartition();
-        //TODO: use getMultiple
-        for (uint8_t i = 0; i < 16; i++) {
-            buffer[i] = EEPROM::read(offsetActiveStruct() + offsetof(eeprom_data_t, TK_KEY) + i);
-        }
+        EEPROM::readMultiple(offsetActiveStruct() + offsetof(eeprom_data_t, TK_KEY), &buffer[0], 16);
     }
 
     void setTransportKey(uint8_t* buffer)
     {
         copyActiveToSpare();
-        //TODO: use writeMultiple
-        for (uint8_t i = 0; i < 16; i++) {
-            EEPROM::write(offsetSpareStruct() + offsetof(eeprom_data_t, TK_KEY) + i, buffer[i]);
-        }
+        EEPROM::writeMultiple(offsetSpareStruct() + offsetof(eeprom_data_t, TK_KEY), &buffer[0], 16);
         calculateCrcAndSetSpareAsActive();
     }
 
