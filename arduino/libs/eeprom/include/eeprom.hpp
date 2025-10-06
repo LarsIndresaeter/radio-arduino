@@ -11,7 +11,8 @@ typedef struct eeprom_data {
     //uint8_t HMAC_KEY[16];
     //uint8_t HOTP_KEY[16];
     uint32_t dataVersion;
-    uint8_t padding[8];
+    uint8_t requireEncryption;
+    uint8_t padding[7];
     uint32_t crc;
 } eeprom_data_t;
 
@@ -42,5 +43,7 @@ namespace DATA_STORE {
     void setEncryptionKey(uint8_t* buffer);
     void getTransportKey(uint8_t* buffer);
     void setTransportKey(uint8_t* buffer);
+    uint8_t getRequireTransportEncryption();
+    void setRequireTransportEncryption(uint8_t flag);
 } // namespace
 } // namespace

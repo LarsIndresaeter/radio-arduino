@@ -45,6 +45,7 @@ enum class OI
     QUADRATURE_ENCODER = 34,
     GET_VERSION = 35,
     GET_STATISTICS = 36,
+    REQUIRE_TRANSPORT_ENCRYPTION = 37,
 };
 
 } // namespace COMMANDS
