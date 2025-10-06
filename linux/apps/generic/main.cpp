@@ -468,7 +468,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         } break;
         case 'e': {
             uint8_t flag = atoi(optarg);
-            std::cout << mon.get<>(UartCommandRequireTransportEncryption(flag), 0) << std::endl;
+            std::cout << mon.get<>(UartCommandRequireTransportEncryption(flag, 1)) << std::endl;
         } break;
         case 'Z': {
             std::string s(optarg);

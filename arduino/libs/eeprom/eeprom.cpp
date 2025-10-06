@@ -246,5 +246,18 @@ namespace DATA_STORE {
         calculateCrcAndSetSpareAsActive();
     }
 
+    bool getRequireTransportEncryption()
+    {
+        findActivePartition();
+        uint8_t requireEncryption = EEPROM::read(offsetActiveStruct() + offsetof(eeprom_data_t, requireEncryption));
+        return (1 == requireEncryption);
+    }
+
+    void setRequireTransportEncryption(bool flag)
+    {
+        copyActiveToSpare();
+        EEPROM::write(offsetSpareStruct() + offsetof(eeprom_data_t, requireEncryption), flag);
+        calculateCrcAndSetSpareAsActive();
+    }
 } // namespace
 } // namespace

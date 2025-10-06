@@ -587,6 +587,11 @@ void commandRequireTransportEncryption(uint8_t* commandPayload, uint8_t* respons
 
     PARSER::setRequireTransportEncryption(command.value);
 
+    if(1 == command.persist)
+    {
+        EEPROM::DATA_STORE::setRequireTransportEncryption(command.value);
+    }
+
     response.serialize(responsePayload);
 }
 
@@ -720,6 +725,8 @@ int main()
     uint8_t transport_key[16] = {0};
     EEPROM::DATA_STORE::getTransportKey(&transport_key[0]);
     ArduinoCryptoHandler cryptoHandler(&transport_key[0]);
+    PARSER::setRequireTransportEncryption(EEPROM::DATA_STORE::getRequireTransportEncryption());
+
     Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
 
     PARSER::parseInput(protocol, (ComBusInterface*)&uart);
