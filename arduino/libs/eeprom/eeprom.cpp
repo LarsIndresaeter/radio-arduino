@@ -187,7 +187,7 @@ namespace DATA_STORE {
     bool validCrcB()
     {
         eeprom_data_t B;
-        EEPROM::readMultiple(offsetof(full_eeprom_t, B), (uint8_t*)&active, sizeof(eeprom_data_t));
+        EEPROM::readMultiple(offsetof(full_eeprom_t, B), (uint8_t*)&B, sizeof(eeprom_data_t));
 
         // calculate crc
         uint32_t crc = 0;
