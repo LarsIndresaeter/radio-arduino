@@ -43,7 +43,7 @@ namespace DATA_STORE {
     void setEncryptionKey(uint8_t* buffer);
     void getTransportKey(uint8_t* buffer);
     void setTransportKey(uint8_t* buffer);
-    bool getRequireTransportEncryption();
-    void setRequireTransportEncryption(bool flag);
+    uint8_t getRequireTransportEncryption();
+    void setRequireTransportEncryption(uint8_t flag);
 } // namespace
 } // namespace
