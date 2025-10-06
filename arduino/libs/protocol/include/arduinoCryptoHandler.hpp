@@ -7,7 +7,7 @@
 
 class ArduinoCryptoHandler : public CryptoHandlerInterface {
 public:
-    ArduinoCryptoHandler();
+    ArduinoCryptoHandler(uint8_t* tk);
     virtual void encrypt(uint8_t length, uint8_t* buffer);
     virtual void decrypt(uint8_t length, uint8_t* buffer);
     virtual uint32_t checksum(uint8_t length, uint8_t* buffer);
