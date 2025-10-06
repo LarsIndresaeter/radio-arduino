@@ -105,7 +105,7 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::AES::response_t response;
 
     uint8_t aes_key[16] = {};
-    EEPROM::DATA_STORE::getEncryptionKey(&aes_key[0]);
+    EEPROM::DATA_STORE::readFromActive(offsetof(eeprom_data_t, EK_KEY), &aes_key[0], 16);
 
     uint8_t aes_iv[16] = { 0 };
 
@@ -291,21 +291,21 @@ void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::SET_KEY::response_t response;
 
     if (command.keyId == 'E') {
-        EEPROM::DATA_STORE::setEncryptionKey((uint8_t*)&command.keyValue[0]);
+        EEPROM::DATA_STORE::writeToSpareAndSetAsActive(offsetof(eeprom_data_t, EK_KEY), &command.keyValue[0], 16);
     }
     else if (command.keyId == 'T') {
-        EEPROM::DATA_STORE::setTransportKey((uint8_t*)&command.keyValue[0]);
+        EEPROM::DATA_STORE::writeToSpareAndSetAsActive(offsetof(eeprom_data_t, TK_KEY), &command.keyValue[0], 16);
     }
 
     response.serialize(responsePayload);
 }
 
-void commandSetName(uint8_t* commandPayload, uint8_t* responsePayload)
+void commandSetDeviceName(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::SET_DEVICE_NAME::command_t command(commandPayload);
     COMMANDS::SET_DEVICE_NAME::response_t response;
 
-    EEPROM::DATA_STORE::setDeviceName(&command.name[0]);
+    EEPROM::DATA_STORE::writeToSpareAndSetAsActive(offsetof(eeprom_data_t, deviceName), &command.name[0], 16);
 
     response.serialize(responsePayload);
 }
@@ -315,7 +315,7 @@ void commandGetDeviceName(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::GET_DEVICE_NAME::command_t command(commandPayload);
     COMMANDS::GET_DEVICE_NAME::response_t response;
 
-    EEPROM::DATA_STORE::getDeviceName(&response.nameString[0]);
+    EEPROM::DATA_STORE::readFromActive(offsetof(eeprom_data_t, deviceName), &response.nameString[0], 16);
 
     response.serialize(responsePayload);
 }
@@ -682,7 +682,7 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
         commandSetKey(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SET_DEVICE_NAME:
-        commandSetName(commandPayload, responsePayload);
+        commandSetDeviceName(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::GET_DEVICE_NAME:
         commandGetDeviceName(commandPayload, responsePayload);
@@ -723,7 +723,7 @@ int main()
 
     RADIOLINK::setNodeAddress(0);
     uint8_t transport_key[16] = {0};
-    EEPROM::DATA_STORE::getTransportKey(&transport_key[0]);
+    EEPROM::DATA_STORE::readFromActive(offsetof(eeprom_data_t, TK_KEY), &transport_key[0], 16);
     ArduinoCryptoHandler cryptoHandler(&transport_key[0]);
 
     Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
