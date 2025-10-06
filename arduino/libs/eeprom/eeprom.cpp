@@ -214,6 +214,7 @@ namespace DATA_STORE {
 
     void getEncryptionKey(uint8_t* buffer)
     {
+        findActivePartition();
         for (uint8_t i = 0; i < 16; i++) {
             buffer[i] = EEPROM::read(offsetActiveStruct() + offsetof(eeprom_data_t, EK_KEY) + i);
         }
@@ -230,6 +231,7 @@ namespace DATA_STORE {
 
     void getTransportKey(uint8_t* buffer)
     {
+        findActivePartition();
         for (uint8_t i = 0; i < 16; i++) {
             buffer[i] = EEPROM::read(offsetActiveStruct() + offsetof(eeprom_data_t, TK_KEY) + i);
         }

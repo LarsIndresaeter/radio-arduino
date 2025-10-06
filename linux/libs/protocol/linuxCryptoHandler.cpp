@@ -6,12 +6,19 @@
 LinuxCryptoHandler::LinuxCryptoHandler()
 {
     uint8_t tmp[16] = { 0 };
-    tmp[0] = 's';
-    tmp[1] = 'e';
-    tmp[2] = 'c';
-    tmp[3] = 'r';
-    tmp[4] = 'e';
-    tmp[5] = 't';
+    tmp[0] = 't';
+    tmp[1] = 'r';
+    tmp[2] = 'a';
+    tmp[3] = 'n';
+    tmp[4] = 's';
+    tmp[5] = 'p';
+    tmp[6] = 'o';
+    tmp[7] = 'r';
+    tmp[8] = 't';
+    tmp[9] = '-';
+    tmp[10] = 'k';
+    tmp[11] = 'e';
+    tmp[12] = 'y';
     setMacKey(tmp);
     setTransportKey(tmp);
 }

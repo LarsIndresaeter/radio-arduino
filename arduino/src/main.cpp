@@ -705,13 +705,7 @@ int main()
 
     RADIOLINK::setNodeAddress(0);
     uint8_t transport_key[16] = {0};
-    //transport_key[0]='s';
-    //transport_key[1]='e';
-    //transport_key[2]='c';
-    //transport_key[3]='r';
-    //transport_key[4]='e';
-    //transport_key[5]='t';
-    EEPROM::DATA_STORE::getEncryptionKey(&transport_key[0]);
+    EEPROM::DATA_STORE::getTransportKey(&transport_key[0]);
     ArduinoCryptoHandler cryptoHandler(&transport_key[0]);
     Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
 

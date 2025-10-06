@@ -208,7 +208,7 @@ void readCurrentAndVoltage(monitor& mon, int samples)
     }
 }
 
-void parseOpt(int argc, char* argv[], monitor& mon)
+void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)
 {
     char option = 0;
     uint16_t i2cDeviceOffset = 0;
@@ -450,6 +450,8 @@ void parseOpt(int argc, char* argv[], monitor& mon)
 
             // set key
             mon.get<>(UartCommandSetKey('T', key));
+            cryptoHandler.setTransportKey((uint8_t*)&key[0]);
+            cryptoHandler.setMacKey((uint8_t*)&key[0]);
         } break;
         case 'Z': {
             std::string s(optarg);
@@ -510,7 +512,7 @@ int main(int argc, char* argv[])
 
     std::thread readerThread(&EventProcess::Run, &ep);
 
-    parseOpt(argc, argv, mon);
+    parseOpt(argc, argv, mon, cryptoHandler);
 
     readerThread.join();
 
