@@ -7,7 +7,7 @@
 namespace COMMANDS {
 
 namespace REQUIRE_TRANSPORT_ENCRYPTION {
-    constexpr uint8_t COMMAND_LENGTH = 1;
+    constexpr uint8_t COMMAND_LENGTH = 2;
     constexpr uint8_t RESPONSE_LENGTH = 0;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
@@ -25,6 +25,7 @@ namespace REQUIRE_TRANSPORT_ENCRYPTION {
             OI = cmd[0];
             OL = cmd[1];
             value = cmd[2];
+            persist = cmd[3];
         }
 
         uint8_t getValue()
@@ -37,9 +38,20 @@ namespace REQUIRE_TRANSPORT_ENCRYPTION {
             value = val;
         }
 
+        uint8_t getPersist()
+        {
+            return (persist);
+        }
+
+        void setPersist(uint8_t val)
+        {
+            persist = val;
+        }
+
         uint8_t OI;
         uint8_t OL;
         uint8_t value;
+        uint8_t persist;
     } command_t;
 
     typedef struct response {
