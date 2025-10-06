@@ -9,6 +9,8 @@ constexpr bool rx_mode_gateway = true;
 namespace PARSER {
 uint16_t commandsParsed = 0;
 
+bool transportEncryptionIsRequired = true;
+
 uint32_t keep_alive_interval_ms = 100; // time in idle loop before entering sleep
 uint32_t idle_loop_cnt_ms = 0;
 
@@ -200,6 +202,24 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
     }
 }
 
+bool lastReceivedCommandWasEncrypted()
+{
+    bool retval = false;
+    if ((
+            protocolVersionLastReceivedMessage
+            == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::
+                    ENCRYPTED_BINARY_AND_TEXT))
+
+        || (protocolVersionLastReceivedMessage
+            == static_cast<uint8_t>(
+                PROTOCOL::HEADER::VERSION::
+                    RADIO_ENCRYPTED_BINARY_AND_TEXT))) {
+        retval = true;
+    }
+
+    return retval;
+}
+
 void parseCommand(
     Protocol& protocol, ComBusInterface* comBus, uint8_t* commandPayload)
 {
@@ -208,7 +228,12 @@ void parseCommand(
 
     responsePayload[0] = static_cast<uint8_t>(COMMANDS::OI::UNDEFINED);
 
-    commandSwitch(commandPayload, responsePayload, comBus);
+
+
+    if((false == transportEncryptionIsRequired) || lastReceivedCommandWasEncrypted())
+    {
+        commandSwitch(commandPayload, responsePayload, comBus);
+    }
 
     if (responsePayload[0] != static_cast<uint8_t>(COMMANDS::OI::UNDEFINED)) {
         if (false == rx_mode_gateway) {
@@ -231,5 +256,20 @@ void setKeepAliveInterval(uint8_t interval)
         }
     }
 }
+
+void setRequireTransportEncryption(uint8_t isRequired)
+{
+    if(lastReceivedCommandWasEncrypted())
+    {
+        if (isRequired == 1) {
+            transportEncryptionIsRequired = true;
+        }
+        else {
+
+            transportEncryptionIsRequired = false;
+        }
+    }
+}
+
 } // namespace
 

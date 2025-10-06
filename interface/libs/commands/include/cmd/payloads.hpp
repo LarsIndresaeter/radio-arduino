@@ -40,3 +40,4 @@
 #include <cmd/quadrature_encoder/payload.hpp>
 #include <cmd/get_version/payload.hpp>
 #include <cmd/get_statistics/payload.hpp>
+#include <cmd/require_transport_encryption/payload.hpp>

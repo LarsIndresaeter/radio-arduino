@@ -39,3 +39,4 @@
 #include <cmd/quadrature_encoder/command.hpp>
 #include <cmd/get_version/command.hpp>
 #include <cmd/get_statistics/command.hpp>
+#include <cmd/require_transport_encryption/command.hpp>

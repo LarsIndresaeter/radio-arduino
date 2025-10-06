@@ -580,6 +580,16 @@ void commandKeepAlive(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
+void commandRequireTransportEncryption(uint8_t* commandPayload, uint8_t* responsePayload)
+{
+    COMMANDS::REQUIRE_TRANSPORT_ENCRYPTION::command_t command(commandPayload);
+    COMMANDS::REQUIRE_TRANSPORT_ENCRYPTION::response_t response;
+
+    PARSER::setRequireTransportEncryption(command.value);
+
+    response.serialize(responsePayload);
+}
+
 void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInterface* comBus)
 {
     uint8_t cmd_id = commandPayload[0];
@@ -689,6 +699,9 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
         break;
     case COMMANDS::OI::KEEP_ALIVE:
         commandKeepAlive(commandPayload, responsePayload);
+        break;
+    case COMMANDS::OI::REQUIRE_TRANSPORT_ENCRYPTION:
+        commandRequireTransportEncryption(commandPayload, responsePayload);
         break;
     default:
         break;

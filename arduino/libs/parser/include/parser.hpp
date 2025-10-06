@@ -16,6 +16,7 @@ namespace PARSER {
 void sendMessage(Protocol protocol, ComBusInterface* comBus, uint8_t* payload);
 void parseInput(Protocol protocol, ComBusInterface* comBus);
 void parseCommand(Protocol& protocol, ComBusInterface* comBus, uint8_t* commandPayload);
+void setRequireTransportEncryption(uint8_t isRequired);
 
 void setKeepAliveInterval(uint8_t interval);
 uint16_t getCommandsParsedCounter();
