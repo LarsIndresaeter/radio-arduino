@@ -1,16 +1,9 @@
 #include <arduinoCryptoHandler.hpp>
 
-ArduinoCryptoHandler::ArduinoCryptoHandler()
+ArduinoCryptoHandler::ArduinoCryptoHandler(uint8_t* tk)
 {
-    uint8_t tmp[16] = { 0 };
-    tmp[0]='s';
-    tmp[1]='e';
-    tmp[2]='c';
-    tmp[3]='r';
-    tmp[4]='e';
-    tmp[5]='t';
-    setMacKey(tmp);
-    setTransportKey(tmp);
+    setMacKey(tk);
+    setTransportKey(tk);
 }
 
 void ArduinoCryptoHandler::encryptLastBlock(uint8_t length, uint8_t* buffer)

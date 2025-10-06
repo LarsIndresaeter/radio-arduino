@@ -293,6 +293,9 @@ void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
     if (command.keyId == 'E') {
         EEPROM::DATA_STORE::setEncryptionKey((uint8_t*)&command.keyValue[0]);
     }
+    else if (command.keyId == 'T') {
+        EEPROM::DATA_STORE::setTransportKey((uint8_t*)&command.keyValue[0]);
+    }
 
     response.serialize(responsePayload);
 }
@@ -701,7 +704,9 @@ int main()
 #endif
 
     RADIOLINK::setNodeAddress(0);
-    ArduinoCryptoHandler cryptoHandler;
+    uint8_t transport_key[16] = {0};
+    EEPROM::DATA_STORE::getTransportKey(&transport_key[0]);
+    ArduinoCryptoHandler cryptoHandler(&transport_key[0]);
     Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
 
     PARSER::parseInput(protocol, (ComBusInterface*)&uart);

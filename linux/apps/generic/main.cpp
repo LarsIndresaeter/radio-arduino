@@ -81,7 +81,8 @@ void print_usage()
                  "<N> seconds"
               << std::endl;
     std::cout << "       -X : ds18b20 temperature sensor" << std::endl;
-    std::cout << "       -K : set AES Key" << std::endl;
+    std::cout << "       -K : set encryption key" << std::endl;
+    std::cout << "       -A : set transport key" << std::endl;
     std::cout << "       -Z : set device name" << std::endl;
     std::cout << "       -z : get device name" << std::endl;
     std::cout << "       -a : get device version" << std::endl;
@@ -207,14 +208,14 @@ void readCurrentAndVoltage(monitor& mon, int samples)
     }
 }
 
-void parseOpt(int argc, char* argv[], monitor& mon)
+void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)
 {
     char option = 0;
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
 
     while ((option
-            = getopt(argc, argv, "P:DBSHCs:Rd:VvhtTgGi:I:o:MN:XK:Z:zW:L:FJU:jpax"))
+            = getopt(argc, argv, "P:DBSHCs:Rd:VvhtTgGi:I:o:MN:XK:A:Z:zW:L:FJU:jpax"))
            != -1) {
         switch (option) {
         case 'd':
@@ -438,6 +439,20 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             //<< std::endl;
             //}
         } break;
+        case 'A': {
+            std::string s(optarg);
+            std::vector<uint8_t> key;
+
+            // read key ascii values
+            for (uint8_t i = 0; i < s.size() & i < 16; i++) {
+                key.push_back(s.at(i));
+            }
+
+            // set key
+            mon.get<>(UartCommandSetKey('T', key));
+            cryptoHandler.setTransportKey((uint8_t*)&key[0]);
+            cryptoHandler.setMacKey((uint8_t*)&key[0]);
+        } break;
         case 'Z': {
             std::string s(optarg);
             std::vector<uint8_t> name;
@@ -497,7 +512,7 @@ int main(int argc, char* argv[])
 
     std::thread readerThread(&EventProcess::Run, &ep);
 
-    parseOpt(argc, argv, mon);
+    parseOpt(argc, argv, mon, cryptoHandler);
 
     readerThread.join();
 
