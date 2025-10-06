@@ -725,9 +725,12 @@ int main()
     uint8_t transport_key[16] = {0};
     EEPROM::DATA_STORE::getTransportKey(&transport_key[0]);
     ArduinoCryptoHandler cryptoHandler(&transport_key[0]);
-    PARSER::setRequireTransportEncryption(EEPROM::DATA_STORE::getRequireTransportEncryption());
 
     Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
+
+    uint8_t tmp = EEPROM::DATA_STORE::getRequireTransportEncryption();
+    //PARSER::setRequireTransportEncryption(EEPROM::DATA_STORE::getRequireTransportEncryption());
+    PARSER::setRequireTransportEncryption(tmp);
 
     PARSER::parseInput(protocol, (ComBusInterface*)&uart);
 

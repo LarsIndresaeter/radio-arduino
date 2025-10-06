@@ -198,6 +198,7 @@ namespace DATA_STORE {
 
     void getDeviceName(uint8_t* buffer)
     {
+        //TODO: use readMultiple
         for (uint8_t i = 0; i < 16; i++) {
             buffer[i] = EEPROM::read(offsetActiveStruct() + offsetof(eeprom_data_t, deviceName) + i);
         }
@@ -206,6 +207,7 @@ namespace DATA_STORE {
     void setDeviceName(uint8_t* buffer)
     {
         copyActiveToSpare();
+        //TODO: use writeMultiple
         for (uint8_t i = 0; i < 16; i++) {
             EEPROM::write(offsetSpareStruct() + offsetof(eeprom_data_t, deviceName) + i, buffer[i]);
         }
@@ -215,6 +217,7 @@ namespace DATA_STORE {
     void getEncryptionKey(uint8_t* buffer)
     {
         findActivePartition();
+        //TODO: use getMultiple
         for (uint8_t i = 0; i < 16; i++) {
             buffer[i] = EEPROM::read(offsetActiveStruct() + offsetof(eeprom_data_t, EK_KEY) + i);
         }
@@ -223,6 +226,7 @@ namespace DATA_STORE {
     void setEncryptionKey(uint8_t* buffer)
     {
         copyActiveToSpare();
+        //TODO: use writeMultiple
         for (uint8_t i = 0; i < 16; i++) {
             EEPROM::write(offsetSpareStruct() + offsetof(eeprom_data_t, EK_KEY) + i, buffer[i]);
         }
@@ -232,6 +236,7 @@ namespace DATA_STORE {
     void getTransportKey(uint8_t* buffer)
     {
         findActivePartition();
+        //TODO: use getMultiple
         for (uint8_t i = 0; i < 16; i++) {
             buffer[i] = EEPROM::read(offsetActiveStruct() + offsetof(eeprom_data_t, TK_KEY) + i);
         }
@@ -240,6 +245,7 @@ namespace DATA_STORE {
     void setTransportKey(uint8_t* buffer)
     {
         copyActiveToSpare();
+        //TODO: use writeMultiple
         for (uint8_t i = 0; i < 16; i++) {
             EEPROM::write(offsetSpareStruct() + offsetof(eeprom_data_t, TK_KEY) + i, buffer[i]);
         }
