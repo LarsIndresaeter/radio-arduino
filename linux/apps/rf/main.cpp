@@ -31,7 +31,7 @@ void print_usage()
     std::cout << "       -V : Verbose on" << std::endl;
     std::cout << "       -v : Verbose off" << std::endl;
     std::cout << "       -B : Blink command" << std::endl;
-    std::cout << "       -E : EEPROM command" << std::endl;
+    std::cout << "       -e : EEPROM command" << std::endl;
     std::cout << "       -H : HOTP command" << std::endl;
     std::cout << "       -P : pwm command" << std::endl;
     std::cout << "       -R : get random bytes command" << std::endl;
@@ -46,7 +46,7 @@ void print_usage()
     std::cout << "       -M : ina219 power monitor" << std::endl;
     std::cout << "       -N : get statistics" << std::endl;
     std::cout << "       -X : ds18b20 temperature sensor" << std::endl;
-    std::cout << "       -K : set AES Key" << std::endl;
+    std::cout << "       -E : set AES Key" << std::endl;
     std::cout << "       -g : dump eeprom from mega328p" << std::endl;
     std::cout << "       -Z : set device name" << std::endl;
     std::cout << "       -z : get device name" << std::endl;
@@ -63,9 +63,9 @@ void print_usage()
     std::cout << "       -a : update node address" << std::endl;
     std::cout << "       -k : set keep alive interval" << std::endl;
     std::cout << "       -p : ping radio node" << std::endl;
-    std::cout << "       -F : set transport key on device" << std::endl;
+    std::cout << "       -K : set transport key on device (command must be encrypted)" << std::endl;
     std::cout << "       -b : use transport key" << std::endl;
-    std::cout << "       -c : set transport encryption required" << std::endl;
+    std::cout << "       -r : set transport encryption required (command must be encrypted)" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -177,7 +177,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     bool verbose = false;
 
     while ((option
-            = getopt(argc, argv, "P:DBHECs:Rd:VvhtTgGi:I:o:MNXK:Z:zW:wxqAL:JU:jn:a:k:pc:b:F:"))
+            = getopt(argc, argv, "P:DBHeCs:Rd:VvhtTgGi:I:o:MNXE:Z:zW:wxqAL:JU:jn:a:k:pr:b:K:"))
            != -1) {
         switch (option) {
         case 'd':
@@ -266,7 +266,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             }
 
             break;
-        case 'E':
+        case 'e':
             std::cout << mon.getRadio<>(UartCommandEepromWrite(2, 3)) << std::endl;
             std::cout << mon.getRadio<>(UartCommandEepromRead(2)) << std::endl;
             compareResult(
@@ -379,7 +379,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             std::cout << mon.getRadio<>(UartCommandRadioUart(s.at(0))) << std::endl;
             }
             break;
-        case 'K': {
+        case 'E': {
             std::string s(optarg);
             std::vector<uint8_t> key;
 
@@ -443,11 +443,11 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             cryptoHandler.setTransportKey((uint8_t*)&key[0]);
             cryptoHandler.setMacKey((uint8_t*)&key[0]);
         } break;
-        case 'c': {
+        case 'r': {
             uint8_t flag = atoi(optarg);
             std::cout << mon.getRadio<>(UartCommandRequireTransportEncryption(flag, 1)) << std::endl;
         } break;
-        case 'F': {
+        case 'K': {
             std::string s(optarg);
             std::vector<uint8_t> key;
 
@@ -456,7 +456,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
                 key.push_back(s.at(i));
             }
 
-            // set key
             mon.getRadio<>(UartCommandSetKey('T', key));
         } break;
         }

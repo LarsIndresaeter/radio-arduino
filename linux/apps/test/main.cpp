@@ -67,17 +67,18 @@ void print_usage()
     std::cout << "raduino-test" << std::endl;
     std::cout << "       -A : test AES" << std::endl;
     std::cout << "       -C : print counter values" << std::endl;
-    std::cout << "       -E : EEPROM command" << std::endl;
+    std::cout << "       -e : EEPROM command" << std::endl;
     std::cout << "       -I : I2C read command" << std::endl;
-    std::cout << "       -K : set AES Key" << std::endl;
+    std::cout << "       -E : set AES Key" << std::endl;
     std::cout << "       -O : Test SPI commands" << std::endl;
     std::cout << "       -d : I2C device address" << std::endl;
     std::cout << "       -g : dump eeprom from mega328p" << std::endl;
-    std::cout << "       -h : print this text" << std::endl;
     std::cout << "       -i : I2C write command" << std::endl;
     std::cout << "       -o : I2C device offset" << std::endl;
     std::cout << "       -b : test json formatter" << std::endl;
     std::cout << "       -S : rx and tx statistics for node and gateway" << std::endl;
+    std::cout << "       -K : set transport key on device" << std::endl;
+    std::cout << "       -h : print this text" << std::endl;
 }
 
 void compareResult(uint8_t expected, uint8_t actual)
@@ -98,7 +99,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     uint8_t i2cDeviceAddress = 0b10100000;
 
     while ((option
-            = getopt(argc, argv, "ACEI:K:O:d:ghi:o:bS"))
+            = getopt(argc, argv, "ACeI:E:O:d:ghi:o:bSK:"))
            != -1) {
         switch (option) {
         case 's':
@@ -107,7 +108,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             std::cout << mon.getRadio<>(UartCommandSleep(delay), static_cast<std::chrono::milliseconds>(delay + 2000)) << std::endl;
             }
             break;
-        case 'E':
+        case 'e':
             std::cout << mon.get<>(UartCommandEepromWrite(2, 3)) << std::endl;
             std::cout << mon.get<>(UartCommandEepromRead(2)) << std::endl;
             compareResult(
@@ -206,6 +207,17 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             std::cout << mon.get<>(UartCommandVcc()).getJson() << std::endl;
             std::cout << mon.get<>(UartCommandGetStatistics()).getJson() << std::endl;
             break;
+        case 'E': {
+            std::string s(optarg);
+            std::vector<uint8_t> key;
+
+            // read key ascii values
+            for (uint8_t i = 0; i < s.size() & i < 16; i++) {
+                key.push_back(s.at(i));
+            }
+
+            mon.get<>(UartCommandSetKey('E', key));
+        } break;
         case 'K': {
             std::string s(optarg);
             std::vector<uint8_t> key;
@@ -215,14 +227,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
                 key.push_back(s.at(i));
             }
 
-            // set key
-            mon.get<>(UartCommandSetKey('E', key));
-
-            // debug
-            // for (int i = 0; i < 16; i++) {
-            // std::cout << mon.get<>(UartCommandEepromRead(64 + i))
-            //<< std::endl;
-            //}
+            mon.get<>(UartCommandSetKey('T', key));
         } break;
         case 'h':
             print_usage();
