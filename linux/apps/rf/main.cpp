@@ -59,11 +59,14 @@ void print_usage()
     std::cout << "       -x : wake up sleeping rx node if data available flag is set" << std::endl;
     std::cout << "       -q : read quadrature encoder" << std::endl;
     std::cout << "       -A : read quadrature encoder on change" << std::endl;
-    std::cout << "       -h : print this text" << std::endl;
     std::cout << "       -n : wakeup node address" << std::endl;
     std::cout << "       -a : update node address" << std::endl;
     std::cout << "       -k : set keep alive interval" << std::endl;
     std::cout << "       -p : ping radio node" << std::endl;
+    std::cout << "       -F : set transport key on device" << std::endl;
+    std::cout << "       -b : use transport key" << std::endl;
+    std::cout << "       -c : set transport encryption required" << std::endl;
+    std::cout << "       -h : print this text" << std::endl;
 }
 
 void compareResult(uint8_t expected, uint8_t actual)
@@ -164,7 +167,7 @@ void readCurrentAndVoltage(monitor& mon, int samples)
     }
 }
 
-void parseOpt(int argc, char* argv[], monitor& mon)
+void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)
 {
     char option = 0;
     uint16_t i2cDeviceOffset = 0;
@@ -174,7 +177,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     bool verbose = false;
 
     while ((option
-            = getopt(argc, argv, "P:DBHECs:Rd:VvhtTgGi:I:o:MNXK:Z:zW:wxqAL:JU:jn:a:k:p"))
+            = getopt(argc, argv, "P:DBHECs:Rd:VvhtTgGi:I:o:MNXK:Z:zW:wxqAL:JU:jn:a:k:pc:b:F:"))
            != -1) {
         switch (option) {
         case 'd':
@@ -427,6 +430,35 @@ void parseOpt(int argc, char* argv[], monitor& mon)
         case 'k':
             keepAliveInterval = atoi(optarg);
             break;
+        case 'b': {
+            std::string s(optarg);
+            std::vector<uint8_t> key;
+
+            // read key ascii values
+            for (uint8_t i = 0; i < s.size() & i < 16; i++) {
+                key.push_back(s.at(i));
+            }
+
+            // set key
+            cryptoHandler.setTransportKey((uint8_t*)&key[0]);
+            cryptoHandler.setMacKey((uint8_t*)&key[0]);
+        } break;
+        case 'c': {
+            uint8_t flag = atoi(optarg);
+            std::cout << mon.getRadio<>(UartCommandRequireTransportEncryption(flag, 1)) << std::endl;
+        } break;
+        case 'F': {
+            std::string s(optarg);
+            std::vector<uint8_t> key;
+
+            // read key ascii values
+            for (uint8_t i = 0; i < s.size() & i < 16; i++) {
+                key.push_back(s.at(i));
+            }
+
+            // set key
+            mon.getRadio<>(UartCommandSetKey('T', key));
+        } break;
         }
     }
 
@@ -456,7 +488,7 @@ int main(int argc, char* argv[])
 
     std::thread readerThread(&EventProcess::Run, &ep);
 
-    parseOpt(argc, argv, mon);
+    parseOpt(argc, argv, mon, cryptoHandler);
 
     readerThread.join();
 

@@ -82,9 +82,6 @@ void print_usage()
               << std::endl;
     std::cout << "       -X : ds18b20 temperature sensor" << std::endl;
     std::cout << "       -K : set encryption key" << std::endl;
-    std::cout << "       -A : set transport key on device" << std::endl;
-    std::cout << "       -E : use transport key" << std::endl;
-    std::cout << "       -e : set transport encryption required" << std::endl;
     std::cout << "       -Z : set device name" << std::endl;
     std::cout << "       -z : get device name" << std::endl;
     std::cout << "       -a : get device version" << std::endl;
@@ -97,6 +94,9 @@ void print_usage()
     std::cout << "       -s : sleep" << std::endl;
     std::cout << "       -L : print text on LCD" << std::endl;
     std::cout << "       -p : ping command" << std::endl;
+    std::cout << "       -A : set transport key on device" << std::endl;
+    std::cout << "       -b : use transport key" << std::endl;
+    std::cout << "       -c : set transport encryption required" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -217,7 +217,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t i2cDeviceAddress = 0b10100000;
 
     while ((option
-           = getopt(argc, argv, "P:DBSHCs:Rd:VvhtTgGi:I:o:MN:XK:A:E:e:Z:zW:L:FJU:jpax"))
+           = getopt(argc, argv, "P:DBSHCs:Rd:VvhtTgGi:I:o:MN:XK:A:b:c:Z:zW:L:FJU:jpax"))
            != -1) {
         switch (option) {
         case 'd':
@@ -453,7 +453,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             // set key
             mon.get<>(UartCommandSetKey('T', key));
         } break;
-        case 'E': {
+        case 'b': {
             std::string s(optarg);
             std::vector<uint8_t> key;
 
@@ -466,7 +466,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             cryptoHandler.setTransportKey((uint8_t*)&key[0]);
             cryptoHandler.setMacKey((uint8_t*)&key[0]);
         } break;
-        case 'e': {
+        case 'c': {
             uint8_t flag = atoi(optarg);
             std::cout << mon.get<>(UartCommandRequireTransportEncryption(flag, 1)) << std::endl;
         } break;
