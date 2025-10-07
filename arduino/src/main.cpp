@@ -290,11 +290,13 @@ void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::SET_KEY::command_t command(commandPayload);
     COMMANDS::SET_KEY::response_t response;
 
-    if (command.keyId == 'E') {
-        EEPROM::DATA_STORE::writeToSpareAndSetAsActive(offsetof(eeprom_data_t, EK_KEY), &command.keyValue[0], 16);
-    }
-    else if (command.keyId == 'T') {
-        EEPROM::DATA_STORE::writeToSpareAndSetAsActive(offsetof(eeprom_data_t, TK_KEY), &command.keyValue[0], 16);
+    if (PARSER::lastReceivedCommandWasEncrypted()) {
+        if (command.keyId == 'E') {
+            EEPROM::DATA_STORE::writeToSpareAndSetAsActive(offsetof(eeprom_data_t, EK_KEY), &command.keyValue[0], 16);
+        }
+        else if (command.keyId == 'T') {
+            EEPROM::DATA_STORE::writeToSpareAndSetAsActive(offsetof(eeprom_data_t, TK_KEY), &command.keyValue[0], 16);
+        }
     }
 
     response.serialize(responsePayload);
@@ -585,11 +587,13 @@ void commandRequireTransportEncryption(uint8_t* commandPayload, uint8_t* respons
     COMMANDS::REQUIRE_TRANSPORT_ENCRYPTION::command_t command(commandPayload);
     COMMANDS::REQUIRE_TRANSPORT_ENCRYPTION::response_t response;
 
-    PARSER::setRequireTransportEncryption(command.value);
+    if (PARSER::lastReceivedCommandWasEncrypted()) {
+        PARSER::setRequireTransportEncryption(command.value);
 
-    if(1 == command.persist)
-    {
-        EEPROM::DATA_STORE::setRequireTransportEncryption(command.value);
+        if(1 == command.persist)
+        {
+            EEPROM::DATA_STORE::setRequireTransportEncryption(command.value);
+        }
     }
 
     response.serialize(responsePayload);
