@@ -432,11 +432,11 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             break;
         case 'b': {
             std::string s(optarg);
-            std::vector<uint8_t> key(16);
+            std::vector<uint8_t> key(16, 0);
 
             // read key ascii values
-            for (uint8_t i = 0; i < s.size() & i < 16; i++) {
-                key.at(s.at(i));
+            for (uint8_t i = 0; i < s.size() && i < 16; i++) {
+                key.at(i) = s.at(i);
             }
 
             // set key
