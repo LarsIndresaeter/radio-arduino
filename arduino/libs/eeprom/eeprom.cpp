@@ -82,7 +82,7 @@ namespace DATA_STORE {
     void clearData()
     {
         for (uint8_t i = 0; i < sizeof(full_eeprom_t); i++) {
-            EEPROM::write(i, 0xff);
+            EEPROM::write(i, 0x00);
         }
 
         eeprom_data_t A;
