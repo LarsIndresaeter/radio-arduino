@@ -256,13 +256,11 @@ void setKeepAliveInterval(uint8_t interval)
 
 void setRequireTransportEncryption(uint8_t isRequired)
 {
-    if (lastReceivedCommandWasEncrypted()) {
-        if (1 == isRequired) {
-            transportEncryptionIsRequired = true;
-        }
-        else {
-            transportEncryptionIsRequired = false;
-        }
+    if (1 == isRequired) {
+        transportEncryptionIsRequired = true;
+    }
+    else {
+        transportEncryptionIsRequired = false;
     }
 }
 
