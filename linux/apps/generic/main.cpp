@@ -81,7 +81,6 @@ void print_usage()
                  "<N> seconds"
               << std::endl;
     std::cout << "       -X : ds18b20 temperature sensor" << std::endl;
-    std::cout << "       -E : set encryption key" << std::endl;
     std::cout << "       -Z : set device name" << std::endl;
     std::cout << "       -z : get device name" << std::endl;
     std::cout << "       -a : get device version" << std::endl;
@@ -94,6 +93,7 @@ void print_usage()
     std::cout << "       -s : sleep" << std::endl;
     std::cout << "       -L : print text on LCD" << std::endl;
     std::cout << "       -p : ping command" << std::endl;
+    std::cout << "       -E : set encryption key" << std::endl;
     std::cout << "       -K : set transport key on device (command must be encrypted)" << std::endl;
     std::cout << "       -b : use transport key" << std::endl;
     std::cout << "       -r : set transport encryption required (command must be encrypted)" << std::endl;
