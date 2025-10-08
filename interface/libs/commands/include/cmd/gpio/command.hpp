@@ -11,7 +11,6 @@ public:
               COMMANDS::GPIO::COMMAND_LENGTH)
     {
         COMMANDS::GPIO::command_t command;
-
     };
 
     void printResponse(std::ostream& out, COMMANDS::GPIO::response_t response) const
@@ -22,10 +21,10 @@ public:
         out << " portD=" << static_cast<int>(response.getPortd());
     }
 
+    std::string getCommandName() { return "gpio"; }
 
-    std::string getCommandName() { return "gpio";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -42,7 +41,7 @@ public:
         json.append("\"portD\":");
         json.append(std::to_string(responseStruct().getPortd()));
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

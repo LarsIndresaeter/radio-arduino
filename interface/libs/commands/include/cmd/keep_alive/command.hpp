@@ -13,7 +13,6 @@ public:
         COMMANDS::KEEP_ALIVE::command_t command;
 
         m_payload.at(offsetof(COMMANDS::KEEP_ALIVE::command_t, time)) = time;
-
     };
 
     void printResponse(std::ostream& out, COMMANDS::KEEP_ALIVE::response_t response) const
@@ -21,10 +20,10 @@ public:
         out << "KEEP_ALIVE             : ";
     }
 
+    std::string getCommandName() { return "keep_alive"; }
 
-    std::string getCommandName() { return "keep_alive";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -33,7 +32,7 @@ public:
         json.append(std::to_string(getTimeStamp()));
         json.append(", ");
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

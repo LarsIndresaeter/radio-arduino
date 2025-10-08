@@ -315,9 +315,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'S': {
             // printf "best\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" | xxd
             // printf "best\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" | sha1sum
-            std::string s { "best" };
-            std::vector<uint8_t> v { s.begin(), s.end() };
-            auto result = mon.get<>(UartCommandSha1(v));
+            auto result = mon.get<>(UartCommandSha1("best"));
             std::cout << result << std::endl;
             compareResult(
                 0x31, result.responseStruct().data[0]);
@@ -327,16 +325,8 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
                 0xcf, result.responseStruct().data[2]);
         } break;
         case 'L': {
-            COMMANDS::SSD1306::command_t command;
-
             std::string s(optarg);
-            std::vector<uint8_t> lcd(sizeof(command.data), ' ');
-
-            for (uint8_t i = 0; i < s.size() && i < static_cast<uint8_t>(sizeof(command.data)); i++) {
-                lcd.at(i) = s.at(i);
-            }
-
-            mon.get<>(UartCommandSsd1306(2, lcd)); // second line
+            mon.get<>(UartCommandSsd1306(2, s)); // second line
         } break;
         case 'H':
             std::cout << mon.get<>(UartCommandHotp()) << std::endl;
@@ -414,44 +404,24 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             std::string s(optarg);
             if(s.at(0) == 's')
             {
-                mon.get<>(UartCommandNrf24l01Init({0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, {0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, 121, true));
+                std::vector<uint8_t> address  = {0xF0, 0xF0, 0xF0, 0xF0, 0xC2};
+                mon.get<>(UartCommandNrf24l01Init(address, address, 121, true));
             }
             if(s.at(0) == 'r')
             {
-                mon.get<>(UartCommandNrf24l01Init({0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, {0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, 121, false));
+                std::vector<uint8_t> address  = {0xF0, 0xF0, 0xF0, 0xF0, 0xC2};
+                mon.get<>(UartCommandNrf24l01Init(address, address, 121, false));
             }
             std::cout << mon.get<>(UartCommandRadioUart(s.at(0))) << std::endl;
             }
             break;
         case 'E': {
             std::string s(optarg);
-            std::vector<uint8_t> key;
-
-            // read key ascii values
-            for (uint8_t i = 0; i < s.size() & i < 16; i++) {
-                key.push_back(s.at(i));
-            }
-
-            // set key
-            mon.get<>(UartCommandSetKey('E', key));
-
-            // debug
-            // for (int i = 0; i < 16; i++) {
-            // std::cout << mon.get<>(UartCommandEepromRead(64 + i))
-            //<< std::endl;
-            //}
+            mon.get<>(UartCommandSetKey('E', s));
         } break;
         case 'K': {
             std::string s(optarg);
-            std::vector<uint8_t> key;
-
-            // read key ascii values
-            for (uint8_t i = 0; i < s.size() & i < 16; i++) {
-                key.push_back(s.at(i));
-            }
-
-            // set key
-            mon.get<>(UartCommandSetKey('T', key));
+            mon.get<>(UartCommandSetKey('T', s));
         } break;
         case 'b': {
             std::string s(optarg);
@@ -472,14 +442,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         } break;
         case 'Z': {
             std::string s(optarg);
-            std::vector<uint8_t> name;
-
-            // read name ascii values
-            for (uint8_t i = 0; i < s.size() & i < 16; i++) {
-                name.push_back(s.at(i));
-            }
-
-            mon.get<>(UartCommandSetDeviceName(name));
+            mon.get<>(UartCommandSetDeviceName(s));
         } break;
         case 'z':
             std::cout << mon.get<>(UartCommandGetDeviceName()) << std::endl;

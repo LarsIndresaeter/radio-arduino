@@ -11,7 +11,6 @@ public:
               COMMANDS::GET_STATISTICS::COMMAND_LENGTH)
     {
         COMMANDS::GET_STATISTICS::command_t command;
-
     };
 
     void printResponse(std::ostream& out, COMMANDS::GET_STATISTICS::response_t response) const
@@ -24,10 +23,10 @@ public:
         out << " rf_tx=" << static_cast<int>(response.getRf_tx());
     }
 
+    std::string getCommandName() { return "get_statistics"; }
 
-    std::string getCommandName() { return "get_statistics";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -50,7 +49,7 @@ public:
         json.append("\"rf_tx\":");
         json.append(std::to_string(responseStruct().getRf_tx()));
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

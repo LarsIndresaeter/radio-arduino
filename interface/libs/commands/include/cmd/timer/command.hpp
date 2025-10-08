@@ -11,7 +11,6 @@ public:
               COMMANDS::TIMER::COMMAND_LENGTH)
     {
         COMMANDS::TIMER::command_t command;
-
     };
 
     void printResponse(std::ostream& out, COMMANDS::TIMER::response_t response) const
@@ -20,10 +19,10 @@ public:
         out << " pulseWidth=" << static_cast<int>(response.getPulsewidth());
     }
 
+    std::string getCommandName() { return "timer"; }
 
-    std::string getCommandName() { return "timer";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -34,7 +33,7 @@ public:
         json.append("\"pulseWidth\":");
         json.append(std::to_string(responseStruct().getPulsewidth()));
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

@@ -11,7 +11,6 @@ public:
               COMMANDS::GET_DEVICE_NAME::COMMAND_LENGTH)
     {
         COMMANDS::GET_DEVICE_NAME::command_t command;
-
     };
 
     void printResponse(std::ostream& out, COMMANDS::GET_DEVICE_NAME::response_t response) const
@@ -19,7 +18,7 @@ public:
         out << "GET_DEVICE_NAME        : ";
         out << " nameString=\"";
         for (uint8_t i = 0; i < 16; i++) {
-            if(response.nameString[i])
+            if (response.nameString[i])
             {
                 out << static_cast<char>(response.nameString[i]);
             }
@@ -27,25 +26,26 @@ public:
         out << "\"";
     }
 
-    std::string getNamestring() {
+    std::string getNamestring()
+    {
         std::string retval;
         COMMANDS::GET_DEVICE_NAME::response_t response = responseStruct();
 
         retval.append("\"");
         for (uint8_t i = 0; i < 16; i++) {
-            if(response.nameString[i])
+            if (response.nameString[i])
             {
                 retval.push_back(static_cast<char>(response.nameString[i]));
             }
         }
         retval.append("\"");
 
-        return(retval);
+        return (retval);
     }
+    std::string getCommandName() { return "get_device_name"; }
 
-    std::string getCommandName() { return "get_device_name";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -57,7 +57,7 @@ public:
         json.append(getNamestring());
         json.append("");
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

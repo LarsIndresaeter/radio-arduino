@@ -38,7 +38,33 @@ public:
                 offsetof(COMMANDS::WS2812B::command_t, blue[0]) + i)
                 = blue.at(i);
         }
+    };
 
+    // string constructor
+    UartCommandWs2812b(std::string red, std::string green, std::string blue)
+        : UartCommandBase(
+              static_cast<uint8_t>(COMMANDS::OI::WS2812B),
+              COMMANDS::WS2812B::COMMAND_LENGTH)
+    {
+        COMMANDS::WS2812B::command_t command;
+
+        for (int i = 0; i < red.size() && i < 45; i++) {
+            m_payload.at(
+                offsetof(COMMANDS::WS2812B::command_t, red[0]) + i)
+                = red.at(i);
+        }
+
+        for (int i = 0; i < green.size() && i < 45; i++) {
+            m_payload.at(
+                offsetof(COMMANDS::WS2812B::command_t, green[0]) + i)
+                = green.at(i);
+        }
+
+        for (int i = 0; i < blue.size() && i < 45; i++) {
+            m_payload.at(
+                offsetof(COMMANDS::WS2812B::command_t, blue[0]) + i)
+                = blue.at(i);
+        }
     };
 
     void printResponse(std::ostream& out, COMMANDS::WS2812B::response_t response) const
@@ -46,10 +72,10 @@ public:
         out << "WS2812B                : ";
     }
 
+    std::string getCommandName() { return "ws2812b"; }
 
-    std::string getCommandName() { return "ws2812b";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -58,7 +84,7 @@ public:
         json.append(std::to_string(getTimeStamp()));
         json.append(", ");
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

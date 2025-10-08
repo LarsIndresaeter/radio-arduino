@@ -16,7 +16,6 @@ public:
         m_payload.at(offsetof(COMMANDS::SLEEP::command_t, delay) + 2) = delay>>16;
         m_payload.at(offsetof(COMMANDS::SLEEP::command_t, delay) + 1) = delay>>8;
         m_payload.at(offsetof(COMMANDS::SLEEP::command_t, delay)) = delay;
-
     };
 
     void printResponse(std::ostream& out, COMMANDS::SLEEP::response_t response) const
@@ -24,10 +23,10 @@ public:
         out << "SLEEP                  : ";
     }
 
+    std::string getCommandName() { return "sleep"; }
 
-    std::string getCommandName() { return "sleep";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -36,7 +35,7 @@ public:
         json.append(std::to_string(getTimeStamp()));
         json.append(", ");
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

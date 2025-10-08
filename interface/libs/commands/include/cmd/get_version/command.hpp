@@ -11,7 +11,6 @@ public:
               COMMANDS::GET_VERSION::COMMAND_LENGTH)
     {
         COMMANDS::GET_VERSION::command_t command;
-
     };
 
     void printResponse(std::ostream& out, COMMANDS::GET_VERSION::response_t response) const
@@ -19,7 +18,7 @@ public:
         out << "GET_VERSION            : ";
         out << " versionString=\"";
         for (uint8_t i = 0; i < 32; i++) {
-            if(response.versionString[i])
+            if (response.versionString[i])
             {
                 out << static_cast<char>(response.versionString[i]);
             }
@@ -27,25 +26,26 @@ public:
         out << "\"";
     }
 
-    std::string getVersionstring() {
+    std::string getVersionstring()
+    {
         std::string retval;
         COMMANDS::GET_VERSION::response_t response = responseStruct();
 
         retval.append("\"");
         for (uint8_t i = 0; i < 32; i++) {
-            if(response.versionString[i])
+            if (response.versionString[i])
             {
                 retval.push_back(static_cast<char>(response.versionString[i]));
             }
         }
         retval.append("\"");
 
-        return(retval);
+        return (retval);
     }
+    std::string getCommandName() { return "get_version"; }
 
-    std::string getCommandName() { return "get_version";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -57,7 +57,7 @@ public:
         json.append(getVersionstring());
         json.append("");
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

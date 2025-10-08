@@ -22,7 +22,23 @@ public:
                 offsetof(COMMANDS::SET_KEY::command_t, keyValue[0]) + i)
                 = keyValue.at(i);
         }
+    };
 
+    // string constructor
+    UartCommandSetKey(uint8_t keyId, std::string keyValue)
+        : UartCommandBase(
+              static_cast<uint8_t>(COMMANDS::OI::SET_KEY),
+              COMMANDS::SET_KEY::COMMAND_LENGTH)
+    {
+        COMMANDS::SET_KEY::command_t command;
+
+        m_payload.at(offsetof(COMMANDS::SET_KEY::command_t, keyId)) = keyId;
+
+        for (int i = 0; i < keyValue.size() && i < 16; i++) {
+            m_payload.at(
+                offsetof(COMMANDS::SET_KEY::command_t, keyValue[0]) + i)
+                = keyValue.at(i);
+        }
     };
 
     void printResponse(std::ostream& out, COMMANDS::SET_KEY::response_t response) const
@@ -30,10 +46,10 @@ public:
         out << "SET_KEY                : ";
     }
 
+    std::string getCommandName() { return "set_key"; }
 
-    std::string getCommandName() { return "set_key";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -42,7 +58,7 @@ public:
         json.append(std::to_string(getTimeStamp()));
         json.append(", ");
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

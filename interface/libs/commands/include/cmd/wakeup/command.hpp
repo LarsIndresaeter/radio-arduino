@@ -13,7 +13,6 @@ public:
         COMMANDS::WAKEUP::command_t command;
 
         m_payload.at(offsetof(COMMANDS::WAKEUP::command_t, checkAttentionFlag)) = checkAttentionFlag;
-
     };
 
     void printResponse(std::ostream& out, COMMANDS::WAKEUP::response_t response) const
@@ -22,10 +21,10 @@ public:
         out << " attention=" << static_cast<int>(response.getAttention());
     }
 
+    std::string getCommandName() { return "wakeup"; }
 
-    std::string getCommandName() { return "wakeup";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -36,7 +35,7 @@ public:
         json.append("\"attention\":");
         json.append(std::to_string(responseStruct().getAttention()));
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

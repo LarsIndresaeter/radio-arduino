@@ -24,7 +24,25 @@ public:
                 offsetof(COMMANDS::SPI_WRITE::command_t, data[0]) + i)
                 = data.at(i);
         }
+    };
 
+    // string constructor
+    UartCommandSpiWrite(uint8_t reg, uint8_t length, std::string data)
+        : UartCommandBase(
+              static_cast<uint8_t>(COMMANDS::OI::SPI_WRITE),
+              COMMANDS::SPI_WRITE::COMMAND_LENGTH)
+    {
+        COMMANDS::SPI_WRITE::command_t command;
+
+        m_payload.at(offsetof(COMMANDS::SPI_WRITE::command_t, reg)) = reg;
+
+        m_payload.at(offsetof(COMMANDS::SPI_WRITE::command_t, length)) = length;
+
+        for (int i = 0; i < data.size() && i < 32; i++) {
+            m_payload.at(
+                offsetof(COMMANDS::SPI_WRITE::command_t, data[0]) + i)
+                = data.at(i);
+        }
     };
 
     void printResponse(std::ostream& out, COMMANDS::SPI_WRITE::response_t response) const
@@ -32,10 +50,10 @@ public:
         out << "SPI_WRITE              : ";
     }
 
+    std::string getCommandName() { return "spi_write"; }
 
-    std::string getCommandName() { return "spi_write";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -44,7 +62,7 @@ public:
         json.append(std::to_string(getTimeStamp()));
         json.append(", ");
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

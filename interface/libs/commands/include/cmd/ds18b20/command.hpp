@@ -11,7 +11,6 @@ public:
               COMMANDS::DS18B20::COMMAND_LENGTH)
     {
         COMMANDS::DS18B20::command_t command;
-
     };
 
     void printResponse(std::ostream& out, COMMANDS::DS18B20::response_t response) const
@@ -20,10 +19,10 @@ public:
         out << " temperature=" << static_cast<int>(response.getTemperature());
     }
 
+    std::string getCommandName() { return "ds18b20"; }
 
-    std::string getCommandName() { return "ds18b20";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -34,7 +33,7 @@ public:
         json.append("\"temperature\":");
         json.append(std::to_string(responseStruct().getTemperature()));
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

@@ -139,7 +139,7 @@ TEST_F(commandTest, commandBlink)
 
 TEST_F(commandTest, commandSha1)
 {
-    UartCommandSha1 cmd({ 't', 'e', 's', 't' });
+    UartCommandSha1 cmd("test");
     cmd.setResponse(simulateTarget(cmd.getPayload()));
 
     cmd.setReplyStatus(UartCommandBase::ReplyStatus::Complete);
@@ -278,7 +278,8 @@ TEST_F(commandTest, commandEepromReadHigh)
 
 TEST_F(commandTest, commandAes)
 {
-    UartCommandAes cmd('d', { 0, 0 });
+    std::vector<uint8_t> key = {0, 0};
+    UartCommandAes cmd('d', key);
     cmd.setResponse(simulateTarget(cmd.getPayload()));
 
     cmd.setReplyStatus(UartCommandBase::ReplyStatus::Complete);

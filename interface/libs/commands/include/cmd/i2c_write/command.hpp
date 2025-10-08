@@ -27,7 +27,28 @@ public:
                 offsetof(COMMANDS::I2C_WRITE::command_t, data[0]) + i)
                 = data.at(i);
         }
+    };
 
+    // string constructor
+    UartCommandI2cWrite(uint8_t device, uint16_t registerAddress, uint8_t length, std::string data)
+        : UartCommandBase(
+              static_cast<uint8_t>(COMMANDS::OI::I2C_WRITE),
+              COMMANDS::I2C_WRITE::COMMAND_LENGTH)
+    {
+        COMMANDS::I2C_WRITE::command_t command;
+
+        m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, device)) = device;
+
+        m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, registerAddress) + 1) = registerAddress>>8;
+        m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, registerAddress)) = registerAddress;
+
+        m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, length)) = length;
+
+        for (int i = 0; i < data.size() && i < 16; i++) {
+            m_payload.at(
+                offsetof(COMMANDS::I2C_WRITE::command_t, data[0]) + i)
+                = data.at(i);
+        }
     };
 
     void printResponse(std::ostream& out, COMMANDS::I2C_WRITE::response_t response) const
@@ -35,10 +56,10 @@ public:
         out << "I2C_WRITE              : ";
     }
 
+    std::string getCommandName() { return "i2c_write"; }
 
-    std::string getCommandName() { return "i2c_write";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -47,7 +68,7 @@ public:
         json.append(std::to_string(getTimeStamp()));
         json.append(", ");
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
