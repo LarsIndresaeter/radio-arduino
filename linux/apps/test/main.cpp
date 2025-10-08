@@ -211,25 +211,11 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             break;
         case 'E': {
             std::string s(optarg);
-            std::vector<uint8_t> key;
-
-            // read key ascii values
-            for (uint8_t i = 0; i < s.size() & i < 16; i++) {
-                key.push_back(s.at(i));
-            }
-
-            mon.get<>(UartCommandSetKey('E', key));
+            mon.get<>(UartCommandSetKey('E', s));
         } break;
         case 'K': {
             std::string s(optarg);
-            std::vector<uint8_t> key;
-
-            // read key ascii values
-            for (uint8_t i = 0; i < s.size() & i < 16; i++) {
-                key.push_back(s.at(i));
-            }
-
-            mon.get<>(UartCommandSetKey('T', key));
+            mon.get<>(UartCommandSetKey('T', s));
         } break;
         case 'h':
             print_usage();

@@ -307,16 +307,8 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 
         } break;
         case 'L': {
-            COMMANDS::SSD1306::command_t command;
-
             std::string s(optarg);
-            std::vector<uint8_t> lcd(sizeof(command.data), ' ');
-
-            for (uint8_t i = 0; i < s.size() && i < static_cast<uint8_t>(sizeof(command.data)); i++) {
-                lcd.at(i) = s.at(i);
-            }
-
-            mon.getRadio<>(UartCommandSsd1306(2, lcd)); // second line
+            mon.getRadio<>(UartCommandSsd1306(2, s)); // second line
         } break;
         case 'H':
             std::cout << mon.getRadio<>(UartCommandHotp()) << std::endl;
@@ -383,27 +375,11 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             break;
         case 'E': {
             std::string s(optarg);
-            std::vector<uint8_t> key;
-
-            // read key ascii values
-            for (uint8_t i = 0; i < s.size() & i < 16; i++) {
-                key.push_back(s.at(i));
-            }
-
-            // set key
-            mon.getRadio<>(UartCommandSetKey('E', key));
+            mon.getRadio<>(UartCommandSetKey('E', s));
         } break;
         case 'Z': {
             std::string s(optarg);
-            std::vector<uint8_t> name;
-
-            // read name ascii values
-            for (uint8_t i = 0; i < s.size() & i < 16; i++) {
-                name.push_back(s.at(i));
-            }
-
-            // set name
-            mon.getRadio<>(UartCommandSetDeviceName(name));
+            mon.getRadio<>(UartCommandSetDeviceName(s));
         } break;
         case 'z': {
             RadioSession radioSession(mon, radioAddress);
@@ -451,14 +427,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         } break;
         case 'K': {
             std::string s(optarg);
-            std::vector<uint8_t> key;
-
-            // read key ascii values
-            for (uint8_t i = 0; i < s.size() & i < 16; i++) {
-                key.push_back(s.at(i));
-            }
-
-            mon.getRadio<>(UartCommandSetKey('T', key));
+            mon.getRadio<>(UartCommandSetKey('T', s));
         } break;
         }
     }
