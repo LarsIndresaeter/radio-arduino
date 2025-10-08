@@ -14,7 +14,6 @@ public:
 
         m_payload.at(offsetof(COMMANDS::EEPROM_READ::command_t, address) + 1) = address>>8;
         m_payload.at(offsetof(COMMANDS::EEPROM_READ::command_t, address)) = address;
-
     };
 
     void printResponse(std::ostream& out, COMMANDS::EEPROM_READ::response_t response) const
@@ -24,10 +23,10 @@ public:
         out << " data=" << static_cast<int>(response.getData());
     }
 
+    std::string getCommandName() { return "eeprom_read"; }
 
-    std::string getCommandName() { return "eeprom_read";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -41,7 +40,7 @@ public:
         json.append("\"data\":");
         json.append(std::to_string(responseStruct().getData()));
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

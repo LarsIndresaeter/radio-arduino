@@ -22,7 +22,23 @@ public:
                 offsetof(COMMANDS::SSD1306::command_t, data[0]) + i)
                 = data.at(i);
         }
+    };
 
+    // string constructor
+    UartCommandSsd1306(uint8_t line, std::string data)
+        : UartCommandBase(
+              static_cast<uint8_t>(COMMANDS::OI::SSD1306),
+              COMMANDS::SSD1306::COMMAND_LENGTH)
+    {
+        COMMANDS::SSD1306::command_t command;
+
+        m_payload.at(offsetof(COMMANDS::SSD1306::command_t, line)) = line;
+
+        for (int i = 0; i < data.size() && i < 16; i++) {
+            m_payload.at(
+                offsetof(COMMANDS::SSD1306::command_t, data[0]) + i)
+                = data.at(i);
+        }
     };
 
     void printResponse(std::ostream& out, COMMANDS::SSD1306::response_t response) const
@@ -30,10 +46,10 @@ public:
         out << "SSD1306                : ";
     }
 
+    std::string getCommandName() { return "ssd1306"; }
 
-    std::string getCommandName() { return "ssd1306";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -42,7 +58,7 @@ public:
         json.append(std::to_string(getTimeStamp()));
         json.append(", ");
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

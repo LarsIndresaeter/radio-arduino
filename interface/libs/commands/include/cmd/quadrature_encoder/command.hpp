@@ -11,7 +11,6 @@ public:
               COMMANDS::QUADRATURE_ENCODER::COMMAND_LENGTH)
     {
         COMMANDS::QUADRATURE_ENCODER::command_t command;
-
     };
 
     void printResponse(std::ostream& out, COMMANDS::QUADRATURE_ENCODER::response_t response) const
@@ -23,10 +22,10 @@ public:
         out << " switchcount=" << static_cast<int>(response.getSwitchcount());
     }
 
+    std::string getCommandName() { return "quadrature_encoder"; }
 
-    std::string getCommandName() { return "quadrature_encoder";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -46,7 +45,7 @@ public:
         json.append("\"switchcount\":");
         json.append(std::to_string(responseStruct().getSwitchcount()));
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

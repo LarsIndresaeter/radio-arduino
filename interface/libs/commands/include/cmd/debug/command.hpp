@@ -11,7 +11,6 @@ public:
               COMMANDS::DEBUG::COMMAND_LENGTH)
     {
         COMMANDS::DEBUG::command_t command;
-
     };
 
     void printResponse(std::ostream& out, COMMANDS::DEBUG::response_t response) const
@@ -26,7 +25,8 @@ public:
         out << std::dec;
     }
 
-    std::string getData() {
+    std::string getData()
+    {
         std::string retval;
         COMMANDS::DEBUG::response_t response = responseStruct();
 
@@ -34,7 +34,7 @@ public:
         for (uint8_t i = 0; i < 32; i++) {
             retval.append(" \"");
             retval.append(std::to_string(static_cast<int>(response.data[i])));
-            if(i < (32 - 1)) {
+            if (i < (32 - 1)) {
                 retval.append("\",");
             }
             else {
@@ -43,12 +43,12 @@ public:
         }
         retval.append(" ]");
 
-        return(retval);
+        return (retval);
     }
+    std::string getCommandName() { return "debug"; }
 
-    std::string getCommandName() { return "debug";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -60,7 +60,7 @@ public:
         json.append(getData());
         json.append("");
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

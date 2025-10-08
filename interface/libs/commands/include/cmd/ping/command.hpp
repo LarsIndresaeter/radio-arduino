@@ -11,7 +11,6 @@ public:
               COMMANDS::PING::COMMAND_LENGTH)
     {
         COMMANDS::PING::command_t command;
-
     };
 
     void printResponse(std::ostream& out, COMMANDS::PING::response_t response) const
@@ -19,10 +18,10 @@ public:
         out << "PING                   : ";
     }
 
+    std::string getCommandName() { return "ping"; }
 
-    std::string getCommandName() { return "ping";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -31,7 +30,7 @@ public:
         json.append(std::to_string(getTimeStamp()));
         json.append(", ");
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

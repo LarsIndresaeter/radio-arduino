@@ -20,7 +20,21 @@ public:
                 offsetof(COMMANDS::SET_DEVICE_NAME::command_t, name[0]) + i)
                 = name.at(i);
         }
+    };
 
+    // string constructor
+    UartCommandSetDeviceName(std::string name)
+        : UartCommandBase(
+              static_cast<uint8_t>(COMMANDS::OI::SET_DEVICE_NAME),
+              COMMANDS::SET_DEVICE_NAME::COMMAND_LENGTH)
+    {
+        COMMANDS::SET_DEVICE_NAME::command_t command;
+
+        for (int i = 0; i < name.size() && i < 16; i++) {
+            m_payload.at(
+                offsetof(COMMANDS::SET_DEVICE_NAME::command_t, name[0]) + i)
+                = name.at(i);
+        }
     };
 
     void printResponse(std::ostream& out, COMMANDS::SET_DEVICE_NAME::response_t response) const
@@ -28,10 +42,10 @@ public:
         out << "SET_DEVICE_NAME        : ";
     }
 
+    std::string getCommandName() { return "set_device_name"; }
 
-    std::string getCommandName() { return "set_device_name";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -40,7 +54,7 @@ public:
         json.append(std::to_string(getTimeStamp()));
         json.append(", ");
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

@@ -13,7 +13,6 @@ public:
         COMMANDS::RADIO_UART::command_t command;
 
         m_payload.at(offsetof(COMMANDS::RADIO_UART::command_t, mode)) = mode;
-
     };
 
     void printResponse(std::ostream& out, COMMANDS::RADIO_UART::response_t response) const
@@ -21,10 +20,10 @@ public:
         out << "RADIO_UART             : ";
     }
 
+    std::string getCommandName() { return "radio_uart"; }
 
-    std::string getCommandName() { return "radio_uart";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -33,7 +32,7 @@ public:
         json.append(std::to_string(getTimeStamp()));
         json.append(", ");
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

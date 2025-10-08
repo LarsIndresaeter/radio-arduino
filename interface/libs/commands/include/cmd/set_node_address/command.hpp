@@ -13,7 +13,6 @@ public:
         COMMANDS::SET_NODE_ADDRESS::command_t command;
 
         m_payload.at(offsetof(COMMANDS::SET_NODE_ADDRESS::command_t, nodeAddress)) = nodeAddress;
-
     };
 
     void printResponse(std::ostream& out, COMMANDS::SET_NODE_ADDRESS::response_t response) const
@@ -21,10 +20,10 @@ public:
         out << "SET_NODE_ADDRESS       : ";
     }
 
+    std::string getCommandName() { return "set_node_address"; }
 
-    std::string getCommandName() { return "set_node_address";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -33,7 +32,7 @@ public:
         json.append(std::to_string(getTimeStamp()));
         json.append(", ");
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

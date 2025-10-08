@@ -33,7 +33,31 @@ public:
         m_payload.at(offsetof(COMMANDS::NRF24L01_INIT::command_t, rfChannel)) = rfChannel;
 
         m_payload.at(offsetof(COMMANDS::NRF24L01_INIT::command_t, gateway)) = gateway;
+    };
 
+    // string constructor
+    UartCommandNrf24l01Init(std::string txAddr, std::string rxAddr, uint8_t rfChannel, uint8_t gateway)
+        : UartCommandBase(
+              static_cast<uint8_t>(COMMANDS::OI::NRF24L01_INIT),
+              COMMANDS::NRF24L01_INIT::COMMAND_LENGTH)
+    {
+        COMMANDS::NRF24L01_INIT::command_t command;
+
+        for (int i = 0; i < txAddr.size() && i < 5; i++) {
+            m_payload.at(
+                offsetof(COMMANDS::NRF24L01_INIT::command_t, txAddr[0]) + i)
+                = txAddr.at(i);
+        }
+
+        for (int i = 0; i < rxAddr.size() && i < 5; i++) {
+            m_payload.at(
+                offsetof(COMMANDS::NRF24L01_INIT::command_t, rxAddr[0]) + i)
+                = rxAddr.at(i);
+        }
+
+        m_payload.at(offsetof(COMMANDS::NRF24L01_INIT::command_t, rfChannel)) = rfChannel;
+
+        m_payload.at(offsetof(COMMANDS::NRF24L01_INIT::command_t, gateway)) = gateway;
     };
 
     void printResponse(std::ostream& out, COMMANDS::NRF24L01_INIT::response_t response) const
@@ -41,10 +65,10 @@ public:
         out << "NRF24L01_INIT          : ";
     }
 
+    std::string getCommandName() { return "nrf24l01_init"; }
 
-    std::string getCommandName() { return "nrf24l01_init";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -53,7 +77,7 @@ public:
         json.append(std::to_string(getTimeStamp()));
         json.append(", ");
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

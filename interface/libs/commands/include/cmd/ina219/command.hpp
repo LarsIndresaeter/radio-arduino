@@ -11,7 +11,6 @@ public:
               COMMANDS::INA219::COMMAND_LENGTH)
     {
         COMMANDS::INA219::command_t command;
-
     };
 
     void printResponse(std::ostream& out, COMMANDS::INA219::response_t response) const
@@ -21,10 +20,10 @@ public:
         out << " voltage=" << static_cast<int>(response.getVoltage());
     }
 
+    std::string getCommandName() { return "ina219"; }
 
-    std::string getCommandName() { return "ina219";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -38,7 +37,7 @@ public:
         json.append("\"voltage\":");
         json.append(std::to_string(responseStruct().getVoltage()));
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

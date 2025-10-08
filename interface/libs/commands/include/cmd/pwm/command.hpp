@@ -17,7 +17,6 @@ public:
         m_payload.at(offsetof(COMMANDS::PWM::command_t, pin)) = pin;
 
         m_payload.at(offsetof(COMMANDS::PWM::command_t, value)) = value;
-
     };
 
     void printResponse(std::ostream& out, COMMANDS::PWM::response_t response) const
@@ -28,10 +27,10 @@ public:
         out << " value=" << static_cast<int>(response.getValue());
     }
 
+    std::string getCommandName() { return "pwm"; }
 
-    std::string getCommandName() { return "pwm";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -48,7 +47,7 @@ public:
         json.append("\"value\":");
         json.append(std::to_string(responseStruct().getValue()));
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

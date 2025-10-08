@@ -11,7 +11,6 @@ public:
               COMMANDS::VCC::COMMAND_LENGTH)
     {
         COMMANDS::VCC::command_t command;
-
     };
 
     void printResponse(std::ostream& out, COMMANDS::VCC::response_t response) const
@@ -20,10 +19,10 @@ public:
         out << " vcc=" << static_cast<int>(response.getVcc());
     }
 
+    std::string getCommandName() { return "vcc"; }
 
-    std::string getCommandName() { return "vcc";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -34,7 +33,7 @@ public:
         json.append("\"vcc\":");
         json.append(std::to_string(responseStruct().getVcc()));
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override

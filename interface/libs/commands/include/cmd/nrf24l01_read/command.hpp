@@ -22,7 +22,23 @@ public:
                 offsetof(COMMANDS::NRF24L01_READ::command_t, data[0]) + i)
                 = data.at(i);
         }
+    };
 
+    // string constructor
+    UartCommandNrf24l01Read(uint8_t length, std::string data)
+        : UartCommandBase(
+              static_cast<uint8_t>(COMMANDS::OI::NRF24L01_READ),
+              COMMANDS::NRF24L01_READ::COMMAND_LENGTH)
+    {
+        COMMANDS::NRF24L01_READ::command_t command;
+
+        m_payload.at(offsetof(COMMANDS::NRF24L01_READ::command_t, length)) = length;
+
+        for (int i = 0; i < data.size() && i < 128; i++) {
+            m_payload.at(
+                offsetof(COMMANDS::NRF24L01_READ::command_t, data[0]) + i)
+                = data.at(i);
+        }
     };
 
     void printResponse(std::ostream& out, COMMANDS::NRF24L01_READ::response_t response) const
@@ -38,15 +54,16 @@ public:
         out << std::dec;
     }
 
-    std::string getData() {
+    std::string getData()
+    {
         std::string retval;
         COMMANDS::NRF24L01_READ::response_t response = responseStruct();
 
         retval.append("[");
-        for (uint8_t i = 0; i < 32; i++) {
+        for (uint8_t i = 0; i < 128; i++) {
             retval.append(" \"");
             retval.append(std::to_string(static_cast<int>(response.data[i])));
-            if(i < (32 - 1)) {
+            if (i < (128 - 1)) {
                 retval.append("\",");
             }
             else {
@@ -55,12 +72,12 @@ public:
         }
         retval.append(" ]");
 
-        return(retval);
+        return (retval);
     }
+    std::string getCommandName() { return "nrf24l01_read"; }
 
-    std::string getCommandName() { return "nrf24l01_read";}
-
-    std::string getJson() {
+    std::string getJson()
+    {
         std::string json;
         json.append("{");
         json.append("\"name\":");
@@ -75,7 +92,7 @@ public:
         json.append(getData());
         json.append("");
         json.append("}");
-        return(json);
+        return (json);
     };
 
     void print(std::ostream& out, std::vector<uint8_t> responsePayload) const override
