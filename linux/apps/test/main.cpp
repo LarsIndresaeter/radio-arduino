@@ -171,11 +171,13 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             std::string s(optarg);
             if(s.at(0) == 's')
             {
-                mon.get<>(UartCommandNrf24l01Init({0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, {0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, 121, true));
+                std::vector<uint8_t> address = {0xF0, 0xF0, 0xF0, 0xF0, 0xC2};
+                mon.get<>(UartCommandNrf24l01Init(address, address, 121, true));
             }
             if(s.at(0) == 'r')
             {
-                mon.get<>(UartCommandNrf24l01Init({0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, {0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, 121, false));
+                std::vector<uint8_t> address = {0xF0, 0xF0, 0xF0, 0xF0, 0xC2};
+                mon.get<>(UartCommandNrf24l01Init(address, address, 121, false));
             }
             std::cout << mon.get<>(UartCommandRadioUart(s.at(0))) << std::endl;
             }

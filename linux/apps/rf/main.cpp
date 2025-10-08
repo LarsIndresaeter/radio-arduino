@@ -370,11 +370,13 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             std::string s(optarg);
             if(s.at(0) == 's')
             {
-                mon.getRadio<>(UartCommandNrf24l01Init({0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, {0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, 121, true));
+                std::vector<uint8_t> address  = {0xF0, 0xF0, 0xF0, 0xF0, 0xC2};
+                mon.getRadio<>(UartCommandNrf24l01Init(address, address, 121, true));
             }
             if(s.at(0) == 'r')
             {
-                mon.getRadio<>(UartCommandNrf24l01Init({0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, {0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, 121, false));
+                std::vector<uint8_t> address  = {0xF0, 0xF0, 0xF0, 0xF0, 0xC2};
+                mon.getRadio<>(UartCommandNrf24l01Init(address, address, 121, false));
             }
             std::cout << mon.getRadio<>(UartCommandRadioUart(s.at(0))) << std::endl;
             }
