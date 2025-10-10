@@ -6,11 +6,6 @@ endif()
 
 include_directories(../../libs/crypto/include)
 
-if(mqtt)
-    find_package(PahoMqttCpp REQUIRED)
-    add_definitions(-DUSE_FEATURE_MQTT=1)
-endif()
-
 add_executable(raduino-gateway main.cpp ../../libs/crypto/crypto.cpp)
 target_link_libraries(raduino-gateway ${CONAN_LIBS} epollevent eventprocess monitor uart protocol pthread)
 

@@ -187,11 +187,7 @@ void readCurrentAndVoltage(monitor& mon, int samples)
             time_t now = std::chrono::system_clock::to_time_t(
                 std::chrono::system_clock::now());
             struct tm t = *localtime(&now);
-#ifdef USE_FEATURE_MQTT
-            sendMqtt(
-                "{\"voltage\":" + std::to_string(voltageMean)
-                + ", \"current\":" + std::to_string(mean) + "}");
-#else
+
             std::cout << 1900 + t.tm_year << std::setfill('0') << "-"
                       << std::setw(2) << t.tm_mon << "-" << std::setw(2)
                       << t.tm_mday << " " << std::setw(2) << t.tm_hour << ":"
@@ -203,7 +199,6 @@ void readCurrentAndVoltage(monitor& mon, int samples)
                       << mean << ", " << currentMax << ", " << stdev << ", "
                       << voltageMin << ", " << voltageMean << ", " << voltageMax
                       << std::endl;
-#endif
         }
 
         loopCounter++;
