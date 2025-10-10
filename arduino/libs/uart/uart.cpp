@@ -102,4 +102,4 @@ uint8_t Uart::getChar()
     return UART::rb_get();
 }
 
-bool Uart::has_data() { return UART::rb_length > 0; }
+bool Uart::hasData() { return UART::rb_length > 0; }

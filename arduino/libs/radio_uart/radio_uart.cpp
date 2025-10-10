@@ -48,12 +48,12 @@ void RadioUart::writeBuffer(uint8_t* msg, uint16_t length)
 
 uint8_t RadioUart::getChar()
 {
-    has_data(); // force read if ring buffer is empty
+    hasData(); // force read if ring buffer is empty
 
     return NRF24L01::rb_get();
 }
 
-bool RadioUart::has_data()
+bool RadioUart::hasData()
 {
 
     uint8_t rx_buf[NRF24L01_PACKET_SIZE] = { 0 };

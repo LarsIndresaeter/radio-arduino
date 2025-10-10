@@ -152,7 +152,7 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
 
     while (1) {
         cnt++;
-        if (comBus->has_data()) {
+        if (comBus->hasData()) {
             c = comBus->getChar();
 
             protocolVersionLastReceivedMessage

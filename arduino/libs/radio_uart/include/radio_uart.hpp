@@ -14,6 +14,6 @@ public:
     virtual void putChar(char c);
     virtual void writeBuffer(uint8_t* msg, uint16_t length);
     virtual uint8_t getChar();
-    virtual bool has_data();
+    virtual bool hasData();
 };
 

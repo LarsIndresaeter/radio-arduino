@@ -452,7 +452,7 @@ void commandRadioUart(
         uint8_t c;
 
         while (true) {
-            while (comBus->has_data()) {
+            while (comBus->hasData()) {
                 c = comBus->getChar();
                 package[len++] = c;
 
@@ -468,7 +468,7 @@ void commandRadioUart(
         RadioUart uartRadio;
 
         while (true) {
-            if (uartRadio.has_data()) {
+            if (uartRadio.hasData()) {
                 comBus->putChar(uartRadio.getChar());
             }
         }
