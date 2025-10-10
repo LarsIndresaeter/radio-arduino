@@ -719,22 +719,27 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
 
 int main()
 {
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    RadioUart uart;
-#else
-    Uart uart;
-#endif
-
     RADIOLINK::setNodeAddress(0);
     uint8_t transport_key[16] = {0};
     EEPROM::DATA_STORE::readFromActive(offsetof(eeprom_data_t, TK_KEY), &transport_key[0], 16);
     ArduinoCryptoHandler cryptoHandler(&transport_key[0]);
 
-    Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
+    if (rx_mode_gateway) {
 
-    PARSER::setRequireTransportEncryption(EEPROM::DATA_STORE::getRequireTransportEncryption());
+        Uart uart;
 
-    PARSER::parseInput(protocol, (ComBusInterface*)&uart);
+        Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
+        PARSER::setRequireTransportEncryption(EEPROM::DATA_STORE::getRequireTransportEncryption());
+        PARSER::parseInput(protocol, (ComBusInterface*)&uart);
+    }
+    else {
+
+        RadioUart uart;
+
+        Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
+        PARSER::setRequireTransportEncryption(EEPROM::DATA_STORE::getRequireTransportEncryption());
+        PARSER::parseInput(protocol, (ComBusInterface*)&uart);
+    }
 
     return 0;
 }
