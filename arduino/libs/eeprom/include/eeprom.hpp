@@ -12,7 +12,8 @@ typedef struct eeprom_data {
     //uint8_t HOTP_KEY[16];
     uint32_t dataVersion;
     uint8_t requireEncryption;
-    uint8_t padding[7];
+    uint8_t isRadioNode; // otherwise it is a gateway
+    uint8_t padding[6];
     uint32_t crc;
 } eeprom_data_t;
 
