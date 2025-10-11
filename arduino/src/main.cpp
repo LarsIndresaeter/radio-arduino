@@ -20,9 +20,9 @@
 #include <ws2812b.hpp>
 
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    constexpr bool rx_mode_gateway = false;
+    bool rx_mode_gateway = false;
 #else
-    constexpr bool rx_mode_gateway = true;
+    bool rx_mode_gateway = true;
 #endif
 
 void commandDs18b20(uint8_t* commandPayload, uint8_t* responsePayload)

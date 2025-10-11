@@ -1,10 +1,6 @@
 #include <radio_link.hpp>
 
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-constexpr bool rx_mode_gateway = false;
-#else
-constexpr bool rx_mode_gateway = true;
-#endif
+extern bool rx_mode_gateway;
 
 namespace RADIOLINK {
 
