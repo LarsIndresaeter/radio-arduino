@@ -80,13 +80,13 @@ std::string getNodeNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_cl
 {
     std::string nodeName("");
 
-    auto nodeDeviceInfo = mon.getRadio<>(UartCommandGetDeviceName());
+    auto nodeDeviceInfo = mon.getRadio<>(RaduinoCommandGetDeviceName());
 
-    if (nodeDeviceInfo.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
-        nodeDeviceInfo = mon.getRadio<>(UartCommandGetDeviceName());
+    if (nodeDeviceInfo.getReplyStatus() != RaduinoCommandBase::ReplyStatus::Complete) {
+        nodeDeviceInfo = mon.getRadio<>(RaduinoCommandGetDeviceName());
     }
 
-    if (nodeDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+    if (nodeDeviceInfo.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete) {
         auto response = nodeDeviceInfo.responseStruct();
 
         for (int i = 0; i < sizeof(response.nameString) && response.nameString[i] != 0; i++) {
@@ -103,13 +103,13 @@ std::string getGatewayNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt
 {
     std::string gatewayName("");
 
-    auto nodeDeviceInfo = mon.get<>(UartCommandGetDeviceName());
+    auto nodeDeviceInfo = mon.get<>(RaduinoCommandGetDeviceName());
 
-    if (nodeDeviceInfo.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
-        nodeDeviceInfo = mon.get<>(UartCommandGetDeviceName());
+    if (nodeDeviceInfo.getReplyStatus() != RaduinoCommandBase::ReplyStatus::Complete) {
+        nodeDeviceInfo = mon.get<>(RaduinoCommandGetDeviceName());
     }
 
-    if (nodeDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+    if (nodeDeviceInfo.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete) {
         auto response = nodeDeviceInfo.responseStruct();
 
         for (int i = 0; i < sizeof(response.nameString) && response.nameString[i] != 0; i++) {

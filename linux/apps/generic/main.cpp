@@ -114,7 +114,7 @@ void compareResult(uint8_t expected, uint8_t actual)
 
 void readCurrentAndVoltage(monitor& mon, int samples)
 {
-    auto ina219 = mon.get<>(UartCommandIna219());
+    auto ina219 = mon.get<>(RaduinoCommandIna219());
     std::vector<float> currentData, voltageData;
     int16_t intval = 0;
     float currentMin, currentMax, current, stdev;
@@ -138,7 +138,7 @@ void readCurrentAndVoltage(monitor& mon, int samples)
         currentData.clear();
         voltageData.clear();
         while (time > timePrev) {
-            ina219 = mon.get<>(UartCommandIna219());
+            ina219 = mon.get<>(RaduinoCommandIna219());
             intval = ina219.responseStruct().getCurrent();
             current = intval * 0.001;
 
@@ -225,7 +225,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 's':
             {
             uint32_t delay = atoi(optarg);
-            std::cout << mon.get<>(UartCommandSleep(delay), static_cast<std::chrono::milliseconds>(delay + 2000)) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandSleep(delay), static_cast<std::chrono::milliseconds>(delay + 2000)) << std::endl;
             }
             break;
         case 'V':
@@ -269,7 +269,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
                     red.at(k) = 8;
                     green.at(k) = 8;
                     blue.at(k) = 8;
-                    UartCommandWs2812b ws2812b(red, green, blue);
+                    RaduinoCommandWs2812b ws2812b(red, green, blue);
                     mon.get<>(ws2812b);
                     std::this_thread::sleep_for((k + 5) * 1ms);
                 }
@@ -281,22 +281,22 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             mon.setPrintResponseTime(false);
             break;
         case 'B':
-            std::cout << mon.get<>(UartCommandBlink()) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandBlink()) << std::endl;
             break;
         case 'J':
                 {
-                //mon.get<>(UartCommandNrf24l01Init({0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, {0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, 121, false));
+                //mon.get<>(RaduinoCommandNrf24l01Init({0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, {0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, 121, false));
            
                 std::vector<uint8_t> ackPayload;
                 for(int i = 0; i<1000;i++){
-                    auto rec = mon.get<>(UartCommandNrf24l01Read(ackPayload.size(), ackPayload));
+                    auto rec = mon.get<>(RaduinoCommandNrf24l01Read(ackPayload.size(), ackPayload));
                     ackPayload.clear();
 
                     std::this_thread::sleep_for(100ms);
 
                     if(rec.responseStruct().length > 0)
                     {
-                    //std::cout << "==== STATUS      " << mon.get<>(UartCommandSpiRead(0x07, 1)) << std::endl;
+                    //std::cout << "==== STATUS      " << mon.get<>(RaduinoCommandSpiRead(0x07, 1)) << std::endl;
                         std::cout << rec << std::endl;
 
                         for(int j = 0; j<rec.responseStruct().length; j++)
@@ -311,7 +311,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'S': {
             // printf "best\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" | xxd
             // printf "best\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" | sha1sum
-            auto result = mon.get<>(UartCommandSha1("best"));
+            auto result = mon.get<>(RaduinoCommandSha1("best"));
             std::cout << result << std::endl;
             compareResult(
                 0x31, result.responseStruct().data[0]);
@@ -322,27 +322,27 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         } break;
         case 'L': {
             std::string s(optarg);
-            mon.get<>(UartCommandSsd1306(2, s)); // second line
+            mon.get<>(RaduinoCommandSsd1306(2, s)); // second line
         } break;
         case 'H':
-            std::cout << mon.get<>(UartCommandHotp()) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandHotp()) << std::endl;
             break;
         case 'P': {
             uint8_t value = atoi(optarg);
-            std::cout << mon.get<>(UartCommandPwm('b', 2, value)) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandPwm('b', 2, value)) << std::endl;
         } break;
         case 'G':
-            std::cout << mon.get<>(UartCommandGpio()) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandGpio()) << std::endl;
             break;
         case 'R':
-            std::cout << mon.get<>(UartCommandRandom()) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandRandom()) << std::endl;
             break;
         case 'C':
             mon.printCounterValues();
             break;
         case 'F': {
             while (true) {
-                auto r = mon.get<>(UartCommandTimer());
+                auto r = mon.get<>(RaduinoCommandTimer());
 
                 uint16_t pulse_width = r.responseStruct().getPulsewidth();
 
@@ -360,40 +360,40 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
                         blue.at(i) = 1;
                     }
 
-                    UartCommandWs2812b ws2812b(red, green, blue);
+                    RaduinoCommandWs2812b ws2812b(red, green, blue);
                     mon.get<>(ws2812b);
                 }
             }
         }
         case 'D':
-            std::cout << mon.get<>(UartCommandDebug()) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandDebug()) << std::endl;
             break;
         case 'p':
-            std::cout << mon.get<>(UartCommandPing()) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandPing()) << std::endl;
             break;
         case 'j':
-            std::cout << mon.get<>(UartCommandVcc()) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandVcc()) << std::endl;
             break;
         case 'i': {
             std::string s(optarg);
             std::vector<uint8_t> vec(s.begin(), s.end());
             std::cout << mon.get<>(
-                UartCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec.size(), vec))
+                RaduinoCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec.size(), vec))
                       << std::endl;
         } break;
         case 'I':
-            std::cout << mon.get<>(UartCommandI2cRead(
+            std::cout << mon.get<>(RaduinoCommandI2cRead(
                 i2cDeviceAddress, i2cDeviceOffset, atoi(optarg)))
                       << std::endl;
             break;
         case 'M':
-            std::cout << mon.get<>(UartCommandIna219()) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandIna219()) << std::endl;
             break;
         case 'N':
             readCurrentAndVoltage(mon, atoi(optarg));
             break;
         case 'X':
-            std::cout << mon.get<>(UartCommandDs18b20()) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandDs18b20()) << std::endl;
             break;
         case 'U': 
             {
@@ -401,23 +401,23 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             if(s.at(0) == 's')
             {
                 std::vector<uint8_t> address  = {0xF0, 0xF0, 0xF0, 0xF0, 0xC2};
-                mon.get<>(UartCommandNrf24l01Init(address, address, 121, true));
+                mon.get<>(RaduinoCommandNrf24l01Init(address, address, 121, true));
             }
             if(s.at(0) == 'r')
             {
                 std::vector<uint8_t> address  = {0xF0, 0xF0, 0xF0, 0xF0, 0xC2};
-                mon.get<>(UartCommandNrf24l01Init(address, address, 121, false));
+                mon.get<>(RaduinoCommandNrf24l01Init(address, address, 121, false));
             }
-            std::cout << mon.get<>(UartCommandRadioUart(s.at(0))) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandRadioUart(s.at(0))) << std::endl;
             }
             break;
         case 'E': {
             std::string s(optarg);
-            mon.get<>(UartCommandSetKey('E', s));
+            mon.get<>(RaduinoCommandSetKey('E', s));
         } break;
         case 'K': {
             std::string s(optarg);
-            mon.get<>(UartCommandSetKey('T', s));
+            mon.get<>(RaduinoCommandSetKey('T', s));
         } break;
         case 'b': {
             std::string s(optarg);
@@ -434,23 +434,23 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         } break;
         case 'r': {
             uint8_t flag = atoi(optarg);
-            std::cout << mon.get<>(UartCommandRequireTransportEncryption(flag, 1)) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandRequireTransportEncryption(flag, 1)) << std::endl;
         } break;
         case 'Z': {
             std::string s(optarg);
-            mon.get<>(UartCommandSetDeviceName(s));
+            mon.get<>(RaduinoCommandSetDeviceName(s));
         } break;
         case 'z':
-            std::cout << mon.get<>(UartCommandGetDeviceName()) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandGetDeviceName()) << std::endl;
             break;
         case 'a':
-            std::cout << mon.get<>(UartCommandGetVersion()) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandGetVersion()) << std::endl;
             break;
         case 'x':
-            std::cout << mon.get<>(UartCommandGetStatistics()) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandGetStatistics()) << std::endl;
             break;
         case 'n':
-            std::cout << mon.get<>(UartCommandSetRadioRole('n')) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandSetRadioRole('n')) << std::endl;
             break;
         case 'h':
             print_usage();

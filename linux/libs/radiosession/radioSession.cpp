@@ -38,7 +38,7 @@ void RadioSession::close()
     {
         uint64_t activeTimeSinceLastWakeup=milliSecondsSinceEpoch() - m_timeLastWakeup;
         
-        m_monitor.getRadio<>(UartCommandKeepAlive(m_keepAliveInterval));
+        m_monitor.getRadio<>(RaduinoCommandKeepAlive(m_keepAliveInterval));
 
         if(m_monitor.lastCommandReturnedValidResponse()) {
             if(m_keepAliveInterval != 0)
@@ -88,7 +88,7 @@ bool RadioSession::wakeupNotRespondingTryOnce()
 {
     m_isAlive = false;
 
-    m_monitor.getRadio<>(UartCommandPing(), static_cast<std::chrono::milliseconds>(500));
+    m_monitor.getRadio<>(RaduinoCommandPing(), static_cast<std::chrono::milliseconds>(500));
 
     if (m_monitor.lastCommandReturnedValidResponse()) {
         if (m_verbose) {
@@ -96,7 +96,7 @@ bool RadioSession::wakeupNotRespondingTryOnce()
         }
         m_isAlive = true;
     } else {
-        UartCommandWakeup result = m_monitor.get<>(UartCommandWakeup(false), static_cast<std::chrono::milliseconds>(6000));
+        RaduinoCommandWakeup result = m_monitor.get<>(RaduinoCommandWakeup(false), static_cast<std::chrono::milliseconds>(6000));
 
         if (m_monitor.lastCommandReturnedValidResponse()) {
             m_isAlive = true;
@@ -124,7 +124,7 @@ bool RadioSession::wakeupNotResponding()
 {
     uint8_t cnt = 0;
 
-    m_monitor.get<>(UartCommandSetNodeAddress(m_radioAddress));
+    m_monitor.get<>(RaduinoCommandSetNodeAddress(m_radioAddress));
 
     while(cnt<=m_wakeupAttempts)
     {
@@ -144,8 +144,8 @@ std::string RadioSession::readNodeName(monitor& mon)
 {
     std::string nodeName;
 
-    auto nodeDeviceInfo = mon.getRadio<>(UartCommandGetDeviceName());
-    if (nodeDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+    auto nodeDeviceInfo = mon.getRadio<>(RaduinoCommandGetDeviceName());
+    if (nodeDeviceInfo.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete) {
         auto response = nodeDeviceInfo.responseStruct();
 
         for (int i = 0; i < sizeof(response.nameString) && response.nameString[i] != 0; i++) {
@@ -160,13 +160,13 @@ std::string RadioSession::getNodeName()
 {
     std::string nodeName("");
 
-    auto nodeDeviceInfo = m_monitor.getRadio<>(UartCommandGetDeviceName());
+    auto nodeDeviceInfo = m_monitor.getRadio<>(RaduinoCommandGetDeviceName());
 
-    if (nodeDeviceInfo.getReplyStatus() != UartCommandBase::ReplyStatus::Complete) {
-        nodeDeviceInfo = m_monitor.getRadio<>(UartCommandGetDeviceName());
+    if (nodeDeviceInfo.getReplyStatus() != RaduinoCommandBase::ReplyStatus::Complete) {
+        nodeDeviceInfo = m_monitor.getRadio<>(RaduinoCommandGetDeviceName());
     }
 
-    if (nodeDeviceInfo.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+    if (nodeDeviceInfo.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete) {
         auto response = nodeDeviceInfo.responseStruct();
 
         // refactor this: use getNameString() when it is completed

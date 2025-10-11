@@ -28,7 +28,7 @@ float calculateStddev(std::vector<float> data)
 
 void readCurrentAndVoltage(monitor& mon, mqtt::async_client& mqtt_client, int samples)
 {
-    auto ina219 = mon.get<>(UartCommandIna219());
+    auto ina219 = mon.get<>(RaduinoCommandIna219());
     std::vector<float> currentData, voltageData;
 
     const int QOS = 0;
@@ -54,7 +54,7 @@ void readCurrentAndVoltage(monitor& mon, mqtt::async_client& mqtt_client, int sa
         voltageData.clear();
         // read data for 1 second
         while (time > timePrev) {
-            ina219 = mon.get<>(UartCommandIna219());
+            ina219 = mon.get<>(RaduinoCommandIna219());
             int16_t current_intval = ina219.responseStruct().getCurrent();
             float current = current_intval * 0.001;
             currentData.push_back(current);

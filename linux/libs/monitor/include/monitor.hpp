@@ -98,7 +98,7 @@ public:
 
     template <typename T> T get(T cmd, uint8_t protocol_version, std::chrono::milliseconds timeout)
     {
-        cmd.setReplyStatus(UartCommandBase::ReplyStatus::Pending);
+        cmd.setReplyStatus(RaduinoCommandBase::ReplyStatus::Pending);
         m_lastResponseValid = false;
 
         auto start = std::chrono::high_resolution_clock::now();
@@ -115,7 +115,7 @@ public:
                 return (cmd.getResponse().size() > 0);
             })) {
             // std::cout << "Reply timeout" << std::endl;
-            cmd.setReplyStatus(UartCommandBase::ReplyStatus::Timeout);
+            cmd.setReplyStatus(RaduinoCommandBase::ReplyStatus::Timeout);
             m_inValidResponseCounter++;
             return (cmd);
         }
@@ -135,7 +135,7 @@ public:
 
         cmd.validateResponse(); // set status to Error if response is not valid
 
-        if (cmd.getReplyStatus() == UartCommandBase::ReplyStatus::Complete) {
+        if (cmd.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete) {
             m_lastResponseValid = true;
         }
         else
