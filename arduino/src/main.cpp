@@ -599,6 +599,31 @@ void commandRequireTransportEncryption(uint8_t* commandPayload, uint8_t* respons
     response.serialize(responsePayload);
 }
 
+#include <avr/wdt.h>
+
+void softReset()
+{
+    wdt_enable(WDTO_15MS);
+    for(;;) {
+    }
+}
+
+void commandSetRadioRole(uint8_t* commandPayload, uint8_t* responsePayload)
+{
+    COMMANDS::SET_RADIO_ROLE::command_t command(commandPayload);
+    COMMANDS::SET_RADIO_ROLE::response_t response;
+
+    if (1 == command.isRadioNode) {
+        rx_mode_gateway = false;
+    }
+    else {
+        rx_mode_gateway = false;
+    }
+
+    softReset();
+    response.serialize(responsePayload);
+}
+
 void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInterface* comBus)
 {
     uint8_t cmd_id = commandPayload[0];
@@ -711,6 +736,9 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
         break;
     case COMMANDS::OI::REQUIRE_TRANSPORT_ENCRYPTION:
         commandRequireTransportEncryption(commandPayload, responsePayload);
+        break;
+    case COMMANDS::OI::SET_RADIO_ROLE:
+        commandSetRadioRole(commandPayload, responsePayload);
         break;
     default:
         break;
