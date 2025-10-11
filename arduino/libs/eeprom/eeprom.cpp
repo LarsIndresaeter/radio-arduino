@@ -239,5 +239,20 @@ namespace DATA_STORE {
         findActivePartition();
         return EEPROM::read(offsetActiveStruct() + offsetof(eeprom_data_t, isRadioNode));
     }
+
+    uint16_t getRestarts()
+    {
+        findActivePartition();
+        uint16_t restarts;
+        EEPROM::readMultiple(offsetActiveStruct() + offsetof(eeprom_data, restarts), (uint8_t*)&restarts, sizeof(uint16_t));
+        return restarts;
+    }
+
+    void incrementRestarts()
+    {
+        uint16_t restarts = getRestarts() + 1; // calls findActivePartition
+        EEPROM::writeMultiple(offsetSpareStruct() + offsetof(eeprom_data_t, restarts), (uint8_t*)&restarts, sizeof(uint16_t));
+        calculateCrcAndSetSpareAsActive();
+    }
 } // namespace
 } // namespace
