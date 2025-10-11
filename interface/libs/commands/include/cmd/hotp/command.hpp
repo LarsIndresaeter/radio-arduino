@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandHotp : public UartCommandBase {
+class RaduinoCommandHotp : public RaduinoCommandBase {
 public:
-    UartCommandHotp()
-        : UartCommandBase(
+    RaduinoCommandHotp()
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::HOTP),
               COMMANDS::HOTP::COMMAND_LENGTH)
     {

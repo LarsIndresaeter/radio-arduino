@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandPwm : public UartCommandBase {
+class RaduinoCommandPwm : public RaduinoCommandBase {
 public:
-    UartCommandPwm(uint8_t port, uint8_t pin, uint8_t value)
-        : UartCommandBase(
+    RaduinoCommandPwm(uint8_t port, uint8_t pin, uint8_t value)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::PWM),
               COMMANDS::PWM::COMMAND_LENGTH)
     {

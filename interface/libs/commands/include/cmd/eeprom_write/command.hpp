@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandEepromWrite : public UartCommandBase {
+class RaduinoCommandEepromWrite : public RaduinoCommandBase {
 public:
-    UartCommandEepromWrite(uint16_t address, uint8_t data)
-        : UartCommandBase(
+    RaduinoCommandEepromWrite(uint16_t address, uint8_t data)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::EEPROM_WRITE),
               COMMANDS::EEPROM_WRITE::COMMAND_LENGTH)
     {

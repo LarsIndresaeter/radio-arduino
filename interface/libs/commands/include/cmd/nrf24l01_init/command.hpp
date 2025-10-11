@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandNrf24l01Init : public UartCommandBase {
+class RaduinoCommandNrf24l01Init : public RaduinoCommandBase {
 public:
-    UartCommandNrf24l01Init(std::vector<uint8_t> txAddr, std::vector<uint8_t> rxAddr, uint8_t rfChannel, uint8_t gateway)
-        : UartCommandBase(
+    RaduinoCommandNrf24l01Init(std::vector<uint8_t> txAddr, std::vector<uint8_t> rxAddr, uint8_t rfChannel, uint8_t gateway)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::NRF24L01_INIT),
               COMMANDS::NRF24L01_INIT::COMMAND_LENGTH)
     {
@@ -36,8 +36,8 @@ public:
     };
 
     // string constructor
-    UartCommandNrf24l01Init(std::string txAddr, std::string rxAddr, uint8_t rfChannel, uint8_t gateway)
-        : UartCommandBase(
+    RaduinoCommandNrf24l01Init(std::string txAddr, std::string rxAddr, uint8_t rfChannel, uint8_t gateway)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::NRF24L01_INIT),
               COMMANDS::NRF24L01_INIT::COMMAND_LENGTH)
     {

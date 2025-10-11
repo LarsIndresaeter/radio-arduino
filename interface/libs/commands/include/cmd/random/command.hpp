@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandRandom : public UartCommandBase {
+class RaduinoCommandRandom : public RaduinoCommandBase {
 public:
-    UartCommandRandom()
-        : UartCommandBase(
+    RaduinoCommandRandom()
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::RANDOM),
               COMMANDS::RANDOM::COMMAND_LENGTH)
     {

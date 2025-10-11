@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandNrf24l01Write : public UartCommandBase {
+class RaduinoCommandNrf24l01Write : public RaduinoCommandBase {
 public:
-    UartCommandNrf24l01Write(uint8_t length, std::vector<uint8_t> data)
-        : UartCommandBase(
+    RaduinoCommandNrf24l01Write(uint8_t length, std::vector<uint8_t> data)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::NRF24L01_WRITE),
               COMMANDS::NRF24L01_WRITE::COMMAND_LENGTH)
     {
@@ -25,8 +25,8 @@ public:
     };
 
     // string constructor
-    UartCommandNrf24l01Write(uint8_t length, std::string data)
-        : UartCommandBase(
+    RaduinoCommandNrf24l01Write(uint8_t length, std::string data)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::NRF24L01_WRITE),
               COMMANDS::NRF24L01_WRITE::COMMAND_LENGTH)
     {

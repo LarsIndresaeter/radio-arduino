@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandSetKey : public UartCommandBase {
+class RaduinoCommandSetKey : public RaduinoCommandBase {
 public:
-    UartCommandSetKey(uint8_t keyId, std::vector<uint8_t> keyValue)
-        : UartCommandBase(
+    RaduinoCommandSetKey(uint8_t keyId, std::vector<uint8_t> keyValue)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::SET_KEY),
               COMMANDS::SET_KEY::COMMAND_LENGTH)
     {
@@ -25,8 +25,8 @@ public:
     };
 
     // string constructor
-    UartCommandSetKey(uint8_t keyId, std::string keyValue)
-        : UartCommandBase(
+    RaduinoCommandSetKey(uint8_t keyId, std::string keyValue)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::SET_KEY),
               COMMANDS::SET_KEY::COMMAND_LENGTH)
     {

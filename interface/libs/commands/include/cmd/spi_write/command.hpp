@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandSpiWrite : public UartCommandBase {
+class RaduinoCommandSpiWrite : public RaduinoCommandBase {
 public:
-    UartCommandSpiWrite(uint8_t reg, uint8_t length, std::vector<uint8_t> data)
-        : UartCommandBase(
+    RaduinoCommandSpiWrite(uint8_t reg, uint8_t length, std::vector<uint8_t> data)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::SPI_WRITE),
               COMMANDS::SPI_WRITE::COMMAND_LENGTH)
     {
@@ -27,8 +27,8 @@ public:
     };
 
     // string constructor
-    UartCommandSpiWrite(uint8_t reg, uint8_t length, std::string data)
-        : UartCommandBase(
+    RaduinoCommandSpiWrite(uint8_t reg, uint8_t length, std::string data)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::SPI_WRITE),
               COMMANDS::SPI_WRITE::COMMAND_LENGTH)
     {

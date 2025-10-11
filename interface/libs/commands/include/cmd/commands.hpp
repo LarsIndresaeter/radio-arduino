@@ -2,7 +2,7 @@
 
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
 #include <cmd/blink/command.hpp>
 #include <cmd/sha1/command.hpp>

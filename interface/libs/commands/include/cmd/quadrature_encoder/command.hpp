@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandQuadratureEncoder : public UartCommandBase {
+class RaduinoCommandQuadratureEncoder : public RaduinoCommandBase {
 public:
-    UartCommandQuadratureEncoder()
-        : UartCommandBase(
+    RaduinoCommandQuadratureEncoder()
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::QUADRATURE_ENCODER),
               COMMANDS::QUADRATURE_ENCODER::COMMAND_LENGTH)
     {

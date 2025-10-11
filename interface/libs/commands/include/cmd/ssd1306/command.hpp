@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandSsd1306 : public UartCommandBase {
+class RaduinoCommandSsd1306 : public RaduinoCommandBase {
 public:
-    UartCommandSsd1306(uint8_t line, std::vector<uint8_t> data)
-        : UartCommandBase(
+    RaduinoCommandSsd1306(uint8_t line, std::vector<uint8_t> data)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::SSD1306),
               COMMANDS::SSD1306::COMMAND_LENGTH)
     {
@@ -25,8 +25,8 @@ public:
     };
 
     // string constructor
-    UartCommandSsd1306(uint8_t line, std::string data)
-        : UartCommandBase(
+    RaduinoCommandSsd1306(uint8_t line, std::string data)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::SSD1306),
               COMMANDS::SSD1306::COMMAND_LENGTH)
     {
