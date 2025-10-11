@@ -97,7 +97,7 @@ void print_usage()
     std::cout << "       -K : set transport key on device (command must be encrypted)" << std::endl;
     std::cout << "       -b : use transport key" << std::endl;
     std::cout << "       -r : set transport encryption required (command must be encrypted)" << std::endl;
-    std::cout << "       -n : set radio role 1=node, 0=gateway" << std::endl;
+    std::cout << "       -n : reboot gateway as node" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -213,7 +213,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t i2cDeviceAddress = 0b10100000;
 
     while ((option
-           = getopt(argc, argv, "P:DBSHCs:Rd:VvhtTgGi:I:o:MN:XE:K:b:r:Z:zW:L:FJU:jpaxn:"))
+           = getopt(argc, argv, "P:DBSHCs:Rd:VvhtTgGi:I:o:MN:XE:K:b:r:Z:zW:L:FJU:jpaxn"))
            != -1) {
         switch (option) {
         case 'd':
@@ -450,7 +450,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             std::cout << mon.get<>(UartCommandGetStatistics()) << std::endl;
             break;
         case 'n':
-            std::cout << mon.get<>(UartCommandSetRadioRole(atoi(optarg))) << std::endl;
+            std::cout << mon.get<>(UartCommandSetRadioRole('n')) << std::endl;
             break;
         case 'h':
             print_usage();

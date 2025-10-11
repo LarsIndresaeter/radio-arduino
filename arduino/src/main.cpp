@@ -20,9 +20,9 @@
 #include <ws2812b.hpp>
 
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    bool rx_mode_gateway = false;
+    bool rx_mode_gateway = false; // default role
 #else
-    bool rx_mode_gateway = true;
+    bool rx_mode_gateway = true; // default role
 #endif
 
 void commandDs18b20(uint8_t* commandPayload, uint8_t* responsePayload)
@@ -613,12 +613,7 @@ void commandSetRadioRole(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::SET_RADIO_ROLE::command_t command(commandPayload);
     COMMANDS::SET_RADIO_ROLE::response_t response;
 
-    if (1 == command.isRadioNode) {
-        rx_mode_gateway = false;
-    }
-    else {
-        rx_mode_gateway = false;
-    }
+    EEPROM::DATA_STORE::setIsRadioNode(command.isRadioNode);
 
     softReset();
     response.serialize(responsePayload);
@@ -751,6 +746,14 @@ int main()
     uint8_t transport_key[16] = {0};
     EEPROM::DATA_STORE::readFromActive(offsetof(eeprom_data_t, TK_KEY), &transport_key[0], 16);
     ArduinoCryptoHandler cryptoHandler(&transport_key[0]);
+
+    if ('n' == EEPROM::DATA_STORE::getIsRadioNode()) {
+        rx_mode_gateway = false; // override default role
+    }
+
+    if ('g' == EEPROM::DATA_STORE::getIsRadioNode()) {
+        rx_mode_gateway = true; // override default role
+    }
 
     if (rx_mode_gateway) {
 

@@ -36,5 +36,7 @@ namespace DATA_STORE {
     void writeToSpareAndSetAsActive(uint16_t address, uint8_t* buffer, uint16_t length);
     uint8_t getRequireTransportEncryption();
     void setRequireTransportEncryption(uint8_t flag);
+    void setIsRadioNode(uint8_t flag);
+    uint8_t getIsRadioNode();
 } // namespace
 } // namespace
