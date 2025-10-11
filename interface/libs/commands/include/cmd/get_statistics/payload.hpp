@@ -8,7 +8,7 @@ namespace COMMANDS {
 
 namespace GET_STATISTICS {
     constexpr uint8_t COMMAND_LENGTH = 0;
-    constexpr uint8_t RESPONSE_LENGTH = 18;
+    constexpr uint8_t RESPONSE_LENGTH = 20;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
     static_assert(RESPONSE_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "RESPONSE_LENGTH larger than max payload");
@@ -56,6 +56,9 @@ namespace GET_STATISTICS {
             for (uint8_t i = 0; i < 4; i++) {
                 rf_tx[i] = res[16 + i];
             }
+            for (uint8_t i = 0; i < 2; i++) {
+                restarts[i] = res[20 + i];
+            }
         }
 
         void serialize(uint8_t* response)
@@ -76,6 +79,9 @@ namespace GET_STATISTICS {
             }
             for (uint8_t i = 0; i < 4; i++) {
                 response[16 + i] = rf_tx[i];
+            }
+            for (uint8_t i = 0; i < 2; i++) {
+                response[20 + i] = restarts[i];
             }
         }
 
@@ -142,6 +148,17 @@ namespace GET_STATISTICS {
             rf_tx[0] = (uint8_t)val;
         }
 
+        uint16_t getRestarts()
+        {
+            return (((uint16_t)restarts[1]) << 8 | restarts[0]);
+        }
+
+        void setRestarts(uint16_t val)
+        {
+            restarts[1] = (uint8_t)(val >> 8);
+            restarts[0] = (uint8_t)val;
+        }
+
         uint8_t OI;
         uint8_t OL;
         uint8_t commandsParsed[2];
@@ -149,6 +166,7 @@ namespace GET_STATISTICS {
         uint8_t uart_tx[4];
         uint8_t rf_rx[4];
         uint8_t rf_tx[4];
+        uint8_t restarts[2];
 
     } response_t;
 }

@@ -21,6 +21,7 @@ public:
         out << " uart_tx=" << static_cast<int>(response.getUart_tx());
         out << " rf_rx=" << static_cast<int>(response.getRf_rx());
         out << " rf_tx=" << static_cast<int>(response.getRf_tx());
+        out << " restarts=" << static_cast<int>(response.getRestarts());
     }
 
     std::string getCommandName() { return "get_statistics"; }
@@ -48,6 +49,9 @@ public:
         json.append(", ");
         json.append("\"rf_tx\":");
         json.append(std::to_string(responseStruct().getRf_tx()));
+        json.append(", ");
+        json.append("\"restarts\":");
+        json.append(std::to_string(responseStruct().getRestarts()));
         json.append("}");
         return (json);
     };

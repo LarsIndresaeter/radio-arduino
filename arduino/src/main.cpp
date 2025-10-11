@@ -348,6 +348,7 @@ void commandGetStatistics(uint8_t* commandPayload, uint8_t* responsePayload)
     response.setRf_rx(NRF24L01_getRxBytes());
     response.setRf_tx(NRF24L01_getTxBytes());
     response.setCommandsparsed(PARSER::getCommandsParsedCounter());
+    response.setRestarts(EEPROM::DATA_STORE::getRestarts());
 
     response.serialize(responsePayload);
 }
@@ -754,6 +755,8 @@ int main()
     if ('g' == EEPROM::DATA_STORE::getIsRadioNode()) {
         rx_mode_gateway = true; // override default role
     }
+
+    EEPROM::DATA_STORE::incrementRestarts();
 
     if (rx_mode_gateway) {
 
