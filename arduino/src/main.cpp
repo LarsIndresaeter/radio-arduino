@@ -1,28 +1,28 @@
-#include <stdbool.h>
-#include <stdio.h>
-#include <version.h>
+#include <Framebuffer.hpp>
 #include <arduinoCryptoHandler.hpp>
-#include <radio_uart.hpp>
-#include <uart.hpp>
 #include <cmd/payloads.hpp>
+#include <ds18b20.h>
 #include <eeprom.hpp>
+#include <gpio.hpp>
 #include <i2c.hpp>
 #include <ina219.hpp>
 #include <parser.hpp>
 #include <pwm.hpp>
+#include <quadencoder.hpp>
+#include <radio_uart.hpp>
 #include <random.hpp>
 #include <spi.hpp>
-#include <quadencoder.hpp>
-#include <gpio.hpp>
+#include <stdbool.h>
+#include <stdio.h>
 #include <timer.hpp>
-#include <Framebuffer.hpp>
-#include <ds18b20.h>
+#include <uart.hpp>
+#include <version.h>
 #include <ws2812b.hpp>
 
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    bool rx_mode_gateway = false; // default role
+bool rx_mode_gateway = false; // default role
 #else
-    bool rx_mode_gateway = true; // default role
+bool rx_mode_gateway = true; // default role
 #endif
 
 void commandDs18b20(uint8_t* commandPayload, uint8_t* responsePayload)
@@ -115,7 +115,7 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
     }
 
     AES::Sanitize();
-    
+
     if (command.type == 'c') {
         AES::Crypt(response.data, &aes_key[0], &aes_iv[0]);
     }
@@ -483,7 +483,6 @@ void commandNrf24l01Init(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::NRF24L01_INIT::command_t command(commandPayload);
     COMMANDS::NRF24L01_INIT::response_t response;
 
-
     NRF24L01_set_rf_channel(command.rfChannel);
 
     NRF24L01_init(
@@ -591,8 +590,7 @@ void commandRequireTransportEncryption(uint8_t* commandPayload, uint8_t* respons
     if (PARSER::lastReceivedCommandWasEncrypted()) {
         PARSER::setRequireTransportEncryption(command.value);
 
-        if(1 == command.persist)
-        {
+        if (1 == command.persist) {
             EEPROM::DATA_STORE::setRequireTransportEncryption(command.value);
         }
     }
@@ -605,7 +603,7 @@ void commandRequireTransportEncryption(uint8_t* commandPayload, uint8_t* respons
 void softReset()
 {
     wdt_enable(WDTO_15MS);
-    for(;;) {
+    for (;;) {
     }
 }
 
@@ -744,9 +742,13 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
 int main()
 {
     RADIOLINK::setNodeAddress(0);
-    uint8_t transport_key[16] = {0};
+    uint8_t transport_key[16] = { 0 };
     EEPROM::DATA_STORE::readFromActive(offsetof(eeprom_data_t, TK_KEY), &transport_key[0], 16);
     ArduinoCryptoHandler cryptoHandler(&transport_key[0]);
+
+    if (false) { // set to true when you need to force update isRadioNode flag in eeprom 
+        EEPROM::DATA_STORE::setIsRadioNode('g');
+    };
 
     if ('n' == EEPROM::DATA_STORE::getIsRadioNode()) {
         rx_mode_gateway = false; // override default role

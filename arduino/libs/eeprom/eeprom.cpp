@@ -231,7 +231,7 @@ namespace DATA_STORE {
 
     void setIsRadioNode(uint8_t flag)
     {
-        writeToSpareAndSetAsActive(offsetof(eeprom_data_t, isRadioNode), &flag, 8);
+        writeToSpareAndSetAsActive(offsetof(eeprom_data_t, isRadioNode), &flag, sizeof(uint8_t));
     }
 
     uint8_t getIsRadioNode()
