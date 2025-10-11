@@ -66,6 +66,7 @@ void initialize()
 {
     if (!quadratureEncoderIsInitialised) {
         quadratureEncoderIsInitialised = true;
+        cli();
 
         DDRC &= ~(1 << PC0); // set PC0 input (CLK)
         DDRC &= ~(1 << PC1); // set PC1 input (DT)

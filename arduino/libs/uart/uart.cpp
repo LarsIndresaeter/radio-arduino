@@ -64,6 +64,7 @@ Uart::Uart() { init(); }
 
 void Uart::init()
 {
+    cli();
     UBRR0H = (uint8_t)(UBRR0_1000000 >> 8); // 57600
     UBRR0L = (uint8_t)(UBRR0_1000000 & 0xff);
 
