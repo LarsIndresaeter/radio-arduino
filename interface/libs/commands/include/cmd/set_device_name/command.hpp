@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandSetDeviceName : public UartCommandBase {
+class RaduinoCommandSetDeviceName : public RaduinoCommandBase {
 public:
-    UartCommandSetDeviceName(std::vector<uint8_t> name)
-        : UartCommandBase(
+    RaduinoCommandSetDeviceName(std::vector<uint8_t> name)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::SET_DEVICE_NAME),
               COMMANDS::SET_DEVICE_NAME::COMMAND_LENGTH)
     {
@@ -23,8 +23,8 @@ public:
     };
 
     // string constructor
-    UartCommandSetDeviceName(std::string name)
-        : UartCommandBase(
+    RaduinoCommandSetDeviceName(std::string name)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::SET_DEVICE_NAME),
               COMMANDS::SET_DEVICE_NAME::COMMAND_LENGTH)
     {

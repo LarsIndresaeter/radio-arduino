@@ -81,7 +81,7 @@ def generateCommandsOpen():
         outfile.write("\n")
         outfile.write("// This file is generated with the script: `interface/libs/commands/generate.py`\n")
         outfile.write("\n")
-        outfile.write("#include <common/uartCommandBase.hpp>\n")
+        outfile.write("#include <common/raduinoCommandBase.hpp>\n")
         outfile.write("\n")
 
 def generateCommonHeaderFilesOpen(): 
@@ -124,11 +124,11 @@ def generateCommandFile(commandName,
         outfile.write("#pragma once\n")
         outfile.write("// This file is generated with the script: `interface/libs/commands/generate.py`\n")
         outfile.write("\n")
-        outfile.write("#include <common/uartCommandBase.hpp>\n")
+        outfile.write("#include <common/raduinoCommandBase.hpp>\n")
         outfile.write("\n")
-        outfile.write("class UartCommand" + snakecaseToCamelCase(commandName) + " : public UartCommandBase {\n")
+        outfile.write("class RaduinoCommand" + snakecaseToCamelCase(commandName) + " : public RaduinoCommandBase {\n")
         outfile.write("public:\n")
-        outfile.write("    UartCommand" + snakecaseToCamelCase(commandName) + "(")
+        outfile.write("    RaduinoCommand" + snakecaseToCamelCase(commandName) + "(")
         # add parameters
         items = len(commandPayloadByteNames)
         for item in commandPayloadByteNames:
@@ -146,7 +146,7 @@ def generateCommandFile(commandName,
                 outfile.write(", ")
  
         outfile.write(")\n")
-        outfile.write("        : UartCommandBase(\n")
+        outfile.write("        : RaduinoCommandBase(\n")
         outfile.write("              static_cast<uint8_t>(COMMANDS::OI::" + commandName.upper() + "),\n")
         outfile.write("              COMMANDS::" + commandName.upper() + "::COMMAND_LENGTH)\n")
         outfile.write("    {\n")
@@ -183,7 +183,7 @@ def generateCommandFile(commandName,
         if createStringConstructor:
             outfile.write("\n")
             outfile.write("    // string constructor\n")
-            outfile.write("    UartCommand" + snakecaseToCamelCase(commandName) + "(")
+            outfile.write("    RaduinoCommand" + snakecaseToCamelCase(commandName) + "(")
             # add parameters
             items = len(commandPayloadByteNames)
             for item in commandPayloadByteNames:
@@ -201,7 +201,7 @@ def generateCommandFile(commandName,
                     outfile.write(", ")
             outfile.write(")\n")
      
-            outfile.write("        : UartCommandBase(\n")
+            outfile.write("        : RaduinoCommandBase(\n")
             outfile.write("              static_cast<uint8_t>(COMMANDS::OI::" + commandName.upper() + "),\n")
             outfile.write("              COMMANDS::" + commandName.upper() + "::COMMAND_LENGTH)\n")
             outfile.write("    {\n")

@@ -43,7 +43,7 @@ void moveRadioNode(monitor& mon, mqtt::async_client& mqtt_client, std::vector<st
 
     if (nodeName == name) {
         std::cout << "DEBUG: try to move '" + nodeName + "' to address: " + std::to_string(nodeAddress) << std::endl;
-        mon.getRadio<>(UartCommandSetNodeAddress(nodeAddress));
+        mon.getRadio<>(RaduinoCommandSetNodeAddress(nodeAddress));
 
         if(mon.lastCommandReturnedValidResponse()) {
             std::cout << "DEBUG: move operation was successful" << std::endl;

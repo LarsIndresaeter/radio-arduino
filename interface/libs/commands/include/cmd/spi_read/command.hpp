@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandSpiRead : public UartCommandBase {
+class RaduinoCommandSpiRead : public RaduinoCommandBase {
 public:
-    UartCommandSpiRead(uint8_t reg, uint8_t length)
-        : UartCommandBase(
+    RaduinoCommandSpiRead(uint8_t reg, uint8_t length)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::SPI_READ),
               COMMANDS::SPI_READ::COMMAND_LENGTH)
     {

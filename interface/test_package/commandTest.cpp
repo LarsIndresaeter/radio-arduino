@@ -125,13 +125,13 @@ public:
 
 TEST_F(commandTest, commandBlink)
 {
-    UartCommandBlink cmd {};
+    RaduinoCommandBlink cmd {};
     cmd.setResponse(simulateTarget(cmd.getPayload()));
 
-    cmd.setReplyStatus(UartCommandBase::ReplyStatus::Complete);
+    cmd.setReplyStatus(RaduinoCommandBase::ReplyStatus::Complete);
     cmd.validateResponse();
 
-    EXPECT_TRUE(cmd.getReplyStatus() == UartCommandBase::ReplyStatus::Complete);
+    EXPECT_TRUE(cmd.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete);
 
     EXPECT_EQ(2, cmd.responseStruct().OI);
     EXPECT_EQ(0, cmd.responseStruct().OL);
@@ -139,13 +139,13 @@ TEST_F(commandTest, commandBlink)
 
 TEST_F(commandTest, commandSha1)
 {
-    UartCommandSha1 cmd("test");
+    RaduinoCommandSha1 cmd("test");
     cmd.setResponse(simulateTarget(cmd.getPayload()));
 
-    cmd.setReplyStatus(UartCommandBase::ReplyStatus::Complete);
+    cmd.setReplyStatus(RaduinoCommandBase::ReplyStatus::Complete);
     cmd.validateResponse();
 
-    EXPECT_TRUE(cmd.getReplyStatus() == UartCommandBase::ReplyStatus::Complete);
+    EXPECT_TRUE(cmd.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete);
 
     EXPECT_EQ(3, cmd.responseStruct().OI);
     EXPECT_EQ(20, cmd.responseStruct().OL);
@@ -173,13 +173,13 @@ TEST_F(commandTest, commandSha1)
 
 TEST_F(commandTest, commandHotp)
 {
-    UartCommandHotp cmd {};
+    RaduinoCommandHotp cmd {};
     cmd.setResponse(simulateTarget(cmd.getPayload()));
 
-    cmd.setReplyStatus(UartCommandBase::ReplyStatus::Complete);
+    cmd.setReplyStatus(RaduinoCommandBase::ReplyStatus::Complete);
     cmd.validateResponse();
 
-    EXPECT_TRUE(cmd.getReplyStatus() == UartCommandBase::ReplyStatus::Complete);
+    EXPECT_TRUE(cmd.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete);
 
     EXPECT_EQ(4, cmd.responseStruct().OI);
     EXPECT_EQ(20, cmd.responseStruct().OL);
@@ -207,13 +207,13 @@ TEST_F(commandTest, commandHotp)
 
 TEST_F(commandTest, commandEepromWriteLow)
 {
-    UartCommandEepromWrite cmd(12, 13);
+    RaduinoCommandEepromWrite cmd(12, 13);
     cmd.setResponse(simulateTarget(cmd.getPayload()));
 
-    cmd.setReplyStatus(UartCommandBase::ReplyStatus::Complete);
+    cmd.setReplyStatus(RaduinoCommandBase::ReplyStatus::Complete);
     cmd.validateResponse();
 
-    EXPECT_TRUE(cmd.getReplyStatus() == UartCommandBase::ReplyStatus::Complete);
+    EXPECT_TRUE(cmd.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete);
 
     EXPECT_EQ(5, cmd.responseStruct().OI);
     EXPECT_EQ(3, cmd.responseStruct().OL);
@@ -224,13 +224,13 @@ TEST_F(commandTest, commandEepromWriteLow)
 
 TEST_F(commandTest, commandEepromWriteHigh)
 {
-    UartCommandEepromWrite cmd(600, 13);
+    RaduinoCommandEepromWrite cmd(600, 13);
     cmd.setResponse(simulateTarget(cmd.getPayload()));
 
-    cmd.setReplyStatus(UartCommandBase::ReplyStatus::Complete);
+    cmd.setReplyStatus(RaduinoCommandBase::ReplyStatus::Complete);
     cmd.validateResponse();
 
-    EXPECT_TRUE(cmd.getReplyStatus() == UartCommandBase::ReplyStatus::Complete);
+    EXPECT_TRUE(cmd.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete);
 
     EXPECT_EQ(5, cmd.responseStruct().OI);
     EXPECT_EQ(3, cmd.responseStruct().OL);
@@ -242,13 +242,13 @@ TEST_F(commandTest, commandEepromWriteHigh)
 
 TEST_F(commandTest, commandEepromReadLow)
 {
-    UartCommandEepromRead cmd(22);
+    RaduinoCommandEepromRead cmd(22);
     cmd.setResponse(simulateTarget(cmd.getPayload()));
 
-    cmd.setReplyStatus(UartCommandBase::ReplyStatus::Complete);
+    cmd.setReplyStatus(RaduinoCommandBase::ReplyStatus::Complete);
     cmd.validateResponse();
 
-    EXPECT_TRUE(cmd.getReplyStatus() == UartCommandBase::ReplyStatus::Complete);
+    EXPECT_TRUE(cmd.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete);
 
     EXPECT_EQ(6, cmd.responseStruct().OI);
     EXPECT_EQ(3, cmd.responseStruct().OL);
@@ -260,13 +260,13 @@ TEST_F(commandTest, commandEepromReadLow)
 
 TEST_F(commandTest, commandEepromReadHigh)
 {
-    UartCommandEepromRead cmd(600);
+    RaduinoCommandEepromRead cmd(600);
     cmd.setResponse(simulateTarget(cmd.getPayload()));
 
-    cmd.setReplyStatus(UartCommandBase::ReplyStatus::Complete);
+    cmd.setReplyStatus(RaduinoCommandBase::ReplyStatus::Complete);
     cmd.validateResponse();
 
-    EXPECT_TRUE(cmd.getReplyStatus() == UartCommandBase::ReplyStatus::Complete);
+    EXPECT_TRUE(cmd.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete);
 
     EXPECT_EQ(6, cmd.responseStruct().OI);
     EXPECT_EQ(3, cmd.responseStruct().OL);
@@ -279,13 +279,13 @@ TEST_F(commandTest, commandEepromReadHigh)
 TEST_F(commandTest, commandAes)
 {
     std::vector<uint8_t> key = {0, 0};
-    UartCommandAes cmd('d', key);
+    RaduinoCommandAes cmd('d', key);
     cmd.setResponse(simulateTarget(cmd.getPayload()));
 
-    cmd.setReplyStatus(UartCommandBase::ReplyStatus::Complete);
+    cmd.setReplyStatus(RaduinoCommandBase::ReplyStatus::Complete);
     cmd.validateResponse();
 
-    EXPECT_TRUE(cmd.getReplyStatus() == UartCommandBase::ReplyStatus::Complete);
+    EXPECT_TRUE(cmd.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete);
 
     EXPECT_EQ(7, cmd.responseStruct().OI);
     EXPECT_EQ(17, cmd.responseStruct().OL);
@@ -310,13 +310,13 @@ TEST_F(commandTest, commandAes)
 
 TEST_F(commandTest, commandPwm)
 {
-    UartCommandPwm cmd('a', 6, 64);
+    RaduinoCommandPwm cmd('a', 6, 64);
     cmd.setResponse(simulateTarget(cmd.getPayload()));
 
-    cmd.setReplyStatus(UartCommandBase::ReplyStatus::Complete);
+    cmd.setReplyStatus(RaduinoCommandBase::ReplyStatus::Complete);
     cmd.validateResponse();
 
-    EXPECT_TRUE(cmd.getReplyStatus() == UartCommandBase::ReplyStatus::Complete);
+    EXPECT_TRUE(cmd.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete);
 
     EXPECT_EQ(8, cmd.responseStruct().OI);
     EXPECT_EQ(3, cmd.responseStruct().OL);
@@ -327,13 +327,13 @@ TEST_F(commandTest, commandPwm)
 
 TEST_F(commandTest, commandRandom)
 {
-    UartCommandRandom cmd {};
+    RaduinoCommandRandom cmd {};
     cmd.setResponse(simulateTarget(cmd.getPayload()));
 
-    cmd.setReplyStatus(UartCommandBase::ReplyStatus::Complete);
+    cmd.setReplyStatus(RaduinoCommandBase::ReplyStatus::Complete);
     cmd.validateResponse();
 
-    EXPECT_TRUE(cmd.getReplyStatus() == UartCommandBase::ReplyStatus::Complete);
+    EXPECT_TRUE(cmd.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete);
 
     EXPECT_EQ(9, cmd.responseStruct().OI);
     EXPECT_EQ(16, cmd.responseStruct().OL);
@@ -357,13 +357,13 @@ TEST_F(commandTest, commandRandom)
 
 TEST_F(commandTest, commandDebug)
 {
-    UartCommandDebug cmd {};
+    RaduinoCommandDebug cmd {};
     cmd.setResponse(simulateTarget(cmd.getPayload()));
 
-    cmd.setReplyStatus(UartCommandBase::ReplyStatus::Complete);
+    cmd.setReplyStatus(RaduinoCommandBase::ReplyStatus::Complete);
     cmd.validateResponse();
 
-    EXPECT_TRUE(cmd.getReplyStatus() == UartCommandBase::ReplyStatus::Complete);
+    EXPECT_TRUE(cmd.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete);
 
     EXPECT_EQ(10, cmd.responseStruct().OI);
     EXPECT_EQ(32, cmd.responseStruct().OL);

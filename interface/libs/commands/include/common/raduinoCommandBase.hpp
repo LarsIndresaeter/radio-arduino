@@ -9,7 +9,7 @@
 #include <stdint.h>
 #include <vector>
 
-class UartCommandBase {
+class RaduinoCommandBase {
 public:
     enum class ReplyStatus
     {
@@ -19,7 +19,7 @@ public:
         Timeout
     };
 
-    UartCommandBase(uint8_t cmd, uint8_t length)
+    RaduinoCommandBase(uint8_t cmd, uint8_t length)
         : m_cmdId(cmd)
     {
         m_payload.push_back(cmd);
@@ -29,7 +29,7 @@ public:
         }
     };
 
-    UartCommandBase(std::vector<uint8_t> payload);
+    RaduinoCommandBase(std::vector<uint8_t> payload);
 
     std::vector<uint8_t> getResponse() { return (m_response); };
 
@@ -91,7 +91,7 @@ public:
 
     std::string getJson() { return ("{}"); };
 
-    friend std::ostream& operator<<(std::ostream& out, UartCommandBase const& u)
+    friend std::ostream& operator<<(std::ostream& out, RaduinoCommandBase const& u)
     {
         uint8_t c;
         if (u.m_replyStatus == ReplyStatus::Timeout) {

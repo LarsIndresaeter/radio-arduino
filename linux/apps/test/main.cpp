@@ -29,8 +29,8 @@ void testDecryptOnAvr(monitor& mon)
 
     Crypto::AesBlock ciphertext = c.encrypt(plaintext);
 
-    UartCommandAes decryptedInAvr
-        = mon.get<>(UartCommandAes('d', c.getVector(ciphertext)));
+    RaduinoCommandAes decryptedInAvr
+        = mon.get<>(RaduinoCommandAes('d', c.getVector(ciphertext)));
 
     std::string responseString { reinterpret_cast<char*>(
         decryptedInAvr.responseStruct().data) };
@@ -42,7 +42,7 @@ void testEncryptOnAvr(monitor& mon)
     // std::cout << "encrypt on AVR, decrypt on PC" << std::endl;
     std::string s { "Test" };
     std::vector<uint8_t> v { s.begin(), s.end() };
-    UartCommandAes encryptedInAvr = mon.get<>(UartCommandAes('c', v));
+    RaduinoCommandAes encryptedInAvr = mon.get<>(RaduinoCommandAes('c', v));
 
     Crypto c {};
     Crypto::AesBlock key({ 's', 'e', 'c', 'r', 'e', 't' });
@@ -105,26 +105,26 @@ void parseOpt(int argc, char* argv[], monitor& mon)
         case 's':
             {
             uint32_t delay = atoi(optarg);
-            std::cout << mon.getRadio<>(UartCommandSleep(delay), static_cast<std::chrono::milliseconds>(delay + 2000)) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandSleep(delay), static_cast<std::chrono::milliseconds>(delay + 2000)) << std::endl;
             }
             break;
         case 'e':
-            std::cout << mon.get<>(UartCommandEepromWrite(2, 3)) << std::endl;
-            std::cout << mon.get<>(UartCommandEepromRead(2)) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandEepromWrite(2, 3)) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandEepromRead(2)) << std::endl;
             compareResult(
-                3, mon.get<>(UartCommandEepromRead(2)).responseStruct().data);
+                3, mon.get<>(RaduinoCommandEepromRead(2)).responseStruct().data);
 
-            std::cout << mon.get<>(UartCommandEepromWrite(600, 3)) << std::endl;
-            std::cout << mon.get<>(UartCommandEepromRead(600)) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandEepromWrite(600, 3)) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandEepromRead(600)) << std::endl;
             compareResult(
-                3, mon.get<>(UartCommandEepromRead(600)).responseStruct().data);
+                3, mon.get<>(RaduinoCommandEepromRead(600)).responseStruct().data);
 
             break;
         case 'g': {
             std::vector<uint8_t> eeprom;
             for (int i = 0; i < 1024; i++) {
                 eeprom.push_back(
-                    mon.get<>(UartCommandEepromRead(i)).responseStruct().data);
+                    mon.get<>(RaduinoCommandEepromRead(i)).responseStruct().data);
             }
 
             for (int i = 0; i < 64; i++) {
@@ -158,11 +158,11 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             std::string s(optarg);
             std::vector<uint8_t> vec(s.begin(), s.end());
             std::cout << mon.get<>(
-                UartCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec.size(), vec))
+                RaduinoCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec.size(), vec))
                       << std::endl;
         } break;
         case 'I':
-            std::cout << mon.get<>(UartCommandI2cRead(
+            std::cout << mon.get<>(RaduinoCommandI2cRead(
                 i2cDeviceAddress, i2cDeviceOffset, atoi(optarg)))
                       << std::endl;
             break;
@@ -172,14 +172,14 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             if(s.at(0) == 's')
             {
                 std::vector<uint8_t> address = {0xF0, 0xF0, 0xF0, 0xF0, 0xC2};
-                mon.get<>(UartCommandNrf24l01Init(address, address, 121, true));
+                mon.get<>(RaduinoCommandNrf24l01Init(address, address, 121, true));
             }
             if(s.at(0) == 'r')
             {
                 std::vector<uint8_t> address = {0xF0, 0xF0, 0xF0, 0xF0, 0xC2};
-                mon.get<>(UartCommandNrf24l01Init(address, address, 121, false));
+                mon.get<>(RaduinoCommandNrf24l01Init(address, address, 121, false));
             }
-            std::cout << mon.get<>(UartCommandRadioUart(s.at(0))) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandRadioUart(s.at(0))) << std::endl;
             }
             break;
             case 'S': {
@@ -187,8 +187,8 @@ void parseOpt(int argc, char* argv[], monitor& mon)
                 radioSession.setKeepAliveInterval(20);
                 radioSession.wakeupNotResponding();
 
-                auto gatewayStats = mon.get<>(UartCommandGetStatistics());
-                auto nodeStats = mon.getRadio<>(UartCommandGetStatistics());
+                auto gatewayStats = mon.get<>(RaduinoCommandGetStatistics());
+                auto nodeStats = mon.getRadio<>(RaduinoCommandGetStatistics());
 
                 std::cout << "PC --> uart, gateway --> node" << std::endl;
                 std::cout << mon.getBytesSent() << " --> ";
@@ -202,24 +202,24 @@ void parseOpt(int argc, char* argv[], monitor& mon)
                 std::cout << nodeStats.responseStruct().getRf_tx() << std::endl;
             } break;
          case 'b':
-            std::cout << mon.get<>(UartCommandGpio()).getJson() << std::endl;
-            std::cout << mon.get<>(UartCommandSha1("test")).getJson() << std::endl;
-            std::cout << mon.get<>(UartCommandHotp()).getJson() << std::endl;
-            std::cout << mon.get<>(UartCommandDebug()).getJson() << std::endl;
-            std::cout << mon.get<>(UartCommandRandom()).getJson() << std::endl;
-            std::cout << mon.get<>(UartCommandGetVersion()).getJson() << std::endl;
-            std::cout << mon.get<>(UartCommandGetDeviceName()).getJson() << std::endl;
-            std::cout << mon.get<>(UartCommandVcc()).getJson() << std::endl;
-            std::cout << mon.get<>(UartCommandGetStatistics()).getJson() << std::endl;
-            std::cout << mon.get<>(UartCommandPing()).getJson() << std::endl;
+            std::cout << mon.get<>(RaduinoCommandGpio()).getJson() << std::endl;
+            std::cout << mon.get<>(RaduinoCommandSha1("test")).getJson() << std::endl;
+            std::cout << mon.get<>(RaduinoCommandHotp()).getJson() << std::endl;
+            std::cout << mon.get<>(RaduinoCommandDebug()).getJson() << std::endl;
+            std::cout << mon.get<>(RaduinoCommandRandom()).getJson() << std::endl;
+            std::cout << mon.get<>(RaduinoCommandGetVersion()).getJson() << std::endl;
+            std::cout << mon.get<>(RaduinoCommandGetDeviceName()).getJson() << std::endl;
+            std::cout << mon.get<>(RaduinoCommandVcc()).getJson() << std::endl;
+            std::cout << mon.get<>(RaduinoCommandGetStatistics()).getJson() << std::endl;
+            std::cout << mon.get<>(RaduinoCommandPing()).getJson() << std::endl;
             break;
         case 'E': {
             std::string s(optarg);
-            mon.get<>(UartCommandSetKey('E', s));
+            mon.get<>(RaduinoCommandSetKey('E', s));
         } break;
         case 'K': {
             std::string s(optarg);
-            mon.get<>(UartCommandSetKey('T', s));
+            mon.get<>(RaduinoCommandSetKey('T', s));
         } break;
         case 'h':
             print_usage();

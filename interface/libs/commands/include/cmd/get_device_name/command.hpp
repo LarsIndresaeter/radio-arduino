@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandGetDeviceName : public UartCommandBase {
+class RaduinoCommandGetDeviceName : public RaduinoCommandBase {
 public:
-    UartCommandGetDeviceName()
-        : UartCommandBase(
+    RaduinoCommandGetDeviceName()
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::GET_DEVICE_NAME),
               COMMANDS::GET_DEVICE_NAME::COMMAND_LENGTH)
     {

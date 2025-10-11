@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandWs2812b : public UartCommandBase {
+class RaduinoCommandWs2812b : public RaduinoCommandBase {
 public:
-    UartCommandWs2812b(std::vector<uint8_t> red, std::vector<uint8_t> green, std::vector<uint8_t> blue)
-        : UartCommandBase(
+    RaduinoCommandWs2812b(std::vector<uint8_t> red, std::vector<uint8_t> green, std::vector<uint8_t> blue)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::WS2812B),
               COMMANDS::WS2812B::COMMAND_LENGTH)
     {
@@ -41,8 +41,8 @@ public:
     };
 
     // string constructor
-    UartCommandWs2812b(std::string red, std::string green, std::string blue)
-        : UartCommandBase(
+    RaduinoCommandWs2812b(std::string red, std::string green, std::string blue)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::WS2812B),
               COMMANDS::WS2812B::COMMAND_LENGTH)
     {

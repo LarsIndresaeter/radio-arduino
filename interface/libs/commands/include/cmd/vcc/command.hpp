@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandVcc : public UartCommandBase {
+class RaduinoCommandVcc : public RaduinoCommandBase {
 public:
-    UartCommandVcc()
-        : UartCommandBase(
+    RaduinoCommandVcc()
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::VCC),
               COMMANDS::VCC::COMMAND_LENGTH)
     {

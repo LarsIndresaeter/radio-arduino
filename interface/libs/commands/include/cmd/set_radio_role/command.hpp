@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandSetRadioRole : public UartCommandBase {
+class RaduinoCommandSetRadioRole : public RaduinoCommandBase {
 public:
-    UartCommandSetRadioRole(uint8_t isRadioNode)
-        : UartCommandBase(
+    RaduinoCommandSetRadioRole(uint8_t isRadioNode)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::SET_RADIO_ROLE),
               COMMANDS::SET_RADIO_ROLE::COMMAND_LENGTH)
     {

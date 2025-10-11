@@ -82,7 +82,7 @@ void compareResult(uint8_t expected, uint8_t actual)
 
 void readCurrentAndVoltage(monitor& mon, int samples)
 {
-    auto ina219 = mon.getRadio<>(UartCommandIna219());
+    auto ina219 = mon.getRadio<>(RaduinoCommandIna219());
     std::vector<float> currentData, voltageData;
     int16_t intval = 0;
     float currentMin, currentMax, current, stdev;
@@ -100,7 +100,7 @@ void readCurrentAndVoltage(monitor& mon, int samples)
         currentData.clear();
         voltageData.clear();
         while (time > timePrev) {
-            ina219 = mon.getRadio<>(UartCommandIna219());
+            ina219 = mon.getRadio<>(RaduinoCommandIna219());
             intval = ina219.responseStruct().getCurrent();
             current = intval * 0.001;
 
@@ -189,7 +189,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 's':
             {
             uint32_t delay = atoi(optarg);
-            std::cout << mon.getRadio<>(UartCommandSleep(delay), static_cast<std::chrono::milliseconds>(delay + 2000)) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandSleep(delay), static_cast<std::chrono::milliseconds>(delay + 2000)) << std::endl;
             }
             break;
         case 'V':
@@ -208,22 +208,22 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             RadioSession radioSession(mon, radioAddress);
             radioSession.setKeepAliveInterval(keepAliveInterval);
             radioSession.wakeupNotResponding();
-            std::cout << mon.getRadio<>(UartCommandPing()) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandPing()) << std::endl;
         } break;
         case 'w':
-            std::cout << mon.get<>(UartCommandWakeup(false), static_cast<std::chrono::milliseconds>(12000)) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandWakeup(false), static_cast<std::chrono::milliseconds>(12000)) << std::endl;
             break;
         case 'x':
-            std::cout << mon.get<>(UartCommandWakeup(true), static_cast<std::chrono::milliseconds>(12000)) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandWakeup(true), static_cast<std::chrono::milliseconds>(12000)) << std::endl;
             break;
         case 'q':
-            std::cout << mon.getRadio<>(UartCommandQuadratureEncoder()) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandQuadratureEncoder()) << std::endl;
             break;
         case 'A': {
             while (1) {
-                mon.get<>(UartCommandWakeup(true), static_cast<std::chrono::milliseconds>(12000));
+                mon.get<>(RaduinoCommandWakeup(true), static_cast<std::chrono::milliseconds>(12000));
                 if (mon.lastCommandReturnedValidResponse()) {
-                    std::cout << mon.getRadio<>(UartCommandQuadratureEncoder()) << std::endl;
+                    std::cout << mon.getRadio<>(RaduinoCommandQuadratureEncoder()) << std::endl;
                 }
             }
         } break;
@@ -233,22 +233,22 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             mon.setPrintResponseTime(false);
             break;
         case 'B':
-            std::cout << mon.getRadio<>(UartCommandBlink()) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandBlink()) << std::endl;
             break;
         case 'O':
             {
-                std::cout << "blink : " << mon.getRadio<>(UartCommandBlink()) << std::endl;
-                std::cout << "gpio  : " << mon.getRadio<>(UartCommandGpio()) << std::endl;
-                std::cout << "blink : " << mon.getRadio<>(UartCommandBlink()) << std::endl;
-                std::cout << "gpio  : " << mon.getRadio<>(UartCommandGpio()) << std::endl;
-                std::cout << "device: " << mon.getRadio<>(UartCommandGetDeviceName()) << std::endl;
+                std::cout << "blink : " << mon.getRadio<>(RaduinoCommandBlink()) << std::endl;
+                std::cout << "gpio  : " << mon.getRadio<>(RaduinoCommandGpio()) << std::endl;
+                std::cout << "blink : " << mon.getRadio<>(RaduinoCommandBlink()) << std::endl;
+                std::cout << "gpio  : " << mon.getRadio<>(RaduinoCommandGpio()) << std::endl;
+                std::cout << "device: " << mon.getRadio<>(RaduinoCommandGetDeviceName()) << std::endl;
             }
             break;
         case 'J':
                 {
                 std::vector<uint8_t> ackPayload;
                 for(int i = 0; i<1000;i++){
-                    auto rec = mon.getRadio<>(UartCommandNrf24l01Read(ackPayload.size(), ackPayload));
+                    auto rec = mon.getRadio<>(RaduinoCommandNrf24l01Read(ackPayload.size(), ackPayload));
                     ackPayload.clear();
 
                     std::this_thread::sleep_for(100ms);
@@ -267,70 +267,70 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 
             break;
         case 'e':
-            std::cout << mon.getRadio<>(UartCommandEepromWrite(2, 3)) << std::endl;
-            std::cout << mon.getRadio<>(UartCommandEepromRead(2)) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandEepromWrite(2, 3)) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandEepromRead(2)) << std::endl;
             compareResult(
-                3, mon.getRadio<>(UartCommandEepromRead(2)).responseStruct().data);
+                3, mon.getRadio<>(RaduinoCommandEepromRead(2)).responseStruct().data);
 
-            std::cout << mon.getRadio<>(UartCommandEepromWrite(600, 3)) << std::endl;
-            std::cout << mon.getRadio<>(UartCommandEepromRead(600)) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandEepromWrite(600, 3)) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandEepromRead(600)) << std::endl;
             compareResult(
-                3, mon.getRadio<>(UartCommandEepromRead(600)).responseStruct().data);
+                3, mon.getRadio<>(RaduinoCommandEepromRead(600)).responseStruct().data);
 
             break;
         case 'g': {
-            std::cout << mon.getRadio<>(UartCommandSetRadioRole('g')) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandSetRadioRole('g')) << std::endl;
         } break;
         case 'L': {
             std::string s(optarg);
-            mon.getRadio<>(UartCommandSsd1306(2, s)); // second line
+            mon.getRadio<>(RaduinoCommandSsd1306(2, s)); // second line
         } break;
         case 'H':
-            std::cout << mon.getRadio<>(UartCommandHotp()) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandHotp()) << std::endl;
             break;
         case 'P': {
             uint8_t value = atoi(optarg);
-            std::cout << mon.getRadio<>(UartCommandPwm('b', 2, value)) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandPwm('b', 2, value)) << std::endl;
         } break;
         case 'G':
-            std::cout << mon.getRadio<>(UartCommandGpio()) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandGpio()) << std::endl;
             break;
         case 'R':
-            std::cout << mon.getRadio<>(UartCommandRandom()) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandRandom()) << std::endl;
             break;
         case 'C':
             mon.printCounterValues();
             break;
         case 'D':
-            std::cout << mon.getRadio<>(UartCommandDebug()) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandDebug()) << std::endl;
             break;
         case 'j':
             {
             RadioSession radioSession(mon, radioAddress);
             radioSession.wakeupNotResponding();
-            std::cout << mon.getRadio<>(UartCommandVcc()) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandVcc()) << std::endl;
             }
             break;
         case 'i': {
             std::string s(optarg);
             std::vector<uint8_t> vec(s.begin(), s.end());
             std::cout << mon.getRadio<>(
-                UartCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec.size(), vec))
+                RaduinoCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec.size(), vec))
                       << std::endl;
         } break;
         case 'I':
-            std::cout << mon.getRadio<>(UartCommandI2cRead(
+            std::cout << mon.getRadio<>(RaduinoCommandI2cRead(
                 i2cDeviceAddress, i2cDeviceOffset, atoi(optarg)))
                       << std::endl;
             break;
         case 'M':
-            std::cout << mon.getRadio<>(UartCommandIna219()) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandIna219()) << std::endl;
             break;
         case 'N':
-            std::cout << mon.getRadio<>(UartCommandGetStatistics()) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandGetStatistics()) << std::endl;
             break;
         case 'X':
-            std::cout << mon.getRadio<>(UartCommandDs18b20()) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandDs18b20()) << std::endl;
             break;
         case 'U': 
             {
@@ -338,29 +338,29 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             if(s.at(0) == 's')
             {
                 std::vector<uint8_t> address  = {0xF0, 0xF0, 0xF0, 0xF0, 0xC2};
-                mon.getRadio<>(UartCommandNrf24l01Init(address, address, 121, true));
+                mon.getRadio<>(RaduinoCommandNrf24l01Init(address, address, 121, true));
             }
             if(s.at(0) == 'r')
             {
                 std::vector<uint8_t> address  = {0xF0, 0xF0, 0xF0, 0xF0, 0xC2};
-                mon.getRadio<>(UartCommandNrf24l01Init(address, address, 121, false));
+                mon.getRadio<>(RaduinoCommandNrf24l01Init(address, address, 121, false));
             }
-            std::cout << mon.getRadio<>(UartCommandRadioUart(s.at(0))) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandRadioUart(s.at(0))) << std::endl;
             }
             break;
         case 'E': {
             std::string s(optarg);
-            mon.getRadio<>(UartCommandSetKey('E', s));
+            mon.getRadio<>(RaduinoCommandSetKey('E', s));
         } break;
         case 'Z': {
             std::string s(optarg);
-            mon.getRadio<>(UartCommandSetDeviceName(s));
+            mon.getRadio<>(RaduinoCommandSetDeviceName(s));
         } break;
         case 'z': {
             RadioSession radioSession(mon, radioAddress);
             radioSession.setKeepAliveInterval(keepAliveInterval);
             radioSession.wakeupNotResponding();
-            std::cout << mon.getRadio<>(UartCommandGetDeviceName()) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandGetDeviceName()) << std::endl;
         } break;
         case 'h':
             print_usage();
@@ -378,7 +378,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             }
             break;
         case 'a':
-            std::cout << mon.getRadio<>(UartCommandSetNodeAddress(atoi(optarg))) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandSetNodeAddress(atoi(optarg))) << std::endl;
             break;
         case 'k':
             keepAliveInterval = atoi(optarg);
@@ -398,11 +398,11 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         } break;
         case 'r': {
             uint8_t flag = atoi(optarg);
-            std::cout << mon.getRadio<>(UartCommandRequireTransportEncryption(flag, 1)) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandRequireTransportEncryption(flag, 1)) << std::endl;
         } break;
         case 'K': {
             std::string s(optarg);
-            mon.getRadio<>(UartCommandSetKey('T', s));
+            mon.getRadio<>(RaduinoCommandSetKey('T', s));
         } break;
         }
     }

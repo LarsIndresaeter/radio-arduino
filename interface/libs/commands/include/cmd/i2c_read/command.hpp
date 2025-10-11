@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandI2cRead : public UartCommandBase {
+class RaduinoCommandI2cRead : public RaduinoCommandBase {
 public:
-    UartCommandI2cRead(uint8_t device, uint16_t registerAddress, uint8_t length)
-        : UartCommandBase(
+    RaduinoCommandI2cRead(uint8_t device, uint16_t registerAddress, uint8_t length)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::I2C_READ),
               COMMANDS::I2C_READ::COMMAND_LENGTH)
     {

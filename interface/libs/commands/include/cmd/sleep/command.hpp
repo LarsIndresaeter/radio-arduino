@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandSleep : public UartCommandBase {
+class RaduinoCommandSleep : public RaduinoCommandBase {
 public:
-    UartCommandSleep(uint32_t delay)
-        : UartCommandBase(
+    RaduinoCommandSleep(uint32_t delay)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::SLEEP),
               COMMANDS::SLEEP::COMMAND_LENGTH)
     {

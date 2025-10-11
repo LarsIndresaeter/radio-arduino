@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandI2cWrite : public UartCommandBase {
+class RaduinoCommandI2cWrite : public RaduinoCommandBase {
 public:
-    UartCommandI2cWrite(uint8_t device, uint16_t registerAddress, uint8_t length, std::vector<uint8_t> data)
-        : UartCommandBase(
+    RaduinoCommandI2cWrite(uint8_t device, uint16_t registerAddress, uint8_t length, std::vector<uint8_t> data)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::I2C_WRITE),
               COMMANDS::I2C_WRITE::COMMAND_LENGTH)
     {
@@ -30,8 +30,8 @@ public:
     };
 
     // string constructor
-    UartCommandI2cWrite(uint8_t device, uint16_t registerAddress, uint8_t length, std::string data)
-        : UartCommandBase(
+    RaduinoCommandI2cWrite(uint8_t device, uint16_t registerAddress, uint8_t length, std::string data)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::I2C_WRITE),
               COMMANDS::I2C_WRITE::COMMAND_LENGTH)
     {

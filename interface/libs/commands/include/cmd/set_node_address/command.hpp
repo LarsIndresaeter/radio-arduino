@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandSetNodeAddress : public UartCommandBase {
+class RaduinoCommandSetNodeAddress : public RaduinoCommandBase {
 public:
-    UartCommandSetNodeAddress(uint8_t nodeAddress)
-        : UartCommandBase(
+    RaduinoCommandSetNodeAddress(uint8_t nodeAddress)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::SET_NODE_ADDRESS),
               COMMANDS::SET_NODE_ADDRESS::COMMAND_LENGTH)
     {

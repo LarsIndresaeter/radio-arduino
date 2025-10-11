@@ -63,7 +63,7 @@ const void monitor::reply(std::vector<uint8_t> data)
     std::map<uint8_t, ProtocolCallback>::iterator it;
     it = m_responseCallback.find(cmd); // find callback for this message
     if (it != m_responseCallback.end()) {
-        it->second(data); // calls UartCommandBase::setResponse
+        it->second(data); // calls RaduinoCommandBase::setResponse
         m_responseCallback.erase(it);
         m_validResponseCounter++;
     }

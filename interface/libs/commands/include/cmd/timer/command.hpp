@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandTimer : public UartCommandBase {
+class RaduinoCommandTimer : public RaduinoCommandBase {
 public:
-    UartCommandTimer()
-        : UartCommandBase(
+    RaduinoCommandTimer()
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::TIMER),
               COMMANDS::TIMER::COMMAND_LENGTH)
     {

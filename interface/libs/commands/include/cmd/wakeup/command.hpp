@@ -1,12 +1,12 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
-#include <common/uartCommandBase.hpp>
+#include <common/raduinoCommandBase.hpp>
 
-class UartCommandWakeup : public UartCommandBase {
+class RaduinoCommandWakeup : public RaduinoCommandBase {
 public:
-    UartCommandWakeup(uint8_t checkAttentionFlag)
-        : UartCommandBase(
+    RaduinoCommandWakeup(uint8_t checkAttentionFlag)
+        : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::WAKEUP),
               COMMANDS::WAKEUP::COMMAND_LENGTH)
     {
