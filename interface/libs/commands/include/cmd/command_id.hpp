@@ -46,6 +46,7 @@ enum class OI
     GET_VERSION = 35,
     GET_STATISTICS = 36,
     REQUIRE_TRANSPORT_ENCRYPTION = 37,
+    SET_RADIO_ROLE = 38,
 };
 
 } // namespace COMMANDS

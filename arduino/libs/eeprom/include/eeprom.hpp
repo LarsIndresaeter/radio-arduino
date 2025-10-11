@@ -12,7 +12,8 @@ typedef struct eeprom_data {
     //uint8_t HOTP_KEY[16];
     uint32_t dataVersion;
     uint8_t requireEncryption;
-    uint8_t padding[7];
+    uint8_t isRadioNode; // otherwise it is a gateway
+    uint8_t padding[6];
     uint32_t crc;
 } eeprom_data_t;
 
@@ -35,5 +36,7 @@ namespace DATA_STORE {
     void writeToSpareAndSetAsActive(uint16_t address, uint8_t* buffer, uint16_t length);
     uint8_t getRequireTransportEncryption();
     void setRequireTransportEncryption(uint8_t flag);
+    void setIsRadioNode(uint8_t flag);
+    uint8_t getIsRadioNode();
 } // namespace
 } // namespace

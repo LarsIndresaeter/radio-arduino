@@ -20,9 +20,9 @@
 #include <ws2812b.hpp>
 
 #ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    constexpr bool rx_mode_gateway = false;
+    bool rx_mode_gateway = false; // default role
 #else
-    constexpr bool rx_mode_gateway = true;
+    bool rx_mode_gateway = true; // default role
 #endif
 
 void commandDs18b20(uint8_t* commandPayload, uint8_t* responsePayload)
@@ -599,6 +599,26 @@ void commandRequireTransportEncryption(uint8_t* commandPayload, uint8_t* respons
     response.serialize(responsePayload);
 }
 
+#include <avr/wdt.h>
+
+void softReset()
+{
+    wdt_enable(WDTO_15MS);
+    for(;;) {
+    }
+}
+
+void commandSetRadioRole(uint8_t* commandPayload, uint8_t* responsePayload)
+{
+    COMMANDS::SET_RADIO_ROLE::command_t command(commandPayload);
+    COMMANDS::SET_RADIO_ROLE::response_t response;
+
+    EEPROM::DATA_STORE::setIsRadioNode(command.isRadioNode);
+
+    softReset();
+    response.serialize(responsePayload);
+}
+
 void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInterface* comBus)
 {
     uint8_t cmd_id = commandPayload[0];
@@ -712,6 +732,9 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
     case COMMANDS::OI::REQUIRE_TRANSPORT_ENCRYPTION:
         commandRequireTransportEncryption(commandPayload, responsePayload);
         break;
+    case COMMANDS::OI::SET_RADIO_ROLE:
+        commandSetRadioRole(commandPayload, responsePayload);
+        break;
     default:
         break;
     }
@@ -719,22 +742,35 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
 
 int main()
 {
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-    RadioUart uart;
-#else
-    Uart uart;
-#endif
-
     RADIOLINK::setNodeAddress(0);
     uint8_t transport_key[16] = {0};
     EEPROM::DATA_STORE::readFromActive(offsetof(eeprom_data_t, TK_KEY), &transport_key[0], 16);
     ArduinoCryptoHandler cryptoHandler(&transport_key[0]);
 
-    Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
+    if ('n' == EEPROM::DATA_STORE::getIsRadioNode()) {
+        rx_mode_gateway = false; // override default role
+    }
 
-    PARSER::setRequireTransportEncryption(EEPROM::DATA_STORE::getRequireTransportEncryption());
+    if ('g' == EEPROM::DATA_STORE::getIsRadioNode()) {
+        rx_mode_gateway = true; // override default role
+    }
 
-    PARSER::parseInput(protocol, (ComBusInterface*)&uart);
+    if (rx_mode_gateway) {
+
+        Uart uart;
+
+        Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
+        PARSER::setRequireTransportEncryption(EEPROM::DATA_STORE::getRequireTransportEncryption());
+        PARSER::parseInput(protocol, (ComBusInterface*)&uart);
+    }
+    else {
+
+        RadioUart uart;
+
+        Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
+        PARSER::setRequireTransportEncryption(EEPROM::DATA_STORE::getRequireTransportEncryption());
+        PARSER::parseInput(protocol, (ComBusInterface*)&uart);
+    }
 
     return 0;
 }

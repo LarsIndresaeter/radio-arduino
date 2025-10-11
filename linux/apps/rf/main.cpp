@@ -47,7 +47,7 @@ void print_usage()
     std::cout << "       -N : get statistics" << std::endl;
     std::cout << "       -X : ds18b20 temperature sensor" << std::endl;
     std::cout << "       -E : set AES Key" << std::endl;
-    std::cout << "       -g : dump eeprom from mega328p" << std::endl;
+    std::cout << "       -g : reboot node as gateway" << std::endl;
     std::cout << "       -Z : set device name" << std::endl;
     std::cout << "       -z : get device name" << std::endl;
     std::cout << "       -W : WS2812B <string>" << std::endl;
@@ -279,32 +279,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 
             break;
         case 'g': {
-            std::vector<uint8_t> eeprom;
-            for (int i = 0; i < 1024; i++) {
-                eeprom.push_back(
-                    mon.getRadio<>(UartCommandEepromRead(i)).responseStruct().data);
-            }
-
-            for (int i = 0; i < 64; i++) {
-                std::cout.fill('0');
-                std::cout.width(4);
-                std::cout << std::hex << static_cast<int>(i * 16) << " ";
-                for (int j = 0; j < 16; j++) {
-                    std::cout.fill('0');
-                    std::cout.width(2);
-
-                    std::cout << std::hex
-                              << static_cast<int>(eeprom.at(i * 16 + j));
-                    std::cout << " ";
-                }
-                std::cout << " : ";
-                for (int j = 0; j < 16; j++) {
-                    std::cout << std::hex << std::uppercase
-                              << eeprom.at(i * 16 + j) << " ";
-                }
-                std::cout << std::endl;
-            }
-
+            std::cout << mon.getRadio<>(UartCommandSetRadioRole('g')) << std::endl;
         } break;
         case 'L': {
             std::string s(optarg);

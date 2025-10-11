@@ -41,3 +41,4 @@
 #include <cmd/get_version/payload.hpp>
 #include <cmd/get_statistics/payload.hpp>
 #include <cmd/require_transport_encryption/payload.hpp>
+#include <cmd/set_radio_role/payload.hpp>

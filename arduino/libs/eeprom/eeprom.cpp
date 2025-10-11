@@ -228,5 +228,16 @@ namespace DATA_STORE {
     {
         writeToSpareAndSetAsActive(offsetof(eeprom_data_t, requireEncryption), &flag, 16);
     }
+
+    void setIsRadioNode(uint8_t flag)
+    {
+        writeToSpareAndSetAsActive(offsetof(eeprom_data_t, isRadioNode), &flag, 8);
+    }
+
+    uint8_t getIsRadioNode()
+    {
+        findActivePartition();
+        return EEPROM::read(offsetActiveStruct() + offsetof(eeprom_data_t, isRadioNode));
+    }
 } // namespace
 } // namespace
