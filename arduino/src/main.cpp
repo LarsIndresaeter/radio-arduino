@@ -586,10 +586,7 @@ void commandRequireTransportEncryption(uint8_t* commandPayload, uint8_t* respons
 
     if (PARSER::lastReceivedCommandWasEncrypted()) {
         PARSER::setRequireTransportEncryption(command.value);
-
-        if (1 == command.persist) {
-            EEPROM::DATA_STORE::setRequireTransportEncryption(command.value);
-        }
+        EEPROM::DATA_STORE::setRequireTransportEncryption(command.value);
     }
 
     response.serialize(responsePayload);

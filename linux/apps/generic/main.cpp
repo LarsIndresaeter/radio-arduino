@@ -98,6 +98,7 @@ void print_usage()
     std::cout << "       -b : use transport key" << std::endl;
     std::cout << "       -r : set transport encryption required (command must be encrypted)" << std::endl;
     std::cout << "       -n : reboot gateway as node" << std::endl;
+    std::cout << "       -u : unencrypted session (command must be encrypted)" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -434,11 +435,11 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         } break;
         case 'r': {
             uint8_t flag = atoi(optarg);
-            std::cout << mon.get<>(RaduinoCommandRequireTransportEncryption(flag, 1)) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandRequireTransportEncryption(flag)) << std::endl;
         } break;
-        case 'u': {
+        case 'u': 
             std::cout << mon.get<>(RaduinoCommandUnencryptedSession()) << std::endl;
-        } break;
+        break;
         case 'Z': {
             std::string s(optarg);
             mon.get<>(RaduinoCommandSetDeviceName(s));

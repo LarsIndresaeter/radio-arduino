@@ -44,7 +44,7 @@ void print_usage()
     std::cout << "       -d : I2C device address" << std::endl;
     std::cout << "       -o : I2C device offset" << std::endl;
     std::cout << "       -M : ina219 power monitor" << std::endl;
-    std::cout << "       -N : get statistics" << std::endl;
+    std::cout << "       -x : get statistics" << std::endl;
     std::cout << "       -X : ds18b20 temperature sensor" << std::endl;
     std::cout << "       -E : set AES Key" << std::endl;
     std::cout << "       -g : reboot node as gateway" << std::endl;
@@ -56,7 +56,7 @@ void print_usage()
     std::cout << "       -s : sleep" << std::endl;
     std::cout << "       -L : print text on LCD" << std::endl;
     std::cout << "       -w : wake up sleeping rx node" << std::endl;
-    std::cout << "       -x : wake up sleeping rx node if data available flag is set" << std::endl;
+    std::cout << "       -N : wake up sleeping rx node if data available flag is set" << std::endl;
     std::cout << "       -q : read quadrature encoder" << std::endl;
     std::cout << "       -A : read quadrature encoder on change" << std::endl;
     std::cout << "       -n : wakeup node address" << std::endl;
@@ -66,6 +66,7 @@ void print_usage()
     std::cout << "       -K : set transport key on device (command must be encrypted)" << std::endl;
     std::cout << "       -b : use transport key" << std::endl;
     std::cout << "       -r : set transport encryption required (command must be encrypted)" << std::endl;
+    std::cout << "       -u : unencrypted session (command must be encrypted)" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -177,7 +178,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     bool verbose = false;
 
     while ((option
-            = getopt(argc, argv, "P:DBHeCs:Rd:VvhtTgGi:I:o:MNXE:Z:zW:wxqAL:JU:jn:a:k:pr:b:K:"))
+            = getopt(argc, argv, "P:DBHeCs:Rd:VvhtTgGi:I:o:MNXE:Z:zW:wxqAL:JU:jn:a:k:pr:b:K:u"))
            != -1) {
         switch (option) {
         case 'd':
@@ -213,7 +214,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'w':
             std::cout << mon.get<>(RaduinoCommandWakeup(false), static_cast<std::chrono::milliseconds>(12000)) << std::endl;
             break;
-        case 'x':
+        case 'N':
             std::cout << mon.get<>(RaduinoCommandWakeup(true), static_cast<std::chrono::milliseconds>(12000)) << std::endl;
             break;
         case 'q':
@@ -327,7 +328,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'M':
             std::cout << mon.getRadio<>(RaduinoCommandIna219()) << std::endl;
             break;
-        case 'N':
+        case 'x':
             std::cout << mon.getRadio<>(RaduinoCommandGetStatistics()) << std::endl;
             break;
         case 'X':
@@ -399,8 +400,11 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         } break;
         case 'r': {
             uint8_t flag = atoi(optarg);
-            std::cout << mon.getRadio<>(RaduinoCommandRequireTransportEncryption(flag, 1)) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandRequireTransportEncryption(flag)) << std::endl;
         } break;
+        case 'u': 
+            std::cout << mon.getRadio<>(RaduinoCommandUnencryptedSession()) << std::endl;
+        break;
         case 'K': {
             std::string s(optarg);
             mon.getRadio<>(RaduinoCommandSetKey('T', s));
