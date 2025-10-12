@@ -40,8 +40,7 @@ conan_package_arduino()
     conan remove raduino-avr -f
 
     echo "build raduino-avr in cache"
-    conan create arduino lars/test -pr tools/conan/profiles/gcc-avr -o raduino-avr:RX_NODE=False
-    conan create arduino lars/test -pr tools/conan/profiles/gcc-avr -o raduino-avr:RX_NODE=True
+    conan create arduino lars/test -pr tools/conan/profiles/gcc-avr
 }
 
 conan_package_linux()
@@ -58,8 +57,7 @@ conan_package_linux()
 
     echo "build raduino-gateway in cache"
     pushd linux
-    conan create . lars/test -o raduino-gateway:mqtt=True -o raduino-avr:RX_NODE=False --build=missing
-    conan create . lars/test -o raduino-gateway:mqtt=True -o raduino-avr:RX_NODE=True --build=missing
+    conan create . lars/test -o raduino-gateway:mqtt=True --build=missing
     popd
 }
 

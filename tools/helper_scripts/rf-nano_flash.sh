@@ -6,12 +6,12 @@ PARAM=$1
 
 flash_gateway()
 {
-    avrdude -c arduino -b 115200 -P ${_SERIAL_DEVICE_GATEWAY} -p atmega328p -vv -U flash:w:bin/gateway.hex
+    avrdude -c arduino -b 115200 -P ${_SERIAL_DEVICE_GATEWAY} -p atmega328p -vv -U flash:w:bin/arduino.hex
 }
 
 flash_node()
 {
-    avrdude -c arduino -b 115200 -P ${_SERIAL_DEVICE_NODE} -p atmega328p -vv -U flash:w:bin/node.hex
+    avrdude -c arduino -b 115200 -P ${_SERIAL_DEVICE_NODE} -p atmega328p -vv -U flash:w:bin/arduino.hex
 }
 
 if [ "${PARAM}" == "node" ] 

@@ -16,7 +16,6 @@ ISR(PCINT1_vect)
     // PC0 = (CLK)
     // PC1 = (DT)
     // PC2 = (SW)
-    cli(); // disable interrupt
 
     if ((PINC & 0x03) != pinc_prev) {
         if (((PINC & 0x03) == 0x00) || ((PINC & 0x03) == 0x03)) {
@@ -45,8 +44,6 @@ ISR(PCINT1_vect)
     }
 
     quadencoder_updated = 1;
-
-    sei();
 }
 
 uint8_t pollChangedFlag()
