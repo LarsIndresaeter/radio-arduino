@@ -45,7 +45,6 @@ class AvrUartConan(ConanFile):
 
     def package(self):
         self.copy("raduino-gateway", dst="bin", src="apps/generic/bin")
-        self.copy("gateway.hex", dst="bin", src="bin")
 
     def system_requirements(self):
         packages = None

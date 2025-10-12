@@ -19,11 +19,7 @@
 #include <version.h>
 #include <ws2812b.hpp>
 
-#ifdef REPLACE_UART_WITH_RADIO_COMMUNICATION_AKA_RX_NODE
-bool rx_mode_gateway = false; // default role
-#else
-bool rx_mode_gateway = true; // default role
-#endif
+bool rx_mode_gateway = true; // default role, update eeprom to switch to node
 
 void commandDs18b20(uint8_t* commandPayload, uint8_t* responsePayload)
 {

@@ -18,11 +18,11 @@ flash_gateway()
         echo "baud rate device file from is empty."
         echo "run the command: raduino devices list"
     else
-        avrdude -c arduino -b ${_BAUDRATE_GATEWAY} -P ${_SERIAL_DEVICE_GATEWAY} -p atmega328p -vv -U flash:w:bin/gateway.hex
+        avrdude -c arduino -b ${_BAUDRATE_GATEWAY} -P ${_SERIAL_DEVICE_GATEWAY} -p atmega328p -vv -U flash:w:bin/arduino.hex
     fi
 }
 
-flash_node()
+flash_arduino()
 {
     if [ "" == "${_SERIAL_DEVICE_NODE}" ]
     then
@@ -33,7 +33,7 @@ flash_node()
         echo "baud rate device file from is empty."
         echo "run the command: raduino devices list"
     else
-        avrdude -c arduino -b ${_BAUDRATE_NODE} -P ${_SERIAL_DEVICE_NODE} -p atmega328p -vv -U flash:w:bin/node.hex
+        avrdude -c arduino -b ${_BAUDRATE_NODE} -P ${_SERIAL_DEVICE_NODE} -p atmega328p -vv -U flash:w:bin/arduino.hex
     fi
 }
 
