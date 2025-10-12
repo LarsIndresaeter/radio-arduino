@@ -66,6 +66,7 @@ void print_usage()
     std::cout << "       -K : set transport key on device (command must be encrypted)" << std::endl;
     std::cout << "       -b : use transport key" << std::endl;
     std::cout << "       -r : set transport encryption required (command must be encrypted)" << std::endl;
+    std::cout << "       -u : unencrypted session (command must be encrypted)" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -177,7 +178,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     bool verbose = false;
 
     while ((option
-            = getopt(argc, argv, "P:DBHeCs:Rd:VvhtTgGi:I:o:MNXE:Z:zW:wxqAL:JU:jn:a:k:pr:b:K:"))
+            = getopt(argc, argv, "P:DBHeCs:Rd:VvhtTgGi:I:o:MNXE:Z:zW:wxqAL:JU:jn:a:k:pr:b:K:u"))
            != -1) {
         switch (option) {
         case 'd':
@@ -399,8 +400,11 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         } break;
         case 'r': {
             uint8_t flag = atoi(optarg);
-            std::cout << mon.getRadio<>(RaduinoCommandRequireTransportEncryption(flag, 1)) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandRequireTransportEncryption(flag)) << std::endl;
         } break;
+        case 'u': 
+            std::cout << mon.getRadio<>(RaduinoCommandUnencryptedSession()) << std::endl;
+        break;
         case 'K': {
             std::string s(optarg);
             mon.getRadio<>(RaduinoCommandSetKey('T', s));
