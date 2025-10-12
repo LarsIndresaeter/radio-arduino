@@ -213,7 +213,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t i2cDeviceAddress = 0b10100000;
 
     while ((option
-           = getopt(argc, argv, "P:DBSHCs:Rd:VvhtTgGi:I:o:MN:XE:K:b:r:Z:zW:L:FJU:jpaxn"))
+           = getopt(argc, argv, "P:DBSHCs:Rd:VvhtTgGi:I:o:MN:XE:K:b:r:Z:zW:L:FJU:jpaxnu"))
            != -1) {
         switch (option) {
         case 'd':
@@ -435,6 +435,9 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'r': {
             uint8_t flag = atoi(optarg);
             std::cout << mon.get<>(RaduinoCommandRequireTransportEncryption(flag, 1)) << std::endl;
+        } break;
+        case 'u': {
+            std::cout << mon.get<>(RaduinoCommandUnencryptedSession()) << std::endl;
         } break;
         case 'Z': {
             std::string s(optarg);
