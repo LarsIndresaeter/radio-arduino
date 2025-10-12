@@ -3,6 +3,6 @@ add_executable(
     main.cpp
     )
 
-target_link_libraries(${PRODUCT_NAME} spi nrf24l01 radio_uart random ssd1306 version ds18b20 i2c ina219 uart protocol quadencoder timer gpio ws2812b sha1 eepromlib aes pwm adc radio_link sleep parser)
+target_link_libraries(${PRODUCT_NAME} spi nrf24l01 radio_uart random ssd1306 version ds18b20 i2c ina219 uart protocol quadencoder timer gpio ws2812b sha1 eepromlib aes pwm adc radio_link sleep parser watchdog)
 
 include(${CMAKE_SOURCE_DIR}/cmake/avr-macros.cmake)
