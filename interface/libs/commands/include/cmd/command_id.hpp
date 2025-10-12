@@ -48,6 +48,7 @@ enum class OI
     REQUIRE_TRANSPORT_ENCRYPTION = 37,
     SET_RADIO_ROLE = 38,
     SOFT_RESET = 39,
+    UNENCRYPTED_SESSION = 40,
 };
 
 } // namespace COMMANDS

@@ -595,6 +595,18 @@ void commandRequireTransportEncryption(uint8_t* commandPayload, uint8_t* respons
     response.serialize(responsePayload);
 }
 
+void commandUnencryptedSession(uint8_t* commandPayload, uint8_t* responsePayload)
+{
+    COMMANDS::UNENCRYPTED_SESSION::command_t command(commandPayload);
+    COMMANDS::UNENCRYPTED_SESSION::response_t response;
+
+    if (PARSER::lastReceivedCommandWasEncrypted()) {
+        PARSER::setRequireTransportEncryption(0);
+    }
+
+    response.serialize(responsePayload);
+}
+
 void commandSetRadioRole(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::SET_RADIO_ROLE::command_t command(commandPayload);
@@ -726,6 +738,9 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
         break;
     case COMMANDS::OI::REQUIRE_TRANSPORT_ENCRYPTION:
         commandRequireTransportEncryption(commandPayload, responsePayload);
+        break;
+    case COMMANDS::OI::UNENCRYPTED_SESSION:
+        commandUnencryptedSession(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SET_RADIO_ROLE:
         commandSetRadioRole(commandPayload, responsePayload);
