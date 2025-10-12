@@ -47,6 +47,7 @@ enum class OI
     GET_STATISTICS = 36,
     REQUIRE_TRANSPORT_ENCRYPTION = 37,
     SET_RADIO_ROLE = 38,
+    SOFT_RESET = 39,
 };
 
 } // namespace COMMANDS
