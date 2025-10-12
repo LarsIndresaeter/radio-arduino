@@ -5,8 +5,6 @@
 #include <avr/interrupt.h>
 #include <util/setbaud.h>
 
-/* http://www.cs.mun.ca/~rod/Winter2007/4723/notes/serial/serial.html */
-
 // UBRRn = f_osc / (16*baud) -1
 #define UBRR0_1000000 0
 #define UBRR0_230400 3
