@@ -11,6 +11,11 @@ then
     echo "RADINO_CUSTOM_COMMAND=${RADINO_CUSTOM_COMMAND}"
 fi
 
+if [ "${PARAM}" == "tool" ]
+then
+    ${RADINO_HELPER_SCRIPTS_DIR}/tool.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
+fi
+
 if [ "${PARAM}" == "devices" ]
 then
     ${RADINO_HELPER_SCRIPTS_DIR}/devices.sh "${2}" "${3}" "${4}"

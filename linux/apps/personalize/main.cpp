@@ -17,6 +17,7 @@ void print_usage()
     std::cout << "       -t : new transport key" << std::endl;
     std::cout << "       -e : new encryption key" << std::endl;
     std::cout << "       -d : dump eeprom contents" << std::endl;
+    std::cout << "       -r : set radio role <gateway|node>" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -29,7 +30,7 @@ void dumpEeprom(monitor& mon, int length)
     }
 
     std::vector<uint8_t> eeprom;
-    for (int i = 0; i < 16*length; i++) {
+    for (int i = 0; i < 16 * length; i++) {
         eeprom.push_back(
             mon.get<>(RaduinoCommandEepromRead(i)).responseStruct().data);
     }
@@ -93,12 +94,12 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     std::string setNewEncryptionKey = "secret";
     std::string currentTransportKey = "";
     uint8_t set_transport_encryption_required = 0;
-    uint8_t set_is_radio_node = 'g';
+    uint8_t setRadioRole = 'g';
     bool dump_eeprom = false;
     bool name_option_present = false;
 
     while ((option
-               = getopt(argc, argv, "n:c:t:e:dh"))
+               = getopt(argc, argv, "n:c:t:e:r:dh"))
         != -1) {
         switch (option) {
         case 'n':
@@ -117,6 +118,20 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'd':
             dump_eeprom = true;
             break;
+        case 'r': {
+            std::string role(optarg);
+
+            if (role == "gateway") {
+                setRadioRole = 'g';
+            }
+            else if (role == "gateway") {
+                setRadioRole = 'g';
+            }
+            else {
+                std::cout << "role '" + role + "' is not a valid option. Use 'gateway' or 'node'" << std::endl;
+                exit(1);
+            }
+        } break;
         case 'h':
             print_usage();
             exit(0);
@@ -126,6 +141,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 
     if (false == name_option_present) {
         std::cout << "no name supplied. exit" << std::endl;
+        print_usage();
         exit(1);
     }
 
@@ -144,6 +160,9 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     if (dump_eeprom) {
         dumpEeprom(mon, 10);
     }
+
+    std::cout << "set role " << std::endl;
+    std::cout << mon.get<>(RaduinoCommandSetRadioRole(setRadioRole)) << std::endl;
 
     exit(0);
 }
