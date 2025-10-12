@@ -18,6 +18,7 @@
 #include <uart.hpp>
 #include <version.h>
 #include <ws2812b.hpp>
+#include <watchdog.hpp>
 
 bool rx_mode_gateway = true; // default role, update eeprom to switch to node
 
@@ -594,15 +595,6 @@ void commandRequireTransportEncryption(uint8_t* commandPayload, uint8_t* respons
     response.serialize(responsePayload);
 }
 
-#include <avr/wdt.h>
-
-void softReset()
-{
-    wdt_enable(WDTO_15MS);
-    for (;;) {
-    }
-}
-
 void commandSetRadioRole(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::SET_RADIO_ROLE::command_t command(commandPayload);
@@ -610,7 +602,7 @@ void commandSetRadioRole(uint8_t* commandPayload, uint8_t* responsePayload)
 
     EEPROM::DATA_STORE::setIsRadioNode(command.isRadioNode);
 
-    softReset();
+    WATCHDOG::softReset();
     response.serialize(responsePayload);
 }
 
