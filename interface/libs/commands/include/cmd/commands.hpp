@@ -42,3 +42,4 @@
 #include <cmd/require_transport_encryption/command.hpp>
 #include <cmd/set_radio_role/command.hpp>
 #include <cmd/soft_reset/command.hpp>
+#include <cmd/unencrypted_session/command.hpp>

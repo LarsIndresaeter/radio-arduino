@@ -43,3 +43,4 @@
 #include <cmd/require_transport_encryption/payload.hpp>
 #include <cmd/set_radio_role/payload.hpp>
 #include <cmd/soft_reset/payload.hpp>
+#include <cmd/unencrypted_session/payload.hpp>
