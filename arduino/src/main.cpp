@@ -602,7 +602,6 @@ void commandSetRadioRole(uint8_t* commandPayload, uint8_t* responsePayload)
 
     EEPROM::DATA_STORE::setIsRadioNode(command.isRadioNode);
 
-    WATCHDOG::softReset();
     response.serialize(responsePayload);
 }
 
