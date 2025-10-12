@@ -44,7 +44,7 @@ void print_usage()
     std::cout << "       -d : I2C device address" << std::endl;
     std::cout << "       -o : I2C device offset" << std::endl;
     std::cout << "       -M : ina219 power monitor" << std::endl;
-    std::cout << "       -N : get statistics" << std::endl;
+    std::cout << "       -x : get statistics" << std::endl;
     std::cout << "       -X : ds18b20 temperature sensor" << std::endl;
     std::cout << "       -E : set AES Key" << std::endl;
     std::cout << "       -g : reboot node as gateway" << std::endl;
@@ -56,7 +56,7 @@ void print_usage()
     std::cout << "       -s : sleep" << std::endl;
     std::cout << "       -L : print text on LCD" << std::endl;
     std::cout << "       -w : wake up sleeping rx node" << std::endl;
-    std::cout << "       -x : wake up sleeping rx node if data available flag is set" << std::endl;
+    std::cout << "       -N : wake up sleeping rx node if data available flag is set" << std::endl;
     std::cout << "       -q : read quadrature encoder" << std::endl;
     std::cout << "       -A : read quadrature encoder on change" << std::endl;
     std::cout << "       -n : wakeup node address" << std::endl;
@@ -214,7 +214,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'w':
             std::cout << mon.get<>(RaduinoCommandWakeup(false), static_cast<std::chrono::milliseconds>(12000)) << std::endl;
             break;
-        case 'x':
+        case 'N':
             std::cout << mon.get<>(RaduinoCommandWakeup(true), static_cast<std::chrono::milliseconds>(12000)) << std::endl;
             break;
         case 'q':
@@ -328,7 +328,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'M':
             std::cout << mon.getRadio<>(RaduinoCommandIna219()) << std::endl;
             break;
-        case 'N':
+        case 'x':
             std::cout << mon.getRadio<>(RaduinoCommandGetStatistics()) << std::endl;
             break;
         case 'X':
