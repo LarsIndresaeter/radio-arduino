@@ -2,6 +2,7 @@
 
 echo "${RADINO_CUSTOM_COMMAND} build menu"
 echo "    config"
+echo "    tool [personalize, gateway, node, test, mqtt, power]"
 echo "    setup [arduino, interface, linux, all]"
 echo "          set up build area using conan and cmake"
 echo "    clean [arduino, interface, linux, all]"

@@ -141,6 +141,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 
     if (false == name_option_present) {
         std::cout << "no name supplied. exit" << std::endl;
+        print_usage();
         exit(1);
     }
 
