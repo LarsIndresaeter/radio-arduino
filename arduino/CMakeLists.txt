@@ -19,5 +19,6 @@ if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 endif()
 
 add_subdirectory(include)
+add_subdirectory(third_party_libs)
 add_subdirectory(libs)
 add_subdirectory(src)
