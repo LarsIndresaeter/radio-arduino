@@ -5,7 +5,7 @@
 
 class RaduinoCommandRequireTransportEncryption : public RaduinoCommandBase {
 public:
-    RaduinoCommandRequireTransportEncryption(uint8_t value, uint8_t persist)
+    RaduinoCommandRequireTransportEncryption(uint8_t value)
         : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::REQUIRE_TRANSPORT_ENCRYPTION),
               COMMANDS::REQUIRE_TRANSPORT_ENCRYPTION::COMMAND_LENGTH)
@@ -13,8 +13,6 @@ public:
         COMMANDS::REQUIRE_TRANSPORT_ENCRYPTION::command_t command;
 
         m_payload.at(offsetof(COMMANDS::REQUIRE_TRANSPORT_ENCRYPTION::command_t, value)) = value;
-
-        m_payload.at(offsetof(COMMANDS::REQUIRE_TRANSPORT_ENCRYPTION::command_t, persist)) = persist;
     };
 
     void printResponse(std::ostream& out, COMMANDS::REQUIRE_TRANSPORT_ENCRYPTION::response_t response) const

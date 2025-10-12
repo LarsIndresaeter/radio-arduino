@@ -629,7 +629,7 @@ def commandDefinitions():
     generateCommandAndPayloadFile(34, "quadrature_encoder", [], ["countnegative[2]", "countpositive[2]", "switchposition", "switchcount[2]"])
     generateCommandAndPayloadFile(35, "get_version", [], ["versionString[32]"])
     generateCommandAndPayloadFile(36, "get_statistics", [], ["commandsParsed[2]", "uart_rx[4]", "uart_tx[4]", "rf_rx[4]", "rf_tx[4]", "restarts[2]"])
-    generateCommandAndPayloadFile(37, "require_transport_encryption", ["value", "persist"], [])
+    generateCommandAndPayloadFile(37, "require_transport_encryption", ["value"], [])
     generateCommandAndPayloadFile(38, "set_radio_role", ["isRadioNode"], [])
     generateCommandAndPayloadFile(39, "soft_reset", [], [])
     generateCommandAndPayloadFile(40, "unencrypted_session", [], [])
