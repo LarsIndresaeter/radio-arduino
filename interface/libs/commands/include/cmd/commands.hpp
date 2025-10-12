@@ -41,3 +41,4 @@
 #include <cmd/get_statistics/command.hpp>
 #include <cmd/require_transport_encryption/command.hpp>
 #include <cmd/set_radio_role/command.hpp>
+#include <cmd/soft_reset/command.hpp>

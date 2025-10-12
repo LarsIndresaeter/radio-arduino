@@ -156,13 +156,14 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     std::cout << mon.get<>(RaduinoCommandSetKey('E', setNewEncryptionKey)) << std::endl;
     std::cout << mon.get<>(RaduinoCommandSetKey('T', setNewTransportKey)) << std::endl;
     std::cout << mon.get<>(RaduinoCommandRequireTransportEncryption(1, 1)) << std::endl;
+    std::cout << mon.get<>(RaduinoCommandSetRadioRole(setRadioRole)) << std::endl;
 
     if (dump_eeprom) {
         dumpEeprom(mon, 10);
     }
 
-    std::cout << "set role " << std::endl;
-    std::cout << mon.get<>(RaduinoCommandSetRadioRole(setRadioRole)) << std::endl;
+    std::cout << "reset device" << std::endl;
+    mon.get<>(RaduinoCommandSoftReset());
 
     exit(0);
 }

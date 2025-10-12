@@ -280,6 +280,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             break;
         case 'g': {
             std::cout << mon.getRadio<>(RaduinoCommandSetRadioRole('g')) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandSoftReset()) << std::endl;
         } break;
         case 'L': {
             std::string s(optarg);

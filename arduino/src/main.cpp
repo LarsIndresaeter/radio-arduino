@@ -602,6 +602,14 @@ void commandSetRadioRole(uint8_t* commandPayload, uint8_t* responsePayload)
 
     EEPROM::DATA_STORE::setIsRadioNode(command.isRadioNode);
 
+    response.serialize(responsePayload);
+}
+
+void commandSoftReset(uint8_t* commandPayload, uint8_t* responsePayload)
+{
+    COMMANDS::SOFT_RESET::command_t command(commandPayload);
+    COMMANDS::SOFT_RESET::response_t response;
+
     WATCHDOG::softReset();
     response.serialize(responsePayload);
 }
@@ -721,6 +729,9 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
         break;
     case COMMANDS::OI::SET_RADIO_ROLE:
         commandSetRadioRole(commandPayload, responsePayload);
+        break;
+    case COMMANDS::OI::SOFT_RESET:
+        commandSoftReset(commandPayload, responsePayload);
         break;
     default:
         break;

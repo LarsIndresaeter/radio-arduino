@@ -451,6 +451,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             break;
         case 'n':
             std::cout << mon.get<>(RaduinoCommandSetRadioRole('n')) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandSoftReset()) << std::endl;
             break;
         case 'h':
             print_usage();
