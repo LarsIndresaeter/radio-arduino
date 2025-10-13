@@ -79,11 +79,11 @@ std::string getGatewayNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt
 
     auto gatewayDeviceInfo = mon.get<>(RaduinoCommandGetDeviceName());
 
-    if (gatewayDeviceInfo.getReplyStatus() != RaduinoCommandBase::ReplyStatus::Complete) {
+    if (mon.lastCommandReturnedValidResponse()) {
         gatewayDeviceInfo = mon.get<>(RaduinoCommandGetDeviceName());
     }
 
-    if (gatewayDeviceInfo.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete) {
+    if (mon.lastCommandReturnedValidResponse()) {
         auto response = gatewayDeviceInfo.responseStruct();
 
         for (int i = 0; i < sizeof(response.nameString) && response.nameString[i] != 0; i++) {

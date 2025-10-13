@@ -82,11 +82,11 @@ std::string getNodeNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_cl
 
     auto nodeDeviceInfo = mon.getRadio<>(RaduinoCommandGetDeviceName());
 
-    if (nodeDeviceInfo.getReplyStatus() != RaduinoCommandBase::ReplyStatus::Complete) {
+    if (mon.lastCommandReturnedValidResponse()) {
         nodeDeviceInfo = mon.getRadio<>(RaduinoCommandGetDeviceName());
     }
 
-    if (nodeDeviceInfo.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete) {
+    if (mon.lastCommandReturnedValidResponse()) {
         auto response = nodeDeviceInfo.responseStruct();
 
         for (int i = 0; i < sizeof(response.nameString) && response.nameString[i] != 0; i++) {
@@ -105,11 +105,11 @@ std::string getGatewayNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt
 
     auto nodeDeviceInfo = mon.get<>(RaduinoCommandGetDeviceName());
 
-    if (nodeDeviceInfo.getReplyStatus() != RaduinoCommandBase::ReplyStatus::Complete) {
+    if (mon.lastCommandReturnedValidResponse()) {
         nodeDeviceInfo = mon.get<>(RaduinoCommandGetDeviceName());
     }
 
-    if (nodeDeviceInfo.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete) {
+    if (mon.lastCommandReturnedValidResponse()) {
         auto response = nodeDeviceInfo.responseStruct();
 
         for (int i = 0; i < sizeof(response.nameString) && response.nameString[i] != 0; i++) {

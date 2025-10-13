@@ -145,7 +145,7 @@ std::string RadioSession::readNodeName(monitor& mon)
     std::string nodeName;
 
     auto nodeDeviceInfo = mon.getRadio<>(RaduinoCommandGetDeviceName());
-    if (nodeDeviceInfo.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete) {
+    if (mon.lastCommandReturnedValidResponse()) {
         auto response = nodeDeviceInfo.responseStruct();
 
         for (int i = 0; i < sizeof(response.nameString) && response.nameString[i] != 0; i++) {
@@ -156,17 +156,17 @@ std::string RadioSession::readNodeName(monitor& mon)
     return (nodeName);
 }
 
-std::string RadioSession::getNodeName()
+std::string RadioSession::getNodeName(monitor& mon)
 {
     std::string nodeName("");
 
     auto nodeDeviceInfo = m_monitor.getRadio<>(RaduinoCommandGetDeviceName());
 
-    if (nodeDeviceInfo.getReplyStatus() != RaduinoCommandBase::ReplyStatus::Complete) {
+    if (mon.lastCommandReturnedValidResponse()) {
         nodeDeviceInfo = m_monitor.getRadio<>(RaduinoCommandGetDeviceName());
     }
 
-    if (nodeDeviceInfo.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete) {
+    if (mon.lastCommandReturnedValidResponse()) {
         auto response = nodeDeviceInfo.responseStruct();
 
         // refactor this: use getNameString() when it is completed
