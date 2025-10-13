@@ -77,11 +77,6 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client, std::
     std::cout << "subscribe to topic: " << commandTopic1 << std::endl;
     mqtt_client.subscribe(commandTopic1, QOS)->wait();
 
-    if (1 == digitalTwinList.size()) {
-        // give node time to go to sleep
-        std::this_thread::sleep_for(5s);
-    }
-
     while (true) {
         for (std::shared_ptr<DigitalTwin> digitalTwin : digitalTwinList) {
             digitalTwin->execute();
