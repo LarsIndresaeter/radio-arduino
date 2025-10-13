@@ -117,6 +117,10 @@ public:
             // std::cout << "Reply timeout" << std::endl;
             cmd.setReplyStatus(RaduinoCommandBase::ReplyStatus::Timeout);
             m_inValidResponseCounter++;
+
+            // we don't want a late response calling setResponse on an object out of scope
+            eraseResponseCallback(cmd.getCommandId());
+
             return (cmd);
         }
 
@@ -149,6 +153,7 @@ public:
 private:
     void get(std::vector<uint8_t> command, uint8_t protocol_version);
     void setResponseCallback(uint8_t cmd, ProtocolCallback cb);
+    void eraseResponseCallback(uint8_t cmd);
     void sendRequest(
         COMMANDS::OI cmd, std::vector<uint8_t> data, uint8_t protocol_version);
     const void reply(std::vector<uint8_t> data);

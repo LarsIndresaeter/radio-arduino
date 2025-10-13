@@ -37,6 +37,16 @@ void monitor::setResponseCallback(uint8_t cmd, ProtocolCallback cb)
         cmd, cb); // set response callback for message with this command id
 }
 
+void monitor::eraseResponseCallback(uint8_t cmd)
+{
+    // Erase callback for this command if it is already registered
+    std::map<uint8_t, ProtocolCallback>::iterator it;
+    it = m_responseCallback.find(cmd); // find callback for this message
+    if (it != m_responseCallback.end()) {
+        m_responseCallback.erase(it);
+    }
+}
+
 void monitor::sendRequest(COMMANDS::OI cmd, std::vector<uint8_t> data, uint8_t protocol_version)
 {
     std::unique_lock<std::mutex> lock(m_mutex);
@@ -66,9 +76,9 @@ const void monitor::reply(std::vector<uint8_t> data)
         it->second(data); // calls RaduinoCommandBase::setResponse
         m_responseCallback.erase(it);
         m_validResponseCounter++;
-    }
 
-    m_cv.notify_one(); // notify get<> of received data
+        m_cv.notify_one(); // notify get<> of received data after setResponse has been called
+    }
 }
 
 void monitor::get(std::vector<uint8_t> command, uint8_t protocol_version)
