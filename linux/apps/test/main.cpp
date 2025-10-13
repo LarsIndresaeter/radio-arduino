@@ -184,7 +184,6 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             break;
             case 'S': {
                 RadioSession radioSession(mon, 0);
-                radioSession.setKeepAliveInterval(20);
                 radioSession.wakeupNotResponding();
 
                 auto gatewayStats = mon.get<>(RaduinoCommandGetStatistics());

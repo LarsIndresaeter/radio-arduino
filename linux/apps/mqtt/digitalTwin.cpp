@@ -34,7 +34,6 @@ void DigitalTwin::execute()
 
     if (m_desiredState->getDesiredDisplayText() != m_actualState.getActualDisplayText()) {
         if (m_radioSession.wakeupNotResponding()) {
-            m_radioSession.setKeepAliveInterval(50);
             updateDisplayText();
             m_actualState.setActualDisplayText(m_desiredState->getDesiredDisplayText());
         }

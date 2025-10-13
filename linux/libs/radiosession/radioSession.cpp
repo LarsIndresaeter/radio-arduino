@@ -135,8 +135,6 @@ bool RadioSession::wakeupNotResponding()
         }
     }
 
-    std::this_thread::sleep_for(10ms);
-
     return(false);
 }
 
