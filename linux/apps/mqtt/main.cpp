@@ -24,7 +24,7 @@ void registerRadioNode(monitor& mon, mqtt::async_client& mqtt_client, uint8_t no
 {
     RadioSession radioSession(mon, nodeAddress);
     radioSession.wakeupNotResponding();
-    std::string nodeName = radioSession.getNodeName();
+    std::string nodeName = radioSession.getNodeName(mon);
 
     if (!nodeName.empty()) {
         publishNbirth(mqtt_client, nodeName);
@@ -39,7 +39,7 @@ void moveRadioNode(monitor& mon, mqtt::async_client& mqtt_client, std::vector<st
 {
     RadioSession radioSession(mon, 0);
     radioSession.wakeupNotResponding();
-    std::string nodeName = radioSession.getNodeName();
+    std::string nodeName = radioSession.getNodeName(mon);
 
     if (nodeName == name) {
         std::cout << "DEBUG: try to move '" + nodeName + "' to address: " + std::to_string(nodeAddress) << std::endl;
@@ -77,8 +77,13 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client, std::
     std::cout << "subscribe to topic: " << commandTopic1 << std::endl;
     mqtt_client.subscribe(commandTopic1, QOS)->wait();
 
+    if (1 == digitalTwinList.size()) {
+        // give node time to go to sleep
+        std::this_thread::sleep_for(5s);
+    }
+
     while (true) {
-        for (std::shared_ptr<DigitalTwin> digitalTwin: digitalTwinList){
+        for (std::shared_ptr<DigitalTwin> digitalTwin : digitalTwinList) {
             digitalTwin->execute();
         }
         std::this_thread::sleep_for(100ms);

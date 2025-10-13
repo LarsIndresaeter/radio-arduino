@@ -96,7 +96,7 @@ bool RadioSession::wakeupNotRespondingTryOnce()
         }
         m_isAlive = true;
     } else {
-        RaduinoCommandWakeup result = m_monitor.get<>(RaduinoCommandWakeup(false), static_cast<std::chrono::milliseconds>(6000));
+        m_monitor.get<>(RaduinoCommandWakeup(false), static_cast<std::chrono::milliseconds>(6000));
 
         if (m_monitor.lastCommandReturnedValidResponse()) {
             m_isAlive = true;
@@ -135,8 +135,6 @@ bool RadioSession::wakeupNotResponding()
         }
     }
 
-    std::this_thread::sleep_for(10ms);
-
     return(false);
 }
 
@@ -145,7 +143,7 @@ std::string RadioSession::readNodeName(monitor& mon)
     std::string nodeName;
 
     auto nodeDeviceInfo = mon.getRadio<>(RaduinoCommandGetDeviceName());
-    if (nodeDeviceInfo.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete) {
+    if (mon.lastCommandReturnedValidResponse()) {
         auto response = nodeDeviceInfo.responseStruct();
 
         for (int i = 0; i < sizeof(response.nameString) && response.nameString[i] != 0; i++) {
@@ -156,17 +154,17 @@ std::string RadioSession::readNodeName(monitor& mon)
     return (nodeName);
 }
 
-std::string RadioSession::getNodeName()
+std::string RadioSession::getNodeName(monitor& mon)
 {
     std::string nodeName("");
 
     auto nodeDeviceInfo = m_monitor.getRadio<>(RaduinoCommandGetDeviceName());
 
-    if (nodeDeviceInfo.getReplyStatus() != RaduinoCommandBase::ReplyStatus::Complete) {
+    if (mon.lastCommandReturnedValidResponse()) {
         nodeDeviceInfo = m_monitor.getRadio<>(RaduinoCommandGetDeviceName());
     }
 
-    if (nodeDeviceInfo.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete) {
+    if (mon.lastCommandReturnedValidResponse()) {
         auto response = nodeDeviceInfo.responseStruct();
 
         // refactor this: use getNameString() when it is completed

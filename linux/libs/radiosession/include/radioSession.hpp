@@ -13,7 +13,7 @@ public:
     void setKeepAliveInterval(uint8_t interval);
     void setVerbose(bool verbose);
     std::string readNodeName(monitor& mon);
-    std::string getNodeName();
+    std::string getNodeName(monitor& mon);
 private:
     bool wakeupNotRespondingTryOnce();
     monitor& m_monitor;

@@ -418,7 +418,9 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         } break;
         case 'K': {
             std::string s(optarg);
+            mon.setTransportEncryption(true);
             mon.get<>(RaduinoCommandSetKey('T', s));
+            mon.setTransportEncryption(false);
         } break;
         case 'b': {
             std::string s(optarg);
@@ -435,10 +437,14 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         } break;
         case 'r': {
             uint8_t flag = atoi(optarg);
+            mon.setTransportEncryption(true);
             std::cout << mon.get<>(RaduinoCommandRequireTransportEncryption(flag)) << std::endl;
+            mon.setTransportEncryption(false);
         } break;
         case 'u': 
+            mon.setTransportEncryption(true);
             std::cout << mon.get<>(RaduinoCommandUnencryptedSession()) << std::endl;
+            mon.setTransportEncryption(false);
         break;
         case 'Z': {
             std::string s(optarg);

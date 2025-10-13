@@ -34,7 +34,6 @@ void DigitalTwin::execute()
 
     if (m_desiredState->getDesiredDisplayText() != m_actualState.getActualDisplayText()) {
         if (m_radioSession.wakeupNotResponding()) {
-            m_radioSession.setKeepAliveInterval(50);
             updateDisplayText();
             m_actualState.setActualDisplayText(m_desiredState->getDesiredDisplayText());
         }
@@ -48,7 +47,7 @@ bool DigitalTwin::readVccAndPublish()
     bool retval = false;
     auto nodeVcc = m_monitor.getRadio<>(RaduinoCommandVcc());
 
-    if (nodeVcc.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete) {
+    if (m_monitor.lastCommandReturnedValidResponse()) {
         uint16_t vcc_mv = nodeVcc.responseStruct().getVcc();
         publishVcc(std::to_string(vcc_mv / 1000.0));
         retval = true;
@@ -65,7 +64,7 @@ void DigitalTwin::readGpioAndPublish()
 {
     auto nodeGpio = m_monitor.getRadio<>(RaduinoCommandGpio());
 
-    if (nodeGpio.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete) {
+    if (m_monitor.lastCommandReturnedValidResponse()) {
         uint8_t portB = nodeGpio.responseStruct().portB;
         uint8_t portC = nodeGpio.responseStruct().portC;
         uint8_t portD = nodeGpio.responseStruct().portD;
@@ -89,7 +88,7 @@ void DigitalTwin::updateDisplayText()
     }
 
     auto response = m_monitor.getRadio<>(RaduinoCommandSsd1306(2, lcd), static_cast<std::chrono::milliseconds>(500));
-    if (response.getReplyStatus() == RaduinoCommandBase::ReplyStatus::Complete) {
+    if (m_monitor.lastCommandReturnedValidResponse()) {
         publishActualStateDisplayText(displayText);
     }
 }
