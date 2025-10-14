@@ -78,21 +78,9 @@ void publishNbirth(mqtt::async_client& mqtt_client, std::string deviceName)
 
 std::string getNodeNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client)
 {
-    std::string nodeName("");
+    std::string nodeName = mon.getRadio<>(RaduinoCommandGetDeviceName()).getNamestring();
 
-    auto nodeDeviceInfo = mon.getRadio<>(RaduinoCommandGetDeviceName());
-
-    if (mon.lastCommandReturnedValidResponse()) {
-        nodeDeviceInfo = mon.getRadio<>(RaduinoCommandGetDeviceName());
-    }
-
-    if (mon.lastCommandReturnedValidResponse()) {
-        auto response = nodeDeviceInfo.responseStruct();
-
-        for (int i = 0; i < sizeof(response.nameString) && response.nameString[i] != 0; i++) {
-            nodeName += response.nameString[i];
-        }
-
+    if (nodeName.length() > 0) {
         publishNbirth(mqtt_client, nodeName);
     }
 
@@ -101,21 +89,9 @@ std::string getNodeNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_cl
 
 std::string getGatewayNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client)
 {
-    std::string gatewayName("");
-
-    auto nodeDeviceInfo = mon.get<>(RaduinoCommandGetDeviceName());
-
-    if (mon.lastCommandReturnedValidResponse()) {
-        nodeDeviceInfo = mon.get<>(RaduinoCommandGetDeviceName());
-    }
-
-    if (mon.lastCommandReturnedValidResponse()) {
-        auto response = nodeDeviceInfo.responseStruct();
-
-        for (int i = 0; i < sizeof(response.nameString) && response.nameString[i] != 0; i++) {
-            gatewayName += response.nameString[i];
-        }
-
+    std::string gatewayName = mon.get<>(RaduinoCommandGetDeviceName()).getNamestring();
+ 
+    if(gatewayName.length() > 0){
         publishNbirth(mqtt_client, gatewayName);
     }
 

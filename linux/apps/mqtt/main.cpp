@@ -24,7 +24,7 @@ void registerRadioNode(monitor& mon, mqtt::async_client& mqtt_client, uint8_t no
 {
     RadioSession radioSession(mon, nodeAddress);
     radioSession.wakeupNotResponding();
-    std::string nodeName = radioSession.getNodeName(mon);
+    std::string nodeName = mon.getRadio<>(RaduinoCommandGetDeviceName()).getNamestring();
 
     if (!nodeName.empty()) {
         publishNbirth(mqtt_client, nodeName);
@@ -39,7 +39,8 @@ void moveRadioNode(monitor& mon, mqtt::async_client& mqtt_client, std::vector<st
 {
     RadioSession radioSession(mon, 0);
     radioSession.wakeupNotResponding();
-    std::string nodeName = radioSession.getNodeName(mon);
+
+    std::string nodeName = mon.getRadio<>(RaduinoCommandGetDeviceName()).getNamestring();
 
     if (nodeName == name) {
         std::cout << "DEBUG: try to move '" + nodeName + "' to address: " + std::to_string(nodeAddress) << std::endl;

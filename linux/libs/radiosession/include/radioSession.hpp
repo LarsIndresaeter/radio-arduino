@@ -12,7 +12,6 @@ public:
     uint32_t getWakeupFailedCounter();
     void setKeepAliveInterval(uint8_t interval);
     void setVerbose(bool verbose);
-    std::string getNodeName(monitor& mon);
 private:
     bool wakeupNotRespondingTryOnce();
     monitor& m_monitor;
