@@ -19,7 +19,12 @@ void DigitalTwin::reconsileState()
 {
     if (m_desiredState->getDesiredPollInterval() != m_actualState.getActualPollInterval()) {
         m_actualState.setActualPollInterval(m_desiredState->getDesiredPollInterval());
-        publishDesiredStatePollInterval();
+
+        std::string topic = createMqttTopic("STATE", m_name, "actualState");
+        std::string message
+            = "{\"dateString\": \"" + getDateTimeString() + "\", \"pollInterval\":" + std::to_string(m_actualState.getActualPollInterval()) + "}";
+
+        publishMessage(topic, message);
     }
 }
 
@@ -29,8 +34,7 @@ void DigitalTwin::execute()
 
     if ((secondsSinceEpoch() - m_timeLastPoll) > m_actualState.getActualPollInterval()) {
         if (m_radioSession.wakeupNotResponding()) {
-            if(readVccAndPublish())
-            {
+            if (readVccAndPublish()) {
                 m_timeLastPoll = secondsSinceEpoch();
             }
             readGpioAndPublish();
@@ -44,7 +48,7 @@ void DigitalTwin::execute()
         }
     }
 
-    //m_radioSession.close();
+    // m_radioSession.close();
 }
 
 void DigitalTwin::publishMessage(std::string topic, std::string message)
@@ -68,16 +72,15 @@ bool DigitalTwin::readVccAndPublish()
     auto nodeVcc = m_monitor.getRadio<>(RaduinoCommandVcc());
 
     if (m_monitor.lastCommandReturnedValidResponse()) {
-        uint16_t vcc_mv = nodeVcc.responseStruct().getVcc();
-        publishVcc(std::to_string(vcc_mv / 1000.0));
+        std::string topic = createMqttTopic("NDATA", m_name, "");
+        publishMessage(topic, nodeVcc.getJson());
         retval = true;
     }
     else {
-        // TODO: publish this after n failed read attempts
         publishNdeath();
     }
 
-    return(retval);
+    return (retval);
 }
 
 void DigitalTwin::readGpioAndPublish()
@@ -85,14 +88,10 @@ void DigitalTwin::readGpioAndPublish()
     auto nodeGpio = m_monitor.getRadio<>(RaduinoCommandGpio());
 
     if (m_monitor.lastCommandReturnedValidResponse()) {
-        uint8_t portB = nodeGpio.responseStruct().portB;
-        uint8_t portC = nodeGpio.responseStruct().portC;
-        uint8_t portD = nodeGpio.responseStruct().portD;
-
-        publishGpio(portB, portC, portD);
+        std::string topic = createMqttTopic("NDATA", m_name, "gpio");
+        publishMessage(topic, nodeGpio.getJson());
     }
     else {
-        // TODO: publish this after n failed read attempts
         publishNdeath();
     }
 }
@@ -109,50 +108,13 @@ void DigitalTwin::updateDisplayText()
 
     auto response = m_monitor.getRadio<>(RaduinoCommandSsd1306(2, lcd), static_cast<std::chrono::milliseconds>(500));
     if (m_monitor.lastCommandReturnedValidResponse()) {
-        publishActualStateDisplayText(displayText);
+
+        std::string topic = m_desiredState->getTopicString() + "/actualState";
+        std::string message
+            = "{\"dateString\": \"" + getDateTimeString() + "\", \"displayText\": \"" + displayText + "\"}";
+
+        publishMessage(topic, message);
     }
-}
-
-void DigitalTwin::publishDesiredStatePollInterval()
-{
-    std::string topic = createMqttTopic("STATE", m_name, "actualState");
-    std::string message
-        = "{\"dateString\": \"" + getDateTimeString() + "\", \"pollInterval\":" + std::to_string(m_actualState.getActualPollInterval()) + "}";
-
-    publishMessage(topic, message);
-}
-
-void DigitalTwin::publishActualStateDisplayText(std::string displayText)
-{
-    std::string topic  = m_desiredState->getTopicString() + "/actualState";
-    std::string message
-        = "{\"dateString\": \"" + getDateTimeString() + "\", \"displayText\": \"" + displayText + "\"}";
-
-    publishMessage(topic, message);
-}
-
-void DigitalTwin::publishVcc(std::string voltage)
-{
-    std::string topic = createMqttTopic("NDATA", m_name, "");
-
-    std::string message
-        = "{\"dateString\": \"" + getDateTimeString() + "\", \"voltage\":" + voltage + "}";
-
-    publishMessage(topic, message);
-}
-
-void DigitalTwin::publishGpio(uint8_t portB, uint8_t portC, uint8_t portD)
-{
-
-    std::string portBstring = std::to_string((int) portB);
-    std::string portCstring = std::to_string((int) portC);
-    std::string portDstring = std::to_string((int) portD);
-
-    std::string topic = createMqttTopic("NDATA", m_name, "gpio");
-
-    std::string message = "{\"dateString\": \"" + getDateTimeString() + "\", \"portB\": \"" + portBstring + "\", \"portC\": \"" + portCstring + "\", \"portD\": \"" + portDstring + "\" }";
-
-    publishMessage(topic, message);
 }
 
 void DigitalTwin::publishNdeath()

@@ -27,10 +27,6 @@ private:
     void readGpioAndPublish();
     void updateDisplayText();
 
-    void publishDesiredStatePollInterval();
-    void publishActualStateDisplayText(std::string displayText);
-    void publishVcc(std::string voltage);
-    void publishGpio(uint8_t portB, uint8_t portC, uint8_t portD);
     void publishNdeath();
     uint64_t m_timeLastPoll = 0;
 };
