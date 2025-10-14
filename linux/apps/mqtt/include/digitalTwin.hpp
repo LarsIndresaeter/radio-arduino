@@ -13,6 +13,8 @@ public:
     std::shared_ptr<DesiredState> getDesiredState();
 
 private:
+    void publishMessage(std::string topic, std::string message);
+    void reconsileState();
     ActualState m_actualState;
     std::shared_ptr<DesiredState> m_desiredState;
     RadioSession m_radioSession;

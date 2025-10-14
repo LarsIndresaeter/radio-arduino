@@ -15,12 +15,17 @@ std::shared_ptr<DesiredState> DigitalTwin::getDesiredState()
     return (m_desiredState);
 }
 
-void DigitalTwin::execute()
+void DigitalTwin::reconsileState()
 {
     if (m_desiredState->getDesiredPollInterval() != m_actualState.getActualPollInterval()) {
         m_actualState.setActualPollInterval(m_desiredState->getDesiredPollInterval());
         publishDesiredStatePollInterval();
     }
+}
+
+void DigitalTwin::execute()
+{
+    reconsileState();
 
     if ((secondsSinceEpoch() - m_timeLastPoll) > m_actualState.getActualPollInterval()) {
         if (m_radioSession.wakeupNotResponding()) {
@@ -40,6 +45,21 @@ void DigitalTwin::execute()
     }
 
     //m_radioSession.close();
+}
+
+void DigitalTwin::publishMessage(std::string topic, std::string message)
+{
+    const int QOS = 0;
+    mqtt::topic mqttTopic(m_mqttClient, topic, QOS, false);
+
+    try {
+        mqttTopic.publish(std::move(message));
+    }
+    catch (const mqtt::exception& exc) {
+        std::cerr << exc.what() << std::endl;
+        std::cerr << "topic: " << topic << std::endl;
+        std::cerr << "message: " << message << std::endl;
+    }
 }
 
 bool DigitalTwin::readVccAndPublish()
@@ -95,68 +115,50 @@ void DigitalTwin::updateDisplayText()
 
 void DigitalTwin::publishDesiredStatePollInterval()
 {
-    const int QOS = 0;
-
-    mqtt::topic actual_state_topic(m_mqttClient, createMqttTopic("STATE", m_name, "actualState"), QOS, false);
-    std::string mqtt_payload
+    std::string topic = createMqttTopic("STATE", m_name, "actualState");
+    std::string message
         = "{\"dateString\": \"" + getDateTimeString() + "\", \"pollInterval\":" + std::to_string(m_actualState.getActualPollInterval()) + "}";
 
-    actual_state_topic.publish(std::move(mqtt_payload));
+    publishMessage(topic, message);
 }
 
 void DigitalTwin::publishActualStateDisplayText(std::string displayText)
 {
-    const int QOS = 0;
-    mqtt::topic actual_state_topic(m_mqttClient, m_desiredState->getTopicString() + "/actualState", QOS, false);
-    std::string mqtt_payload
+    std::string topic  = m_desiredState->getTopicString() + "/actualState";
+    std::string message
         = "{\"dateString\": \"" + getDateTimeString() + "\", \"displayText\": \"" + displayText + "\"}";
 
-    actual_state_topic.publish(std::move(mqtt_payload));
+    publishMessage(topic, message);
 }
 
 void DigitalTwin::publishVcc(std::string voltage)
 {
-    const int QOS = 0;
+    std::string topic = createMqttTopic("NDATA", m_name, "");
 
-    mqtt::topic json_topic(m_mqttClient, createMqttTopic("NDATA", m_name, ""), QOS, false);
+    std::string message
+        = "{\"dateString\": \"" + getDateTimeString() + "\", \"voltage\":" + voltage + "}";
 
-    try {
-        std::string mqtt_payload
-            = "{\"dateString\": \"" + getDateTimeString() + "\", \"voltage\":" + voltage + "}";
-
-        json_topic.publish(std::move(mqtt_payload));
-    }
-    catch (const mqtt::exception& exc) {
-        std::cerr << exc.what() << std::endl;
-    }
+    publishMessage(topic, message);
 }
 
 void DigitalTwin::publishGpio(uint8_t portB, uint8_t portC, uint8_t portD)
 {
-    const int QOS = 0;
 
     std::string portBstring = std::to_string((int) portB);
     std::string portCstring = std::to_string((int) portC);
     std::string portDstring = std::to_string((int) portD);
 
-    mqtt::topic json_topic(m_mqttClient, createMqttTopic("NDATA", m_name, "gpio"), QOS, false);
+    std::string topic = createMqttTopic("NDATA", m_name, "gpio");
 
-    try {
-        std::string mqtt_payload = "{\"dateString\": \"" + getDateTimeString() + "\", \"portB\": \"" + portBstring + "\", \"portC\": \"" + portCstring + "\", \"portD\": \"" + portDstring + "\" }";
+    std::string message = "{\"dateString\": \"" + getDateTimeString() + "\", \"portB\": \"" + portBstring + "\", \"portC\": \"" + portCstring + "\", \"portD\": \"" + portDstring + "\" }";
 
-        json_topic.publish(std::move(mqtt_payload));
-    }
-    catch (const mqtt::exception& exc) {
-        std::cerr << exc.what() << std::endl;
-    }
+    publishMessage(topic, message);
 }
 
 void DigitalTwin::publishNdeath()
 {
-    const int QOS = 0;
-
-    mqtt::topic nodeDeath(
-        m_mqttClient, createMqttTopic("NDEATH", m_name, ""), QOS, false);
-    nodeDeath.publish(std::move(getDateTimeString()));
+    std::string topic = createMqttTopic("NDEATH", m_name, "");
+    std::string message = getDateTimeString();
+    publishMessage(topic, message);
 }
 
