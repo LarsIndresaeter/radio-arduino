@@ -23,7 +23,7 @@ private:
     monitor& m_monitor;
     mqtt::async_client& m_mqttClient;
 
-    bool readVccAndPublish();
+    void readVccAndPublish();
     void readGpioAndPublish();
     void updateDisplayText();
 

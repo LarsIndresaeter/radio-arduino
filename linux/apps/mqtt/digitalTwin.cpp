@@ -34,10 +34,9 @@ void DigitalTwin::execute()
 
     if ((secondsSinceEpoch() - m_timeLastPoll) > m_actualState.getActualPollInterval()) {
         if (m_radioSession.wakeupNotResponding()) {
-            if (readVccAndPublish()) {
-                m_timeLastPoll = secondsSinceEpoch();
-            }
+            readVccAndPublish();
             readGpioAndPublish();
+            m_timeLastPoll = secondsSinceEpoch();
         }
     }
 
@@ -66,33 +65,23 @@ void DigitalTwin::publishMessage(std::string topic, std::string message)
     }
 }
 
-bool DigitalTwin::readVccAndPublish()
+void DigitalTwin::readVccAndPublish()
 {
-    bool retval = false;
-    auto nodeVcc = m_monitor.getRadio<>(RaduinoCommandVcc());
+    auto response = m_monitor.getRadio<>(RaduinoCommandVcc());
 
     if (m_monitor.lastCommandReturnedValidResponse()) {
-        std::string topic = createMqttTopic("NDATA", m_name, "");
-        publishMessage(topic, nodeVcc.getJson());
-        retval = true;
+        std::string topic = createMqttTopic("NDATA", m_name, response.getCommandName());
+        publishMessage(topic, response.getJson());
     }
-    else {
-        publishNdeath();
-    }
-
-    return (retval);
 }
 
 void DigitalTwin::readGpioAndPublish()
 {
-    auto nodeGpio = m_monitor.getRadio<>(RaduinoCommandGpio());
+    auto response = m_monitor.getRadio<>(RaduinoCommandGpio());
 
     if (m_monitor.lastCommandReturnedValidResponse()) {
-        std::string topic = createMqttTopic("NDATA", m_name, "gpio");
-        publishMessage(topic, nodeGpio.getJson());
-    }
-    else {
-        publishNdeath();
+        std::string topic = createMqttTopic("NDATA", m_name, response.getCommandName());
+        publishMessage(topic, response.getJson());
     }
 }
 
