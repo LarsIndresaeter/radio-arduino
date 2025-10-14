@@ -13,6 +13,8 @@ public:
     std::shared_ptr<DesiredState> getDesiredState();
 
 private:
+    void publishMessage(std::string topic, std::string message);
+    void reconsileState();
     ActualState m_actualState;
     std::shared_ptr<DesiredState> m_desiredState;
     RadioSession m_radioSession;
@@ -21,14 +23,10 @@ private:
     monitor& m_monitor;
     mqtt::async_client& m_mqttClient;
 
-    bool readVccAndPublish();
+    void readVccAndPublish();
     void readGpioAndPublish();
     void updateDisplayText();
 
-    void publishDesiredStatePollInterval();
-    void publishActualStateDisplayText(std::string displayText);
-    void publishVcc(std::string voltage);
-    void publishGpio(uint8_t portB, uint8_t portC, uint8_t portD);
     void publishNdeath();
     uint64_t m_timeLastPoll = 0;
 };
