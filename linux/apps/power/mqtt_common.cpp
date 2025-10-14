@@ -75,25 +75,12 @@ void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_cli
 
 std::string getGatewayNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client)
 {
-    std::string gatewayName("");
+    std::string gatewayName = mon.get<>(RaduinoCommandGetDeviceName()).getNamestring();
 
-    auto gatewayDeviceInfo = mon.get<>(RaduinoCommandGetDeviceName());
-
-    if (mon.lastCommandReturnedValidResponse()) {
-        gatewayDeviceInfo = mon.get<>(RaduinoCommandGetDeviceName());
-    }
-
-    if (mon.lastCommandReturnedValidResponse()) {
-        auto response = gatewayDeviceInfo.responseStruct();
-
-        for (int i = 0; i < sizeof(response.nameString) && response.nameString[i] != 0; i++) {
-            gatewayName += response.nameString[i];
-        }
-
+   if (gatewayName.length() > 0) {
         publishNbirth(mqtt_client, gatewayName);
     }
 
     return (gatewayName);
 }
-
 
