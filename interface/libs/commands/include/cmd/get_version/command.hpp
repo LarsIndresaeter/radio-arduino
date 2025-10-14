@@ -31,14 +31,12 @@ public:
         std::string retval;
         COMMANDS::GET_VERSION::response_t response = responseStruct();
 
-        retval.append("\"");
         for (uint8_t i = 0; i < 32; i++) {
             if (response.versionString[i])
             {
                 retval.push_back(static_cast<char>(response.versionString[i]));
             }
         }
-        retval.append("\"");
 
         return (retval);
     }

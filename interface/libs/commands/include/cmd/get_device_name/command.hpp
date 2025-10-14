@@ -31,14 +31,12 @@ public:
         std::string retval;
         COMMANDS::GET_DEVICE_NAME::response_t response = responseStruct();
 
-        retval.append("\"");
         for (uint8_t i = 0; i < 16; i++) {
             if (response.nameString[i])
             {
                 retval.push_back(static_cast<char>(response.nameString[i]));
             }
         }
-        retval.append("\"");
 
         return (retval);
     }
