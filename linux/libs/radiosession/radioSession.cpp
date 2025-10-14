@@ -138,22 +138,6 @@ bool RadioSession::wakeupNotResponding()
     return(false);
 }
 
-std::string RadioSession::readNodeName(monitor& mon)
-{
-    std::string nodeName;
-
-    auto nodeDeviceInfo = mon.getRadio<>(RaduinoCommandGetDeviceName());
-    if (mon.lastCommandReturnedValidResponse()) {
-        auto response = nodeDeviceInfo.responseStruct();
-
-        for (int i = 0; i < sizeof(response.nameString) && response.nameString[i] != 0; i++) {
-            nodeName += response.nameString[i];
-        }
-    }
-
-    return (nodeName);
-}
-
 std::string RadioSession::getNodeName(monitor& mon)
 {
     std::string nodeName("");
