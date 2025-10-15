@@ -282,7 +282,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             mon.setPrintResponseTime(false);
             break;
         case 'B':
-            std::cout << mon.get<>(RaduinoCommandBlink()) << std::endl;
+            std::cout << mon.get<>(RaduinoCommandBlink(), static_cast<std::chrono::milliseconds>(4000)) << std::endl;
             break;
         case 'J':
                 {
