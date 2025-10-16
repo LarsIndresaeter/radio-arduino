@@ -4,7 +4,7 @@
 #include <avr/sleep.h>
 #include <nrf24l01.hpp>
 #include <quadencoder.hpp>
-#include <radio_link.hpp>
+#include <radio-link.hpp>
 #include <util/delay.h>
 
 namespace SLEEP {
