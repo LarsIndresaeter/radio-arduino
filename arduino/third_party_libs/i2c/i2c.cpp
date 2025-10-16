@@ -1,5 +1,3 @@
-// https://www.electronicwings.com/avr-atmega/atmega1632-i2c
-
 #include <i2c.hpp>
 
 void I2C_Init()
