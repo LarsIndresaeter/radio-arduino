@@ -1,7 +1,7 @@
 include_directories(include)
 
 add_library(radio_uart
-    radio_uart.cpp
+    radioUart.cpp
     )
 
 target_link_libraries(radio_uart com_bus nrf24l01)
