@@ -1,5 +1,5 @@
 #pragma once
-#include <com_bus.hpp>
+#include <comBusInterface.hpp>
 #include <nrf24l01.hpp>
 #include <stdint.h>
 

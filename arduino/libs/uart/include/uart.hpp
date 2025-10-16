@@ -1,5 +1,5 @@
 #pragma once
-#include <com_bus.hpp>
+#include <comBusInterface.hpp>
 #include <stdint.h>
 #include <stdio.h>
 
