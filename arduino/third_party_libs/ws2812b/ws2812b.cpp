@@ -1,7 +1,5 @@
 #include <ws2812b.hpp>
 
-// copied from: https://github.com/pololu/pololu-led-strip-avr
-
 Ws2812b::Ws2812b() {}
 
 // led_strip_write sends a series of colors to the LED strip, updating the LEDs.
