@@ -2,11 +2,11 @@
 #include <desiredStateCallback.hpp>
 #include <digitalTwin.hpp>
 #include "mqtt/async_client.h"
-#include <mqtt_common.hpp>
+#include <mqtt-common.hpp>
 #include <radioSession.hpp>
 #include <chrono>
 #include <cmath>
-#include <cmd/commands.hpp>
+#include <cmd/commands.hxx>
 #include <eventprocess.hpp>
 #include <filesystem>
 #include <iomanip>

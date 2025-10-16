@@ -49,7 +49,7 @@ def calculateStructSizeFromNames(commandPayloadByteNames):
 
 def generateCommandIdOpen():
     os.makedirs("include/cmd", exist_ok=True)
-    with open("include/cmd/command_id.hpp", 'w') as outfile:
+    with open("include/cmd/command_id.hxx", 'w') as outfile:
         outfile.write("#pragma once\n") 
         outfile.write("// This file is generated with the script: `interface/libs/commands/generate.py`\n")
         outfile.write("\n") 
@@ -65,18 +65,18 @@ def generateCommandIdOpen():
 
 def generatePayloadsOpen():
     os.makedirs("include/cmd/", exist_ok=True)
-    with open("include/cmd/payloads.hpp", 'w') as outfile:
+    with open("include/cmd/payloads.hxx", 'w') as outfile:
         outfile.write("#pragma once\n")
         outfile.write("\n")
         outfile.write("// This file is generated with the script: `interface/libs/commands/generate.py`\n")
         outfile.write("\n")
         outfile.write("#include <stdint.h>\n")
         outfile.write("\n")
-        outfile.write("#include <cmd/command_id.hpp>\n")
+        outfile.write("#include <cmd/command_id.hxx>\n")
 
 def generateCommandsOpen():
     os.makedirs("include/cmd/", exist_ok=True)
-    with open("include/cmd/commands.hpp", 'w') as outfile:
+    with open("include/cmd/commands.hxx", 'w') as outfile:
         outfile.write("#pragma once\n")
         outfile.write("\n")
         outfile.write("// This file is generated with the script: `interface/libs/commands/generate.py`\n")
@@ -91,7 +91,7 @@ def generateCommonHeaderFilesOpen():
 
 def generateCommandIdClose():
     os.makedirs("include/cmd/", exist_ok=True)
-    with open("include/cmd/command_id.hpp", 'a') as outfile:
+    with open("include/cmd/command_id.hxx", 'a') as outfile:
         outfile.write("};\n")
         outfile.write("\n")
         outfile.write("} // namespace COMMANDS\n")
@@ -102,24 +102,24 @@ def generateCommonHeaderFilesClose():
 def generateCommandIdAppend(commandId, commandName):
     os.makedirs("include/cmd/", exist_ok=True)
 
-    # add command to command_id.hpp
-    with open("include/cmd/command_id.hpp", 'a') as outfile:
+    # add command to command_id.hxx
+    with open("include/cmd/command_id.hxx", 'a') as outfile:
         outfile.write("    " + commandName.upper() + " = " + str(commandId) + ",\n")
 
-    # add include to payloads.hpp
-    with open("include/cmd/payloads.hpp", 'a') as outfile:
-        outfile.write(f"#include <cmd/{commandName}/payload.hpp>\n")
+    # add include to payloads.hxx
+    with open("include/cmd/payloads.hxx", 'a') as outfile:
+        outfile.write(f"#include <cmd/{commandName}/payload.hxx>\n")
 
-    # add include to commands.hpp
-    with open("include/cmd/commands.hpp", 'a') as outfile:
-        outfile.write(f"#include <cmd/{commandName}/command.hpp>\n")
+    # add include to commands.hxx
+    with open("include/cmd/commands.hxx", 'a') as outfile:
+        outfile.write(f"#include <cmd/{commandName}/command.hxx>\n")
 
 def generateCommandFile(commandName,
                  commandPayloadByteNames, 
                  responsePayloadByteNames):
     os.makedirs("include/cmd/" + commandName, exist_ok=True)
 
-    with open("include/cmd/" + commandName + "/command.hpp", 'w') as outfile:
+    with open("include/cmd/" + commandName + "/command.hxx", 'w') as outfile:
         createStringConstructor = False
         outfile.write("#pragma once\n")
         outfile.write("// This file is generated with the script: `interface/libs/commands/generate.py`\n")
@@ -368,7 +368,7 @@ def generatePayloadFile(commandId, commandName,
 
     os.makedirs("include/cmd/" + commandName, exist_ok=True)
 
-    payloadFile = f"include/cmd/{commandName}/payload.hpp"
+    payloadFile = f"include/cmd/{commandName}/payload.hxx"
 
     # header and open both namespaces
     with open(payloadFile, 'w') as outfile:
@@ -377,7 +377,7 @@ def generatePayloadFile(commandId, commandName,
         outfile.write("// This file is generated with the script: `interface/libs/commands/generate.py`\n")
         outfile.write("\n")
 
-        outfile.write("#include <cmd/command_id.hpp>\n")
+        outfile.write("#include <cmd/command_id.hxx>\n")
         outfile.write("\n")
         outfile.write("namespace COMMANDS {\n")
         outfile.write("\n")

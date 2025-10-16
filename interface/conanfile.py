@@ -23,6 +23,7 @@ class UartApiConan(ConanFile):
 
     def package(self):
         self.copy("*.hpp", dst="libs/", src="libs/")
+        self.copy("*.hxx", dst="libs/", src="libs/")
 
     def package_info(self):
         self.cpp_info.includedirs = ["libs/protocol/include"]

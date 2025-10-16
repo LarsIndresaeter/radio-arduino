@@ -1,6 +1,6 @@
 #include <Framebuffer.hpp>
 #include <arduinoCryptoHandler.hpp>
-#include <cmd/payloads.hpp>
+#include <cmd/payloads.hxx>
 #include <ds18b20.h>
 #include <eeprom.hpp>
 #include <gpio.hpp>
@@ -9,7 +9,7 @@
 #include <parser.hpp>
 #include <pwm.hpp>
 #include <quadencoder.hpp>
-#include <radio_uart.hpp>
+#include <radioUart.hpp>
 #include <random.hpp>
 #include <spi.hpp>
 #include <stdbool.h>

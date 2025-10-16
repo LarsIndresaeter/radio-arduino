@@ -1,12 +1,12 @@
 #pragma once
 
 #include <chrono>
-#include <cmd/commands.hpp>
+#include <cmd/commands.hxx>
 #include <condition_variable>
 #include <eventprocess.hpp>
 #include <map>
 #include <mutex>
-#include <cmd/payloads.hpp>
+#include <cmd/payloads.hxx>
 #include <protocol.hpp>
 #include <uart.hpp>
 #include <vector>

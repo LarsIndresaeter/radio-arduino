@@ -1,7 +1,7 @@
 #pragma once
 
 #include <streamProtocol.hpp>
-#include <com_bus.hpp>
+#include <comBusInterface.hpp>
 
 class Protocol : public StreamProtocol {
 public:

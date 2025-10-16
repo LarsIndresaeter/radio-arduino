@@ -2,7 +2,7 @@
 
 #include "fakeBufferProtocol.hpp"
 #include "fakeStreamProtocol.hpp"
-#include <cmd/commands.hpp>
+#include <cmd/commands.hxx>
 
 class commandTest : public testing::Test {
 public:

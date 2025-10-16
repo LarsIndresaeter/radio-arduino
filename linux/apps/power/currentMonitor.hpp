@@ -7,7 +7,7 @@
 #include <monitor.hpp>
 #include <nlohmann/json.hpp>
 #include "mqtt/async_client.h"
-#include "mqtt_common.hpp"
+#include "mqtt-common.hpp"
 
 constexpr float EVENT_THRESHOLD = 0.01; // 1% change before sending new message
 constexpr uint EVENT_TIMEOUT = 10 * 60; // seconds before sending new message
