@@ -18,7 +18,7 @@ if [ "$SOURCE_COMMAND" != 1 ]
 then
     echo "usage: source ${SCRIPT_PATH}"
 else
-    . tools/helper_scripts/export_environment.sh
+    . tools/scripts/export_environment.sh
 
     if [ "$1" == "docker" ]
     then

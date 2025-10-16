@@ -4,12 +4,12 @@ PARAM=$1
 
 if [ "${PARAM}" == "list" ]
 then
-    ${RADINO_HELPER_SCRIPTS_DIR}/list_devices.sh $2
+    ${RADUINO_SCRIPTS_DIR}/list_devices.sh $2
 fi
 
 if [ "${PARAM}" == "detect" ]
 then
-    ${RADINO_HELPER_SCRIPTS_DIR}/detect_devices.sh $2
+    ${RADUINO_SCRIPTS_DIR}/detect_devices.sh $2
 fi
 
 
