@@ -29,8 +29,6 @@
  *
  */
 
-// copied from https://github.com/gabrielrcouto/avr-sha1
-
 #include <sha1.hpp>
 
 /*
