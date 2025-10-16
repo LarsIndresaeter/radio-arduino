@@ -52,6 +52,7 @@ class AvrUartConan(ConanFile):
     exports_sources = [ 
             "CMakeLists.txt",
             "libs/*",
+            "third_party_libs/*",
             "cmake/*",
             "include/*",
             "src/*",
