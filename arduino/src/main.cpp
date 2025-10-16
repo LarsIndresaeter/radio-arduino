@@ -1,6 +1,6 @@
 #include <Framebuffer.hpp>
 #include <arduinoCryptoHandler.hpp>
-#include <cmd/payloads.hpp>
+#include <cmd/payloads.hxx>
 #include <ds18b20.h>
 #include <eeprom.hpp>
 #include <gpio.hpp>

@@ -5,7 +5,7 @@
 
 #include <chrono>
 #include <cmath>
-#include <cmd/commands.hpp>
+#include <cmd/commands.hxx>
 #include <crypto.hpp>
 #include <eventprocess.hpp>
 #include <filesystem>

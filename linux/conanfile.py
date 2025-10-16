@@ -34,6 +34,7 @@ class AvrUartConan(ConanFile):
     def imports(self):
         self.copy("*.a", dst="", src="")
         self.copy("*.hpp", dst="libs", src="libs", root_package="raduino-api")
+        self.copy("*.hxx", dst="libs", src="libs", root_package="raduino-api")
         self.copy("*", dst="bin", src="bin")
 
     def build(self):

@@ -2,7 +2,7 @@
 
 #include <aes.hpp>
 #include <avr/interrupt.h>
-#include <cmd/payloads.hpp>
+#include <cmd/payloads.hxx>
 #include <nrf24l01.hpp>
 #include <protocol.hpp>
 #include <radio_link.hpp>

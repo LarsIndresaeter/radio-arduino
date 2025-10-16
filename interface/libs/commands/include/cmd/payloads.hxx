@@ -1,0 +1,46 @@
+#pragma once
+
+// This file is generated with the script: `interface/libs/commands/generate.py`
+
+#include <stdint.h>
+
+#include <cmd/command_id.hxx>
+#include <cmd/blink/payload.hxx>
+#include <cmd/sha1/payload.hxx>
+#include <cmd/hotp/payload.hxx>
+#include <cmd/eeprom_write/payload.hxx>
+#include <cmd/eeprom_read/payload.hxx>
+#include <cmd/aes/payload.hxx>
+#include <cmd/pwm/payload.hxx>
+#include <cmd/random/payload.hxx>
+#include <cmd/debug/payload.hxx>
+#include <cmd/gpio/payload.hxx>
+#include <cmd/i2c_write/payload.hxx>
+#include <cmd/i2c_read/payload.hxx>
+#include <cmd/ina219/payload.hxx>
+#include <cmd/ds18b20/payload.hxx>
+#include <cmd/set_key/payload.hxx>
+#include <cmd/set_device_name/payload.hxx>
+#include <cmd/get_device_name/payload.hxx>
+#include <cmd/ws2812b/payload.hxx>
+#include <cmd/ssd1306/payload.hxx>
+#include <cmd/timer/payload.hxx>
+#include <cmd/spi_read/payload.hxx>
+#include <cmd/spi_write/payload.hxx>
+#include <cmd/nrf24l01_init/payload.hxx>
+#include <cmd/nrf24l01_read/payload.hxx>
+#include <cmd/nrf24l01_write/payload.hxx>
+#include <cmd/radio_uart/payload.hxx>
+#include <cmd/vcc/payload.hxx>
+#include <cmd/sleep/payload.hxx>
+#include <cmd/wakeup/payload.hxx>
+#include <cmd/set_node_address/payload.hxx>
+#include <cmd/keep_alive/payload.hxx>
+#include <cmd/ping/payload.hxx>
+#include <cmd/quadrature_encoder/payload.hxx>
+#include <cmd/get_version/payload.hxx>
+#include <cmd/get_statistics/payload.hxx>
+#include <cmd/require_transport_encryption/payload.hxx>
+#include <cmd/set_radio_role/payload.hxx>
+#include <cmd/soft_reset/payload.hxx>
+#include <cmd/unencrypted_session/payload.hxx>
