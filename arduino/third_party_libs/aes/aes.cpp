@@ -1,6 +1,5 @@
 #include "aes.hpp"
 
-// https://github.com/Xoliper/Aes128.git
 
 namespace AES{
 
