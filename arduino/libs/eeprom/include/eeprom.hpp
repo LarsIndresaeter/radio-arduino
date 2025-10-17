@@ -31,8 +31,9 @@ void write(uint16_t address, uint8_t data);
 void writeMultiple(uint16_t address, uint8_t* buffer, uint16_t length);
 uint8_t read(uint16_t address);
 void readMultiple(uint16_t address, uint8_t* buffer, uint16_t length);
+} // namespace EEPROM
 
-namespace DATA_STORE {
+namespace EEPROM_DATA_STORE {
     void readFromActive(uint16_t address, uint8_t* buffer, uint16_t length);
     void writeToSpareAndSetAsActive(uint16_t address, uint8_t* buffer, uint16_t length);
     uint8_t getRequireTransportEncryption();
@@ -41,5 +42,4 @@ namespace DATA_STORE {
     uint8_t getIsRadioNode();
     void incrementRestarts();
     uint16_t getRestarts();
-} // namespace
-} // namespace
+} // namespace EEPROM_DATA_STORE
