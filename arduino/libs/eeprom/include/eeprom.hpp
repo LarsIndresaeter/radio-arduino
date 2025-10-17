@@ -42,4 +42,5 @@ namespace EEPROM_DATA_STORE {
     uint8_t getIsRadioNode();
     void incrementRestarts();
     uint16_t getRestarts();
+    bool readRxModeGatewayFromEeprom();
 } // namespace EEPROM_DATA_STORE

@@ -163,17 +163,7 @@ int main()
     EEPROM_DATA_STORE::readFromActive(offsetof(eeprom_data_t, TK_KEY), &transport_key[0], 16);
     ArduinoCryptoHandler cryptoHandler(&transport_key[0]);
 
-    if (false) { // set to true when you need to force update isRadioNode flag in eeprom 
-        EEPROM_DATA_STORE::setIsRadioNode('g');
-    };
-
-    if ('n' == EEPROM_DATA_STORE::getIsRadioNode()) {
-        rx_mode_gateway = false; // override default role
-    }
-
-    if ('g' == EEPROM_DATA_STORE::getIsRadioNode()) {
-        rx_mode_gateway = true; // override default role
-    }
+    rx_mode_gateway = EEPROM_DATA_STORE::readRxModeGatewayFromEeprom();
 
     EEPROM_DATA_STORE::incrementRestarts();
 

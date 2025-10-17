@@ -256,4 +256,26 @@ namespace EEPROM_DATA_STORE {
         EEPROM::writeMultiple(offsetSpareStruct() + offsetof(eeprom_data_t, restarts), (uint8_t*)&restarts, sizeof(uint16_t));
         calculateCrcAndSetSpareAsActive();
     }
+
+    bool readRxModeGatewayFromEeprom()
+    {
+        bool mode=false;
+
+        if (false) { // set to true when you need to force update isRadioNode flag in eeprom 
+            setIsRadioNode('g');
+        };
+
+        if ('n' == getIsRadioNode()) {
+            mode = false; // override default role
+        }
+
+        if ('g' == getIsRadioNode()) {
+            mode = true; // override default role
+        }
+
+        return mode;
+    }
+
 } // namespace EEPROM_DATA_STORE
+
+
