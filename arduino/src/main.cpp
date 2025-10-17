@@ -4,28 +4,28 @@
 #include <radioUart.hpp>
 #include <uart.hpp>
 
-#include <command-handlers.hpp>
-#include <command-handlers-eeprom.hpp>
-#include <command-handlers-pwm.hpp>
-#include <command-handlers-sleep.hpp>
-#include <command-handlers-ds18b20.hpp>
-#include <command-handlers-ina219.hpp>
-#include <command-handlers-gpio.hpp>
-#include <command-handlers-nrf24l01.hpp>
-#include <command-handlers-i2c.hpp>
-#include <command-handlers-aes.hpp>
-#include <command-handlers-sha1.hpp>
-#include <command-handlers-ssd1306.hpp>
-#include <command-handlers-ws2812b.hpp>
-#include <command-handlers-spi.hpp>
 #include <command-handlers-adc.hpp>
+#include <command-handlers-aes.hpp>
+#include <command-handlers-ds18b20.hpp>
+#include <command-handlers-eeprom.hpp>
+#include <command-handlers-gpio.hpp>
+#include <command-handlers-i2c.hpp>
+#include <command-handlers-ina219.hpp>
+#include <command-handlers-nrf24l01.hpp>
+#include <command-handlers-parser.hpp>
+#include <command-handlers-pwm.hpp>
+#include <command-handlers-quadencoder.hpp>
+#include <command-handlers-radio-link.hpp>
+#include <command-handlers-radio-uart.hpp>
+#include <command-handlers-random.hpp>
+#include <command-handlers-sha1.hpp>
+#include <command-handlers-sleep.hpp>
+#include <command-handlers-spi.hpp>
+#include <command-handlers-ssd1306.hpp>
 #include <command-handlers-timer.hpp>
 #include <command-handlers-watchdog.hpp>
-#include <command-handlers-quadencoder.hpp>
-#include <command-handlers-random.hpp>
-#include <command-handlers-radio-link.hpp>
-#include <command-handlers-parser.hpp>
-#include <command-handlers-radio-uart.hpp>
+#include <command-handlers-ws2812b.hpp>
+#include <command-handlers.hpp>
 
 bool rx_mode_gateway = true; // default role, update eeprom to switch to node
 
