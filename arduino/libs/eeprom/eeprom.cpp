@@ -40,7 +40,9 @@ void readMultiple(uint16_t address, uint8_t* buffer, uint16_t length)
     }
 }
 
-namespace DATA_STORE {
+} // namespace EEPROM
+
+namespace EEPROM_DATA_STORE {
 #define ACTIVE_PARTITION_A 1
 #define ACTIVE_PARTITION_B 2
 #define CRC32_POLY 0x04C11DB7 /* AUTODIN II, Ethernet, & FDDI */
@@ -106,8 +108,8 @@ namespace DATA_STORE {
         uint32_t dataVersionB;
         EEPROM::readMultiple(offsetof(full_eeprom_t, A) + offsetof(eeprom_data_t, dataVersion), (uint8_t*)&dataVersionA, sizeof(uint32_t));
         EEPROM::readMultiple(offsetof(full_eeprom_t, B) + offsetof(eeprom_data_t, dataVersion), (uint8_t*)&dataVersionB, sizeof(uint32_t));
-        bool validA = EEPROM::DATA_STORE::validCrcA();
-        bool validB = EEPROM::DATA_STORE::validCrcB();
+        bool validA = EEPROM_DATA_STORE::validCrcA();
+        bool validB = EEPROM_DATA_STORE::validCrcB();
 
         if ((false == validA) && (false == validB)) {
             clearData();
@@ -254,5 +256,26 @@ namespace DATA_STORE {
         EEPROM::writeMultiple(offsetSpareStruct() + offsetof(eeprom_data_t, restarts), (uint8_t*)&restarts, sizeof(uint16_t));
         calculateCrcAndSetSpareAsActive();
     }
-} // namespace
-} // namespace
+
+    bool readRxModeGatewayFromEeprom()
+    {
+        bool mode=false;
+
+        if (false) { // set to true when you need to force update isRadioNode flag in eeprom 
+            setIsRadioNode('g');
+        };
+
+        if ('n' == getIsRadioNode()) {
+            mode = false; // override default role
+        }
+
+        if ('g' == getIsRadioNode()) {
+            mode = true; // override default role
+        }
+
+        return mode;
+    }
+
+} // namespace EEPROM_DATA_STORE
+
+

@@ -1,629 +1,33 @@
-#include <Framebuffer.hpp>
 #include <arduinoCryptoHandler.hpp>
-#include <cmd/payloads.hxx>
-#include <ds18b20.h>
 #include <eeprom.hpp>
-#include <gpio.hpp>
-#include <i2c.hpp>
-#include <ina219.hpp>
 #include <parser.hpp>
-#include <pwm.hpp>
-#include <quadencoder.hpp>
 #include <radioUart.hpp>
-#include <random.hpp>
-#include <spi.hpp>
-#include <stdbool.h>
-#include <stdio.h>
-#include <timer.hpp>
 #include <uart.hpp>
-#include <version.h>
-#include <ws2812b.hpp>
-#include <watchdog.hpp>
+
+#include <command-handlers-adc.hpp>
+#include <command-handlers-aes.hpp>
+#include <command-handlers-ds18b20.hpp>
+#include <command-handlers-eeprom.hpp>
+#include <command-handlers-gpio.hpp>
+#include <command-handlers-i2c.hpp>
+#include <command-handlers-ina219.hpp>
+#include <command-handlers-nrf24l01.hpp>
+#include <command-handlers-parser.hpp>
+#include <command-handlers-pwm.hpp>
+#include <command-handlers-quadencoder.hpp>
+#include <command-handlers-radio-link.hpp>
+#include <command-handlers-radio-uart.hpp>
+#include <command-handlers-random.hpp>
+#include <command-handlers-sha1.hpp>
+#include <command-handlers-sleep.hpp>
+#include <command-handlers-spi.hpp>
+#include <command-handlers-ssd1306.hpp>
+#include <command-handlers-timer.hpp>
+#include <command-handlers-watchdog.hpp>
+#include <command-handlers-ws2812b.hpp>
+#include <command-handlers.hpp>
 
 bool rx_mode_gateway = true; // default role, update eeprom to switch to node
-
-void commandDs18b20(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::DS18B20::command_t command(commandPayload);
-    COMMANDS::DS18B20::response_t response;
-
-    int16_t temp;
-    ds18b20convert(&PORTB, &DDRB, &PINB, (1 << 0), NULL);
-
-    _delay_ms(1000);
-
-    ds18b20read(&PORTB, &DDRB, &PINB, (1 << 0), NULL, &temp);
-
-    response.setTemperature(temp);
-
-    response.serialize(responsePayload);
-}
-
-void commandBlink(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::BLINK::command_t command(commandPayload);
-    COMMANDS::BLINK::response_t response;
-
-    GPIO::blink();
-
-    response.serialize(responsePayload);
-}
-
-void commandRandom(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::RANDOM::response_t response;
-
-    RANDOM::addEntropyAndMix();
-
-    for (uint8_t i = 0; i < sizeof(response.data); i++) {
-        response.data[i] = RANDOM::getRandomByte();
-    }
-
-    response.serialize(responsePayload);
-}
-
-void commandSha1(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::SHA1::command_t command(commandPayload);
-    COMMANDS::SHA1::response_t response;
-
-    SHA1Context sha;
-
-    SHA1Reset(&sha);
-    SHA1Input(&sha, command.data, sizeof(command.data));
-    SHA1Result(&sha, response.data);
-
-    response.serialize(responsePayload);
-}
-
-void commandHotp(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::HOTP::command_t command(commandPayload);
-    COMMANDS::HOTP::response_t response;
-
-    static uint16_t cnt = 0;
-    uint8_t HOTP_message[20] = { ' ', ' ', 's', 'e', 'c', 'r', 'e', 't' };
-
-    HOTP_message[0] = cnt >> 8;
-    HOTP_message[1] = cnt++;
-
-    SHA1Context sha;
-
-    SHA1Reset(&sha);
-    SHA1Input(&sha, &HOTP_message[0], 8);
-    SHA1Result(&sha, response.data);
-
-    response.serialize(responsePayload);
-}
-
-void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::AES::command_t command(commandPayload);
-    COMMANDS::AES::response_t response;
-
-    uint8_t aes_key[16] = {};
-    EEPROM::DATA_STORE::readFromActive(offsetof(eeprom_data_t, EK_KEY), &aes_key[0], 16);
-
-    uint8_t aes_iv[16] = { 0 };
-
-    // copy data to response buffer
-    for (uint8_t i = 0; i < sizeof(response.data); i++) {
-        response.data[i] = command.data[i];
-    }
-
-    AES::Sanitize();
-
-    if (command.type == 'c') {
-        AES::Crypt(response.data, &aes_key[0], &aes_iv[0]);
-    }
-
-    if (command.type == 'd') {
-        AES::Decrypt(response.data, &aes_key[0], &aes_iv[0]);
-    }
-
-    response.type = command.type;
-
-    response.serialize(responsePayload);
-}
-
-void commandSleep(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::SLEEP::command_t command(commandPayload);
-    COMMANDS::SLEEP::response_t response;
-
-    SLEEP::powerDownRadioAndSleep(command.getDelay());
-
-    response.serialize(responsePayload);
-}
-
-void commandPwm(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::PWM::command_t command(commandPayload);
-    COMMANDS::PWM::response_t response;
-
-    response.setPort(command.getPort());
-    response.setPin(command.getPin());
-    response.setValue(command.getValue());
-
-    PWM::write(command.port, command.pin, command.value);
-
-    response.serialize(responsePayload);
-}
-
-void commandGpio(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::GPIO::command_t command(commandPayload);
-    COMMANDS::GPIO::response_t response;
-
-    response.setPortb(GPIO::readPortB());
-    response.setPortc(GPIO::readPortC());
-    response.setPortd(GPIO::readPortD());
-
-    response.serialize(responsePayload);
-}
-
-void commandSsd1306(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::SSD1306::command_t command(commandPayload);
-    COMMANDS::SSD1306::response_t response;
-
-    Framebuffer fb;
-
-    for (uint8_t x = 0; x < sizeof(command.data); x++) {
-        fb.drawChar(x, command.line, command.data[x]);
-    }
-
-    fb.show();
-    fb.invert(0);
-
-    response.serialize(responsePayload);
-}
-
-void commandTimer(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::TIMER::command_t command(commandPayload);
-    COMMANDS::TIMER::response_t response;
-
-    response.setPulsewidth(TIMER::getPulseWidthMicroSeconds());
-
-    response.serialize(responsePayload);
-}
-
-void commandVcc(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::VCC::command_t command(commandPayload);
-    COMMANDS::VCC::response_t response;
-
-    response.setVcc(AtmelAdc::getAverageVcc());
-
-    response.serialize(responsePayload);
-}
-
-void commandDebug(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::DEBUG::command_t command(commandPayload);
-    COMMANDS::DEBUG::response_t response;
-
-    for (uint8_t i = 0; i < sizeof(response.data); i++) {
-        response.data[i] = i;
-    }
-
-    response.serialize(responsePayload);
-}
-
-void commandPing(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::PING::response_t response;
-    response.serialize(responsePayload);
-}
-
-void commandEepromRead(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::EEPROM_READ::command_t command(commandPayload);
-    COMMANDS::EEPROM_READ::response_t response;
-
-    response.setAddress(command.getAddress());
-    response.setData(EEPROM::read(command.getAddress()));
-
-    response.serialize(responsePayload);
-}
-
-void commandWs2812b(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::WS2812B::command_t command(commandPayload);
-    COMMANDS::WS2812B::response_t response;
-
-    Ws2812b ws2812b;
-
-    rgb_color colors[sizeof(command.red)];
-
-    for (uint16_t i = 0; i < sizeof(command.red); i++) {
-        colors[i].red = command.red[i];
-        colors[i].green = command.green[i];
-        colors[i].blue = command.blue[i];
-    }
-
-    ws2812b.led_strip_write(colors, sizeof(command.red));
-
-    response.serialize(responsePayload);
-}
-
-void commandEepromWrite(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::EEPROM_WRITE::command_t command(commandPayload);
-    COMMANDS::EEPROM_WRITE::response_t response;
-
-    EEPROM::write(command.getAddress(), command.data);
-
-    response.setAddress(command.getAddress());
-    response.setData(EEPROM::read(command.getAddress()));
-
-    response.serialize(responsePayload);
-}
-
-void commandI2cWrite(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::I2C_WRITE::command_t command(commandPayload);
-    COMMANDS::I2C_WRITE::response_t response;
-
-    I2C_Init();
-    I2C_Start(command.device); // write address
-    I2C_Write(command.registerAddress[0]); // first word address
-    I2C_Write(command.registerAddress[1]); // second word address
-    for (uint8_t i = 0;
-         (i < command.length) && (i < sizeof(command.data));
-         i++) {
-        if (0 != I2C_Write(command.data[i])) {
-            break;
-        }
-    }
-    I2C_Stop();
-
-    response.serialize(responsePayload);
-}
-
-void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::SET_KEY::command_t command(commandPayload);
-    COMMANDS::SET_KEY::response_t response;
-
-    if (PARSER::lastReceivedCommandWasEncrypted()) {
-        if (command.keyId == 'E') {
-            EEPROM::DATA_STORE::writeToSpareAndSetAsActive(offsetof(eeprom_data_t, EK_KEY), &command.keyValue[0], 16);
-        }
-        else if (command.keyId == 'T') {
-            EEPROM::DATA_STORE::writeToSpareAndSetAsActive(offsetof(eeprom_data_t, TK_KEY), &command.keyValue[0], 16);
-        }
-    }
-
-    response.serialize(responsePayload);
-}
-
-void commandSetDeviceName(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::SET_DEVICE_NAME::command_t command(commandPayload);
-    COMMANDS::SET_DEVICE_NAME::response_t response;
-
-    EEPROM::DATA_STORE::writeToSpareAndSetAsActive(offsetof(eeprom_data_t, deviceName), &command.name[0], 16);
-
-    response.serialize(responsePayload);
-}
-
-void commandGetDeviceName(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::GET_DEVICE_NAME::command_t command(commandPayload);
-    COMMANDS::GET_DEVICE_NAME::response_t response;
-
-    EEPROM::DATA_STORE::readFromActive(offsetof(eeprom_data_t, deviceName), &response.nameString[0], 16);
-
-    response.serialize(responsePayload);
-}
-
-void commandGetVersion(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::GET_VERSION::command_t command(commandPayload);
-    COMMANDS::GET_VERSION::response_t response;
-
-    for (uint8_t i = 0; i < sizeof(response.versionString); i++) {
-        response.versionString[i] = 0;
-    }
-
-    for (uint8_t i = 0; i < sizeof(response.versionString) && ARDUINO_VERSION[i] != 0; i++) {
-        response.versionString[i] = ARDUINO_VERSION[i];
-    }
-
-    response.serialize(responsePayload);
-}
-
-void commandGetStatistics(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::GET_STATISTICS::command_t command(commandPayload);
-    COMMANDS::GET_STATISTICS::response_t response;
-
-    response.setUart_rx(UART::getUartRxBytes());
-    response.setUart_tx(UART::getUartTxBytes());
-    response.setRf_rx(NRF24L01_getRxBytes());
-    response.setRf_tx(NRF24L01_getTxBytes());
-    response.setCommandsparsed(PARSER::getCommandsParsedCounter());
-    response.setRestarts(EEPROM::DATA_STORE::getRestarts());
-
-    response.serialize(responsePayload);
-}
-
-void commandI2cRead(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::I2C_READ::command_t command(commandPayload);
-    COMMANDS::I2C_READ::response_t response;
-
-    response.setDevice(command.getDevice());
-    response.setRegisteraddress(command.getRegisteraddress());
-    response.setLength(command.getLength());
-
-    I2C_Init();
-    I2C_Start(command.device); // read address
-    I2C_Write(command.registerAddress[0]); // first word address
-    I2C_Write(command.registerAddress[1]); // second word address
-
-    I2C_Repeated_Start(command.device + 1);
-
-    for (uint8_t i = 0;
-         (i < command.length) && (i < sizeof(response.data));
-         i++) {
-        response.data[i] = I2C_Read_Ack();
-    }
-
-    I2C_Read_Nack(); /* Read flush data with nack */
-    I2C_Stop();
-
-    response.serialize(responsePayload);
-}
-
-void commandSpiRead(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::SPI_READ::command_t command(commandPayload);
-    COMMANDS::SPI_READ::response_t response;
-
-    response.setReg(command.getReg());
-    response.setLength(command.getLength());
-
-    SPI_init();
-
-    SPI_ChipSelectLow();
-
-    SPI_masterTransmitByte(command.reg);
-
-    for (uint8_t i = 0;
-         i < command.length && i < sizeof(response.data);
-         i++) {
-        response.data[i] = SPI_masterReceive();
-    }
-
-    SPI_ChipSelectHigh();
-
-    response.serialize(responsePayload);
-}
-
-void commandSpiWrite(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::SPI_WRITE::command_t command(commandPayload);
-    COMMANDS::SPI_WRITE::response_t response;
-
-    SPI_init();
-
-    SPI_ChipSelectLow();
-
-    SPI_masterTransmitByte(0x20 | command.reg);
-
-    for (uint8_t i = 0;
-         i < command.length && i < sizeof(command.data);
-         i++) {
-        SPI_masterTransmitByte(command.data[i]);
-    }
-
-    SPI_ChipSelectHigh();
-
-    response.serialize(responsePayload);
-}
-
-void commandRadioUart(
-    uint8_t* commandPayload, uint8_t* responsePayload, ComBusInterface* comBus)
-{
-    COMMANDS::RADIO_UART::command_t command(commandPayload);
-    COMMANDS::RADIO_UART::response_t response;
-
-    if (command.mode == 'p') // promiscous mode
-    {
-        NRF24L01_write_register(NRF24L01_REGISTER_CONFIG, 0x03);
-        // illegal address, undocumented 2 byte address
-        NRF24L01_write_register(NRF24L01_REGISTER_SETUP_AW, 0x00);
-
-        uint8_t addr[5] = { 0, 0, 0, 0, 0x55 };
-
-        NRF24L01_init(&addr[0], &addr[0], false);
-    }
-    else if (command.mode == 's') // send data read from uart over radio
-    {
-        RadioUart uartRadio;
-
-        uint8_t package[32] = { 0 };
-        uint8_t len = 0;
-        uint8_t c;
-
-        while (true) {
-            while (comBus->hasData()) {
-                c = comBus->getChar();
-                package[len++] = c;
-
-                if (c == ' ' || len >= 32) {
-                    uartRadio.writeBuffer(&package[0], len);
-                    len = 0;
-                }
-            }
-        }
-    }
-    else if (command.mode == 'r') // receive data from radio and write to uart
-    {
-        RadioUart uartRadio;
-
-        while (true) {
-            if (uartRadio.hasData()) {
-                comBus->putChar(uartRadio.getChar());
-            }
-        }
-    }
-
-    response.serialize(responsePayload);
-}
-
-void commandNrf24l01Init(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::NRF24L01_INIT::command_t command(commandPayload);
-    COMMANDS::NRF24L01_INIT::response_t response;
-
-    NRF24L01_set_rf_channel(command.rfChannel);
-
-    NRF24L01_init(
-        &command.rxAddr[0],
-        &command.txAddr[0],
-        command.gateway == 1);
-
-    response.serialize(responsePayload);
-}
-
-void commandNrf24l01Read(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::NRF24L01_READ::command_t command(commandPayload);
-    COMMANDS::NRF24L01_READ::response_t response;
-
-    SPI_init();
-
-    response.setLength(NRF24L01_rx(response.data));
-
-    response.serialize(responsePayload);
-}
-
-void commandNrf24l01Write(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::NRF24L01_WRITE::command_t command(commandPayload);
-    COMMANDS::NRF24L01_WRITE::response_t response;
-
-    SPI_init();
-
-    NRF24L01_tx(&command.data[0], command.length);
-    response.setLength(NRF24L01_rx(&response.data[0]));
-
-    if (rx_mode_gateway) {
-        NRF24L01_read_register(NRF24L01_REGISTER_STATUS);
-    }
-
-    response.serialize(responsePayload);
-}
-
-void commandIna219(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::INA219::command_t command(commandPayload);
-    COMMANDS::INA219::response_t response;
-
-    uint16_t voltage, current;
-
-    readIna219(&voltage, &current);
-
-    response.setVoltage(voltage);
-    response.setCurrent(current);
-
-    response.serialize(responsePayload);
-}
-
-void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::WAKEUP::command_t command(commandPayload);
-    COMMANDS::WAKEUP::response_t response;
-
-    if (rx_mode_gateway) {
-        response.attention = RADIOLINK::sendWakeupCommandToNode(command.checkAttentionFlag);
-    }
-
-    response.serialize(responsePayload);
-}
-
-void commandQuadratureEncoder(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::QUADRATURE_ENCODER::command_t command(commandPayload);
-    COMMANDS::QUADRATURE_ENCODER::response_t response;
-
-    QUADENCODER::initialize();
-
-    response.setCountpositive(QUADENCODER::getCountPositivePulses());
-    response.setCountnegative(QUADENCODER::getCountNegativePulses());
-    response.setSwitchcount(QUADENCODER::getSwitchCount());
-    response.setSwitchposition(QUADENCODER::getSwitchPosition());
-
-    response.serialize(responsePayload);
-}
-
-void commandSetNodeAddress(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::SET_NODE_ADDRESS::command_t command(commandPayload);
-    COMMANDS::SET_NODE_ADDRESS::response_t response;
-
-    RADIOLINK::setNodeAddress(command.nodeAddress);
-
-    response.serialize(responsePayload);
-}
-
-void commandKeepAlive(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::KEEP_ALIVE::command_t command(commandPayload);
-    COMMANDS::KEEP_ALIVE::response_t response;
-
-    PARSER::setKeepAliveInterval(command.time);
-
-    response.serialize(responsePayload);
-}
-
-void commandRequireTransportEncryption(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::REQUIRE_TRANSPORT_ENCRYPTION::command_t command(commandPayload);
-    COMMANDS::REQUIRE_TRANSPORT_ENCRYPTION::response_t response;
-
-    if (PARSER::lastReceivedCommandWasEncrypted()) {
-        PARSER::setRequireTransportEncryption(command.value);
-        EEPROM::DATA_STORE::setRequireTransportEncryption(command.value);
-    }
-
-    response.serialize(responsePayload);
-}
-
-void commandUnencryptedSession(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::UNENCRYPTED_SESSION::command_t command(commandPayload);
-    COMMANDS::UNENCRYPTED_SESSION::response_t response;
-
-    if (PARSER::lastReceivedCommandWasEncrypted()) {
-        PARSER::setRequireTransportEncryption(0);
-    }
-
-    response.serialize(responsePayload);
-}
-
-void commandSetRadioRole(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::SET_RADIO_ROLE::command_t command(commandPayload);
-    COMMANDS::SET_RADIO_ROLE::response_t response;
-
-    EEPROM::DATA_STORE::setIsRadioNode(command.isRadioNode);
-
-    response.serialize(responsePayload);
-}
-
-void commandSoftReset(uint8_t* commandPayload, uint8_t* responsePayload)
-{
-    COMMANDS::SOFT_RESET::command_t command(commandPayload);
-    COMMANDS::SOFT_RESET::response_t response;
-
-    WATCHDOG::softReset();
-    response.serialize(responsePayload);
-}
 
 void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInterface* comBus)
 {
@@ -631,121 +35,121 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
 
     switch (static_cast<COMMANDS::OI>(cmd_id)) {
     case COMMANDS::OI::BLINK:
-        commandBlink(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandBlink(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::RANDOM:
-        commandRandom(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandRandom(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SHA1:
-        commandSha1(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandSha1(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SSD1306:
-        commandSsd1306(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandSsd1306(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::HOTP:
-        commandHotp(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandHotp(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::EEPROM_WRITE:
-        commandEepromWrite(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandEepromWrite(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::EEPROM_READ:
-        commandEepromRead(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandEepromRead(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::WS2812B:
-        commandWs2812b(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandWs2812b(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::AES:
-        commandAes(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandAes(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::PWM:
-        commandPwm(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandPwm(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SLEEP:
-        commandSleep(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandSleep(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::GPIO:
-        commandGpio(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandGpio(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::DEBUG:
-        commandDebug(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandDebug(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::PING:
-        commandPing(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandPing(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::VCC:
-        commandVcc(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandVcc(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::RADIO_UART:
-        commandRadioUart(commandPayload, responsePayload, comBus);
+        COMMAND_HANDLERS::commandRadioUart(commandPayload, responsePayload, comBus);
         break;
     case COMMANDS::OI::TIMER:
-        commandTimer(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandTimer(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::I2C_READ:
-        commandI2cRead(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandI2cRead(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SPI_READ:
-        commandSpiRead(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandSpiRead(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::INA219:
-        commandIna219(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandIna219(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::DS18B20:
-        commandDs18b20(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandDs18b20(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::I2C_WRITE:
-        commandI2cWrite(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandI2cWrite(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SPI_WRITE:
-        commandSpiWrite(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandSpiWrite(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::NRF24L01_INIT:
-        commandNrf24l01Init(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandNrf24l01Init(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::NRF24L01_READ:
-        commandNrf24l01Read(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandNrf24l01Read(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::NRF24L01_WRITE:
-        commandNrf24l01Write(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandNrf24l01Write(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SET_KEY:
-        commandSetKey(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandSetKey(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SET_DEVICE_NAME:
-        commandSetDeviceName(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandSetDeviceName(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::GET_DEVICE_NAME:
-        commandGetDeviceName(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandGetDeviceName(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::GET_VERSION:
-        commandGetVersion(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandGetVersion(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::GET_STATISTICS:
-        commandGetStatistics(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandGetStatistics(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::WAKEUP:
-        commandWakeup(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandWakeup(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::QUADRATURE_ENCODER:
-        commandQuadratureEncoder(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandQuadratureEncoder(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SET_NODE_ADDRESS:
-        commandSetNodeAddress(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandSetNodeAddress(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::KEEP_ALIVE:
-        commandKeepAlive(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandKeepAlive(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::REQUIRE_TRANSPORT_ENCRYPTION:
-        commandRequireTransportEncryption(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandRequireTransportEncryption(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::UNENCRYPTED_SESSION:
-        commandUnencryptedSession(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandUnencryptedSession(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SET_RADIO_ROLE:
-        commandSetRadioRole(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandSetRadioRole(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SOFT_RESET:
-        commandSoftReset(commandPayload, responsePayload);
+        COMMAND_HANDLERS::commandSoftReset(commandPayload, responsePayload);
         break;
     default:
         break;
@@ -756,29 +160,19 @@ int main()
 {
     RADIOLINK::setNodeAddress(0);
     uint8_t transport_key[16] = { 0 };
-    EEPROM::DATA_STORE::readFromActive(offsetof(eeprom_data_t, TK_KEY), &transport_key[0], 16);
+    EEPROM_DATA_STORE::readFromActive(offsetof(eeprom_data_t, TK_KEY), &transport_key[0], 16);
     ArduinoCryptoHandler cryptoHandler(&transport_key[0]);
 
-    if (false) { // set to true when you need to force update isRadioNode flag in eeprom 
-        EEPROM::DATA_STORE::setIsRadioNode('g');
-    };
+    rx_mode_gateway = EEPROM_DATA_STORE::readRxModeGatewayFromEeprom();
 
-    if ('n' == EEPROM::DATA_STORE::getIsRadioNode()) {
-        rx_mode_gateway = false; // override default role
-    }
-
-    if ('g' == EEPROM::DATA_STORE::getIsRadioNode()) {
-        rx_mode_gateway = true; // override default role
-    }
-
-    EEPROM::DATA_STORE::incrementRestarts();
+    EEPROM_DATA_STORE::incrementRestarts();
 
     if (rx_mode_gateway) {
 
         Uart uart;
 
         Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
-        PARSER::setRequireTransportEncryption(EEPROM::DATA_STORE::getRequireTransportEncryption());
+        PARSER::setRequireTransportEncryption(EEPROM_DATA_STORE::getRequireTransportEncryption());
         PARSER::parseInput(protocol, (ComBusInterface*)&uart);
     }
     else {
@@ -786,7 +180,7 @@ int main()
         RadioUart uart;
 
         Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
-        PARSER::setRequireTransportEncryption(EEPROM::DATA_STORE::getRequireTransportEncryption());
+        PARSER::setRequireTransportEncryption(EEPROM_DATA_STORE::getRequireTransportEncryption());
         PARSER::parseInput(protocol, (ComBusInterface*)&uart);
     }
 
