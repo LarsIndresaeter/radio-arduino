@@ -124,8 +124,8 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             if (role == "gateway") {
                 setRadioRole = 'g';
             }
-            else if (role == "gateway") {
-                setRadioRole = 'g';
+            else if (role == "node") {
+                setRadioRole = 'n';
             }
             else {
                 std::cout << "role '" + role + "' is not a valid option. Use 'gateway' or 'node'" << std::endl;
