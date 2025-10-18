@@ -259,7 +259,7 @@ namespace EEPROM_DATA_STORE {
 
     bool readRxModeGatewayFromEeprom()
     {
-        bool mode=false;
+        bool mode=true; // new unprogrammed device is gateway
 
         if (false) { // set to true when you need to force update isRadioNode flag in eeprom 
             setIsRadioNode('g');
