@@ -35,6 +35,24 @@ namespace GET_STATISTICS {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::GET_STATISTICS);
             OL = RESPONSE_LENGTH;
+            for (uint8_t i = 0; i < 2; i++) {
+                commandsParsed[i] = 0;
+            }
+            for (uint8_t i = 0; i < 4; i++) {
+                uart_rx[i] = 0;
+            }
+            for (uint8_t i = 0; i < 4; i++) {
+                uart_tx[i] = 0;
+            }
+            for (uint8_t i = 0; i < 4; i++) {
+                rf_rx[i] = 0;
+            }
+            for (uint8_t i = 0; i < 4; i++) {
+                rf_tx[i] = 0;
+            }
+            for (uint8_t i = 0; i < 2; i++) {
+                restarts[i] = 0;
+            }
         }
 
         response(uint8_t* res)

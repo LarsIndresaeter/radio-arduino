@@ -35,6 +35,9 @@ namespace GPIO {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::GPIO);
             OL = RESPONSE_LENGTH;
+            portB = 0;
+            portC = 0;
+            portD = 0;
         }
 
         response(uint8_t* res)

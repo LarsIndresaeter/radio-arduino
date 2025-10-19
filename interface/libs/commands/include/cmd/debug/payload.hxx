@@ -35,6 +35,9 @@ namespace DEBUG {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::DEBUG);
             OL = RESPONSE_LENGTH;
+            for (uint8_t i = 0; i < 32; i++) {
+                data[i] = 0;
+            }
         }
 
         response(uint8_t* res)

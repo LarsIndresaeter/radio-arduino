@@ -61,6 +61,11 @@ namespace SPI_READ {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::SPI_READ);
             OL = RESPONSE_LENGTH;
+            reg = 0;
+            length = 0;
+            for (uint8_t i = 0; i < 32; i++) {
+                data[i] = 0;
+            }
         }
 
         response(uint8_t* res)

@@ -55,6 +55,10 @@ namespace AES {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::AES);
             OL = RESPONSE_LENGTH;
+            type = 0;
+            for (uint8_t i = 0; i < 16; i++) {
+                data[i] = 0;
+            }
         }
 
         response(uint8_t* res)

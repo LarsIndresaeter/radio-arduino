@@ -35,6 +35,12 @@ namespace INA219 {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::INA219);
             OL = RESPONSE_LENGTH;
+            for (uint8_t i = 0; i < 2; i++) {
+                current[i] = 0;
+            }
+            for (uint8_t i = 0; i < 2; i++) {
+                voltage[i] = 0;
+            }
         }
 
         response(uint8_t* res)

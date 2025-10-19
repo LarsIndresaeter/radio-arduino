@@ -35,6 +35,9 @@ namespace TIMER {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::TIMER);
             OL = RESPONSE_LENGTH;
+            for (uint8_t i = 0; i < 2; i++) {
+                pulseWidth[i] = 0;
+            }
         }
 
         response(uint8_t* res)

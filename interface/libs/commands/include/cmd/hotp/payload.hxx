@@ -35,6 +35,9 @@ namespace HOTP {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::HOTP);
             OL = RESPONSE_LENGTH;
+            for (uint8_t i = 0; i < 20; i++) {
+                data[i] = 0;
+            }
         }
 
         response(uint8_t* res)

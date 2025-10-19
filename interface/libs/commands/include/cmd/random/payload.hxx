@@ -35,6 +35,9 @@ namespace RANDOM {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::RANDOM);
             OL = RESPONSE_LENGTH;
+            for (uint8_t i = 0; i < 16; i++) {
+                data[i] = 0;
+            }
         }
 
         response(uint8_t* res)

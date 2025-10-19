@@ -35,6 +35,9 @@ namespace DS18B20 {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::DS18B20);
             OL = RESPONSE_LENGTH;
+            for (uint8_t i = 0; i < 2; i++) {
+                temperature[i] = 0;
+            }
         }
 
         response(uint8_t* res)

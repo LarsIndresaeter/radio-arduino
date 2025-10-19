@@ -35,6 +35,16 @@ namespace QUADRATURE_ENCODER {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::QUADRATURE_ENCODER);
             OL = RESPONSE_LENGTH;
+            for (uint8_t i = 0; i < 2; i++) {
+                countnegative[i] = 0;
+            }
+            for (uint8_t i = 0; i < 2; i++) {
+                countpositive[i] = 0;
+            }
+            switchposition = 0;
+            for (uint8_t i = 0; i < 2; i++) {
+                switchcount[i] = 0;
+            }
         }
 
         response(uint8_t* res)

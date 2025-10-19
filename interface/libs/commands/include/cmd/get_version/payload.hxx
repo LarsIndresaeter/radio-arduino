@@ -35,6 +35,9 @@ namespace GET_VERSION {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::GET_VERSION);
             OL = RESPONSE_LENGTH;
+            for (uint8_t i = 0; i < 32; i++) {
+                versionString[i] = 0;
+            }
         }
 
         response(uint8_t* res)

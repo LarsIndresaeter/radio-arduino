@@ -48,6 +48,7 @@ namespace WAKEUP {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::WAKEUP);
             OL = RESPONSE_LENGTH;
+            attention = 0;
         }
 
         response(uint8_t* res)

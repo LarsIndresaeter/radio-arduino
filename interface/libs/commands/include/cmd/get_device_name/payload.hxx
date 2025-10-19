@@ -35,6 +35,9 @@ namespace GET_DEVICE_NAME {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::GET_DEVICE_NAME);
             OL = RESPONSE_LENGTH;
+            for (uint8_t i = 0; i < 16; i++) {
+                nameString[i] = 0;
+            }
         }
 
         response(uint8_t* res)
