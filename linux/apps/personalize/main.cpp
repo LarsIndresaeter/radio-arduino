@@ -18,6 +18,7 @@ void print_usage()
     std::cout << "       -e : new encryption key" << std::endl;
     std::cout << "       -d : dump eeprom contents" << std::endl;
     std::cout << "       -r : set radio role <gateway|node>" << std::endl;
+    std::cout << "       -s : set requireTransportEncyption flag <0|1>" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -65,7 +66,6 @@ void setCurrentEncryptionKey(monitor& mon, LinuxCryptoHandler& cryptoHandler, st
 
     cryptoHandler.setTransportKey((uint8_t*)&key[0]);
     cryptoHandler.setMacKey((uint8_t*)&key[0]);
-    mon.setTransportEncryption(true);
 }
 
 void pingAndExitIfNoResponse(monitor& mon)
@@ -95,11 +95,12 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     std::string currentTransportKey = "";
     uint8_t set_transport_encryption_required = 0;
     uint8_t setRadioRole = 'g';
+    uint8_t setRequireTransportEncryption = 0;
     bool dump_eeprom = false;
     bool name_option_present = false;
 
     while ((option
-               = getopt(argc, argv, "n:c:t:e:r:dh"))
+               = getopt(argc, argv, "n:c:t:e:r:ds:h"))
         != -1) {
         switch (option) {
         case 'n':
@@ -114,6 +115,9 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             break;
         case 'e':
             setNewEncryptionKey = optarg;
+            break;
+        case 's':
+            setRequireTransportEncryption = atoi(optarg);
             break;
         case 'd':
             dump_eeprom = true;
@@ -155,7 +159,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     std::cout << mon.get<>(RaduinoCommandSetDeviceName(setNewDeviceName)) << std::endl;
     std::cout << mon.get<>(RaduinoCommandSetKey('E', setNewEncryptionKey)) << std::endl;
     std::cout << mon.get<>(RaduinoCommandSetKey('T', setNewTransportKey)) << std::endl;
-    std::cout << mon.get<>(RaduinoCommandRequireTransportEncryption(1)) << std::endl;
+    std::cout << mon.get<>(RaduinoCommandRequireTransportEncryption(setRequireTransportEncryption)) << std::endl;
     std::cout << mon.get<>(RaduinoCommandSetRadioRole(setRadioRole)) << std::endl;
 
     if (dump_eeprom) {

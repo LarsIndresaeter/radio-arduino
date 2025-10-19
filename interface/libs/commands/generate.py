@@ -645,7 +645,7 @@ def commandDefinitions():
     generateCommandAndPayloadFile(37, "require_transport_encryption", ["value"], [])
     generateCommandAndPayloadFile(38, "set_radio_role", ["isRadioNode"], [])
     generateCommandAndPayloadFile(39, "soft_reset", [], [])
-    generateCommandAndPayloadFile(40, "unencrypted_session", [], [])
+    generateCommandAndPayloadFile(40, "unlock_session", [], [])
 
 def main():
     generateCommonHeaderFilesOpen()

@@ -45,10 +45,10 @@ void commandRequireTransportEncryption(uint8_t* commandPayload, uint8_t* respons
     response.serialize(responsePayload);
 }
 
-void commandUnencryptedSession(uint8_t* commandPayload, uint8_t* responsePayload)
+void commandUnlockSession(uint8_t* commandPayload, uint8_t* responsePayload)
 {
-    COMMANDS::UNENCRYPTED_SESSION::command_t command(commandPayload);
-    COMMANDS::UNENCRYPTED_SESSION::response_t response;
+    COMMANDS::UNLOCK_SESSION::command_t command(commandPayload);
+    COMMANDS::UNLOCK_SESSION::response_t response;
 
     if (PARSER::lastReceivedCommandWasEncrypted()) {
         PARSER::setRequireTransportEncryption(0);

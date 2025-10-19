@@ -6,7 +6,7 @@
 
 namespace COMMANDS {
 
-namespace UNENCRYPTED_SESSION {
+namespace UNLOCK_SESSION {
     constexpr uint8_t COMMAND_LENGTH = 0;
     constexpr uint8_t RESPONSE_LENGTH = 0;
 
@@ -16,7 +16,7 @@ namespace UNENCRYPTED_SESSION {
     typedef struct command {
         command()
         {
-            OI = static_cast<uint8_t>(COMMANDS::OI::UNENCRYPTED_SESSION);
+            OI = static_cast<uint8_t>(COMMANDS::OI::UNLOCK_SESSION);
             OL = COMMAND_LENGTH;
         }
 
@@ -33,7 +33,7 @@ namespace UNENCRYPTED_SESSION {
     typedef struct response {
         response()
         {
-            OI = static_cast<uint8_t>(COMMANDS::OI::UNENCRYPTED_SESSION);
+            OI = static_cast<uint8_t>(COMMANDS::OI::UNLOCK_SESSION);
             OL = RESPONSE_LENGTH;
         }
 

@@ -142,8 +142,8 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
     case COMMANDS::OI::REQUIRE_TRANSPORT_ENCRYPTION:
         COMMAND_HANDLERS::commandRequireTransportEncryption(commandPayload, responsePayload);
         break;
-    case COMMANDS::OI::UNENCRYPTED_SESSION:
-        COMMAND_HANDLERS::commandUnencryptedSession(commandPayload, responsePayload);
+    case COMMANDS::OI::UNLOCK_SESSION:
+        COMMAND_HANDLERS::commandUnlockSession(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SET_RADIO_ROLE:
         COMMAND_HANDLERS::commandSetRadioRole(commandPayload, responsePayload);

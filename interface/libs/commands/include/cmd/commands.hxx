@@ -42,4 +42,4 @@
 #include <cmd/require_transport_encryption/command.hxx>
 #include <cmd/set_radio_role/command.hxx>
 #include <cmd/soft_reset/command.hxx>
-#include <cmd/unencrypted_session/command.hxx>
+#include <cmd/unlock_session/command.hxx>
