@@ -228,7 +228,7 @@ namespace EEPROM_DATA_STORE {
 
     void setRequireTransportEncryption(uint8_t flag)
     {
-        writeToSpareAndSetAsActive(offsetof(eeprom_data_t, requireEncryption), &flag, 16);
+        writeToSpareAndSetAsActive(offsetof(eeprom_data_t, requireEncryption), &flag, sizeof(uint8_t));
     }
 
     void setIsRadioNode(uint8_t flag)
