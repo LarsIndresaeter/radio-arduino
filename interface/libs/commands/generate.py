@@ -399,6 +399,19 @@ def generatePayloadFile(commandId, commandName,
         outfile.write("        {\n")
         outfile.write("            OI = static_cast<uint8_t>(COMMANDS::OI::" + commandName.upper() + ");\n")
         outfile.write("            OL = COMMAND_LENGTH;\n")
+
+        # loop through commandPayloadByteNames
+        index = 2
+        for item in commandPayloadByteNames:
+            arraySize = arraySizeFromVariableName(item)
+            if(arraySize > 1):
+                outfile.write("            for (uint8_t i = 0; i < " + str(arraySize) + "; i++) {\n")
+                outfile.write("                " + arrayBasenameFromVariableName(item) + "[i] = 0;\n")
+                outfile.write("            }\n")
+            else:
+                outfile.write("            " + item + " = 0;\n")
+            index = index + arraySize
+
         outfile.write("        }\n")
         outfile.write("\n")
         outfile.write("        command(uint8_t* cmd)\n")

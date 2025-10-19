@@ -18,6 +18,10 @@ namespace SET_KEY {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::SET_KEY);
             OL = COMMAND_LENGTH;
+            keyId = 0;
+            for (uint8_t i = 0; i < 16; i++) {
+                keyValue[i] = 0;
+            }
         }
 
         command(uint8_t* cmd)

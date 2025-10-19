@@ -18,6 +18,7 @@ namespace SET_NODE_ADDRESS {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::SET_NODE_ADDRESS);
             OL = COMMAND_LENGTH;
+            nodeAddress = 0;
         }
 
         command(uint8_t* cmd)

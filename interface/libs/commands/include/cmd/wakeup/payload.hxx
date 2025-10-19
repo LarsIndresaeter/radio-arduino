@@ -18,6 +18,7 @@ namespace WAKEUP {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::WAKEUP);
             OL = COMMAND_LENGTH;
+            checkAttentionFlag = 0;
         }
 
         command(uint8_t* cmd)

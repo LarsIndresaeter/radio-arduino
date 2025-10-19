@@ -18,6 +18,7 @@ namespace RADIO_UART {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::RADIO_UART);
             OL = COMMAND_LENGTH;
+            mode = 0;
         }
 
         command(uint8_t* cmd)

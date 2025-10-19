@@ -18,6 +18,9 @@ namespace EEPROM_READ {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::EEPROM_READ);
             OL = COMMAND_LENGTH;
+            for (uint8_t i = 0; i < 2; i++) {
+                address[i] = 0;
+            }
         }
 
         command(uint8_t* cmd)

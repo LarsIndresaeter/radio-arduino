@@ -18,6 +18,9 @@ namespace SET_DEVICE_NAME {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::SET_DEVICE_NAME);
             OL = COMMAND_LENGTH;
+            for (uint8_t i = 0; i < 16; i++) {
+                name[i] = 0;
+            }
         }
 
         command(uint8_t* cmd)

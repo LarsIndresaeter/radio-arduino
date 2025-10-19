@@ -18,6 +18,15 @@ namespace WS2812B {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::WS2812B);
             OL = COMMAND_LENGTH;
+            for (uint8_t i = 0; i < 45; i++) {
+                red[i] = 0;
+            }
+            for (uint8_t i = 0; i < 45; i++) {
+                green[i] = 0;
+            }
+            for (uint8_t i = 0; i < 45; i++) {
+                blue[i] = 0;
+            }
         }
 
         command(uint8_t* cmd)

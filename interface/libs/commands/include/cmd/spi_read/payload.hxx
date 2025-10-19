@@ -18,6 +18,8 @@ namespace SPI_READ {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::SPI_READ);
             OL = COMMAND_LENGTH;
+            reg = 0;
+            length = 0;
         }
 
         command(uint8_t* cmd)

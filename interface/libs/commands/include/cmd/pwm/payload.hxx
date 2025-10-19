@@ -18,6 +18,9 @@ namespace PWM {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::PWM);
             OL = COMMAND_LENGTH;
+            port = 0;
+            pin = 0;
+            value = 0;
         }
 
         command(uint8_t* cmd)

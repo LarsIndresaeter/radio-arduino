@@ -18,6 +18,9 @@ namespace SLEEP {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::SLEEP);
             OL = COMMAND_LENGTH;
+            for (uint8_t i = 0; i < 4; i++) {
+                delay[i] = 0;
+            }
         }
 
         command(uint8_t* cmd)

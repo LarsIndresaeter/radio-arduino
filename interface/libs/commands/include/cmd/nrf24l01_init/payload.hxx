@@ -18,6 +18,14 @@ namespace NRF24L01_INIT {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::NRF24L01_INIT);
             OL = COMMAND_LENGTH;
+            for (uint8_t i = 0; i < 5; i++) {
+                txAddr[i] = 0;
+            }
+            for (uint8_t i = 0; i < 5; i++) {
+                rxAddr[i] = 0;
+            }
+            rfChannel = 0;
+            gateway = 0;
         }
 
         command(uint8_t* cmd)

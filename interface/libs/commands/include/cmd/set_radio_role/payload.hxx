@@ -18,6 +18,7 @@ namespace SET_RADIO_ROLE {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::SET_RADIO_ROLE);
             OL = COMMAND_LENGTH;
+            isRadioNode = 0;
         }
 
         command(uint8_t* cmd)

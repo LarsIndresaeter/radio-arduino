@@ -18,6 +18,10 @@ namespace SSD1306 {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::SSD1306);
             OL = COMMAND_LENGTH;
+            line = 0;
+            for (uint8_t i = 0; i < 16; i++) {
+                data[i] = 0;
+            }
         }
 
         command(uint8_t* cmd)

@@ -18,6 +18,11 @@ namespace I2C_READ {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::I2C_READ);
             OL = COMMAND_LENGTH;
+            device = 0;
+            for (uint8_t i = 0; i < 2; i++) {
+                registerAddress[i] = 0;
+            }
+            length = 0;
         }
 
         command(uint8_t* cmd)

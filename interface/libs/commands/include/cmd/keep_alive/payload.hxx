@@ -18,6 +18,7 @@ namespace KEEP_ALIVE {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::KEEP_ALIVE);
             OL = COMMAND_LENGTH;
+            time = 0;
         }
 
         command(uint8_t* cmd)

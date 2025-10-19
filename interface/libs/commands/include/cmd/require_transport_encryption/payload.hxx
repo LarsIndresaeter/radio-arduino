@@ -18,6 +18,7 @@ namespace REQUIRE_TRANSPORT_ENCRYPTION {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::REQUIRE_TRANSPORT_ENCRYPTION);
             OL = COMMAND_LENGTH;
+            value = 0;
         }
 
         command(uint8_t* cmd)

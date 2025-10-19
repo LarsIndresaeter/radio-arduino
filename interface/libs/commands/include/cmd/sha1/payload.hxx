@@ -18,6 +18,9 @@ namespace SHA1 {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::SHA1);
             OL = COMMAND_LENGTH;
+            for (uint8_t i = 0; i < 20; i++) {
+                data[i] = 0;
+            }
         }
 
         command(uint8_t* cmd)
