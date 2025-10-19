@@ -14,7 +14,10 @@ void commandSsd1306(uint8_t* commandPayload, uint8_t* responsePayload)
     Framebuffer fb;
 
     for (uint8_t x = 0; x < sizeof(command.data); x++) {
-        fb.drawChar(x, command.line, command.data[x]);
+        if(command.data[x] != 0)
+        {
+            fb.drawChar(x, command.line, command.data[x]);
+        }
     }
 
     fb.show();
