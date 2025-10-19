@@ -1,8 +1,4 @@
 
-#ifdef USE_FEATURE_MQTT
-#include "mqtt/async_client.h"
-#endif
-
 #include <chrono>
 #include <cmath>
 #include <cmd/commands.hxx>
@@ -16,39 +12,6 @@
 #include <uart.hpp>
 
 using namespace std::chrono_literals;
-
-#ifdef USE_FEATURE_MQTT
-void sendMqtt(std::string payload)
-{
-    const std::string DFLT_ADDRESS { "tcp://localhost:1883" };
-    const std::string TOPIC { "sensor/power" };
-    const int QOS = 1;
-    const std::string PERSIST_DIR { "data-persist" };
-    const auto PERIOD = std::chrono::seconds(5);
-    const int MAX_BUFFERED_MSGS = 120; // 120 * 5sec => 10min off-line buffering
-
-    std::string address = DFLT_ADDRESS;
-    mqtt::async_client cli(address, "", MAX_BUFFERED_MSGS, 0);
-
-    mqtt::connect_options connOpts;
-    connOpts.set_keep_alive_interval(MAX_BUFFERED_MSGS * PERIOD);
-    connOpts.set_clean_session(true);
-    connOpts.set_automatic_reconnect(true);
-
-    mqtt::topic top(cli, TOPIC, QOS, true);
-
-    try {
-        cli.connect(connOpts)->wait();
-
-        top.publish(std::move(payload));
-
-        cli.disconnect()->wait();
-    }
-    catch (const mqtt::exception& exc) {
-        std::cerr << exc.what() << std::endl;
-    }
-}
-#endif
 
 int timeMs()
 {
@@ -123,12 +86,11 @@ void readCurrentAndVoltage(monitor& mon, int samples)
     int time, timePrev;
     int loopCounter = 0;
 
-#ifndef USE_FEATURE_MQTT
     std::cout
         << "timestamp          , sam, currentMin  , currentAverage , "
            "currentMax  , currentStd, minVoltage, averageVoltage, maxVoltage"
         << std::endl;
-#endif
+
     for (int i = 0; i <= samples; i++) {
         time = 1;
         timePrev = 0;
@@ -141,11 +103,11 @@ void readCurrentAndVoltage(monitor& mon, int samples)
         while (time > timePrev) {
             ina219 = mon.get<>(RaduinoCommandIna219());
             intval = ina219.responseStruct().getCurrent();
-            current = intval * 0.001;
+            current = ((int16_t) intval) * 0.001;
 
             intval = ina219.responseStruct().getVoltage();
             intval = intval >> 3; // ignore 3 LSB
-            voltage = intval * 0.004;
+            voltage = ((int16_t) intval) * 0.004;
 
             if (current < currentMin) {
                 currentMin = current;
