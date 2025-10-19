@@ -56,10 +56,12 @@ void configureIna219(uint8_t address)
     I2C_Stop();
 }
 
-void readIna219(uint16_t* voltage, uint16_t* current)
+bool ina219NotConfigured = true;
+
+uint16_t readIna219Voltage(void)
 {
-    static bool ina219NotConfigured = true;
     uint8_t address = 0x80;
+    uint16_t voltage;
 
     if (ina219NotConfigured) {
         configureIna219(address);
@@ -74,9 +76,22 @@ void readIna219(uint16_t* voltage, uint16_t* current)
 
     I2C_Init();
     I2C_Start(address + 1);
-    *voltage = (uint16_t)I2C_Read_Ack();
-    *voltage |= ((uint16_t)I2C_Read_Nack()) << 8;
+    voltage = (uint16_t)I2C_Read_Ack() << 8;
+    voltage |= ((uint16_t)I2C_Read_Nack());
     I2C_Stop();
+
+    return voltage;
+}
+
+uint16_t readIna219Current(void)
+{
+    uint8_t address = 0x80;
+    uint16_t current;
+
+    if (ina219NotConfigured) {
+        configureIna219(address);
+        ina219NotConfigured = false;
+    }
 
     // set register pointer to current register
     I2C_Init();
@@ -86,8 +101,10 @@ void readIna219(uint16_t* voltage, uint16_t* current)
 
     I2C_Init();
     I2C_Start(address + 1);
-    *current = (uint16_t)I2C_Read_Ack();
-    *current |= ((uint16_t)I2C_Read_Nack()) << 8;
+    current = (uint16_t)I2C_Read_Ack() << 8;
+    current |= ((uint16_t)I2C_Read_Nack());
     I2C_Stop();
+
+    return current;
 }
 

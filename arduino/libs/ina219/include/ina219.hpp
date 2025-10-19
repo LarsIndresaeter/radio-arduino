@@ -3,5 +3,5 @@
 #include <i2c.hpp>
 #include <stdint.h>
 
-void readIna219(uint16_t* voltage, uint16_t* current);
-
+uint16_t readIna219Voltage(void);
+uint16_t readIna219Current(void);

@@ -9,12 +9,8 @@ void commandIna219(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::INA219::command_t command(commandPayload);
     COMMANDS::INA219::response_t response;
 
-    uint16_t voltage, current;
-
-    readIna219(&voltage, &current);
-
-    response.setVoltage(voltage);
-    response.setCurrent(current);
+    response.setVoltage(readIna219Voltage());
+    response.setCurrent(readIna219Current());
 
     response.serialize(responsePayload);
 }
