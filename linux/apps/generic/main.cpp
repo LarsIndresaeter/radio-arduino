@@ -117,7 +117,7 @@ void readCurrentAndVoltage(monitor& mon, int samples)
 {
     auto ina219 = mon.get<>(RaduinoCommandIna219());
     std::vector<float> currentData, voltageData;
-    int16_t intval = 0;
+    uint16_t intval = 0;
     float currentMin, currentMax, current, stdev;
     float voltageMin, voltageMax, voltage;
     int time, timePrev;
@@ -141,11 +141,11 @@ void readCurrentAndVoltage(monitor& mon, int samples)
         while (time > timePrev) {
             ina219 = mon.get<>(RaduinoCommandIna219());
             intval = ina219.responseStruct().getCurrent();
-            current = intval * 0.001;
+            current = ((int16_t) intval) * 0.001;
 
             intval = ina219.responseStruct().getVoltage();
             intval = intval >> 3; // ignore 3 LSB
-            voltage = intval * 0.004;
+            voltage = ((int16_t) intval) * 0.004;
 
             if (current < currentMin) {
                 currentMin = current;

@@ -55,13 +55,13 @@ void readCurrentAndVoltage(monitor& mon, mqtt::async_client& mqtt_client, int sa
         // read data for 1 second
         while (time > timePrev) {
             ina219 = mon.get<>(RaduinoCommandIna219());
-            int16_t current_intval = ina219.responseStruct().getCurrent();
-            float current = current_intval * 0.001;
+            uint16_t current_intval = ina219.responseStruct().getCurrent();
+            float current = ((int16_t) current_intval) * 0.001;
             currentData.push_back(current);
 
-            int16_t voltage_intval = ina219.responseStruct().getVoltage();
+            uint16_t voltage_intval = ina219.responseStruct().getVoltage();
             voltage_intval = voltage_intval >> 3; // ignore 3 LSB
-            float voltage = voltage_intval * 0.004; // LSB = 4 mV
+            float voltage = ((int16_t) voltage_intval) * 0.004; // LSB = 4 mV
             voltageData.push_back(voltage);
 
             timePrev = time;

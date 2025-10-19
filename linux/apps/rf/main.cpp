@@ -103,11 +103,11 @@ void readCurrentAndVoltage(monitor& mon, int samples)
         while (time > timePrev) {
             ina219 = mon.getRadio<>(RaduinoCommandIna219());
             intval = ina219.responseStruct().getCurrent();
-            current = intval * 0.001;
+            current = ((int16_t) intval) * 0.001;
 
             intval = ina219.responseStruct().getVoltage();
             intval = intval >> 3; // ignore 3 LSB
-            voltage = intval * 0.004;
+            voltage = ((int16_t) intval) * 0.004;
 
             if (current < currentMin) {
                 currentMin = current;
