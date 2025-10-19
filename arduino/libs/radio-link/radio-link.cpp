@@ -62,20 +62,19 @@ uint8_t sendDiscoverToGateway()
 uint8_t sendWakeupCommandToNode(uint8_t checkAttentionFlag)
 {
     uint8_t read_discover_package[32] = { 0 };
-    uint8_t attention_flag = 0;
+    uint8_t discovered = 0;
 
     if (rx_mode_gateway) {
         for (uint16_t i = 0; i < 1000; i++) {
             uint8_t length = NRF24L01_read_rx_payload(&read_discover_package[0]);
 
             if (length == 32) {
-                attention_flag = read_discover_package[31];
-
                 if ((0 != checkAttentionFlag) && (0 == read_discover_package[31])) {
                     // received discover package but about wakeup since data available flag was not set
                     break;
                 }
                 else {
+                    discovered = 1;
                     NRF24L01_tx(&rf_link_wakeup_command[0], 32);
 
                     for (uint8_t j = 0; j < 31; j++) {
@@ -93,7 +92,7 @@ uint8_t sendWakeupCommandToNode(uint8_t checkAttentionFlag)
         _delay_ms(10); // give rf node some time to be ready for new commands
     }
 
-    return attention_flag;
+    return discovered;
 }
 
 uint8_t isDiscoverPackage(uint8_t response_length, uint8_t* packet)

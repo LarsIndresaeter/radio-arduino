@@ -12,7 +12,7 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::WAKEUP::response_t response;
 
     if (rx_mode_gateway) {
-        response.attention = RADIOLINK::sendWakeupCommandToNode(command.checkAttentionFlag);
+        response.discovered = RADIOLINK::sendWakeupCommandToNode(command.checkAttentionFlag);
     }
 
     response.serialize(responsePayload);

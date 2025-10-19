@@ -648,7 +648,7 @@ def commandDefinitions():
     generateCommandAndPayloadFile(27, "radio_uart", ["mode"], [])
     generateCommandAndPayloadFile(28, "vcc", [], ["vcc[2]"])
     generateCommandAndPayloadFile(29, "sleep", ["delay[4]"], [])
-    generateCommandAndPayloadFile(30, "wakeup", ["checkAttentionFlag"], ["attention"])
+    generateCommandAndPayloadFile(30, "wakeup", ["checkAttentionFlag"], ["discovered"])
     generateCommandAndPayloadFile(31, "set_node_address", ["nodeAddress"], [])
     generateCommandAndPayloadFile(32, "keep_alive", ["time"], [])
     generateCommandAndPayloadFile(33, "ping", [], [])

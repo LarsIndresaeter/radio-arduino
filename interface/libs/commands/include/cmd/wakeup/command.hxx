@@ -18,7 +18,7 @@ public:
     void printResponse(std::ostream& out, COMMANDS::WAKEUP::response_t response) const
     {
         out << "WAKEUP                 : ";
-        out << " attention=" << static_cast<int>(response.getAttention());
+        out << " discovered=" << static_cast<int>(response.getDiscovered());
     }
 
     std::string getCommandName() { return "wakeup"; }
@@ -32,8 +32,8 @@ public:
         json.append("\"timestamp\":");
         json.append(std::to_string(getTimeStamp()));
         json.append(", ");
-        json.append("\"attention\":");
-        json.append(std::to_string(responseStruct().getAttention()));
+        json.append("\"discovered\":");
+        json.append(std::to_string(responseStruct().getDiscovered()));
         json.append("}");
         return (json);
     };

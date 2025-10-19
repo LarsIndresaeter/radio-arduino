@@ -48,36 +48,36 @@ namespace WAKEUP {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::WAKEUP);
             OL = RESPONSE_LENGTH;
-            attention = 0;
+            discovered = 0;
         }
 
         response(uint8_t* res)
         {
             OI = res[0];
             OL = res[1];
-            attention = res[2];
+            discovered = res[2];
         }
 
         void serialize(uint8_t* response)
         {
             response[0] = OI;
             response[1] = OL;
-            response[2] = attention;
+            response[2] = discovered;
         }
 
-        uint8_t getAttention()
+        uint8_t getDiscovered()
         {
-            return (attention);
+            return (discovered);
         }
 
-        void setAttention(uint8_t val)
+        void setDiscovered(uint8_t val)
         {
-            attention = val;
+            discovered = val;
         }
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t attention;
+        uint8_t discovered;
 
     } response_t;
 }
