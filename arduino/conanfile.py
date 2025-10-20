@@ -28,9 +28,9 @@ def gitSemVerAddGitSha(versionString):
 
     try:
         gitsha = str(git.run("log --pretty=format:'%h' -n 1"))
-        commits_not_in_master = int(git.run(f"rev-list --count HEAD --not master"))
+        commits_not_in_main = int(git.run(f"rev-list --count HEAD --not main"))
 
-        versionString += f".{commits_not_in_master}"
+        versionString += f".{commits_not_in_main}"
         versionString += f"+{gitsha}-{build_number}"
     except:
         pass
