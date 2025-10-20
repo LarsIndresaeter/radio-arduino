@@ -11,6 +11,11 @@ then
     echo "RADINO_CUSTOM_COMMAND=${RADINO_CUSTOM_COMMAND}"
 fi
 
+if [ "${PARAM}" == "release" ]
+then
+    ${RADUINO_SCRIPTS_DIR}/release.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
+fi
+
 if [ "${PARAM}" == "tool" ]
 then
     ${RADUINO_SCRIPTS_DIR}/tool.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
