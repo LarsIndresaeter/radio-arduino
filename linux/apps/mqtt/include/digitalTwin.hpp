@@ -25,6 +25,7 @@ private:
 
     void readVccAndPublish();
     void readGpioAndPublish();
+    void readQuadencoderAndPublish();
     void updateDisplayText();
 
     void publishNdeath();
