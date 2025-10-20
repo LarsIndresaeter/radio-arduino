@@ -2,36 +2,21 @@ from conans import ConanFile, CMake, tools
 from conans.tools import os_info, SystemPackageTool
 import os
 
-def gitSemVer():
+def gitSemVerAddGitSha():
     git = tools.Git() 
 
-    # The environment variable BUILD_NUMBER will be present Jenkins created this package
-    build_number = str(os.getenv("BUILD_NUMBER", "dirty"))
-
-    try:
-        current_tag = git.run("describe --tags --abbrev=0 2> /dev/null")
-        ommits_ahead_of_tag = int(git.run(f"rev-list --count {current_tag}..HEAD"))
-        gitsha = str(git.run("log --pretty=format:'%h' -n 1"))
-        versionString += f"+sha.{gitsha}"
-    except:
-        return "0.0.0"
-
-    versionString = f"{current_tag}-{build_number}.{commits_ahead_of_tag}+sha.{gitsha}"
-
-    return versionString
-
-def gitSemVerAddGitSha(versionString):
-    git = tools.Git() 
-
-    # The environment variable BUILD_NUMBER will be present Jenkins created this package
-    build_number = str(os.getenv("BUILD_NUMBER", "dirty"))
+    versionString = str(git.run("describe --tags --abbrev=0"))
 
     try:
         gitsha = str(git.run("log --pretty=format:'%h' -n 1"))
         commits_not_in_main = int(git.run(f"rev-list --count HEAD --not main"))
 
         versionString += f".{commits_not_in_main}"
-        versionString += f"+{gitsha}-{build_number}"
+        versionString += f"+{gitsha}"
+
+        filesNotCommited = str(git.run("status --short"))
+        if len(filesNotCommited) > 0:
+            versionString += "-dirty"
     except:
         pass
 
@@ -39,7 +24,7 @@ def gitSemVerAddGitSha(versionString):
 
 class AvrUartConan(ConanFile):
     name = "raduino-avr"
-    version=gitSemVerAddGitSha('0.1.0')
+    version=gitSemVerAddGitSha()
     license = "gpl"
     author = "Lars Indresaeter"
     url = "https://github.com/LarsIndresaeter/snippets.git"
