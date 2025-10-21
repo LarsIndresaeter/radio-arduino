@@ -84,6 +84,6 @@ public:
         return 0;
     }
 
-    virtual char getChar() { return 0; } // TODO: this should probably be pure virtual
+    virtual char getChar() { return 0; }     // TODO: this should probably be pure virtual
     virtual bool hasData() { return false; } // TODO: this should probably be pure virtual
 };
