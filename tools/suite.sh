@@ -11,6 +11,16 @@ then
     echo "RADINO_CUSTOM_COMMAND=${RADINO_CUSTOM_COMMAND}"
 fi
 
+if [ "${PARAM}" == "lint" ]
+then
+    ${RADUINO_SCRIPTS_DIR}/lint.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
+fi
+
+if [ "${PARAM}" == "format" ]
+then
+    ${RADUINO_SCRIPTS_DIR}/format.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
+fi
+
 if [ "${PARAM}" == "release" ]
 then
     ${RADUINO_SCRIPTS_DIR}/release.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
