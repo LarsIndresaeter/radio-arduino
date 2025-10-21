@@ -46,10 +46,7 @@ ISR(PCINT1_vect)
     quadencoder_updated = 1;
 }
 
-uint8_t pollChangedFlag()
-{
-    return quadencoder_updated;
-}
+uint8_t pollChangedFlag() { return quadencoder_updated; }
 
 uint8_t clearChangedFlag()
 {
@@ -68,10 +65,10 @@ void initialize()
         DDRC &= ~(1 << PC0); // set PC0 input (CLK)
         DDRC &= ~(1 << PC1); // set PC1 input (DT)
         DDRC &= ~(1 << PC2); // set PC2 input (SW)
-        PCICR = 0x02; // enable PCINT1
-        PCMSK1 = 0x05; // enable pin PCINT8 (PC0) and PCINT10 (PC2)
-                       // seher
-        PORTC |= 0x07; // enable pull-up resistor
+        PCICR = 0x02;        // enable PCINT1
+        PCMSK1 = 0x05;       // enable pin PCINT8 (PC0) and PCINT10 (PC2)
+                             // seher
+        PORTC |= 0x07;       // enable pull-up resistor
 
         sei();
     }

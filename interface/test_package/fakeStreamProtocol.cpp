@@ -19,4 +19,3 @@ char FakeStreamProtocol::getChar()
 }
 
 bool FakeStreamProtocol::hasData() { return (m_data.size() > 0); }
-

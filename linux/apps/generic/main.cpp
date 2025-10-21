@@ -16,9 +16,7 @@ using namespace std::chrono_literals;
 int timeMs()
 {
     using namespace std::chrono;
-    return (duration_cast<milliseconds>(system_clock::now().time_since_epoch())
-                .count())
-        % 1000;
+    return (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()) % 1000;
 }
 
 void print_usage()
@@ -49,8 +47,7 @@ void print_usage()
     std::cout << "       -a : get device version" << std::endl;
     std::cout << "       -x : get statistics" << std::endl;
     std::cout << "       -W : WS2812B <string>" << std::endl;
-    std::cout << "       -F : Read servo PWM signal and display on ws2812b ring"
-              << std::endl;
+    std::cout << "       -F : Read servo PWM signal and display on ws2812b ring" << std::endl;
     std::cout << "       -U : radio uart command <s> send, <r> receive" << std::endl;
     std::cout << "       -j : read vcc" << std::endl;
     std::cout << "       -s : sleep" << std::endl;
@@ -69,8 +66,7 @@ void compareResult(uint8_t expected, uint8_t actual)
 {
     if (expected != actual) {
         std::cout << std::endl;
-        std::cout << "ERROR: invalid result! expected: "
-                  << static_cast<int>(expected)
+        std::cout << "ERROR: invalid result! expected: " << static_cast<int>(expected)
                   << " actual: " << static_cast<int>(actual) << std::endl;
         std::cout << std::endl;
     }
@@ -86,10 +82,9 @@ void readCurrentAndVoltage(monitor& mon, int samples)
     int time, timePrev;
     int loopCounter = 0;
 
-    std::cout
-        << "timestamp          , sam, currentMin  , currentAverage , "
-           "currentMax  , currentStd, minVoltage, averageVoltage, maxVoltage"
-        << std::endl;
+    std::cout << "timestamp          , sam, currentMin  , currentAverage , "
+                 "currentMax  , currentStd, minVoltage, averageVoltage, maxVoltage"
+              << std::endl;
 
     for (int i = 0; i <= samples; i++) {
         time = 1;
@@ -103,11 +98,11 @@ void readCurrentAndVoltage(monitor& mon, int samples)
         while (time > timePrev) {
             ina219 = mon.get<>(RaduinoCommandIna219());
             intval = ina219.responseStruct().getCurrent();
-            current = ((int16_t) intval) * 0.001;
+            current = ((int16_t)intval) * 0.001;
 
             intval = ina219.responseStruct().getVoltage();
             intval = intval >> 3; // ignore 3 LSB
-            voltage = ((int16_t) intval) * 0.004;
+            voltage = ((int16_t)intval) * 0.004;
 
             if (current < currentMin) {
                 currentMin = current;
@@ -129,40 +124,28 @@ void readCurrentAndVoltage(monitor& mon, int samples)
             time = timeMs();
         }
 
-        double sum
-            = std::accumulate(currentData.begin(), currentData.end(), 0.0);
+        double sum = std::accumulate(currentData.begin(), currentData.end(), 0.0);
         double mean = sum / currentData.size();
 
-        double voltageSum
-            = std::accumulate(voltageData.begin(), voltageData.end(), 0.0);
+        double voltageSum = std::accumulate(voltageData.begin(), voltageData.end(), 0.0);
         double voltageMean = voltageSum / voltageData.size();
 
         std::vector<double> diff(currentData.size());
-        std::transform(
-            currentData.begin(),
-            currentData.end(),
-            diff.begin(),
-            std::bind2nd(std::minus<double>(), mean));
-        double sq_sum
-            = std::inner_product(diff.begin(), diff.end(), diff.begin(), 0.0);
+        std::transform(currentData.begin(), currentData.end(), diff.begin(), std::bind2nd(std::minus<double>(), mean));
+        double sq_sum = std::inner_product(diff.begin(), diff.end(), diff.begin(), 0.0);
         double stdev = std::sqrt(sq_sum / currentData.size());
 
         if (loopCounter > 0) {
-            time_t now = std::chrono::system_clock::to_time_t(
-                std::chrono::system_clock::now());
+            time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
             struct tm t = *localtime(&now);
 
-            std::cout << 1900 + t.tm_year << std::setfill('0') << "-"
-                      << std::setw(2) << t.tm_mon << "-" << std::setw(2)
-                      << t.tm_mday << " " << std::setw(2) << t.tm_hour << ":"
-                      << std::setw(2) << t.tm_min << ":" << std::setw(2)
-                      << t.tm_sec;
+            std::cout << 1900 + t.tm_year << std::setfill('0') << "-" << std::setw(2) << t.tm_mon << "-" << std::setw(2)
+                      << t.tm_mday << " " << std::setw(2) << t.tm_hour << ":" << std::setw(2) << t.tm_min << ":"
+                      << std::setw(2) << t.tm_sec;
 
-            std::cout << std::fixed << std::setprecision(3) << ", "
-                      << currentData.size() << ", " << currentMin << ", "
-                      << mean << ", " << currentMax << ", " << stdev << ", "
-                      << voltageMin << ", " << voltageMean << ", " << voltageMax
-                      << std::endl;
+            std::cout << std::fixed << std::setprecision(3) << ", " << currentData.size() << ", " << currentMin << ", "
+                      << mean << ", " << currentMax << ", " << stdev << ", " << voltageMin << ", " << voltageMean
+                      << ", " << voltageMax << std::endl;
         }
 
         loopCounter++;
@@ -175,9 +158,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
 
-    while ((option
-           = getopt(argc, argv, "P:DBSHCs:Rd:VvhtTgGi:I:o:MN:XE:K:b:r:Z:zW:L:FJU:jpaxnu"))
-           != -1) {
+    while ((option = getopt(argc, argv, "P:DBSHCs:Rd:VvhtTgGi:I:o:MN:XE:K:b:r:Z:zW:L:FJU:jpaxnu")) != -1) {
         switch (option) {
         case 'd':
             i2cDeviceAddress = atoi(optarg);
@@ -185,12 +166,11 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'o':
             i2cDeviceOffset = atoi(optarg);
             break;
-        case 's':
-            {
+        case 's': {
             uint32_t delay = atoi(optarg);
-            std::cout << mon.get<>(RaduinoCommandSleep(delay), static_cast<std::chrono::milliseconds>(delay + 2000)) << std::endl;
-            }
-            break;
+            std::cout << mon.get<>(RaduinoCommandSleep(delay), static_cast<std::chrono::milliseconds>(delay + 2000))
+                      << std::endl;
+        } break;
         case 'V':
             mon.printDebug(true);
             mon.setPrintResponseTime(true);
@@ -211,11 +191,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             if (s.at(0) == 'a') {
                 using namespace std::chrono;
                 int random_variable
-                    = duration_cast<milliseconds>(
-                          system_clock::now().time_since_epoch())
-                            .count()
-                        % 90
-                    + 45;
+                    = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count() % 90 + 45;
                 for (int k = 0; k < random_variable; k++) {
                     for (int i = 0; i < sizeof(command.red); i++) {
                         if (i % 9 < 3) {
@@ -246,42 +222,37 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'B':
             std::cout << mon.get<>(RaduinoCommandBlink(), static_cast<std::chrono::milliseconds>(4000)) << std::endl;
             break;
-        case 'J':
-                {
-                //mon.get<>(RaduinoCommandNrf24l01Init({0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, {0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, 121, false));
-           
-                std::vector<uint8_t> ackPayload;
-                for(int i = 0; i<1000;i++){
-                    auto rec = mon.get<>(RaduinoCommandNrf24l01Read(ackPayload.size(), ackPayload));
-                    ackPayload.clear();
+        case 'J': {
+            // mon.get<>(RaduinoCommandNrf24l01Init({0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, {0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, 121,
+            // false));
 
-                    std::this_thread::sleep_for(100ms);
+            std::vector<uint8_t> ackPayload;
+            for (int i = 0; i < 1000; i++) {
+                auto rec = mon.get<>(RaduinoCommandNrf24l01Read(ackPayload.size(), ackPayload));
+                ackPayload.clear();
 
-                    if(rec.responseStruct().length > 0)
-                    {
-                    //std::cout << "==== STATUS      " << mon.get<>(RaduinoCommandSpiRead(0x07, 1)) << std::endl;
-                        std::cout << rec << std::endl;
+                std::this_thread::sleep_for(100ms);
 
-                        for(int j = 0; j<rec.responseStruct().length; j++)
-                        {
-                            ackPayload.push_back(rec.responseStruct().data[j]);
-                        }
+                if (rec.responseStruct().length > 0) {
+                    // std::cout << "==== STATUS      " << mon.get<>(RaduinoCommandSpiRead(0x07, 1)) << std::endl;
+                    std::cout << rec << std::endl;
+
+                    for (int j = 0; j < rec.responseStruct().length; j++) {
+                        ackPayload.push_back(rec.responseStruct().data[j]);
                     }
                 }
             }
+        }
 
-            break;
+        break;
         case 'S': {
             // printf "best\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" | xxd
             // printf "best\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" | sha1sum
             auto result = mon.get<>(RaduinoCommandSha1("best"));
             std::cout << result << std::endl;
-            compareResult(
-                0x31, result.responseStruct().data[0]);
-            compareResult(
-                0x02, result.responseStruct().data[1]);
-            compareResult(
-                0xcf, result.responseStruct().data[2]);
+            compareResult(0x31, result.responseStruct().data[0]);
+            compareResult(0x02, result.responseStruct().data[1]);
+            compareResult(0xcf, result.responseStruct().data[2]);
         } break;
         case 'L': {
             std::string s(optarg);
@@ -340,14 +311,11 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'i': {
             std::string s(optarg);
             std::vector<uint8_t> vec(s.begin(), s.end());
-            std::cout << mon.get<>(
-                RaduinoCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec.size(), vec))
+            std::cout << mon.get<>(RaduinoCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec.size(), vec))
                       << std::endl;
         } break;
         case 'I':
-            std::cout << mon.get<>(RaduinoCommandI2cRead(
-                i2cDeviceAddress, i2cDeviceOffset, atoi(optarg)))
-                      << std::endl;
+            std::cout << mon.get<>(RaduinoCommandI2cRead(i2cDeviceAddress, i2cDeviceOffset, atoi(optarg))) << std::endl;
             break;
         case 'M':
             std::cout << mon.get<>(RaduinoCommandIna219()) << std::endl;
@@ -358,22 +326,18 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'X':
             std::cout << mon.get<>(RaduinoCommandDs18b20()) << std::endl;
             break;
-        case 'U': 
-            {
+        case 'U': {
             std::string s(optarg);
-            if(s.at(0) == 's')
-            {
-                std::vector<uint8_t> address  = {0xF0, 0xF0, 0xF0, 0xF0, 0xC2};
+            if (s.at(0) == 's') {
+                std::vector<uint8_t> address = { 0xF0, 0xF0, 0xF0, 0xF0, 0xC2 };
                 mon.get<>(RaduinoCommandNrf24l01Init(address, address, 121, true));
             }
-            if(s.at(0) == 'r')
-            {
-                std::vector<uint8_t> address  = {0xF0, 0xF0, 0xF0, 0xF0, 0xC2};
+            if (s.at(0) == 'r') {
+                std::vector<uint8_t> address = { 0xF0, 0xF0, 0xF0, 0xF0, 0xC2 };
                 mon.get<>(RaduinoCommandNrf24l01Init(address, address, 121, false));
             }
             std::cout << mon.get<>(RaduinoCommandRadioUart(s.at(0))) << std::endl;
-            }
-            break;
+        } break;
         case 'E': {
             std::string s(optarg);
             mon.get<>(RaduinoCommandSetKey('E', s));
@@ -399,9 +363,9 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             uint8_t flag = atoi(optarg);
             std::cout << mon.get<>(RaduinoCommandRequireTransportEncryption(flag)) << std::endl;
         } break;
-        case 'u': 
+        case 'u':
             std::cout << mon.get<>(RaduinoCommandUnlockSession()) << std::endl;
-        break;
+            break;
         case 'Z': {
             std::string s(optarg);
             mon.get<>(RaduinoCommandSetDeviceName(s));
@@ -439,7 +403,7 @@ int main(int argc, char* argv[])
             if (std::filesystem::exists(tmp)) {
                 deviceFile = tmp;
                 argv[i][0] = '\0';
-                argv[i+1][0] = '\0';
+                argv[i + 1][0] = '\0';
             }
         }
     }

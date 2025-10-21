@@ -4,6 +4,8 @@
 //GLCD FontName: Font5x8
 //GLCD FontSize: 5x8
 
+#include <Framebuffer.hpp>
+
 const uint8_t Font5x8[] PROGMEM = 
 {
 	0x05, 0x00, 0x00, 0x00, 0x00, 0x00,      // Code for char

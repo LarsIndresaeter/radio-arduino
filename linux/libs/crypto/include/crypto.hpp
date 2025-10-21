@@ -1,10 +1,10 @@
 #pragma once
 
 #include <openssl/aes.h>
+#include <openssl/evp.h>
 #include <stdint.h>
 #include <string>
 #include <vector>
-#include <openssl/evp.h>
 
 class Crypto {
 public:
@@ -53,7 +53,6 @@ public:
 private:
     AesBlock encrypt_key = {};
     AesBlock decrypt_key = {};
-    EVP_CIPHER_CTX *ctx;
-    uint8_t iv[16] = {0};
+    EVP_CIPHER_CTX* ctx;
+    uint8_t iv[16] = { 0 };
 };
-

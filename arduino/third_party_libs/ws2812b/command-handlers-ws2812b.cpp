@@ -2,7 +2,7 @@
 #include <command-handlers-ws2812b.hpp>
 #include <ws2812b.hpp>
 
-namespace COMMAND_HANDLERS{
+namespace COMMAND_HANDLERS {
 
 void commandWs2812b(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -25,4 +25,3 @@ void commandWs2812b(uint8_t* commandPayload, uint8_t* responsePayload)
 }
 
 } // namespace COMMAND_HANDLERS
-

@@ -10,10 +10,7 @@ DesiredStateCallback::DesiredStateCallback(std::vector<std::shared_ptr<DesiredSt
     }
 }
 
-void DesiredStateCallback::addDesiredState(std::shared_ptr<DesiredState> dsc)
-{
-    m_desiredState.push_back(dsc);
-}
+void DesiredStateCallback::addDesiredState(std::shared_ptr<DesiredState> dsc) { m_desiredState.push_back(dsc); }
 
 void DesiredStateCallback::message_arrived(mqtt::const_message_ptr message)
 {
@@ -35,4 +32,3 @@ void DesiredStateCallback::delivery_complete(mqtt::delivery_token_ptr token)
 {
     std::cout << "Message delivered" << std::endl;
 }
-

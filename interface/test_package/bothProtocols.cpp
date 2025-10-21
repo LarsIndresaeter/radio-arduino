@@ -9,14 +9,12 @@ public:
 
     void TearDown() {}
 
-    void validatePacket(
-        std::vector<uint8_t> result, std::vector<uint8_t> expected)
+    void validatePacket(std::vector<uint8_t> result, std::vector<uint8_t> expected)
     {
         EXPECT_TRUE(expected.size() <= result.size());
 
         for (int i = 0; i < expected.size(); i++) {
-            EXPECT_EQ(result.at(i), expected.at(i))
-                << "vector differ at: " << i;
+            EXPECT_EQ(result.at(i), expected.at(i)) << "vector differ at: " << i;
         }
     }
 
@@ -27,9 +25,7 @@ public:
 TEST_F(BothProtocolsTest, testParseBinary)
 {
     auto packet = linuxProtocol.createBinaryCommand(
-        { 64, 2, 0, 1 },
-        static_cast<uint8_t>(
-            PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT));
+        { 64, 2, 0, 1 }, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT));
 
     validatePacket(
         packet,
@@ -46,8 +42,7 @@ TEST_F(BothProtocolsTest, testParseBinary)
     arduinoProtocol.appendData(packet);
 
     std::vector<uint8_t> responsePayload(100);
-    uint8_t protocolVersionLastReceivedMessage
-        = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
+    uint8_t protocolVersionLastReceivedMessage = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
     uint8_t length = arduinoProtocol.searchForMessage(
         responsePayload.data(),
         &protocolVersionLastReceivedMessage); // get first packet
@@ -58,4 +53,3 @@ TEST_F(BothProtocolsTest, testParseBinary)
     EXPECT_EQ(length, 4);
     validatePacket(responsePayload, { 64, 2, 0, 1 });
 }
-

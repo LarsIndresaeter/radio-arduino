@@ -11,10 +11,17 @@ monitor::monitor(Uart& uart, EventProcess& ep, CryptoHandlerInterface* cryptoHan
     : m_uart(uart)
     , m_ep(ep)
     , m_parser(
-          [this](const std::vector<uint8_t>& data) { m_bytesSent += data.size(); m_uart.write(data); },
-          [this](const std::vector<uint8_t>& data) { reply(data); }, cryptoHandler)
+          [this](const std::vector<uint8_t>& data) {
+              m_bytesSent += data.size();
+              m_uart.write(data);
+          },
+          [this](const std::vector<uint8_t>& data) { reply(data); },
+          cryptoHandler)
 {
-    m_uart.setReadHandler([&](auto data) { m_bytesReceived += data.size(); m_parser.receive(data); });
+    m_uart.setReadHandler([&](auto data) {
+        m_bytesReceived += data.size();
+        m_parser.receive(data);
+    });
     m_ep.addEvent(&m_uart, EPOLLIN);
     m_validResponseCounter = 0;
     m_inValidResponseCounter = 0;
@@ -26,15 +33,11 @@ monitor::monitor(Uart& uart, EventProcess& ep, CryptoHandlerInterface* cryptoHan
 
 void monitor::setPrintResponseTime(bool value) { m_printResponseTime = value; }
 
-void monitor::setTransportEncryption(bool value)
-{
-    m_transportEncryption = value;
-};
+void monitor::setTransportEncryption(bool value) { m_transportEncryption = value; };
 
 void monitor::setResponseCallback(uint8_t cmd, ProtocolCallback cb)
 {
-    m_responseCallback.emplace(
-        cmd, cb); // set response callback for message with this command id
+    m_responseCallback.emplace(cmd, cb); // set response callback for message with this command id
 }
 
 void monitor::eraseResponseCallback(uint8_t cmd)
@@ -61,8 +64,7 @@ void monitor::sendRequest(COMMANDS::OI cmd, std::vector<uint8_t> data, uint8_t p
 
 const void monitor::reply(std::vector<uint8_t> data)
 {
-    if(data.size() < 5)
-    {
+    if (data.size() < 5) {
         return; // we want to read command id from byte 4
     }
 
@@ -113,16 +115,11 @@ bool monitor::lastCommandReturnedValidResponse()
 
 void monitor::printCounterValues()
 {
-    std::cout << "commands sent     : " << std::dec
-              << static_cast<int>(m_commandsSentCounter) << std::endl;
-    std::cout << "valid responses   : "
-              << static_cast<int>(m_validResponseCounter) << std::endl;
-    std::cout << "invalid responses : "
-              << static_cast<int>(m_inValidResponseCounter) << std::endl;
-    std::cout << "bytes sent        : "
-              << static_cast<int>(m_bytesSent) << std::endl;
-    std::cout << "bytes received    : "
-              << static_cast<int>(m_bytesReceived) << std::endl;
+    std::cout << "commands sent     : " << std::dec << static_cast<int>(m_commandsSentCounter) << std::endl;
+    std::cout << "valid responses   : " << static_cast<int>(m_validResponseCounter) << std::endl;
+    std::cout << "invalid responses : " << static_cast<int>(m_inValidResponseCounter) << std::endl;
+    std::cout << "bytes sent        : " << static_cast<int>(m_bytesSent) << std::endl;
+    std::cout << "bytes received    : " << static_cast<int>(m_bytesReceived) << std::endl;
 }
 
 void monitor::printDebug(bool d)

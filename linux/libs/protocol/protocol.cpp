@@ -3,10 +3,11 @@
 #include <protocol.hpp>
 #include <string>
 
-LinuxProtocol::LinuxProtocol(const ProtocolCallback& send, const ProtocolCallback& receive, CryptoHandlerInterface* cryptoHandler)
+LinuxProtocol::LinuxProtocol(
+    const ProtocolCallback& send, const ProtocolCallback& receive, CryptoHandlerInterface* cryptoHandler)
     : m_send(send)
     , m_receive(receive)
-      , BufferProtocol(cryptoHandler)
+    , BufferProtocol(cryptoHandler)
 {
 }
 

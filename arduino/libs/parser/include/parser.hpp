@@ -22,4 +22,3 @@ void setRequireTransportEncryption(uint8_t isRequired);
 void setKeepAliveInterval(uint8_t interval);
 uint16_t getCommandsParsedCounter();
 } // namespace
-

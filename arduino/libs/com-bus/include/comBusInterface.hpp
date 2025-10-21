@@ -9,4 +9,3 @@ public:
     virtual uint8_t getChar() = 0;
     virtual bool hasData() = 0;
 };
-

@@ -32,7 +32,7 @@ void LinuxCryptoHandler::encryptLastBlock(uint8_t length, uint8_t* buffer)
     EVP_CIPHER_CTX_set_padding(ctx, false);
     EVP_EncryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, m_tk, &aes_iv[0]);
 
-    EVP_EncryptUpdate(ctx, &buffer[length-16], &len, &buffer[length-16], 16);
+    EVP_EncryptUpdate(ctx, &buffer[length - 16], &len, &buffer[length - 16], 16);
 
     EVP_EncryptFinal(ctx, &buffer[length - 16], &len);
     EVP_CIPHER_CTX_free(ctx);
@@ -54,8 +54,7 @@ void LinuxCryptoHandler::encrypt(uint8_t length, uint8_t* buffer)
     EVP_EncryptFinal(ctx, &buffer[length - 16], &len);
     EVP_CIPHER_CTX_free(ctx);
 
-    if((length > 16) && (length % 16 != 0))
-    {
+    if ((length > 16) && (length % 16 != 0)) {
         encryptLastBlock(length, buffer);
     }
 }
@@ -69,7 +68,7 @@ void LinuxCryptoHandler::decryptLastBlock(uint8_t length, uint8_t* buffer)
     EVP_CIPHER_CTX_set_padding(ctx, false);
     EVP_DecryptInit_ex(ctx, EVP_aes_128_ecb(), NULL, m_tk, &aes_iv[0]);
 
-    EVP_DecryptUpdate(ctx, &buffer[length-16], &len, &buffer[length-16], 16);
+    EVP_DecryptUpdate(ctx, &buffer[length - 16], &len, &buffer[length - 16], 16);
 
     EVP_DecryptFinal(ctx, &buffer[length - 16], &len);
     EVP_CIPHER_CTX_free(ctx);
@@ -80,8 +79,7 @@ void LinuxCryptoHandler::decrypt(uint8_t length, uint8_t* buffer)
     int len;
     uint8_t aes_iv[16] = { 0 };
 
-    if((length > 16) && (length % 16 != 0))
-    {
+    if ((length > 16) && (length % 16 != 0)) {
         decryptLastBlock(length, buffer);
     }
 

@@ -8,4 +8,3 @@ uint8_t temperature(void);
 uint8_t getRandomByte();
 uint16_t getAverageVcc();
 }
-

@@ -32,8 +32,7 @@ void dumpEeprom(monitor& mon, int length)
 
     std::vector<uint8_t> eeprom;
     for (int i = 0; i < 16 * length; i++) {
-        eeprom.push_back(
-            mon.get<>(RaduinoCommandEepromRead(i)).responseStruct().data);
+        eeprom.push_back(mon.get<>(RaduinoCommandEepromRead(i)).responseStruct().data);
     }
 
     for (int i = 0; i < length; i++) {
@@ -44,14 +43,12 @@ void dumpEeprom(monitor& mon, int length)
             std::cout.fill('0');
             std::cout.width(2);
 
-            std::cout << std::hex
-                      << static_cast<int>(eeprom.at(i * 16 + j));
+            std::cout << std::hex << static_cast<int>(eeprom.at(i * 16 + j));
             std::cout << " ";
         }
         std::cout << " : ";
         for (int j = 0; j < 16; j++) {
-            std::cout << std::hex << std::uppercase
-                      << eeprom.at(i * 16 + j) << " ";
+            std::cout << std::hex << std::uppercase << eeprom.at(i * 16 + j) << " ";
         }
         std::cout << std::endl;
     }
@@ -99,9 +96,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     bool dump_eeprom = false;
     bool name_option_present = false;
 
-    while ((option
-               = getopt(argc, argv, "n:c:t:e:r:ds:h"))
-        != -1) {
+    while ((option = getopt(argc, argv, "n:c:t:e:r:ds:h")) != -1) {
         switch (option) {
         case 'n':
             setNewDeviceName = optarg;

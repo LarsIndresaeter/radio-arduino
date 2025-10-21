@@ -2,7 +2,7 @@
 #include <command-handlers-pwm.hpp>
 #include <pwm.hpp>
 
-namespace COMMAND_HANDLERS{
+namespace COMMAND_HANDLERS {
 
 void commandPwm(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -19,4 +19,3 @@ void commandPwm(uint8_t* commandPayload, uint8_t* responsePayload)
 }
 
 } // namespace COMMAND_HANDLERS
-

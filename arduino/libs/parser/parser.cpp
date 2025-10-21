@@ -10,63 +10,46 @@ bool transportEncryptionIsRequired = true;
 uint32_t keep_alive_interval_ms = 100; // time in idle loop before entering sleep
 uint32_t idle_loop_cnt_ms = 0;
 
-uint8_t protocolVersionLastReceivedMessage
-    = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
+uint8_t protocolVersionLastReceivedMessage = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
 
-uint16_t getCommandsParsedCounter()
-{
-    return commandsParsed;
-}
+uint16_t getCommandsParsedCounter() { return commandsParsed; }
 
 void sendMessage(Protocol protocol, ComBusInterface* comBus, uint8_t* payload)
 {
     uint8_t packet[COMMANDS::MAX_PACKAGE_LENGTH];
     uint8_t length = payload[1] + 2;
 
-    if (protocolVersionLastReceivedMessage
-            == static_cast<uint8_t>(
-                PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT)
+    if (protocolVersionLastReceivedMessage == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT)
         || ((rx_mode_gateway == false)
             && protocolVersionLastReceivedMessage
-                == static_cast<uint8_t>(
-                    PROTOCOL::HEADER::VERSION::RADIO_ENCRYPTED_BINARY_AND_TEXT))
+                == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::RADIO_ENCRYPTED_BINARY_AND_TEXT))
 
     ) {
-        protocol.createEncryptedPacket(
-            length, payload, &packet[0], protocolVersionLastReceivedMessage);
+        protocol.createEncryptedPacket(length, payload, &packet[0], protocolVersionLastReceivedMessage);
 
         if (false == rx_mode_gateway) {
             NRF24L01_tx(
                 &packet[0],
-                PROTOCOL::HEADER::LENGTH + PROTOCOL::CHECKSUM::LENGTH + length
-                    + PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD);
+                PROTOCOL::HEADER::LENGTH + PROTOCOL::CHECKSUM::LENGTH + length + PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD);
         }
         else {
             comBus->writeBuffer(
                 &packet[0],
-                PROTOCOL::HEADER::LENGTH + PROTOCOL::CHECKSUM::LENGTH + length
-                    + PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD);
+                PROTOCOL::HEADER::LENGTH + PROTOCOL::CHECKSUM::LENGTH + length + PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD);
         }
     }
     else if (
-        protocolVersionLastReceivedMessage
-            == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::BINARY_AND_TEXT)
+        protocolVersionLastReceivedMessage == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::BINARY_AND_TEXT)
         || ((rx_mode_gateway == false)
             && protocolVersionLastReceivedMessage
-                == static_cast<uint8_t>(
-                    PROTOCOL::HEADER::VERSION::RADIO_BINARY_AND_TEXT))) {
-        protocol.createPacket(
-            length, payload, &packet[0], protocolVersionLastReceivedMessage);
+                == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::RADIO_BINARY_AND_TEXT))) {
+        protocol.createPacket(length, payload, &packet[0], protocolVersionLastReceivedMessage);
 
         if (false == rx_mode_gateway) {
-            NRF24L01_tx(
-                &packet[0],
-                PROTOCOL::HEADER::LENGTH + PROTOCOL::CHECKSUM::LENGTH + length);
+            NRF24L01_tx(&packet[0], PROTOCOL::HEADER::LENGTH + PROTOCOL::CHECKSUM::LENGTH + length);
         }
         else {
-            comBus->writeBuffer(
-                &packet[0],
-                PROTOCOL::HEADER::LENGTH + PROTOCOL::CHECKSUM::LENGTH + length);
+            comBus->writeBuffer(&packet[0], PROTOCOL::HEADER::LENGTH + PROTOCOL::CHECKSUM::LENGTH + length);
         }
     }
 }
@@ -76,38 +59,23 @@ void sendPayloadToRadioNode(Protocol protocol, uint8_t* payload, uint8_t length)
     uint8_t packet[COMMANDS::MAX_PACKAGE_LENGTH];
     uint8_t data_size = 0;
 
-    if (protocolVersionLastReceivedMessage
-            == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::
-                    RADIO_BINARY_AND_TEXT)
+    if (protocolVersionLastReceivedMessage == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::RADIO_BINARY_AND_TEXT)
         && rx_mode_gateway) {
+        protocol.createPacket(length, payload, &packet[0], protocolVersionLastReceivedMessage);
 
-        protocol.createPacket(
-            length,
-            payload,
-            &packet[0],
-            protocolVersionLastReceivedMessage);
-
-        data_size = PROTOCOL::HEADER::LENGTH
-            + PROTOCOL::CHECKSUM::LENGTH + length;
+        data_size = PROTOCOL::HEADER::LENGTH + PROTOCOL::CHECKSUM::LENGTH + length;
 
         // send command to rx_node and wait for response
         NRF24L01_tx(&packet[0], data_size);
     }
     else if (
         protocolVersionLastReceivedMessage
-            == static_cast<uint8_t>(
-                PROTOCOL::HEADER::VERSION::
-                    RADIO_ENCRYPTED_BINARY_AND_TEXT)
+            == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::RADIO_ENCRYPTED_BINARY_AND_TEXT)
         && rx_mode_gateway) {
-        protocol.createEncryptedPacket(
-            length,
-            payload,
-            &packet[0],
-            protocolVersionLastReceivedMessage);
+        protocol.createEncryptedPacket(length, payload, &packet[0], protocolVersionLastReceivedMessage);
 
-        data_size = PROTOCOL::HEADER::LENGTH
-            + PROTOCOL::CHECKSUM::LENGTH + length
-            + PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD;
+        data_size
+            = PROTOCOL::HEADER::LENGTH + PROTOCOL::CHECKSUM::LENGTH + length + PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD;
 
         // send command to rx_node and wait for response
         NRF24L01_tx(&packet[0], data_size);
@@ -129,8 +97,7 @@ void gatewayIdleLoop(ComBusInterface* comBus)
 {
     // rx gateway reads response in idle loop
     uint8_t ack_packet[32];
-    uint8_t response_length
-        = NRF24L01_rx(&ack_packet[0]);
+    uint8_t response_length = NRF24L01_rx(&ack_packet[0]);
 
     uint8_t is_wakeup_ack = RADIOLINK::isDiscoverPackage(response_length, &ack_packet[0]);
 
@@ -151,28 +118,22 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
         if (comBus->hasData()) {
             c = comBus->getChar();
 
-            protocolVersionLastReceivedMessage
-                = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
+            protocolVersionLastReceivedMessage = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
 
             if (c == PROTOCOL::HEADER::SYNC_PATTERN_BYTE_0) {
-                length = protocol.searchForMessage(
-                    (uint8_t*)payload, &protocolVersionLastReceivedMessage);
+                length = protocol.searchForMessage((uint8_t*)payload, &protocolVersionLastReceivedMessage);
 
                 if (length > 0) { // found payload
                     RANDOM::addEntropy(cnt);
 
                     if ((protocolVersionLastReceivedMessage
-                                == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::
-                                        RADIO_BINARY_AND_TEXT)
+                             == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::RADIO_BINARY_AND_TEXT)
 
-                            || protocolVersionLastReceivedMessage
-                                == static_cast<uint8_t>(
-                                    PROTOCOL::HEADER::VERSION::
-                                        RADIO_ENCRYPTED_BINARY_AND_TEXT)
+                         || protocolVersionLastReceivedMessage
+                             == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::RADIO_ENCRYPTED_BINARY_AND_TEXT)
 
-                                )
+                             )
                         && rx_mode_gateway) {
-
                         sendPayloadToRadioNode(protocol, payload, length);
                     }
                     else {
@@ -201,23 +162,18 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
 bool lastReceivedCommandWasEncrypted()
 {
     bool retval = false;
-    if ((
-            protocolVersionLastReceivedMessage
-            == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::
-                    ENCRYPTED_BINARY_AND_TEXT))
+    if ((protocolVersionLastReceivedMessage
+         == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT))
 
         || (protocolVersionLastReceivedMessage
-            == static_cast<uint8_t>(
-                PROTOCOL::HEADER::VERSION::
-                    RADIO_ENCRYPTED_BINARY_AND_TEXT))) {
+            == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::RADIO_ENCRYPTED_BINARY_AND_TEXT))) {
         retval = true;
     }
 
     return retval;
 }
 
-void parseCommand(
-    Protocol& protocol, ComBusInterface* comBus, uint8_t* commandPayload)
+void parseCommand(Protocol& protocol, ComBusInterface* comBus, uint8_t* commandPayload)
 {
     commandsParsed++;
     uint8_t responsePayload[COMMANDS::MAX_PAYLOAD_LENGTH] = {};
@@ -261,4 +217,3 @@ void setRequireTransportEncryption(uint8_t isRequired)
 }
 
 } // namespace
-

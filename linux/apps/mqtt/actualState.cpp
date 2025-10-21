@@ -11,23 +11,10 @@ ActualState::ActualState()
 {
 }
 
-void ActualState::setActualDisplayText(std::string displayText)
-{
-    m_actualDisplayText = displayText;
-}
+void ActualState::setActualDisplayText(std::string displayText) { m_actualDisplayText = displayText; }
 
-std::string ActualState::getActualDisplayText()
-{
-    return (m_actualDisplayText);
-}
+std::string ActualState::getActualDisplayText() { return (m_actualDisplayText); }
 
-int ActualState::getActualPollInterval()
-{
-    return (m_actualPollInterval);
-}
+int ActualState::getActualPollInterval() { return (m_actualPollInterval); }
 
-void ActualState::setActualPollInterval(int interval)
-{
-    m_actualPollInterval = interval;
-}
-
+void ActualState::setActualPollInterval(int interval) { m_actualPollInterval = interval; }

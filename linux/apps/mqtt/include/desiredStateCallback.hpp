@@ -1,7 +1,7 @@
 #pragma once
 
-#include <desiredState.hpp>
 #include "mqtt/async_client.h"
+#include <desiredState.hpp>
 #include <nlohmann/json.hpp>
 
 class DesiredStateCallback : public virtual mqtt::callback {
@@ -15,4 +15,3 @@ public:
 private:
     std::vector<std::shared_ptr<DesiredState>> m_desiredState;
 };
-

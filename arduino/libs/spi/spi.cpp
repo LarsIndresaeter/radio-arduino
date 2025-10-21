@@ -36,4 +36,3 @@ uint8_t SPI_masterReceive()
     // return Data Register
     return SPDR;
 }
-

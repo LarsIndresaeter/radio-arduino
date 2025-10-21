@@ -7,9 +7,7 @@ public:
     StreamProtocol(CryptoHandlerInterface* cryptoHandler)
         : ProtocolBase(cryptoHandler) {};
 
-    uint8_t searchForMessage(
-        uint8_t* payload,
-        uint8_t* protocolVersionLastReceivedMessage)
+    uint8_t searchForMessage(uint8_t* payload, uint8_t* protocolVersionLastReceivedMessage)
     {
         uint8_t length = 0;
         uint8_t protocolVersion = 0;
@@ -32,30 +30,19 @@ public:
 
                 else if (index == PROTOCOL::HEADER::VERSION_OFFSET) {
                     protocolVersion = c;
-                    if (!((protocolVersion
-                           == static_cast<uint8_t>(
-                               PROTOCOL::HEADER::VERSION::BINARY_AND_TEXT))
+                    if (!((protocolVersion == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::BINARY_AND_TEXT))
                           || (protocolVersion
-                              == static_cast<uint8_t>(
-                                  PROTOCOL::HEADER::VERSION::
-                                      ENCRYPTED_BINARY_AND_TEXT))
+                              == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT))
+                          || (protocolVersion == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::RADIO_BINARY_AND_TEXT))
                           || (protocolVersion
-                              == static_cast<uint8_t>(
-                                  PROTOCOL::HEADER::VERSION::
-                                      RADIO_BINARY_AND_TEXT))
-                          || (protocolVersion
-                              == static_cast<uint8_t>(
-                                  PROTOCOL::HEADER::VERSION::
-                                      RADIO_ENCRYPTED_BINARY_AND_TEXT)))) {
+                              == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::RADIO_ENCRYPTED_BINARY_AND_TEXT)))) {
                         return 0;
                     }
                 }
                 else if (index == PROTOCOL::HEADER::LENGTH_OFFSET) {
                     length = c;
                 }
-                else if (
-                    (index >= PROTOCOL::HEADER::LENGTH)
-                    && (index < PROTOCOL::HEADER::LENGTH + length)) {
+                else if ((index >= PROTOCOL::HEADER::LENGTH) && (index < PROTOCOL::HEADER::LENGTH + length)) {
                     payload[index - PROTOCOL::PAYLOAD::PAYLOAD_OFFSET] = c;
                 }
                 else if (index == (PROTOCOL::HEADER::LENGTH + length)) {
@@ -80,13 +67,9 @@ public:
 
                     if (checksumReceived == checksumCalculated) {
                         if (protocolVersion
-                                == static_cast<uint8_t>(
-                                    PROTOCOL::HEADER::VERSION::
-                                        ENCRYPTED_BINARY_AND_TEXT)
+                                == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT)
                             || protocolVersion
-                                == static_cast<uint8_t>(
-                                    PROTOCOL::HEADER::VERSION::
-                                        RADIO_ENCRYPTED_BINARY_AND_TEXT)) {
+                                == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::RADIO_ENCRYPTED_BINARY_AND_TEXT)) {
                             length = decryptPayload(length, payload);
                         }
 
@@ -101,13 +84,6 @@ public:
         return 0;
     }
 
-    virtual char getChar()
-    {
-        return 0;
-    } // TODO: this should probably be pure virtual
-    virtual bool hasData()
-    {
-        return false;
-    } // TODO: this should probably be pure virtual
+    virtual char getChar() { return 0; } // TODO: this should probably be pure virtual
+    virtual bool hasData() { return false; } // TODO: this should probably be pure virtual
 };
-

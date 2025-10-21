@@ -2,8 +2,7 @@
 #include <pwm.hpp>
 #include <stdint.h>
 
-namespace PWM
-{
+namespace PWM {
 
 uint8_t write(uint8_t port, uint8_t pin, uint8_t value)
 {
@@ -48,9 +47,9 @@ uint8_t write(uint8_t port, uint8_t pin, uint8_t value)
 
             DDRB |= (1 << PB2);
             TCCR1A = _BV(COM1A0) | _BV(COM1B1) | _BV(WGM11) | _BV(WGM10); // PWM phase correct
-            TCCR1B =  _BV(CS11) | _BV(WGM13); // prescaler 010 = clk_io/8 = 1 MHz
-            OCR1A = 20*1000; // 20 ms, 50Hz
-            OCR1B = value*10; // <100, 200>
+            TCCR1B = _BV(CS11) | _BV(WGM13);                              // prescaler 010 = clk_io/8 = 1 MHz
+            OCR1A = 20 * 1000;                                            // 20 ms, 50Hz
+            OCR1B = value * 10;                                           // <100, 200>
         }
         retval = 1;
     }

@@ -17,4 +17,3 @@ void SPI_ChipSelectHigh();
 void SPI_ChipSelectLow();
 void SPI_masterTransmitByte(uint8_t data);
 uint8_t SPI_masterReceive();
-

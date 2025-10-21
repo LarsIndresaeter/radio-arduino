@@ -1,10 +1,10 @@
 #pragma once
 
+#include <cmd/payloads.hxx>
 #include <cstdint>
 #include <iomanip>
 #include <iostream>
 #include <ostream>
-#include <cmd/payloads.hxx>
 #include <protocolBase.hpp>
 #include <stdint.h>
 #include <vector>
@@ -40,15 +40,11 @@ public:
         m_response.insert(m_response.end(), response.begin(), response.end());
 
         if (response.size() > 4) {
-            std::copy(response.begin() + 4, response.end(),
-                std::back_inserter(m_responsePayload));
+            std::copy(response.begin() + 4, response.end(), std::back_inserter(m_responsePayload));
         }
     };
 
-    void setReplyStatus(ReplyStatus status)
-    {
-        m_replyStatus = status;
-    };
+    void setReplyStatus(ReplyStatus status) { m_replyStatus = status; };
 
     ReplyStatus getReplyStatus() { return (m_replyStatus); };
 
@@ -57,9 +53,8 @@ public:
         m_replyStatus = ReplyStatus::Complete;
 
         // check if resonse vector size matches object length
-        if (m_response.size() < PROTOCOL::HEADER::LENGTH
-                + m_response.at(PROTOCOL::PAYLOAD::OL_OFFSET)
-                + PROTOCOL::CHECKSUM::LENGTH) {
+        if (m_response.size()
+            < PROTOCOL::HEADER::LENGTH + m_response.at(PROTOCOL::PAYLOAD::OL_OFFSET) + PROTOCOL::CHECKSUM::LENGTH) {
             m_replyStatus = ReplyStatus::Error;
             return;
         }
@@ -71,8 +66,7 @@ public:
         }
 
         // check if packet length and object length matches
-        if (m_response.at(PROTOCOL::HEADER::LENGTH_OFFSET)
-            != (m_response.at(PROTOCOL::PAYLOAD::OL_OFFSET) + 2)) {
+        if (m_response.at(PROTOCOL::HEADER::LENGTH_OFFSET) != (m_response.at(PROTOCOL::PAYLOAD::OL_OFFSET) + 2)) {
             m_replyStatus = ReplyStatus::Error;
             return;
         }
@@ -84,7 +78,7 @@ public:
 
     uint8_t getCommandId() { return (m_cmdId); };
 
-    void setTimeStamp(uint64_t timestamp) { m_timeStamp = timestamp;};
+    void setTimeStamp(uint64_t timestamp) { m_timeStamp = timestamp; };
     uint64_t getTimeStamp() { return (m_timeStamp); };
 
     std::string getCommandName() { return ("UNDEFINED"); };
@@ -106,7 +100,7 @@ public:
         else if (u.m_replyStatus == ReplyStatus::Complete) {
             out << "complete : ";
         }
- 
+
         if (u.m_replyStatus == ReplyStatus::Complete) {
             u.print(out, u.m_responsePayload);
         }
@@ -115,13 +109,9 @@ public:
     };
 
 protected:
-    virtual void print(std::ostream& out) const
-    {
-   }
+    virtual void print(std::ostream& out) const {}
 
-    virtual void print(std::ostream& out, std::vector<uint8_t> responsePayload) const
-    {
-    };
+    virtual void print(std::ostream& out, std::vector<uint8_t> responsePayload) const {};
 
     uint64_t m_timeStamp;
     uint64_t m_responseTimeUs;
@@ -131,4 +121,3 @@ protected:
     std::vector<uint8_t> m_response;
     uint8_t m_cmdId;
 };
-

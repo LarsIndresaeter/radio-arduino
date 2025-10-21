@@ -168,7 +168,6 @@ int main()
     EEPROM_DATA_STORE::incrementRestarts();
 
     if (rx_mode_gateway) {
-
         Uart uart;
 
         Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
@@ -176,7 +175,6 @@ int main()
         PARSER::parseInput(protocol, (ComBusInterface*)&uart);
     }
     else {
-
         RadioUart uart;
 
         Protocol protocol((ComBusInterface*)&uart, &cryptoHandler);
@@ -186,4 +184,3 @@ int main()
 
     return 0;
 }
-

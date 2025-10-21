@@ -12,4 +12,3 @@ void rfNodeSleepAndPollForWakeup();
 void powerSaveSleepMs(uint8_t delay_ms);
 void powerDownRadioAndSleep(uint16_t delay);
 } // namespace
-

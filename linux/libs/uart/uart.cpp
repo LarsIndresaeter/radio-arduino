@@ -22,8 +22,8 @@ void Uart::write(const std::vector<uint8_t>& data) const
     if (m_printDebug) {
         std::cout << "w: ";
         for (int i = 0; i < (data.size()); i++) {
-            std::cout << std::setfill('0') << std::setw(2) << std::uppercase
-                      << std::hex << static_cast<int>(data.at(i)) << " ";
+            std::cout << std::setfill('0') << std::setw(2) << std::uppercase << std::hex << static_cast<int>(data.at(i))
+                      << " ";
         }
         std::cout << std::endl;
     }
@@ -60,8 +60,8 @@ void Uart::execute()
     if (m_printDebug) {
         std::cout << "r: ";
         for (int i = 0; i < (data.size()); i++) {
-            std::cout << std::setfill('0') << std::setw(2) << std::uppercase
-                      << std::hex << static_cast<int>(data.at(i)) << " ";
+            std::cout << std::setfill('0') << std::setw(2) << std::uppercase << std::hex << static_cast<int>(data.at(i))
+                      << " ";
             debug += data.at(i);
         }
         std::cout << std::endl;
@@ -77,18 +77,14 @@ void Uart::execute()
             m_readhandler(data); // m_parser.receive(data);
         }
         catch (std::exception e) {
-            std::cout << "exception reading serial port: " << e.what()
-                      << std::endl;
+            std::cout << "exception reading serial port: " << e.what() << std::endl;
         }
     }
 }
 
 void Uart::setExtraSleep() { m_extraSleep = true; }
 
-void Uart::setReadHandler(ReadHandler readhandler)
-{
-    m_readhandler = readhandler;
-}
+void Uart::setReadHandler(ReadHandler readhandler) { m_readhandler = readhandler; }
 
 void Uart::open()
 {
@@ -167,13 +163,11 @@ void Uart::configure()
     // local flags
     tty.c_lflag &= ~ICANON;                  // turn off caninical mode
     tty.c_lflag &= ~(ECHO | ECHOE | ECHONL); // disable echo
-    tty.c_lflag &= ~(ISIG); // disable intepretation of INTR,QUIT and SUSP
+    tty.c_lflag &= ~(ISIG);                  // disable intepretation of INTR,QUIT and SUSP
 
     // input flags
-    tty.c_iflag &= ~(IXON | IXOFF | IXANY); // turn off sw flow control
-    tty.c_iflag &= ~(
-        IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR
-        | ICRNL); // disable special character handling
+    tty.c_iflag &= ~(IXON | IXOFF | IXANY);                                      // turn off sw flow control
+    tty.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL); // disable special character handling
 
     // output flags
     tty.c_oflag &= ~OPOST; // do not interpret newlines

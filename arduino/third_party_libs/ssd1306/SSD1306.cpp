@@ -25,12 +25,13 @@ OTHER DEALINGS IN THE SOFTWARE.
 For more information, please refer to <http://unlicense.org/>
 */
 
-#include <stdint.h>
 #include <SSD1306.hpp>
+#include <stdint.h>
 
 #include <i2c.hpp>
 
-SSD1306::SSD1306() {
+SSD1306::SSD1306()
+{
     I2C_Init();
 
     // Turn display off
@@ -41,20 +42,20 @@ SSD1306::SSD1306() {
 
     sendCommand(SSD1306_SETMULTIPLEX);
     sendCommand(0x1F);
-    
+
     sendCommand(SSD1306_SETDISPLAYOFFSET);
     sendCommand(0x00);
-    
+
     sendCommand(SSD1306_SETSTARTLINE | 0x00);
-    
+
     // We use internal charge pump
     sendCommand(SSD1306_CHARGEPUMP);
     sendCommand(0x14);
-    
+
     // Horizontal memory mode
     sendCommand(SSD1306_MEMORYMODE);
     sendCommand(0x00);
-    
+
     sendCommand(SSD1306_SEGREMAP | 0x1);
 
     sendCommand(SSD1306_COMSCANDEC);
@@ -81,22 +82,26 @@ SSD1306::SSD1306() {
     sendCommand(SSD1306_DISPLAYON);
 }
 
-void SSD1306::sendCommand(uint8_t command) {
+void SSD1306::sendCommand(uint8_t command)
+{
     I2C_Start(SSD1306_DEFAULT_ADDRESS);
     I2C_Write(0x00);
     I2C_Write(command);
     I2C_Stop();
 }
 
-void SSD1306::invert(uint8_t inverted) {
+void SSD1306::invert(uint8_t inverted)
+{
     if (inverted) {
         sendCommand(SSD1306_INVERTDISPLAY);
-    } else {
+    }
+    else {
         sendCommand(SSD1306_NORMALDISPLAY);
     }
 }
 
-void SSD1306::sendFramebuffer(uint8_t *buffer) {
+void SSD1306::sendFramebuffer(uint8_t* buffer)
+{
     sendCommand(SSD1306_COLUMNADDR);
     sendCommand(0x00);
     sendCommand(0x7F);
@@ -104,7 +109,7 @@ void SSD1306::sendFramebuffer(uint8_t *buffer) {
     sendCommand(SSD1306_PAGEADDR);
     sendCommand(0x00);
     sendCommand(0x07);
-    //sendCommand(0x17);
+    // sendCommand(0x17);
 
     // We have to send the buffer as 16 bytes packets
     // Our buffer is 1024 bytes long, 1024/16 = 64
@@ -113,7 +118,7 @@ void SSD1306::sendFramebuffer(uint8_t *buffer) {
         I2C_Start(SSD1306_DEFAULT_ADDRESS);
         I2C_Write(0x40);
         for (uint8_t packet_byte = 0; packet_byte < 16; ++packet_byte) {
-            I2C_Write(buffer[packet*16+packet_byte]);
+            I2C_Write(buffer[packet * 16 + packet_byte]);
         }
         I2C_Stop();
     }

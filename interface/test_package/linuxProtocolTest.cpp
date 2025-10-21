@@ -8,14 +8,12 @@ public:
 
     void TearDown() {}
 
-    void validatePacket(
-        std::vector<uint8_t> result, std::vector<uint8_t> expected)
+    void validatePacket(std::vector<uint8_t> result, std::vector<uint8_t> expected)
     {
         EXPECT_TRUE(expected.size() <= result.size());
 
         for (int i = 0; i < expected.size(); i++) {
-            EXPECT_EQ(result.at(i), expected.at(i))
-                << "vector differ at: " << i;
+            EXPECT_EQ(result.at(i), expected.at(i)) << "vector differ at: " << i;
         }
     }
 
@@ -24,7 +22,8 @@ public:
 
 TEST_F(LinuxProtocolTest, testParseBinary)
 {
-    auto packet = linuxProtocol.createBinaryCommand({ 0, 1, 2, 3 }, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT));
+    auto packet = linuxProtocol.createBinaryCommand(
+        { 0, 1, 2, 3 }, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT));
 
     validatePacket(
         packet,
@@ -41,7 +40,8 @@ TEST_F(LinuxProtocolTest, testParseBinary)
 
 TEST_F(LinuxProtocolTest, testParsingOfIncompletePacket)
 {
-    auto buffer = linuxProtocol.createBinaryCommand({ 0, 1, 2, 3 }, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT));
+    auto buffer = linuxProtocol.createBinaryCommand(
+        { 0, 1, 2, 3 }, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT));
     std::vector<uint8_t> packet;
 
     validatePacket(
@@ -78,10 +78,12 @@ TEST_F(LinuxProtocolTest, testParsingOfIncompletePacket)
 
 TEST_F(LinuxProtocolTest, testParseLargeBinary)
 {
-    auto packet = linuxProtocol.createBinaryCommand({
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-    }, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT));
+    auto packet = linuxProtocol.createBinaryCommand(
+        {
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+        },
+        static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT));
 
     validatePacket(
         packet,
@@ -104,4 +106,3 @@ TEST_F(LinuxProtocolTest, testParseLargeBinary)
             0x01, 0x23, 0x45, 0x67, // mac
         });
 }
-

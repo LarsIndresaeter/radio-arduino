@@ -10,4 +10,3 @@ Protocol::Protocol(ComBusInterface* comBus, CryptoHandlerInterface* cryptoHandle
 bool Protocol::hasData() { return m_comBus->hasData(); }
 
 char Protocol::getChar() { return m_comBus->getChar(); }
-

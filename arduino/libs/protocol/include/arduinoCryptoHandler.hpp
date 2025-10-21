@@ -23,4 +23,3 @@ private:
     virtual void encryptLastBlock(uint8_t length, uint8_t* buffer);
     virtual void decryptLastBlock(uint8_t length, uint8_t* buffer);
 };
-

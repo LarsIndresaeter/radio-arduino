@@ -22,12 +22,10 @@ public:
 
         std::vector<uint8_t> commandPayload(256);
         std::vector<uint8_t> responsePayload(256);
-        uint8_t protocolVersionLastReceivedMessage
-            = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
+        uint8_t protocolVersionLastReceivedMessage = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
 
         while (arduinoProtocol.hasData()) {
-            if (arduinoProtocol.searchForMessage(
-                    commandPayload.data(), &protocolVersionLastReceivedMessage)) {
+            if (arduinoProtocol.searchForMessage(commandPayload.data(), &protocolVersionLastReceivedMessage)) {
                 switch (commandPayload.at(0)) {
                 case static_cast<int>(COMMANDS::OI::BLINK): {
                     COMMANDS::BLINK::command_t command(commandPayload.data());
@@ -51,8 +49,7 @@ public:
                     response.serialize(responsePayload.data());
                 } break;
                 case static_cast<int>(COMMANDS::OI::EEPROM_WRITE): {
-                    COMMANDS::EEPROM_WRITE::command_t command(
-                        commandPayload.data());
+                    COMMANDS::EEPROM_WRITE::command_t command(commandPayload.data());
                     COMMANDS::EEPROM_WRITE::response_t response {};
                     response.address[1] = command.address[1];
                     response.address[0] = command.address[0];
@@ -60,8 +57,7 @@ public:
                     response.serialize(responsePayload.data());
                 } break;
                 case static_cast<int>(COMMANDS::OI::EEPROM_READ): {
-                    COMMANDS::EEPROM_READ::command_t command(
-                        commandPayload.data());
+                    COMMANDS::EEPROM_READ::command_t command(commandPayload.data());
                     COMMANDS::EEPROM_READ::response_t response {};
                     response.address[1] = command.address[1];
                     response.address[0] = command.address[0];
@@ -80,12 +76,9 @@ public:
                 case static_cast<int>(COMMANDS::OI::PWM): {
                     COMMANDS::PWM::command_t command(commandPayload.data());
                     COMMANDS::PWM::response_t response {};
-                    response.port = commandPayload.at(
-                        offsetof(COMMANDS::PWM::response_t, port));
-                    response.pin = commandPayload.at(
-                        offsetof(COMMANDS::PWM::response_t, pin));
-                    response.value = commandPayload.at(
-                        offsetof(COMMANDS::PWM::response_t, value));
+                    response.port = commandPayload.at(offsetof(COMMANDS::PWM::response_t, port));
+                    response.pin = commandPayload.at(offsetof(COMMANDS::PWM::response_t, pin));
+                    response.value = commandPayload.at(offsetof(COMMANDS::PWM::response_t, value));
                     response.serialize(responsePayload.data());
                 } break;
                 case static_cast<int>(COMMANDS::OI::RANDOM): {
@@ -278,7 +271,7 @@ TEST_F(commandTest, commandEepromReadHigh)
 
 TEST_F(commandTest, commandAes)
 {
-    std::vector<uint8_t> key = {0, 0};
+    std::vector<uint8_t> key = { 0, 0 };
     RaduinoCommandAes cmd('d', key);
     cmd.setResponse(simulateTarget(cmd.getPayload()));
 
@@ -372,4 +365,3 @@ TEST_F(commandTest, commandDebug)
     EXPECT_EQ(12, cmd.responseStruct().data[2]);
     EXPECT_EQ(13, cmd.responseStruct().data[3]);
 }
-

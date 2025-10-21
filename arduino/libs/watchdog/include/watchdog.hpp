@@ -5,4 +5,3 @@
 namespace WATCHDOG {
 void softReset();
 }
-

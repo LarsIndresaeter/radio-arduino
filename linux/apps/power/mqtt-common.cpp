@@ -8,10 +8,7 @@ using nlohmann::json;
 uint64_t secondsSinceEpoch()
 {
     using namespace std::chrono;
-    uint64_t seconds
-        = (duration_cast<milliseconds>(system_clock::now().time_since_epoch())
-                  .count())
-        / 1000;
+    uint64_t seconds = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()) / 1000;
     // std::cout << "time " << std::to_string(seconds) << std::endl;
     return seconds;
 }
@@ -44,8 +41,7 @@ std::string getDateTimeString()
 
 void publishNbirth(mqtt::async_client& mqtt_client, std::string deviceName)
 {
-    mqtt::topic deviceBirth(
-        mqtt_client, createMqttTopic("NBIRTH", deviceName, ""), 0, false);
+    mqtt::topic deviceBirth(mqtt_client, createMqttTopic("NBIRTH", deviceName, ""), 0, false);
     deviceBirth.publish(std::move("{\"dateString: \"" + getDateTimeString() + "\"}"));
 }
 
@@ -77,10 +73,9 @@ std::string getGatewayNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt
 {
     std::string gatewayName = mon.get<>(RaduinoCommandGetDeviceName()).getNamestring();
 
-   if (gatewayName.length() > 0) {
+    if (gatewayName.length() > 0) {
         publishNbirth(mqtt_client, gatewayName);
     }
 
     return (gatewayName);
 }
-

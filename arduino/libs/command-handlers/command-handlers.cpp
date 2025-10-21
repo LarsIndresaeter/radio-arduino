@@ -1,10 +1,10 @@
 #include <cmd/payloads.hxx>
 #include <command-handlers.hpp>
-#include <version.h>
-#include <uart.hpp>
+#include <eeprom.hpp>
 #include <nrf24l01.hpp>
 #include <parser.hpp>
-#include <eeprom.hpp>
+#include <uart.hpp>
+#include <version.h>
 
 namespace COMMAND_HANDLERS {
 

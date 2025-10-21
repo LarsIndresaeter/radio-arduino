@@ -5,12 +5,12 @@
 
 /* http://www.ermicro.com/blog/?p=325 */
 
-namespace UART{
+namespace UART {
 uint32_t getUartTxBytes();
 uint32_t getUartRxBytes();
 }
 
-class Uart : public ComBusInterface{
+class Uart : public ComBusInterface {
 public:
     Uart();
     virtual void init();
@@ -19,4 +19,3 @@ public:
     virtual uint8_t getChar();
     virtual bool hasData();
 };
-

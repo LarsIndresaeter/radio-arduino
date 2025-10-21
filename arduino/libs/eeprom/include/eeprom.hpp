@@ -8,8 +8,8 @@ typedef struct eeprom_data {
     uint8_t deviceName[16];
     uint8_t EK_KEY[16];
     uint8_t TK_KEY[16];
-    //uint8_t HMAC_KEY[16];
-    //uint8_t HOTP_KEY[16];
+    // uint8_t HMAC_KEY[16];
+    // uint8_t HOTP_KEY[16];
     uint32_t dataVersion;
     uint8_t requireEncryption;
     uint8_t isRadioNode; // otherwise it is a gateway
@@ -34,13 +34,13 @@ void readMultiple(uint16_t address, uint8_t* buffer, uint16_t length);
 } // namespace EEPROM
 
 namespace EEPROM_DATA_STORE {
-    void readFromActive(uint16_t address, uint8_t* buffer, uint16_t length);
-    void writeToSpareAndSetAsActive(uint16_t address, uint8_t* buffer, uint16_t length);
-    uint8_t getRequireTransportEncryption();
-    void setRequireTransportEncryption(uint8_t flag);
-    void setIsRadioNode(uint8_t flag);
-    uint8_t getIsRadioNode();
-    void incrementRestarts();
-    uint16_t getRestarts();
-    bool readRxModeGatewayFromEeprom();
+void readFromActive(uint16_t address, uint8_t* buffer, uint16_t length);
+void writeToSpareAndSetAsActive(uint16_t address, uint8_t* buffer, uint16_t length);
+uint8_t getRequireTransportEncryption();
+void setRequireTransportEncryption(uint8_t flag);
+void setIsRadioNode(uint8_t flag);
+uint8_t getIsRadioNode();
+void incrementRestarts();
+uint16_t getRestarts();
+bool readRxModeGatewayFromEeprom();
 } // namespace EEPROM_DATA_STORE

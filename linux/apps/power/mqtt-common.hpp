@@ -1,10 +1,10 @@
 #pragma once
 
-#include <string>
-#include <chrono>
-#include <nlohmann/json.hpp>
 #include "mqtt/async_client.h"
+#include <chrono>
 #include <monitor.hpp>
+#include <nlohmann/json.hpp>
+#include <string>
 
 uint64_t secondsSinceEpoch();
 std::string createMqttTopic(std::string type, std::string eon, std::string device);

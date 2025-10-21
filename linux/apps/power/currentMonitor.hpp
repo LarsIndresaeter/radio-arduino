@@ -1,13 +1,13 @@
 #pragma once
 
+#include "mqtt-common.hpp"
+#include "mqtt/async_client.h"
 #include <chrono>
-#include <numeric>
 #include <cmath>
-#include <vector>
 #include <monitor.hpp>
 #include <nlohmann/json.hpp>
-#include "mqtt/async_client.h"
-#include "mqtt-common.hpp"
+#include <numeric>
+#include <vector>
 
 constexpr float EVENT_THRESHOLD = 0.01; // 1% change before sending new message
 constexpr uint EVENT_TIMEOUT = 10 * 60; // seconds before sending new message

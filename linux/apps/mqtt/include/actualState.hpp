@@ -18,4 +18,3 @@ private:
     int m_actualPollInterval;
     std::string m_actualDisplayText;
 };
-

@@ -12,8 +12,7 @@ uint16_t readVcc1()
     // Input Channel Selections = 1.1V (VBG)
     ADMUX = _BV(REFS0) | _BV(MUX3) | _BV(MUX2) | _BV(MUX1);
 
-    ADCSRA = _BV(ADEN) | _BV(ADSC) | _BV(ADPS2) | _BV(ADPS1)
-        | _BV(ADPS0); //  enable ADC, start conversion, clk/128
+    ADCSRA = _BV(ADEN) | _BV(ADSC) | _BV(ADPS2) | _BV(ADPS1) | _BV(ADPS0); //  enable ADC, start conversion, clk/128
 
     while (((ADCSRA & (1 << ADSC)) != 0))
         ; // Wait for it to complete
@@ -29,8 +28,7 @@ uint8_t temperature(void)
 {
     // https://microchipdeveloper.com/8avr:avradc
 
-    ADMUX = (1 << REFS1) | (1 << REFS0) | (0 << ADLAR) | (1 << MUX3)
-        | (0 << MUX2) | (0 << MUX1) | (0 << MUX0);
+    ADMUX = (1 << REFS1) | (1 << REFS0) | (0 << ADLAR) | (1 << MUX3) | (0 << MUX2) | (0 << MUX1) | (0 << MUX0);
 
     ADCSRA = (1 << ADPS2) | (1 << ADPS1) | (1 << ADEN);
 
@@ -78,7 +76,7 @@ uint16_t getAverageVcc()
     }
     vcc = vcc >> 5;
 
-    return(vcc);
+    return (vcc);
 }
 
 }

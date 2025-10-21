@@ -5,7 +5,7 @@
 #include <util/delay.h>
 
 namespace TIMER {
-    void timerStart();
-    void timerStop();
-    uint16_t getPulseWidthMicroSeconds();
+void timerStart();
+void timerStop();
+uint16_t getPulseWidthMicroSeconds();
 }

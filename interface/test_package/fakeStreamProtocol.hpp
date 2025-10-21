@@ -1,8 +1,8 @@
 #pragma once
 
+#include "fakeCryptoHandler.hpp"
 #include <streamProtocol.hpp>
 #include <vector>
-#include "fakeCryptoHandler.hpp"
 
 class FakeStreamProtocol : public StreamProtocol {
 public:
@@ -15,4 +15,3 @@ private:
     FakeCryptoHandler m_cryptoHandler;
     std::vector<uint8_t> m_data;
 };
-

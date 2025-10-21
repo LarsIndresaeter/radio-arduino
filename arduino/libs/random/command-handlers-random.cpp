@@ -2,7 +2,7 @@
 #include <command-handlers-random.hpp>
 #include <random.hpp>
 
-namespace COMMAND_HANDLERS{
+namespace COMMAND_HANDLERS {
 
 void commandRandom(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -18,4 +18,3 @@ void commandRandom(uint8_t* commandPayload, uint8_t* responsePayload)
 }
 
 } // namespace COMMAND_HANDLERS
-

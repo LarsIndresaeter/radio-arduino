@@ -16,4 +16,3 @@ public:
     virtual uint8_t getChar();
     virtual bool hasData();
 };
-

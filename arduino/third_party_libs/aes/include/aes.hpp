@@ -7,8 +7,7 @@
 
 namespace AES {
 
-	void Crypt(uint8_t * data, uint8_t * key, uint8_t * IV);
-	void Decrypt(uint8_t * data, uint8_t * key, uint8_t * IV);
-	void Sanitize();
+void Crypt(uint8_t* data, uint8_t* key, uint8_t* IV);
+void Decrypt(uint8_t* data, uint8_t* key, uint8_t* IV);
+void Sanitize();
 } // namespace
-

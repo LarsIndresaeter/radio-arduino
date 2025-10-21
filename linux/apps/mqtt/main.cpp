@@ -1,18 +1,18 @@
-#include <desiredState.hpp>
-#include <desiredStateCallback.hpp>
-#include <digitalTwin.hpp>
 #include "mqtt/async_client.h"
-#include <mqtt-common.hpp>
-#include <radioSession.hpp>
 #include <chrono>
 #include <cmath>
 #include <cmd/commands.hxx>
+#include <desiredState.hpp>
+#include <desiredStateCallback.hpp>
+#include <digitalTwin.hpp>
 #include <eventprocess.hpp>
 #include <filesystem>
 #include <iomanip>
 #include <linuxCryptoHandler.hpp>
 #include <monitor.hpp>
+#include <mqtt-common.hpp>
 #include <numeric>
+#include <radioSession.hpp>
 #include <sstream>
 #include <string>
 #include <thread>
@@ -20,7 +20,12 @@
 
 using namespace std::chrono_literals;
 
-void registerRadioNode(monitor& mon, mqtt::async_client& mqtt_client, uint8_t nodeAddress, std::vector<std::shared_ptr<DesiredState>>& desiredStateList, std::vector<std::shared_ptr<DigitalTwin>>& digitalTwinList)
+void registerRadioNode(
+    monitor& mon,
+    mqtt::async_client& mqtt_client,
+    uint8_t nodeAddress,
+    std::vector<std::shared_ptr<DesiredState>>& desiredStateList,
+    std::vector<std::shared_ptr<DigitalTwin>>& digitalTwinList)
 {
     RadioSession radioSession(mon, nodeAddress);
     radioSession.wakeupNotResponding();
@@ -35,7 +40,13 @@ void registerRadioNode(monitor& mon, mqtt::async_client& mqtt_client, uint8_t no
     }
 }
 
-void moveRadioNode(monitor& mon, mqtt::async_client& mqtt_client, std::vector<std::shared_ptr<DesiredState>>& desiredStateList, std::vector<std::shared_ptr<DigitalTwin>>& digitalTwinList, std::string name, uint8_t nodeAddress)
+void moveRadioNode(
+    monitor& mon,
+    mqtt::async_client& mqtt_client,
+    std::vector<std::shared_ptr<DesiredState>>& desiredStateList,
+    std::vector<std::shared_ptr<DigitalTwin>>& digitalTwinList,
+    std::string name,
+    uint8_t nodeAddress)
 {
     RadioSession radioSession(mon, 0);
     radioSession.wakeupNotResponding();
@@ -46,7 +57,7 @@ void moveRadioNode(monitor& mon, mqtt::async_client& mqtt_client, std::vector<st
         std::cout << "DEBUG: try to move '" + nodeName + "' to address: " + std::to_string(nodeAddress) << std::endl;
         mon.getRadio<>(RaduinoCommandSetNodeAddress(nodeAddress));
 
-        if(mon.lastCommandReturnedValidResponse()) {
+        if (mon.lastCommandReturnedValidResponse()) {
             std::cout << "DEBUG: move operation was successful" << std::endl;
         }
 
@@ -63,11 +74,11 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client, std::
 
     getGatewayNameAndPublishBirth(mon, mqtt_client);
 
-    //moveRadioNode(mon, mqtt_client, desiredStateList, digitalTwinList, "solar-lamp", 100);
-    //moveRadioNode(mon, mqtt_client, desiredStateList, digitalTwinList, "breadboard", 101);
-    //moveRadioNode(mon, mqtt_client, desiredStateList, digitalTwinList, "lcd", 102);
+    // moveRadioNode(mon, mqtt_client, desiredStateList, digitalTwinList, "solar-lamp", 100);
+    // moveRadioNode(mon, mqtt_client, desiredStateList, digitalTwinList, "breadboard", 101);
+    // moveRadioNode(mon, mqtt_client, desiredStateList, digitalTwinList, "lcd", 102);
 
-    for (uint8_t nodeAddress: nodeAddressList){
+    for (uint8_t nodeAddress : nodeAddressList) {
         registerRadioNode(mon, mqtt_client, nodeAddress, desiredStateList, digitalTwinList);
     }
 

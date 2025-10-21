@@ -2,7 +2,7 @@
 #include <command-handlers-timer.hpp>
 #include <timer.hpp>
 
-namespace COMMAND_HANDLERS{
+namespace COMMAND_HANDLERS {
 
 void commandTimer(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -15,4 +15,3 @@ void commandTimer(uint8_t* commandPayload, uint8_t* responsePayload)
 }
 
 } // namespace COMMAND_HANDLERS
-

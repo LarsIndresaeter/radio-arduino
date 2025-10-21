@@ -46,8 +46,7 @@ public:
     Uart(
         std::string name,
         int baudrate = 1000000,
-        control_modes modes
-        = { .parity = 1, .stop = 2, .bits = 8, .hw_flow = 0, .hangup_on_close = 1 });
+        control_modes modes = { .parity = 1, .stop = 2, .bits = 8, .hw_flow = 0, .hangup_on_close = 1 });
 
     int getFd();
 
@@ -72,4 +71,3 @@ private:
     bool m_printDebug = false;
     bool m_extraSleep = false;
 };
-

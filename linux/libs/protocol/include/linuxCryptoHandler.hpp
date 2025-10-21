@@ -18,10 +18,9 @@ public:
 private:
     uint8_t m_tk[16];
     uint8_t m_mk[16];
-    EVP_CIPHER_CTX *ctx;
-    EVP_MD_CTX *mdctx;
+    EVP_CIPHER_CTX* ctx;
+    EVP_MD_CTX* mdctx;
 
     void encryptLastBlock(uint8_t length, uint8_t* buffer);
     void decryptLastBlock(uint8_t length, uint8_t* buffer);
 };
-

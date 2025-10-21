@@ -5,7 +5,7 @@
 
 extern bool rx_mode_gateway;
 
-namespace COMMAND_HANDLERS{
+namespace COMMAND_HANDLERS {
 
 void commandNrf24l01Init(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -14,10 +14,7 @@ void commandNrf24l01Init(uint8_t* commandPayload, uint8_t* responsePayload)
 
     NRF24L01_set_rf_channel(command.rfChannel);
 
-    NRF24L01_init(
-        &command.rxAddr[0],
-        &command.txAddr[0],
-        command.gateway == 1);
+    NRF24L01_init(&command.rxAddr[0], &command.txAddr[0], command.gateway == 1);
 
     response.serialize(responsePayload);
 }
@@ -52,4 +49,3 @@ void commandNrf24l01Write(uint8_t* commandPayload, uint8_t* responsePayload)
 }
 
 } // namespace COMMAND_HANDLERS
-

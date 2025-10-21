@@ -2,4 +2,3 @@
 
 FakeBufferProtocol::FakeBufferProtocol()
     : BufferProtocol(&m_cryptoHandler) {};
-

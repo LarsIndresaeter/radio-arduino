@@ -1,13 +1,12 @@
 #include <cmd/payloads.hxx>
 #include <comBusInterface.hpp>
 #include <command-handlers-radio-uart.hpp>
-#include <radioUart.hpp>
 #include <nrf24l01.hpp>
+#include <radioUart.hpp>
 
-namespace COMMAND_HANDLERS{
+namespace COMMAND_HANDLERS {
 
-void commandRadioUart(
-    uint8_t* commandPayload, uint8_t* responsePayload, ComBusInterface* comBus)
+void commandRadioUart(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInterface* comBus)
 {
     COMMANDS::RADIO_UART::command_t command(commandPayload);
     COMMANDS::RADIO_UART::response_t response;
@@ -57,4 +56,3 @@ void commandRadioUart(
 }
 
 } // namespace COMMAND_HANDLERS
-

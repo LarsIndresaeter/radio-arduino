@@ -3,8 +3,7 @@
 
 #define UNLIKELY(x) __builtin_expect(x, 0)
 
-EventProcess::EventProcess(
-    std::function<void(int)> tick, int max_events, int timeout)
+EventProcess::EventProcess(std::function<void(int)> tick, int max_events, int timeout)
     : events(new struct epoll_event[max_events])
     , m_timeout(timeout)
     , max_events(max_events)
@@ -12,10 +11,7 @@ EventProcess::EventProcess(
     epoll_fd = epoll_create1(0);
 }
 
-EventProcess::~EventProcess()
-{
-    close(epoll_fd);
-}
+EventProcess::~EventProcess() { close(epoll_fd); }
 
 void EventProcess::setTickFunction(std::function<void()> cb) { tick = cb; }
 
@@ -24,7 +20,7 @@ void EventProcess::addEvent(EpollEvent* ev, int events)
     struct epoll_event event;
     event.events = events;
 
-    //std::cout << "EventProcess::addEvent() fd:" << static_cast<int>(ev->getFd()) << std::endl;
+    // std::cout << "EventProcess::addEvent() fd:" << static_cast<int>(ev->getFd()) << std::endl;
 
     event.data.u64 = (uint64_t)(ev);
     if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, ev->getFd(), &event) != 0) {
@@ -43,15 +39,17 @@ void EventProcess::Run()
 {
     while (1) {
         struct epoll_event* event_list = events.get();
-        int count = epoll_wait(epoll_fd, event_list, max_events, m_timeout); // wait for an I/O event on an epoll descriptor
-        //std::cout << "EventProcess::Run() count:" << static_cast<int>(count) << " epoll_fd: " << static_cast<int>(epoll_fd) << std::endl;
+        int count
+            = epoll_wait(epoll_fd, event_list, max_events, m_timeout); // wait for an I/O event on an epoll descriptor
+        // std::cout << "EventProcess::Run() count:" << static_cast<int>(count) << " epoll_fd: " <<
+        // static_cast<int>(epoll_fd) << std::endl;
         if (UNLIKELY(count <= 0)) {
             if (UNLIKELY(count < 0)) {
                 // something really bad has happened
             }
             else {
-                //std::cout << "EventProcess tick" << std::endl;
-                // run CB on tick on tick!!
+                // std::cout << "EventProcess tick" << std::endl;
+                //  run CB on tick on tick!!
                 if (tick != nullptr) {
                     tick();
                 }

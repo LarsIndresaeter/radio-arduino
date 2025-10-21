@@ -12,6 +12,7 @@ public:
     uint32_t getWakeupFailedCounter();
     void setKeepAliveInterval(uint8_t interval);
     void setVerbose(bool verbose);
+
 private:
     bool wakeupNotRespondingTryOnce();
     monitor& m_monitor;
@@ -19,7 +20,7 @@ private:
     uint8_t m_keepAliveInterval;
     uint8_t m_initialKeepAliveInterval;
     uint8_t m_wakeupAttempts;
-    bool m_isAlive; 
+    bool m_isAlive;
     uint32_t m_wakeupSuccessCounter;
     uint32_t m_wakeupFailedCounter;
     uint64_t m_timeLastWakeup;
@@ -28,4 +29,3 @@ private:
     uint64_t secondsSinceEpoch();
     bool m_verbose;
 };
-

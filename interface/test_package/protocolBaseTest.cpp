@@ -10,14 +10,12 @@ public:
 
     void TearDown() {}
 
-    void validatePacket(
-        std::vector<uint8_t> result, std::vector<uint8_t> expected)
+    void validatePacket(std::vector<uint8_t> result, std::vector<uint8_t> expected)
     {
         EXPECT_TRUE(expected.size() <= result.size());
 
         for (int i = 0; i < expected.size(); i++) {
-            EXPECT_EQ(result.at(i), expected.at(i))
-                << "vector differ at: " << i;
+            EXPECT_EQ(result.at(i), expected.at(i)) << "vector differ at: " << i;
         }
     }
 
@@ -31,7 +29,11 @@ TEST_F(ProtocolBaseTest, testCreateCommandFromProtocolBaseClass)
 
     FakeCryptoHandler cryptoHandler;
     ProtocolBase pb(&cryptoHandler);
-    pb.createPacket(payload.size(), payload.data(), packet.data(), static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::BINARY_AND_TEXT));
+    pb.createPacket(
+        payload.size(),
+        payload.data(),
+        packet.data(),
+        static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::BINARY_AND_TEXT));
 
     validatePacket(
         packet,
@@ -55,7 +57,11 @@ TEST_F(ProtocolBaseTest, testCreateEncryptedPayloadFromProtocolBaseClass)
 
     FakeCryptoHandler cryptoHandler;
     ProtocolBase pb(&cryptoHandler);
-    pb.createEncryptedPacket(payload.size(), payload.data(), packet.data(), static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT));
+    pb.createEncryptedPacket(
+        payload.size(),
+        payload.data(),
+        packet.data(),
+        static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT));
 
     validatePacket(
         packet,
@@ -84,7 +90,11 @@ TEST_F(ProtocolBaseTest, testDecryptPayload)
 
     FakeCryptoHandler cryptoHandler;
     ProtocolBase pb(&cryptoHandler);
-    pb.createEncryptedPacket(payload.size(), payload.data(), packet.data(), static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT));
+    pb.createEncryptedPacket(
+        payload.size(),
+        payload.data(),
+        packet.data(),
+        static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT));
 
     validatePacket(
         packet,
@@ -117,4 +127,3 @@ TEST_F(ProtocolBaseTest, testDecryptPayload)
             12,   13,   14, 15  // payload
         });
 }
-

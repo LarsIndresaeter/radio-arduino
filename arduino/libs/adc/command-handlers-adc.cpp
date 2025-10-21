@@ -1,8 +1,8 @@
+#include <adc.hpp>
 #include <cmd/payloads.hxx>
 #include <command-handlers-adc.hpp>
-#include <adc.hpp>
 
-namespace COMMAND_HANDLERS{
+namespace COMMAND_HANDLERS {
 
 void commandVcc(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -15,4 +15,3 @@ void commandVcc(uint8_t* commandPayload, uint8_t* responsePayload)
 }
 
 } // namespace COMMAND_HANDLERS
-

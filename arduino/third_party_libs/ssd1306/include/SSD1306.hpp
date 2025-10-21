@@ -45,7 +45,7 @@ For more information, please refer to <http://unlicense.org/>
 #define SSD1306_SETSTARTLINE 0x40
 #define SSD1306_MEMORYMODE 0x20
 #define SSD1306_COLUMNADDR 0x21
-#define SSD1306_PAGEADDR   0x22
+#define SSD1306_PAGEADDR 0x22
 #define SSD1306_COMSCANINC 0xC0
 #define SSD1306_COMSCANDEC 0xC8
 #define SSD1306_SEGREMAP 0xA0
@@ -55,13 +55,14 @@ For more information, please refer to <http://unlicense.org/>
 
 #define SSD1306_WIDTH 128
 #define SSD1306_HEIGHT 32
-#define SSD1306_BUFFERSIZE (SSD1306_WIDTH*SSD1306_HEIGHT)/8
-
-class SSD1306{
+#define SSD1306_BUFFERSIZE (SSD1306_WIDTH * SSD1306_HEIGHT) / 8
+#include <stdint.h>
+class SSD1306 {
 public:
     SSD1306();
-    void sendFramebuffer(uint8_t *buffer);
+    void sendFramebuffer(uint8_t* buffer);
     void invert(uint8_t inverted);
+
 private:
     void sendCommand(uint8_t command);
     void sendData(uint8_t data);

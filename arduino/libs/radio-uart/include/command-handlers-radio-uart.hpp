@@ -6,8 +6,6 @@
 
 namespace COMMAND_HANDLERS {
 
-void commandRadioUart(
-    uint8_t* commandPayload, uint8_t* responsePayload, ComBusInterface* comBus);
+void commandRadioUart(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInterface* comBus);
 
 } // namespace COMMAND_HANDLERS
-

@@ -2,7 +2,7 @@
 #include <command-handlers-gpio.hpp>
 #include <gpio.hpp>
 
-namespace COMMAND_HANDLERS{
+namespace COMMAND_HANDLERS {
 
 void commandGpio(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -27,4 +27,3 @@ void commandBlink(uint8_t* commandPayload, uint8_t* responsePayload)
 }
 
 } // namespace COMMAND_HANDLERS
-

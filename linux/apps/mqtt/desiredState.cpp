@@ -6,7 +6,9 @@ using nlohmann::json;
 // constexpr int pollInterval=3600;
 
 DesiredState::DesiredState(uint8_t radioAddress, std::string name)
-    : m_name(name), m_desiredPollInterval(3600), m_desiredDisplayText("")
+    : m_name(name)
+    , m_desiredPollInterval(3600)
+    , m_desiredDisplayText("")
 {
     m_topic = createMqttTopic("RCMD", m_name, "");
 }
@@ -34,28 +36,12 @@ void DesiredState::parseMessage(std::string topic, std::string message)
     }
 }
 
-std::string DesiredState::getTopicString()
-{
-    return (m_topic);
-}
+std::string DesiredState::getTopicString() { return (m_topic); }
 
-std::string DesiredState::getName()
-{
-    return (m_name);
-}
+std::string DesiredState::getName() { return (m_name); }
 
-bool DesiredState::getStateSubscribeVoltage()
-{
-    return (true);
-}
+bool DesiredState::getStateSubscribeVoltage() { return (true); }
 
-int DesiredState::getDesiredPollInterval()
-{
-    return (m_desiredPollInterval);
-}
+int DesiredState::getDesiredPollInterval() { return (m_desiredPollInterval); }
 
-std::string DesiredState::getDesiredDisplayText()
-{
-    return (m_desiredDisplayText);
-}
-
+std::string DesiredState::getDesiredDisplayText() { return (m_desiredDisplayText); }

@@ -12,9 +12,9 @@
 #include <linuxCryptoHandler.hpp>
 #include <monitor.hpp>
 #include <numeric>
+#include <radioSession.hpp>
 #include <thread>
 #include <uart.hpp>
-#include <radioSession.hpp>
 
 using namespace std::chrono_literals;
 
@@ -29,11 +29,9 @@ void testDecryptOnAvr(monitor& mon)
 
     Crypto::AesBlock ciphertext = c.encrypt(plaintext);
 
-    RaduinoCommandAes decryptedInAvr
-        = mon.get<>(RaduinoCommandAes('d', c.getVector(ciphertext)));
+    RaduinoCommandAes decryptedInAvr = mon.get<>(RaduinoCommandAes('d', c.getVector(ciphertext)));
 
-    std::string responseString { reinterpret_cast<char*>(
-        decryptedInAvr.responseStruct().data) };
+    std::string responseString { reinterpret_cast<char*>(decryptedInAvr.responseStruct().data) };
     std::cout << "pt received   : " << responseString << std::endl;
 }
 
@@ -85,8 +83,7 @@ void compareResult(uint8_t expected, uint8_t actual)
 {
     if (expected != actual) {
         std::cout << std::endl;
-        std::cout << "ERROR: invalid result! expected: "
-                  << static_cast<int>(expected)
+        std::cout << "ERROR: invalid result! expected: " << static_cast<int>(expected)
                   << " actual: " << static_cast<int>(actual) << std::endl;
         std::cout << std::endl;
     }
@@ -98,33 +95,28 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
 
-    while ((option
-            = getopt(argc, argv, "ACeI:E:O:d:ghi:o:bSK:"))
-           != -1) {
+    while ((option = getopt(argc, argv, "ACeI:E:O:d:ghi:o:bSK:")) != -1) {
         switch (option) {
-        case 's':
-            {
+        case 's': {
             uint32_t delay = atoi(optarg);
-            std::cout << mon.getRadio<>(RaduinoCommandSleep(delay), static_cast<std::chrono::milliseconds>(delay + 2000)) << std::endl;
-            }
-            break;
+            std::cout << mon.getRadio<>(
+                RaduinoCommandSleep(delay), static_cast<std::chrono::milliseconds>(delay + 2000))
+                      << std::endl;
+        } break;
         case 'e':
             std::cout << mon.get<>(RaduinoCommandEepromWrite(2, 3)) << std::endl;
             std::cout << mon.get<>(RaduinoCommandEepromRead(2)) << std::endl;
-            compareResult(
-                3, mon.get<>(RaduinoCommandEepromRead(2)).responseStruct().data);
+            compareResult(3, mon.get<>(RaduinoCommandEepromRead(2)).responseStruct().data);
 
             std::cout << mon.get<>(RaduinoCommandEepromWrite(600, 3)) << std::endl;
             std::cout << mon.get<>(RaduinoCommandEepromRead(600)) << std::endl;
-            compareResult(
-                3, mon.get<>(RaduinoCommandEepromRead(600)).responseStruct().data);
+            compareResult(3, mon.get<>(RaduinoCommandEepromRead(600)).responseStruct().data);
 
             break;
         case 'g': {
             std::vector<uint8_t> eeprom;
             for (int i = 0; i < 1024; i++) {
-                eeprom.push_back(
-                    mon.get<>(RaduinoCommandEepromRead(i)).responseStruct().data);
+                eeprom.push_back(mon.get<>(RaduinoCommandEepromRead(i)).responseStruct().data);
             }
 
             for (int i = 0; i < 64; i++) {
@@ -135,14 +127,12 @@ void parseOpt(int argc, char* argv[], monitor& mon)
                     std::cout.fill('0');
                     std::cout.width(2);
 
-                    std::cout << std::hex
-                              << static_cast<int>(eeprom.at(i * 16 + j));
+                    std::cout << std::hex << static_cast<int>(eeprom.at(i * 16 + j));
                     std::cout << " ";
                 }
                 std::cout << " : ";
                 for (int j = 0; j < 16; j++) {
-                    std::cout << std::hex << std::uppercase
-                              << eeprom.at(i * 16 + j) << " ";
+                    std::cout << std::hex << std::uppercase << eeprom.at(i * 16 + j) << " ";
                 }
                 std::cout << std::endl;
             }
@@ -157,50 +147,43 @@ void parseOpt(int argc, char* argv[], monitor& mon)
         case 'i': {
             std::string s(optarg);
             std::vector<uint8_t> vec(s.begin(), s.end());
-            std::cout << mon.get<>(
-                RaduinoCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec.size(), vec))
+            std::cout << mon.get<>(RaduinoCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec.size(), vec))
                       << std::endl;
         } break;
         case 'I':
-            std::cout << mon.get<>(RaduinoCommandI2cRead(
-                i2cDeviceAddress, i2cDeviceOffset, atoi(optarg)))
-                      << std::endl;
+            std::cout << mon.get<>(RaduinoCommandI2cRead(i2cDeviceAddress, i2cDeviceOffset, atoi(optarg))) << std::endl;
             break;
-        case 'U': 
-            {
+        case 'U': {
             std::string s(optarg);
-            if(s.at(0) == 's')
-            {
-                std::vector<uint8_t> address = {0xF0, 0xF0, 0xF0, 0xF0, 0xC2};
+            if (s.at(0) == 's') {
+                std::vector<uint8_t> address = { 0xF0, 0xF0, 0xF0, 0xF0, 0xC2 };
                 mon.get<>(RaduinoCommandNrf24l01Init(address, address, 121, true));
             }
-            if(s.at(0) == 'r')
-            {
-                std::vector<uint8_t> address = {0xF0, 0xF0, 0xF0, 0xF0, 0xC2};
+            if (s.at(0) == 'r') {
+                std::vector<uint8_t> address = { 0xF0, 0xF0, 0xF0, 0xF0, 0xC2 };
                 mon.get<>(RaduinoCommandNrf24l01Init(address, address, 121, false));
             }
             std::cout << mon.get<>(RaduinoCommandRadioUart(s.at(0))) << std::endl;
-            }
-            break;
-            case 'S': {
-                RadioSession radioSession(mon, 0);
-                radioSession.wakeupNotResponding();
+        } break;
+        case 'S': {
+            RadioSession radioSession(mon, 0);
+            radioSession.wakeupNotResponding();
 
-                auto gatewayStats = mon.get<>(RaduinoCommandGetStatistics());
-                auto nodeStats = mon.getRadio<>(RaduinoCommandGetStatistics());
+            auto gatewayStats = mon.get<>(RaduinoCommandGetStatistics());
+            auto nodeStats = mon.getRadio<>(RaduinoCommandGetStatistics());
 
-                std::cout << "PC --> uart, gateway --> node" << std::endl;
-                std::cout << mon.getBytesSent() << " --> ";
-                std::cout << gatewayStats.responseStruct().getUart_rx() << ", ";
-                std::cout << gatewayStats.responseStruct().getRf_tx() << " --> ";
-                std::cout << nodeStats.responseStruct().getRf_rx() << std::endl;
+            std::cout << "PC --> uart, gateway --> node" << std::endl;
+            std::cout << mon.getBytesSent() << " --> ";
+            std::cout << gatewayStats.responseStruct().getUart_rx() << ", ";
+            std::cout << gatewayStats.responseStruct().getRf_tx() << " --> ";
+            std::cout << nodeStats.responseStruct().getRf_rx() << std::endl;
 
-                std::cout << mon.getBytesReceived() << " <-- ";
-                std::cout << gatewayStats.responseStruct().getUart_tx() << ", ";
-                std::cout << gatewayStats.responseStruct().getRf_rx() << " <-- ";
-                std::cout << nodeStats.responseStruct().getRf_tx() << std::endl;
-            } break;
-         case 'b':
+            std::cout << mon.getBytesReceived() << " <-- ";
+            std::cout << gatewayStats.responseStruct().getUart_tx() << ", ";
+            std::cout << gatewayStats.responseStruct().getRf_rx() << " <-- ";
+            std::cout << nodeStats.responseStruct().getRf_tx() << std::endl;
+        } break;
+        case 'b':
             std::cout << mon.get<>(RaduinoCommandGpio()).getJson() << std::endl;
             std::cout << mon.get<>(RaduinoCommandSha1("test")).getJson() << std::endl;
             std::cout << mon.get<>(RaduinoCommandHotp()).getJson() << std::endl;
@@ -240,7 +223,7 @@ int main(int argc, char* argv[])
             if (std::filesystem::exists(tmp)) {
                 deviceFile = tmp;
                 argv[i][0] = '\0';
-                argv[i+1][0] = '\0';
+                argv[i + 1][0] = '\0';
             }
         }
     }

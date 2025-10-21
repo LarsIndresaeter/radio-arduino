@@ -65,4 +65,3 @@ void powerDownRadioAndSleep(uint16_t delay)
     }
 }
 } // namespace
-

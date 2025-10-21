@@ -1,10 +1,10 @@
+#include <Framebuffer.hpp>
+#include <SSD1306.hpp>
 #include <cmd/payloads.hxx>
 #include <command-handlers-ssd1306.hpp>
-#include <SSD1306.hpp>
 #include <i2c.hpp>
-#include <Framebuffer.hpp>
 
-namespace COMMAND_HANDLERS{
+namespace COMMAND_HANDLERS {
 
 void commandSsd1306(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -14,8 +14,7 @@ void commandSsd1306(uint8_t* commandPayload, uint8_t* responsePayload)
     Framebuffer fb;
 
     for (uint8_t x = 0; x < sizeof(command.data); x++) {
-        if(command.data[x] != 0)
-        {
+        if (command.data[x] != 0) {
             fb.drawChar(x, command.line, command.data[x]);
         }
     }
@@ -27,4 +26,3 @@ void commandSsd1306(uint8_t* commandPayload, uint8_t* responsePayload)
 }
 
 } // namespace COMMAND_HANDLERS
-

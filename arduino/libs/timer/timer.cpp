@@ -26,31 +26,31 @@ ISR(TIMER2_COMPA_vect)
 }
 
 namespace TIMER {
-    void timerStart()
-    {
-        TCNT1 = 0;
-        ICR1 = 0;
-        rising_time = 0;
-        falling_time = 0;
-        pulse_width = 0;
+void timerStart()
+{
+    TCNT1 = 0;
+    ICR1 = 0;
+    rising_time = 0;
+    falling_time = 0;
+    pulse_width = 0;
 
-        TCCR1B |= (1 << ICES1); // input capture set for rising edge
-        TCCR1B |= (1 << CS10); // no prescaler
-        TIMSK1 |= (1 << ICIE1); // input capture interrupt enable
-    }
+    TCCR1B |= (1 << ICES1); // input capture set for rising edge
+    TCCR1B |= (1 << CS10);  // no prescaler
+    TIMSK1 |= (1 << ICIE1); // input capture interrupt enable
+}
 
-    void timerStop()
-    {
-        TIMSK1 &= ~(1 << ICIE1); // input capture interrupt disable
-    }
+void timerStop()
+{
+    TIMSK1 &= ~(1 << ICIE1); // input capture interrupt disable
+}
 
-    uint16_t getPulseWidthMicroSeconds()
-    {
-        _delay_ms(10);
-        timerStart();
-        _delay_ms(25);
-        timerStop();
+uint16_t getPulseWidthMicroSeconds()
+{
+    _delay_ms(10);
+    timerStart();
+    _delay_ms(25);
+    timerStop();
 
-        return pulse_width >> 4;
-    }
+    return pulse_width >> 4;
+}
 } // namespace

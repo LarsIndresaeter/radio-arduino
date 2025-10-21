@@ -1,9 +1,9 @@
+#include <aes.hpp>
 #include <cmd/payloads.hxx>
 #include <command-handlers-aes.hpp>
 #include <eeprom.hpp>
-#include <aes.hpp>
 
-namespace COMMAND_HANDLERS{
+namespace COMMAND_HANDLERS {
 
 void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -36,4 +36,3 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
 }
 
 } // namespace COMMAND_HANDLERS
-

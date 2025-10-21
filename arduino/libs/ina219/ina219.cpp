@@ -13,7 +13,7 @@
 #define range_160_mv 0x10
 #define range_320_mV 0x11 // 3.2A range with 0.1 ohm resistor
 
-#define samples_1_9bit 0x0011 // 84 uS conversion time
+#define samples_1_9bit 0x0011  // 84 uS conversion time
 #define samples_1_12bit 0x0011 // 532 uS conversion time
 #define samples_1 0x1000
 #define samples_2 0x1001
@@ -107,4 +107,3 @@ uint16_t readIna219Current(void)
 
     return current;
 }
-

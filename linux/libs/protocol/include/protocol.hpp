@@ -11,10 +11,7 @@ using ProtocolCallback = std::function<void(std::vector<uint8_t>&)>;
 
 class LinuxProtocol : public BufferProtocol {
 public:
-    LinuxProtocol(
-        const ProtocolCallback& send,
-        const ProtocolCallback& receive,
-        CryptoHandlerInterface* cryptoHandler);
+    LinuxProtocol(const ProtocolCallback& send, const ProtocolCallback& receive, CryptoHandlerInterface* cryptoHandler);
 
     void receive(std::vector<uint8_t> data);
     void send(std::vector<uint8_t> data);

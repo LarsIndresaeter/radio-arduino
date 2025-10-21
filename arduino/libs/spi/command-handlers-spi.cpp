@@ -2,7 +2,7 @@
 #include <command-handlers-spi.hpp>
 #include <spi.hpp>
 
-namespace COMMAND_HANDLERS{
+namespace COMMAND_HANDLERS {
 
 void commandSpiRead(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -18,9 +18,7 @@ void commandSpiRead(uint8_t* commandPayload, uint8_t* responsePayload)
 
     SPI_masterTransmitByte(command.reg);
 
-    for (uint8_t i = 0;
-         i < command.length && i < sizeof(response.data);
-         i++) {
+    for (uint8_t i = 0; i < command.length && i < sizeof(response.data); i++) {
         response.data[i] = SPI_masterReceive();
     }
 
@@ -40,9 +38,7 @@ void commandSpiWrite(uint8_t* commandPayload, uint8_t* responsePayload)
 
     SPI_masterTransmitByte(0x20 | command.reg);
 
-    for (uint8_t i = 0;
-         i < command.length && i < sizeof(command.data);
-         i++) {
+    for (uint8_t i = 0; i < command.length && i < sizeof(command.data); i++) {
         SPI_masterTransmitByte(command.data[i]);
     }
 
@@ -52,4 +48,3 @@ void commandSpiWrite(uint8_t* commandPayload, uint8_t* responsePayload)
 }
 
 } // namespace COMMAND_HANDLERS
-

@@ -10,10 +10,7 @@
 
 class EventProcess {
 public:
-    EventProcess(
-        std::function<void(int)> tick = nullptr,
-        int max_events = 50,
-        int timeout = 2000);
+    EventProcess(std::function<void(int)> tick = nullptr, int max_events = 50, int timeout = 2000);
 
     ~EventProcess();
 
@@ -29,4 +26,3 @@ private:
     int epoll_fd;
     std::function<void()> tick = nullptr;
 };
-

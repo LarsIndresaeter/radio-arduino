@@ -7,18 +7,15 @@
 
 namespace PROTOCOL {
 namespace ENCRYPTED {
-    constexpr uint8_t CHECKSUM_OFFSET
-        = 4 + 0; // inner checksum. Verify correct decryption
-    constexpr uint8_t MESSAGE_ID_OFFSET
-        = 4 + 4; // should be incremented for each message to prevent playback
-                 // attack
+    constexpr uint8_t CHECKSUM_OFFSET = 4 + 0;   // inner checksum. Verify correct decryption
+    constexpr uint8_t MESSAGE_ID_OFFSET = 4 + 4; // should be incremented for each message to prevent playback
+                                                 // attack
     constexpr uint8_t NONCE_OFFSET = 4 + 8;
     constexpr uint8_t RESERVED_OFFSET = 4 + 12;
     constexpr uint8_t PAYLOAD_OFFSET = 4 + 16;
     constexpr uint8_t HEADER_LENGTH = 4 + 16;
     constexpr uint8_t CRYPTO_OVERHEAD = 4 + 16;
-    constexpr uint8_t MAC_LENGTH
-        = 4; // outer message authentification code. Must pass before decryption
+    constexpr uint8_t MAC_LENGTH = 4; // outer message authentification code. Must pass before decryption
 }
 
 namespace HEADER {
@@ -68,11 +65,8 @@ public:
             uint32_t crcTableVal;
             uint8_t crcTableIndex = (uint8_t)(tmp >> 24) ^ *p;
             uint8_t j;
-            for (crcTableVal = (uint32_t)crcTableIndex << 24, j = 8; j > 0;
-                 --j) {
-                crcTableVal = (crcTableVal & 0x80000000)
-                    ? ((crcTableVal << 1) ^ CRC32_POLY)
-                    : (crcTableVal << 1);
+            for (crcTableVal = (uint32_t)crcTableIndex << 24, j = 8; j > 0; --j) {
+                crcTableVal = (crcTableVal & 0x80000000) ? ((crcTableVal << 1) ^ CRC32_POLY) : (crcTableVal << 1);
             }
             tmp = (tmp << 8) ^ crcTableVal;
         }
@@ -83,12 +77,12 @@ public:
     {
         uint32_t retval = 0;
 
-        retval = (uint32_t) buffer[0] << 24;
-        retval |= (uint32_t) buffer[1] << 16;
-        retval |= (uint32_t) buffer[2] << 8;
-        retval |= (uint32_t) buffer[3];
+        retval = (uint32_t)buffer[0] << 24;
+        retval |= (uint32_t)buffer[1] << 16;
+        retval |= (uint32_t)buffer[2] << 8;
+        retval |= (uint32_t)buffer[3];
 
-        return(retval);
+        return (retval);
     }
 
     void writeUint32ToBuffer(uint8_t* buffer, uint32_t value)
@@ -103,30 +97,23 @@ public:
     {
         uint32_t crc = 0;
 
-        packet[PROTOCOL::HEADER::SYNC0_OFFSET]
-            = PROTOCOL::HEADER::SYNC_PATTERN_BYTE_0;
-        packet[PROTOCOL::HEADER::SYNC1_OFFSET]
-            = PROTOCOL::HEADER::SYNC_PATTERN_BYTE_1;
-        packet[PROTOCOL::HEADER::VERSION_OFFSET]
-            = protocol_version;
+        packet[PROTOCOL::HEADER::SYNC0_OFFSET] = PROTOCOL::HEADER::SYNC_PATTERN_BYTE_0;
+        packet[PROTOCOL::HEADER::SYNC1_OFFSET] = PROTOCOL::HEADER::SYNC_PATTERN_BYTE_1;
+        packet[PROTOCOL::HEADER::VERSION_OFFSET] = protocol_version;
         packet[PROTOCOL::HEADER::LENGTH_OFFSET] = length;
         for (int i = 0; i < length; i++) {
             packet[PROTOCOL::PAYLOAD::PAYLOAD_OFFSET + i] = payload[i];
         }
-        CRC32_calculate(
-            (uint8_t*)&packet[PROTOCOL::PAYLOAD::PAYLOAD_OFFSET], length, &crc);
+        CRC32_calculate((uint8_t*)&packet[PROTOCOL::PAYLOAD::PAYLOAD_OFFSET], length, &crc);
         writeUint32ToBuffer(&packet[PROTOCOL::HEADER::LENGTH + length], crc);
     }
 
-    void createEncryptedPacket(
-        uint8_t length, uint8_t* payload, uint8_t* packet, uint8_t protocol_version)
+    void createEncryptedPacket(uint8_t length, uint8_t* payload, uint8_t* packet, uint8_t protocol_version)
     {
         uint32_t crc = 0;
 
-        packet[PROTOCOL::HEADER::SYNC0_OFFSET]
-            = PROTOCOL::HEADER::SYNC_PATTERN_BYTE_0;
-        packet[PROTOCOL::HEADER::SYNC1_OFFSET]
-            = PROTOCOL::HEADER::SYNC_PATTERN_BYTE_1;
+        packet[PROTOCOL::HEADER::SYNC0_OFFSET] = PROTOCOL::HEADER::SYNC_PATTERN_BYTE_0;
+        packet[PROTOCOL::HEADER::SYNC1_OFFSET] = PROTOCOL::HEADER::SYNC_PATTERN_BYTE_1;
         packet[PROTOCOL::HEADER::VERSION_OFFSET] = protocol_version;
         packet[PROTOCOL::HEADER::LENGTH_OFFSET] = length + PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD;
 
@@ -147,17 +134,14 @@ public:
         writeUint32ToBuffer(&packet[PROTOCOL::ENCRYPTED::CHECKSUM_OFFSET], checksum);
 
         // encrypt inner checksum, nonce, message_id and message
-        m_cryptoHandler->encrypt(
-            PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD - 4 + length, &packet[4]);
+        m_cryptoHandler->encrypt(PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD - 4 + length, &packet[4]);
 
         // add message authentification code
         uint32_t mac = m_cryptoHandler->mac(length + 16, &packet[PROTOCOL::ENCRYPTED::CHECKSUM_OFFSET]);
         writeUint32ToBuffer(&packet[PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD + length], mac);
 
         CRC32_calculate(
-            (uint8_t*)&packet[PROTOCOL::PAYLOAD::PAYLOAD_OFFSET],
-            length + PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD,
-            &crc);
+            (uint8_t*)&packet[PROTOCOL::PAYLOAD::PAYLOAD_OFFSET], length + PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD, &crc);
         writeUint32ToBuffer(&packet[PROTOCOL::HEADER::LENGTH + PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD + length], crc);
     }
 
@@ -175,8 +159,7 @@ public:
         m_cryptoHandler->decrypt(length - 4, &payload[0]);
 
         // validate checksum
-        uint32_t checksum_calculated
-            = m_cryptoHandler->checksum(length - 8, &payload[4]);
+        uint32_t checksum_calculated = m_cryptoHandler->checksum(length - 8, &payload[4]);
         uint32_t checksum_package = readUint32FromBuffer(&payload[0]);
         uint32_t message_id = readUint32FromBuffer(&payload[4]);
 
@@ -203,7 +186,7 @@ public:
         }
         else {
             // update package header
-            payload[2] = 1;               // protocol changed to not encrypted
+            payload[2] = 1;                                                 // protocol changed to not encrypted
             payload[3] = payload[3] - PROTOCOL::ENCRYPTED::CRYPTO_OVERHEAD; // stripped away crypto overhead
 
             return payload[3];
@@ -214,4 +197,3 @@ protected:
     CryptoHandlerInterface* m_cryptoHandler;
     uint32_t m_lastMessageId = 0;
 };
-

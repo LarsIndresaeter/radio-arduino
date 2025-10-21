@@ -20,15 +20,9 @@ uint8_t ringbuffer[UART::RINGBUFFER_SIZE] = { 0 };
 uint8_t rb_length = 0;
 uint8_t rb_idx = 0;
 
-uint32_t getUartTxBytes()
-{
-    return uart_tx;
-}
+uint32_t getUartTxBytes() { return uart_tx; }
 
-uint32_t getUartRxBytes()
-{
-    return uart_rx;
-}
+uint32_t getUartRxBytes() { return uart_rx; }
 
 void rb_put(uint8_t c)
 {
@@ -36,8 +30,7 @@ void rb_put(uint8_t c)
         return;
     }
 
-    UART::ringbuffer[(UART::rb_idx + UART::rb_length++) % UART::RINGBUFFER_SIZE]
-        = c;
+    UART::ringbuffer[(UART::rb_idx + UART::rb_length++) % UART::RINGBUFFER_SIZE] = c;
 }
 
 uint8_t rb_get()
@@ -78,7 +71,11 @@ void Uart::init()
     sei();
 }
 
-ISR(USART_RX_vect) { UART::rb_put(UDR0); uart_rx++;}
+ISR(USART_RX_vect)
+{
+    UART::rb_put(UDR0);
+    uart_rx++;
+}
 
 void Uart::putChar(char c)
 {
