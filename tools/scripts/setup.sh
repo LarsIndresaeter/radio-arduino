@@ -34,6 +34,11 @@ setup_linux()
 
 setup_all()
 {
+    for i in $(conan editable list | grep ^raduino-)
+    do
+        conan editable remove ${i}
+    done
+
     setup_interface
     setup_arduino
     setup_linux
