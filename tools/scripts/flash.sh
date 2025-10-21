@@ -2,9 +2,9 @@
 
 PARAM=$1
 
-if [ "${PARAM}" == "nano" ]
+if [ "${PARAM}" == "nano-pro" ]
 then
-    ${RADUINO_SCRIPTS_DIR}/nano_flash.sh $2
+    ${RADUINO_SCRIPTS_DIR}/nano-pro_flash.sh $2
 fi
 
 if [ "${PARAM}" == "rf-nano" ]
@@ -19,5 +19,5 @@ fi
 
 if [ "${PARAM}" == "" ]
 then
-    echo "missing device paramter: nano, rf-nano og auto"
+    echo "missing device paramter: nano-pro, rf-nano og auto"
 fi
