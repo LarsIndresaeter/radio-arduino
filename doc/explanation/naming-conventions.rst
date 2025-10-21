@@ -15,3 +15,10 @@ variable names
 
 * camelCase is preferred over snake_case
 
+commit messages
+---------------
+
+In this repo we try to follow `conventional commits <https://www.conventionalcommits.org/en/v1.0.0/>`_
+
+Commits messages should be imperative and answer the question: "if applied this commit will ..."
+
