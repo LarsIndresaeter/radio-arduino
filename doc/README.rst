@@ -1,4 +1,5 @@
-. Documentation
+Documentation
+=============
 
 Inspired by https://docs.divio.com/documentation-system/
 
@@ -8,6 +9,7 @@ Tutorials
 Lessons that take the reader by the hand through a series of steps to complete a project.
 
 For example:
+
 * how to compile
 * how to download software to arduino
 * how to publish data to a mqtt broker
