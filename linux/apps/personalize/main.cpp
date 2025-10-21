@@ -11,7 +11,7 @@
 
 void print_usage()
 {
-    std::cout << "raduino-node" << std::endl;
+    std::cout << "raduino-personalize" << std::endl;
     std::cout << "       -n : set device name" << std::endl;
     std::cout << "       -c : current transport key" << std::endl;
     std::cout << "       -t : new transport key" << std::endl;

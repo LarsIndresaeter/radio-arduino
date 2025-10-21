@@ -56,5 +56,5 @@ commands that interact with the system state
 * set_node_address
 * keep_alive
 * set_radio_role
-* unencrypted_session
+* unlock_session
 

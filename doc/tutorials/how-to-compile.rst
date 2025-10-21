@@ -5,12 +5,7 @@ compile the code using
 
 For local development you need to install conan. 
 
-install conan
--------------
 
-.. code-block:: sh
-
-    RUN pip3 install conan==1.57
 
 build using conan
 ------------------

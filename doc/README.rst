@@ -1,6 +1,6 @@
 . Documentation
 
-Inspired by https://docs.divio.com/documentation-system/how-to-guides/
+Inspired by https://docs.divio.com/documentation-system/
 
 Tutorials
 =========
