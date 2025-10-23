@@ -79,6 +79,10 @@ then
 elif [ "${PARAM}" == "linux" ]
 then
     build_linux
+elif [ "${PARAM}" == "dockerapp" ]
+then
+    TAG_LATEST=$(git describe --tags --abbrev=0)
+    docker build -t raduino:${TAG_LATEST} --file tools/docker/Dockerfile.dockerapp .
 elif [ "${PARAM}" == "help" ]
 then
     print_help

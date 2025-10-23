@@ -30,6 +30,12 @@ if [ -x "$(command -v docker)" ]; then
     if [ "$1" == "dockerbuild" ]
     then
         docker build -t $CONTAINER_NAME tools/docker/
+    elif [ "$2" == "dockerapp" ]
+    then
+        ./tools/scripts/build.sh dockerapp
+    elif [ "$1" == "dockerapp" ]
+    then
+        ./tools/scripts/dockerapp.sh "$2"
     else
         docker run ${DEVICE_STRING} ${USER_STRING} -v ${REPO_BASE_DIR}/:/home/lars/ $CONTAINER_NAME bash -c "tools/scripts/docker.sh $1 $2 $3 $4"
     fi
