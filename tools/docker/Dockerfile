@@ -15,6 +15,7 @@ RUN useradd -ms /bin/bash lars
 
 RUN apt-get install -y cmake ccache gcc-avr avr-libc avrdude
 RUN apt-get update && apt-get install -y git
+RUN apt-get update && apt-get install -y bc
 
 USER lars
 WORKDIR /home/lars/
