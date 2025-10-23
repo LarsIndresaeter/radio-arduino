@@ -5,6 +5,15 @@ flash using provided tools
 
 There is a tools folder in the root of this repository. Use that to flash arduino
 
+add your user to the dialout group
+----------------------------------
+
+On linux the user need to be in the dialout group to use the serial port
+
+.. code-block:: sh
+
+   sudo usermod -a -G dialout $USER
+
 add udev rules
 --------------
 
@@ -34,4 +43,14 @@ The command for flashing is `raduino flash <type> <device>`. Use the provided he
 .. code-block:: sh
 
    raduino flash nano gateway
+
+flash using docker
+------------------
+
+if you are using docker to build and flash then you might need to change access rights to the serial device
+
+.. code-block:: sh
+
+   sudo chmod 666 /dev/ttyUSB0
+
 
