@@ -60,7 +60,7 @@ run docker app
 
 .. code-block:: sh
 
-   raduino dockerapp <tag>
+   raduino dockerapp run <tag>
 
 if you do not supply a tag then a list of raduino docker apps will be listed
 
