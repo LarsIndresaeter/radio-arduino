@@ -1,9 +1,11 @@
 FROM ubuntu:22.04
 
 RUN apt-get update
+RUN apt-get install -y avrdude
 RUN apt-get install -y --only-upgrade libstdc++6
 
 COPY bin/* /bin/
+COPY tools/scripts/raduino-flash.sh /bin/
 
 RUN useradd -ms /bin/bash raduino
 USER raduino

@@ -1,12 +1,23 @@
 #!/bin/bash
 
-TAG=$1
+COMMAND=$1
+TAG=$2
 
-if [ "${TAG}" == "" ]
+if [ "${COMMAND}" == "build" ]
 then
-    echo "you must supply a version tag"
-    echo ""
-    docker images raduino
+    TAG_LATEST=$(git describe --tags --abbrev=0)
+    docker build -t raduino:${TAG_LATEST} --file tools/docker/Dockerfile.dockerapp .
+elif [ "${COMMAND}" == "run" ]
+then
+    if [ "${TAG}" == "" ]
+    then
+        echo "you must supply a version tag"
+        echo ""
+        docker images raduino
+    else
+        docker run -it --rm --device=/dev/ttyUSB0 raduino:${TAG} bash
+    fi
 else
-    docker run -it --rm --device=/dev/ttyUSB0 raduino:${TAG} bash
+    echo "first parameter should be either build or run"
 fi
+

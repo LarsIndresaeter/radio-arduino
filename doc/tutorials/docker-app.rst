@@ -53,7 +53,7 @@ build docker app
 
 .. code-block:: sh
 
-   raduino build dockerapp
+   raduino dockerapp build
 
 run docker app
 --------------
