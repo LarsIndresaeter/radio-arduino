@@ -27,7 +27,7 @@ setup_arduino()
 setup_linux()
 {
     RADUINO_GATEWAY_VERSION=$(conan inspect --raw version linux)
-    conan editable add linux raduino-gateway/${RADUINO_GATEWAY_VERSION}@lars/test --layout=tools/conan/layout/linux.txt
+    conan editable add linux raduino-gateway/${RADUINO_GATEWAY_VERSION}@raduino/test --layout=tools/conan/layout/linux.txt
     conan install -if build/linux linux -o raduino-gateway:mqtt=True --build=missing
     conan build -bf build/linux linux
 }

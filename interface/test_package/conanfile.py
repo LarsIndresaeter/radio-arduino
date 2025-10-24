@@ -15,11 +15,11 @@ class AvrUartConan(ConanFile):
             "CMakeLists.txt",
             "*.cpp",
             ]
-    test_type = "raduino-api/0.0.1@lars/test"
+    test_type = "raduino-api/0.0.1@raduino/test"
 
     def requirements(self):
         self.requires("gtest/1.8.1")
-        self.requires("raduino-api/0.0.1@lars/test",private=True)
+        self.requires("raduino-api/0.0.1@raduino/test",private=True)
 
     def build_requirements(self):
         self.build_requires("gtest/1.8.1", force_host_context=True)

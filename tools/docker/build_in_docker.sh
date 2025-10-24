@@ -37,7 +37,7 @@ if [ -x "$(command -v docker)" ]; then
     then
         ./tools/scripts/dockerapp.sh "$2"
     else
-        docker run ${DEVICE_STRING} ${USER_STRING} -v ${REPO_BASE_DIR}/:/home/lars/ $CONTAINER_NAME bash -c "tools/scripts/docker.sh $1 $2 $3 $4"
+        docker run ${DEVICE_STRING} ${USER_STRING} -v ${REPO_BASE_DIR}/:/home/raduino/ $CONTAINER_NAME bash -c "tools/scripts/docker.sh $1 $2 $3 $4"
     fi
 else
     echo "you must install docker"
