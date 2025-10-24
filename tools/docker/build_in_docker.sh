@@ -29,7 +29,7 @@ if [ -x "$(command -v docker)" ]; then
     # build image or build code
     if [ "$1" == "dockerbuild" ]
     then
-        docker build -t $CONTAINER_NAME tools/docker/
+        docker build -t $CONTAINER_NAME -f tools/docker/Dockerfile.build .
     elif [ "$2" == "dockerapp" ]
     then
         ./tools/scripts/build.sh dockerapp
