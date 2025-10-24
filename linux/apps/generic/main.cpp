@@ -33,10 +33,6 @@ void print_usage()
     std::cout << "       -D : debug command" << std::endl;
     std::cout << "       -t : disable transport encryption" << std::endl;
     std::cout << "       -T : enable transport encryption" << std::endl;
-    std::cout << "       -i : I2C write command" << std::endl;
-    std::cout << "       -I : I2C read command" << std::endl;
-    std::cout << "       -d : I2C device address" << std::endl;
-    std::cout << "       -o : I2C device offset" << std::endl;
     std::cout << "       -M : ina219 power monitor" << std::endl;
     std::cout << "       -N : ina219 power monitor, statistic per second for "
                  "<N> seconds"
@@ -158,14 +154,8 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
 
-    while ((option = getopt(argc, argv, "P:DBSHCs:Rd:VvhtTgGi:I:o:MN:XE:K:b:r:Z:zW:L:FJU:jpaxnu")) != -1) {
+    while ((option = getopt(argc, argv, "P:DBSHCs:RVvhtTgGMN:XE:K:b:r:Z:zW:L:FJU:jpaxnu")) != -1) {
         switch (option) {
-        case 'd':
-            i2cDeviceAddress = atoi(optarg);
-            break;
-        case 'o':
-            i2cDeviceOffset = atoi(optarg);
-            break;
         case 's': {
             uint32_t delay = atoi(optarg);
             std::cout << mon.get<>(RaduinoCommandSleep(delay), static_cast<std::chrono::milliseconds>(delay + 2000))
@@ -307,15 +297,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             break;
         case 'j':
             std::cout << mon.get<>(RaduinoCommandVcc()) << std::endl;
-            break;
-        case 'i': {
-            std::string s(optarg);
-            std::vector<uint8_t> vec(s.begin(), s.end());
-            std::cout << mon.get<>(RaduinoCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec.size(), vec))
-                      << std::endl;
-        } break;
-        case 'I':
-            std::cout << mon.get<>(RaduinoCommandI2cRead(i2cDeviceAddress, i2cDeviceOffset, atoi(optarg))) << std::endl;
             break;
         case 'M':
             std::cout << mon.get<>(RaduinoCommandIna219()) << std::endl;
