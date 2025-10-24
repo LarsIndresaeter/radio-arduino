@@ -21,8 +21,35 @@ then
     echo "           bump <number> : bump number <major|minor|patch> and create tag"
     echo "                    push : push latest tag to origin"
     echo "                  detect : detect change but do not create tag"
+    echo "             detect auto : detect change and create tag"
     echo "                  latest : print latest tag"
     exit 1
+fi
+
+if [ "${ACTION}" == "detect" ] 
+then
+    COUNT_FEAT=$(git log ${TAG_LATEST}..HEAD --oneline --pretty=format:%s | grep -c "^feat")
+    COUNT_FIX=$(git log ${TAG_LATEST}..HEAD --oneline --pretty=format:%s | grep -c "^fix")
+
+    if [ ${COUNT_FEAT} -gt 0 ]
+    then
+        echo "${COUNT_FEAT} new feat: commits. Bump minor!"
+        if [ "${PARAM}" == "auto" ] 
+        then
+            ACTION="bump"
+            PARAM="minor"
+        fi
+        echo "raduino release bump minor"
+    elif [ ${COUNT_FIX} -gt 0 ]
+    then
+        echo "${COUNT_FIX} new fix: commits. Bump patch!"
+        if [ "${PARAM}" == "auto" ] 
+        then
+            ACTION="bump"
+            PARAM="patch"
+        fi
+        echo "raduino release bump patch"
+    fi
 fi
 
 if [ "${ACTION}" == "bump" ] 
@@ -46,20 +73,6 @@ then
 elif [ "${ACTION}" == "push" ] 
 then
     git push ${TAG_LATEST} origin
-elif [ "${ACTION}" == "detect" ] 
-then
-    COUNT_FEAT=$(git log ${TAG_LATEST}..HEAD --oneline --pretty=format:%s | grep -c "^feat")
-    COUNT_FIX=$(git log ${TAG_LATEST}..HEAD --oneline --pretty=format:%s | grep -c "^fix")
-
-    if [ ${COUNT_FEAT} -gt 0 ]
-    then
-        echo "${COUNT_FEAT} new feat: commits. Bump minor!"
-        echo "raduino release bump minor"
-    elif [ ${COUNT_FIX} -gt 0 ]
-    then
-        echo "${COUNT_FIX} new fix: commits. Bump patch!"
-        echo "raduino release bump patch"
-    fi
 elif [ "${ACTION}" == "latest" ] 
 then
     echo "$TAG_LATEST"
