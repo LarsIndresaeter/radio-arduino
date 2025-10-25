@@ -45,7 +45,6 @@ void print_usage()
     std::cout << "       -U : radio uart command <s> send, <r> receive" << std::endl;
     std::cout << "       -j : read vcc" << std::endl;
     std::cout << "       -s : sleep" << std::endl;
-    std::cout << "       -L : print text on LCD" << std::endl;
     std::cout << "       -w : wake up sleeping rx node" << std::endl;
     std::cout << "       -N : wake up sleeping rx node if data available flag is set" << std::endl;
     std::cout << "       -q : read quadrature encoder" << std::endl;
@@ -153,7 +152,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t keepAliveInterval = 0;
     bool verbose = false;
 
-    while ((option = getopt(argc, argv, "P:DBHeCs:RVvhtTgGNE:Z:zwxqAL:U:jn:a:k:pr:b:K:u")) != -1) {
+    while ((option = getopt(argc, argv, "P:DBHeCs:RVvhtTgGNE:Z:zwxqAU:jn:a:k:pr:b:K:u")) != -1) {
         switch (option) {
         case 's': {
             uint32_t delay = atoi(optarg);
@@ -225,10 +224,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'g': {
             std::cout << mon.getRadio<>(RaduinoCommandSetRadioRole('g')) << std::endl;
             std::cout << mon.getRadio<>(RaduinoCommandSoftReset()) << std::endl;
-        } break;
-        case 'L': {
-            std::string s(optarg);
-            mon.getRadio<>(RaduinoCommandSsd1306(2, s)); // second line
         } break;
         case 'H':
             std::cout << mon.getRadio<>(RaduinoCommandHotp()) << std::endl;
