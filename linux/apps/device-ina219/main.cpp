@@ -15,10 +15,9 @@
 void print_usage()
 {
     std::cout << "raduino-device-ina219" << std::endl;
-    std::cout << "       -M : ina219 power monitor" << std::endl;
-    std::cout << "       -N : ina219 power monitor, statistic per second for "
-                 "<N> seconds"
-              << std::endl;
+    std::cout << "       -s : read ina219 on gateway" << std::endl;
+    std::cout << "       -s : read ina219 on node" << std::endl;
+    std::cout << "       -n : ina219 stats for <N> seconds on gateway" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -113,12 +112,15 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     char option = 0;
     uint8_t spiRegister = 0;
 
-    while ((option = getopt(argc, argv, "MN:h")) != -1) {
+    while ((option = getopt(argc, argv, "sSn:h")) != -1) {
         switch (option) {
-        case 'M':
+        case 's':
             std::cout << mon.get<>(RaduinoCommandIna219()) << std::endl;
             break;
-        case 'N':
+        case 'S':
+            std::cout << mon.getRadio<>(RaduinoCommandIna219()) << std::endl;
+            break;
+        case 'n':
             readCurrentAndVoltage(mon, atoi(optarg));
             break;
         case 'h':

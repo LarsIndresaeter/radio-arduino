@@ -15,7 +15,8 @@
 void print_usage()
 {
     std::cout << "raduino-device-ds28b20" << std::endl;
-    std::cout << "       -X : ds18b20 temperature sensor" << std::endl;
+    std::cout << "       -x : ds18b20 temperature sensor from gateway" << std::endl;
+    std::cout << "       -X : ds18b20 temperature sensor from node" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -26,8 +27,11 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 
     while ((option = getopt(argc, argv, "Xh")) != -1) {
         switch (option) {
-        case 'X':
+        case 'x':
             std::cout << mon.get<>(RaduinoCommandDs18b20()) << std::endl;
+            break;
+        case 'X':
+            std::cout << mon.getRadio<>(RaduinoCommandDs18b20()) << std::endl;
             break;
         case 'h':
             print_usage();

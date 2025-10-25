@@ -31,7 +31,6 @@ void print_usage()
     std::cout << "       -z : get device name" << std::endl;
     std::cout << "       -a : get device version" << std::endl;
     std::cout << "       -x : get statistics" << std::endl;
-    std::cout << "       -U : radio uart command <s> send, <r> receive" << std::endl;
     std::cout << "       -j : read vcc" << std::endl;
     std::cout << "       -s : sleep" << std::endl;
     std::cout << "       -L : print text on LCD" << std::endl;
@@ -51,7 +50,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
 
-    while ((option = getopt(argc, argv, "P:DBSHCs:RVvhtTgGE:K:b:r:Z:zL:JU:jpaxnu")) != -1) {
+    while ((option = getopt(argc, argv, "P:DBSHCs:RVvhtTgGE:K:b:r:Z:zL:Jjpaxnu")) != -1) {
         switch (option) {
         case 's': {
             uint32_t delay = atoi(optarg);

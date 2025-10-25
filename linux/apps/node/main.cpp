@@ -37,10 +37,6 @@ void print_usage()
     std::cout << "       -D : debug command" << std::endl;
     std::cout << "       -t : disable transport encryption" << std::endl;
     std::cout << "       -T : enable transport encryption" << std::endl;
-    std::cout << "       -i : I2C write command" << std::endl;
-    std::cout << "       -I : I2C read command" << std::endl;
-    std::cout << "       -d : I2C device address" << std::endl;
-    std::cout << "       -o : I2C device offset" << std::endl;
     std::cout << "       -M : ina219 power monitor" << std::endl;
     std::cout << "       -x : get statistics" << std::endl;
     std::cout << "       -X : ds18b20 temperature sensor" << std::endl;
@@ -48,7 +44,6 @@ void print_usage()
     std::cout << "       -g : reboot node as gateway" << std::endl;
     std::cout << "       -Z : set device name" << std::endl;
     std::cout << "       -z : get device name" << std::endl;
-    std::cout << "       -W : WS2812B <string>" << std::endl;
     std::cout << "       -U : radio uart command <s> send, <r> receive" << std::endl;
     std::cout << "       -j : read vcc" << std::endl;
     std::cout << "       -s : sleep" << std::endl;
@@ -156,20 +151,12 @@ void readCurrentAndVoltage(monitor& mon, int samples)
 void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)
 {
     char option = 0;
-    uint16_t i2cDeviceOffset = 0;
-    uint8_t i2cDeviceAddress = 0b10100000;
     uint8_t radioAddress = 0;
     uint8_t keepAliveInterval = 0;
     bool verbose = false;
 
-    while ((option = getopt(argc, argv, "P:DBHeCs:Rd:VvhtTgGi:I:o:MNXE:Z:zW:wxqAL:JU:jn:a:k:pr:b:K:u")) != -1) {
+    while ((option = getopt(argc, argv, "P:DBHeCs:RVvhtTgGMNXE:Z:zwxqAL:U:jn:a:k:pr:b:K:u")) != -1) {
         switch (option) {
-        case 'd':
-            i2cDeviceAddress = atoi(optarg);
-            break;
-        case 'o':
-            i2cDeviceOffset = atoi(optarg);
-            break;
         case 's': {
             uint32_t delay = atoi(optarg);
             std::cout << mon.getRadio<>(
@@ -227,25 +214,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             std::cout << "gpio  : " << mon.getRadio<>(RaduinoCommandGpio()) << std::endl;
             std::cout << "device: " << mon.getRadio<>(RaduinoCommandGetDeviceName()) << std::endl;
         } break;
-        case 'J': {
-            std::vector<uint8_t> ackPayload;
-            for (int i = 0; i < 1000; i++) {
-                auto rec = mon.getRadio<>(RaduinoCommandNrf24l01Read(ackPayload.size(), ackPayload));
-                ackPayload.clear();
-
-                std::this_thread::sleep_for(100ms);
-
-                if (rec.responseStruct().length > 0) {
-                    std::cout << rec << std::endl;
-
-                    for (int j = 0; j < rec.responseStruct().length; j++) {
-                        ackPayload.push_back(rec.responseStruct().data[j]);
-                    }
-                }
-            }
-        }
-
-        break;
         case 'e':
             std::cout << mon.getRadio<>(RaduinoCommandEepromWrite(2, 3)) << std::endl;
             std::cout << mon.getRadio<>(RaduinoCommandEepromRead(2)) << std::endl;
@@ -288,16 +256,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             radioSession.wakeupNotResponding();
             std::cout << mon.getRadio<>(RaduinoCommandVcc()) << std::endl;
         } break;
-        case 'i': {
-            std::string s(optarg);
-            std::vector<uint8_t> vec(s.begin(), s.end());
-            std::cout << mon.getRadio<>(RaduinoCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec.size(), vec))
-                      << std::endl;
-        } break;
-        case 'I':
-            std::cout << mon.getRadio<>(RaduinoCommandI2cRead(i2cDeviceAddress, i2cDeviceOffset, atoi(optarg)))
-                      << std::endl;
-            break;
         case 'M':
             std::cout << mon.getRadio<>(RaduinoCommandIna219()) << std::endl;
             break;

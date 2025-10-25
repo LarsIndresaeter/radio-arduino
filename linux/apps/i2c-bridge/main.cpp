@@ -15,8 +15,10 @@
 void print_usage()
 {
     std::cout << "raduino-i2c-bridge" << std::endl;
-    std::cout << "       -i : I2C write command" << std::endl;
-    std::cout << "       -I : I2C read command" << std::endl;
+    std::cout << "       -w : I2C write command gateway" << std::endl;
+    std::cout << "       -W : I2C write command node" << std::endl;
+    std::cout << "       -r : I2C read command gateway" << std::endl;
+    std::cout << "       -R : I2C read command node" << std::endl;
     std::cout << "       -d : I2C device address" << std::endl;
     std::cout << "       -o : I2C device offset" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
@@ -28,7 +30,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
 
-    while ((option = getopt(argc, argv, "I:i:d:o:h")) != -1) {
+    while ((option = getopt(argc, argv, "w:W:r:R:d:o:h")) != -1) {
         switch (option) {
         case 'd':
             i2cDeviceAddress = atoi(optarg);
@@ -42,8 +44,18 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             std::cout << mon.get<>(RaduinoCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec.size(), vec))
                       << std::endl;
         } break;
-        case 'I':
+        case 'I': {
+            std::string s(optarg);
+            std::vector<uint8_t> vec(s.begin(), s.end());
+            std::cout << mon.getRadio<>(RaduinoCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec.size(), vec))
+                      << std::endl;
+        } break;
+
+        case 'r':
             std::cout << mon.get<>(RaduinoCommandI2cRead(i2cDeviceAddress, i2cDeviceOffset, atoi(optarg))) << std::endl;
+            break;
+        case 'R':
+            std::cout << mon.getRadio<>(RaduinoCommandI2cRead(i2cDeviceAddress, i2cDeviceOffset, atoi(optarg))) << std::endl;
             break;
         case 'h':
             print_usage();

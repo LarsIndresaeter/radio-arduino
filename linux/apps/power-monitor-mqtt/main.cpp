@@ -20,9 +20,7 @@ using namespace std::chrono_literals;
 void print_usage()
 {
     std::cout << "power-monitor" << std::endl;
-    std::cout << "       -N : ina219 power monitor, statistic per second for "
-                 "<N> seconds"
-              << std::endl;
+    std::cout << "       -n : ina219 power monitor, stats for <N> seconds" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
     std::cout << std::endl;
 }
@@ -47,9 +45,9 @@ void parseOpt(int argc, char* argv[], monitor& mon)
 
     char option = 0;
 
-    while ((option = getopt(argc, argv, "N:h")) != -1) {
+    while ((option = getopt(argc, argv, "n:h")) != -1) {
         switch (option) {
-        case 'N':
+        case 'n':
             readCurrentAndVoltage(mon, mqtt_client, atoi(optarg));
             break;
         case 'h':

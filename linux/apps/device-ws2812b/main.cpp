@@ -15,8 +15,8 @@
 void print_usage()
 {
     std::cout << "raduino-device-ws2812b" << std::endl;
-    std::cout << "       -W : WS2812B <string>" << std::endl;
-    std::cout << "       -F : Read servo PWM signal and display on ws2812b ring" << std::endl;
+    std::cout << "       -w : WS2812B <string>" << std::endl;
+    std::cout << "       -s : Read servo PWM signal and display on ws2812b ring" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -25,9 +25,9 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     char option = 0;
     uint8_t spiRegister = 0;
 
-    while ((option = getopt(argc, argv, "W:Fh")) != -1) {
+    while ((option = getopt(argc, argv, "w:sh")) != -1) {
         switch (option) {
-        case 'W': {
+        case 'w': {
             std::vector<uint8_t> red(45);
             std::vector<uint8_t> green(45);
             std::vector<uint8_t> blue(45);
@@ -61,7 +61,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             }
 
         } break;
-        case 'F': {
+        case 's': {
             while (true) {
                 auto r = mon.get<>(RaduinoCommandTimer());
 
