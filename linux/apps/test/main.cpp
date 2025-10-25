@@ -98,12 +98,6 @@ void parseOpt(int argc, char* argv[], monitor& mon)
 
     while ((option = getopt(argc, argv, "ACeI:E:O:d:ghi:o:bSsK:")) != -1) {
         switch (option) {
-        case 's': {
-            uint32_t delay = atoi(optarg);
-            std::cout << mon.getRadio<>(
-                RaduinoCommandSleep(delay), static_cast<std::chrono::milliseconds>(delay + 2000))
-                      << std::endl;
-        } break;
         case 'e':
             std::cout << mon.get<>(RaduinoCommandEepromWrite(2, 3)) << std::endl;
             std::cout << mon.get<>(RaduinoCommandEepromRead(2)) << std::endl;
