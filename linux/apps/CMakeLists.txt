@@ -1,6 +1,6 @@
 
 add_subdirectory(mqtt)
-add_subdirectory(power)
+add_subdirectory(power-monitor)
 add_subdirectory(node)
 add_subdirectory(test)
 add_subdirectory(gateway)
