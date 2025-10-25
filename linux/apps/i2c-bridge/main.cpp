@@ -11,56 +11,95 @@
 #include <thread>
 #include <uart.hpp>
 
-
 void print_usage()
 {
     std::cout << "raduino-i2c-bridge" << std::endl;
-    std::cout << "       -w : I2C write command gateway" << std::endl;
-    std::cout << "       -W : I2C write command node" << std::endl;
-    std::cout << "       -r : I2C read command gateway" << std::endl;
-    std::cout << "       -R : I2C read command node" << std::endl;
-    std::cout << "       -d : I2C device address" << std::endl;
-    std::cout << "       -o : I2C device offset" << std::endl;
-    std::cout << "       -h : print this text" << std::endl;
+    std::cout << "          -a : device address" << std::endl;
+    std::cout << "          -c : control register address" << std::endl;
+    std::cout << " -r <length> : read <length> bytes" << std::endl;
+    std::cout << " -s <string> : write <string>" << std::endl;
+    std::cout << "  -w <value> : write <value>" << std::endl;
+    std::cout << "          -V : Verbose on" << std::endl;
+    std::cout << "          -h : print this text" << std::endl;
 }
 
 void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)
 {
     char option = 0;
-    uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
 
-    while ((option = getopt(argc, argv, "w:W:r:R:d:o:h")) != -1) {
+    bool readOperation = false;
+    bool writeOperation = false;
+    uint16_t registerAddress = 0;
+    uint8_t length = 0;
+    std::string writeString = "";
+    uint16_t writeValue = 0;
+
+    while ((option = getopt(argc, argv, "a:c:r:s:w:Vh")) != -1) {
         switch (option) {
-        case 'd':
+        case 'a':
             i2cDeviceAddress = atoi(optarg);
             break;
-        case 'o':
-            i2cDeviceOffset = atoi(optarg);
+        case 'c':
+            registerAddress = atoi(optarg);
             break;
-        case 'i': {
-            std::string s(optarg);
-            std::vector<uint8_t> vec(s.begin(), s.end());
-            std::cout << mon.get<>(RaduinoCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec.size(), vec))
-                      << std::endl;
-        } break;
-        case 'I': {
-            std::string s(optarg);
-            std::vector<uint8_t> vec(s.begin(), s.end());
-            std::cout << mon.getRadio<>(RaduinoCommandI2cWrite(i2cDeviceAddress, i2cDeviceOffset, vec.size(), vec))
-                      << std::endl;
-        } break;
-
         case 'r':
-            std::cout << mon.get<>(RaduinoCommandI2cRead(i2cDeviceAddress, i2cDeviceOffset, atoi(optarg))) << std::endl;
+            length = atoi(optarg);
+            readOperation = true;
             break;
-        case 'R':
-            std::cout << mon.getRadio<>(RaduinoCommandI2cRead(i2cDeviceAddress, i2cDeviceOffset, atoi(optarg))) << std::endl;
+        case 's':
+            writeString = optarg;
+            writeOperation = true;
+            break;
+        case 'w':
+            writeValue = atoi(optarg);
+            writeOperation = true;
+            break;
+        case 'V':
+            mon.printDebug(true);
+            mon.setPrintResponseTime(true);
             break;
         case 'h':
             print_usage();
             break;
         }
+    }
+
+    // std::cout << "device address   = " << std::to_string(i2cDeviceAddress) << std::endl;
+     std::cout << "register address = " << std::to_string(registerAddress) << std::endl;
+    // std::cout << "length           = " << std::to_string(length) << std::endl;
+    // std::cout << "write string     = " << writeString << std::endl;
+
+    if (readOperation && writeOperation) {
+        std::cout << "you can only read or write, not both. exit" << std::endl;
+        exit(1);
+    }
+
+    if (readOperation) {
+        std::cout << mon.get<>(RaduinoCommandI2cRead(i2cDeviceAddress, registerAddress, length)) << std::endl;
+    }
+    else if (writeOperation) {
+        if (writeString == "") {
+            std::vector<uint8_t> data_vector(2);
+            data_vector.at(0) = writeValue>>8;
+            data_vector.at(1) = writeValue;
+            std::cout << mon.get<>(RaduinoCommandI2cWrite(i2cDeviceAddress, registerAddress, 2, data_vector))
+                      << std::endl;
+        }
+        else {
+            std::vector<uint8_t> data_vector;
+            data_vector.assign(writeString.begin(), writeString.end());
+            length = data_vector.size();
+            if (length > 16) {
+                length = 16;
+            }
+            std::cout << mon.get<>(RaduinoCommandI2cWrite(i2cDeviceAddress, registerAddress, length, data_vector))
+                      << std::endl;
+        }
+    }
+    else {
+        std::cout << "device not specified. exit" << std::endl;
+        exit(1);
     }
 
     exit(0);
