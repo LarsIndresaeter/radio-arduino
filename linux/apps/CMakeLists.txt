@@ -1,7 +1,7 @@
 
 add_subdirectory(mqtt)
 add_subdirectory(power)
-add_subdirectory(rf)
+add_subdirectory(node)
 add_subdirectory(test)
 add_subdirectory(gateway)
 add_subdirectory(i2c-bridge)
