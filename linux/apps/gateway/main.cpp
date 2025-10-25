@@ -212,38 +212,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'B':
             std::cout << mon.get<>(RaduinoCommandBlink(), static_cast<std::chrono::milliseconds>(4000)) << std::endl;
             break;
-        case 'J': {
-            // mon.get<>(RaduinoCommandNrf24l01Init({0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, {0xF0, 0xF0, 0xF0, 0xF0, 0xC2}, 121,
-            // false));
-
-            std::vector<uint8_t> ackPayload;
-            for (int i = 0; i < 1000; i++) {
-                auto rec = mon.get<>(RaduinoCommandNrf24l01Read(ackPayload.size(), ackPayload));
-                ackPayload.clear();
-
-                std::this_thread::sleep_for(100ms);
-
-                if (rec.responseStruct().length > 0) {
-                    // std::cout << "==== STATUS      " << mon.get<>(RaduinoCommandSpiRead(0x07, 1)) << std::endl;
-                    std::cout << rec << std::endl;
-
-                    for (int j = 0; j < rec.responseStruct().length; j++) {
-                        ackPayload.push_back(rec.responseStruct().data[j]);
-                    }
-                }
-            }
-        }
-
-        break;
-        case 'S': {
-            // printf "best\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" | xxd
-            // printf "best\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" | sha1sum
-            auto result = mon.get<>(RaduinoCommandSha1("best"));
-            std::cout << result << std::endl;
-            compareResult(0x31, result.responseStruct().data[0]);
-            compareResult(0x02, result.responseStruct().data[1]);
-            compareResult(0xcf, result.responseStruct().data[2]);
-        } break;
         case 'L': {
             std::string s(optarg);
             mon.get<>(RaduinoCommandSsd1306(2, s)); // second line
@@ -307,18 +275,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'X':
             std::cout << mon.get<>(RaduinoCommandDs18b20()) << std::endl;
             break;
-        case 'U': {
-            std::string s(optarg);
-            if (s.at(0) == 's') {
-                std::vector<uint8_t> address = { 0xF0, 0xF0, 0xF0, 0xF0, 0xC2 };
-                mon.get<>(RaduinoCommandNrf24l01Init(address, address, 121, true));
-            }
-            if (s.at(0) == 'r') {
-                std::vector<uint8_t> address = { 0xF0, 0xF0, 0xF0, 0xF0, 0xC2 };
-                mon.get<>(RaduinoCommandNrf24l01Init(address, address, 121, false));
-            }
-            std::cout << mon.get<>(RaduinoCommandRadioUart(s.at(0))) << std::endl;
-        } break;
         case 'E': {
             std::string s(optarg);
             mon.get<>(RaduinoCommandSetKey('E', s));

@@ -70,6 +70,7 @@ void print_usage()
     std::cout << "       -E : set AES Key" << std::endl;
     std::cout << "       -O : Test SPI commands" << std::endl;
     std::cout << "       -d : I2C device address" << std::endl;
+    std::cout << "       -s : test sha1 command" << std::endl;
     std::cout << "       -g : dump eeprom from mega328p" << std::endl;
     std::cout << "       -i : I2C write command" << std::endl;
     std::cout << "       -o : I2C device offset" << std::endl;
@@ -95,7 +96,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
 
-    while ((option = getopt(argc, argv, "ACeI:E:O:d:ghi:o:bSK:")) != -1) {
+    while ((option = getopt(argc, argv, "ACeI:E:O:d:ghi:o:bSsK:")) != -1) {
         switch (option) {
         case 's': {
             uint32_t delay = atoi(optarg);
@@ -203,6 +204,16 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             std::string s(optarg);
             mon.get<>(RaduinoCommandSetKey('T', s));
         } break;
+        case 's': {
+            // printf "best\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" | xxd
+            // printf "best\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" | sha1sum
+            auto result = mon.get<>(RaduinoCommandSha1("best"));
+            std::cout << result << std::endl;
+            compareResult(0x31, result.responseStruct().data[0]);
+            compareResult(0x02, result.responseStruct().data[1]);
+            compareResult(0xcf, result.responseStruct().data[2]);
+        } break;
+
         case 'h':
             print_usage();
             break;
