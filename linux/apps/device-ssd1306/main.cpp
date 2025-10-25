@@ -9,6 +9,7 @@
 #include <linuxCryptoHandler.hpp>
 #include <monitor.hpp>
 #include <numeric>
+#include <radioSession.hpp>
 #include <thread>
 #include <uart.hpp>
 
@@ -17,6 +18,7 @@ void print_usage()
     std::cout << "raduino-device-ws2812b" << std::endl;
     std::cout << "       -l : write text on ssd1306 LCD on gateway" << std::endl;
     std::cout << "       -L : write text on ssd1306 LCD on node" << std::endl;
+    std::cout << "       -n : wakeup node address" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -24,16 +26,22 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 {
     char option = 0;
     uint8_t spiRegister = 0;
+    uint8_t radioAddress = 0;
 
-    while ((option = getopt(argc, argv, "l:L:h")) != -1) {
+    while ((option = getopt(argc, argv, "l:L:n:h")) != -1) {
         switch (option) {
         case 'l': {
             std::string s(optarg);
             mon.get<>(RaduinoCommandSsd1306(2, s)); // second line
         } break;
+        case 'n':
+            radioAddress = atoi(optarg);
+            break;
         case 'L': {
             std::string s(optarg);
-            mon.getRadio<>(RaduinoCommandSsd1306(2, s)); // second line
+            RadioSession radioSession(mon, radioAddress);
+            radioSession.wakeupNotResponding();
+            std::cout << mon.getRadio<>(RaduinoCommandSsd1306(2, s)) << std::endl;
         } break;
         case 'h':
             print_usage();

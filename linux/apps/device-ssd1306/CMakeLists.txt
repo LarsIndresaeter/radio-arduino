@@ -7,5 +7,5 @@ endif()
 include_directories(../../libs/crypto/include)
 
 add_executable(raduino-device-ssd1306 main.cpp ../../libs/crypto/crypto.cpp)
-target_link_libraries(raduino-device-ssd1306 ${CONAN_LIBS} epollevent eventprocess monitor uart protocol pthread)
+target_link_libraries(raduino-device-ssd1306 ${CONAN_LIBS} epollevent eventprocess monitor uart protocol radiosession pthread)
 
