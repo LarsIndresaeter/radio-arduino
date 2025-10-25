@@ -114,9 +114,16 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 
     while ((option = getopt(argc, argv, "sSn:h")) != -1) {
         switch (option) {
-        case 's':
-            std::cout << mon.get<>(RaduinoCommandIna219()) << std::endl;
-            break;
+        case 's': {
+            auto result = mon.get<>(RaduinoCommandIna219());
+
+            float current = ((int16_t)result.responseStruct().getCurrent()) * 0.001;
+            float voltage = ((int16_t)(result.responseStruct().getVoltage() >> 3)) * 0.004;
+
+            std::cout << result;
+            std::cout << " (float) I=" << std::to_string(current);
+            std::cout << ",   V=" << std::to_string(voltage) << std::endl;
+        } break;
         case 'S':
             std::cout << mon.getRadio<>(RaduinoCommandIna219()) << std::endl;
             break;
