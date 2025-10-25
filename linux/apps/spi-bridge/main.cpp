@@ -18,6 +18,7 @@ void print_usage()
     std::cout << "      -o : offset SPI register" << std::endl;
     std::cout << "      -r : SPI read <length> bytes" << std::endl;
     std::cout << "      -w : SPI write command" << std::endl;
+    std::cout << "      -V : Verbose on" << std::endl;
     std::cout << "      -h : print this text" << std::endl;
 }
 
@@ -26,8 +27,12 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     char option = 0;
     uint8_t spiRegister = 0;
 
-    while ((option = getopt(argc, argv, "o:r:w:h")) != -1) {
+    while ((option = getopt(argc, argv, "Vo:r:w:h")) != -1) {
         switch (option) {
+        case 'V':
+            mon.printDebug(true);
+            mon.setPrintResponseTime(true);
+            break;
         case 'o':
             spiRegister = atoi(optarg);
             break;
