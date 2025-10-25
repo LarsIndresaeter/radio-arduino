@@ -37,9 +37,7 @@ void print_usage()
     std::cout << "       -D : debug command" << std::endl;
     std::cout << "       -t : disable transport encryption" << std::endl;
     std::cout << "       -T : enable transport encryption" << std::endl;
-    std::cout << "       -M : ina219 power monitor" << std::endl;
     std::cout << "       -x : get statistics" << std::endl;
-    std::cout << "       -X : ds18b20 temperature sensor" << std::endl;
     std::cout << "       -E : set AES Key" << std::endl;
     std::cout << "       -g : reboot node as gateway" << std::endl;
     std::cout << "       -Z : set device name" << std::endl;
@@ -155,7 +153,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t keepAliveInterval = 0;
     bool verbose = false;
 
-    while ((option = getopt(argc, argv, "P:DBHeCs:RVvhtTgGMNXE:Z:zwxqAL:U:jn:a:k:pr:b:K:u")) != -1) {
+    while ((option = getopt(argc, argv, "P:DBHeCs:RVvhtTgGNE:Z:zwxqAL:U:jn:a:k:pr:b:K:u")) != -1) {
         switch (option) {
         case 's': {
             uint32_t delay = atoi(optarg);
@@ -256,14 +254,8 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             radioSession.wakeupNotResponding();
             std::cout << mon.getRadio<>(RaduinoCommandVcc()) << std::endl;
         } break;
-        case 'M':
-            std::cout << mon.getRadio<>(RaduinoCommandIna219()) << std::endl;
-            break;
         case 'x':
             std::cout << mon.getRadio<>(RaduinoCommandGetStatistics()) << std::endl;
-            break;
-        case 'X':
-            std::cout << mon.getRadio<>(RaduinoCommandDs18b20()) << std::endl;
             break;
         case 'U': {
             std::string s(optarg);
