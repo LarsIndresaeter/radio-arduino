@@ -66,7 +66,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     }
 
     // std::cout << "device address   = " << std::to_string(i2cDeviceAddress) << std::endl;
-     std::cout << "register address = " << std::to_string(registerAddress) << std::endl;
+    std::cout << "register address = " << std::to_string(registerAddress) << std::endl;
     // std::cout << "length           = " << std::to_string(length) << std::endl;
     // std::cout << "write string     = " << writeString << std::endl;
 
@@ -81,7 +81,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     else if (writeOperation) {
         if (writeString == "") {
             std::vector<uint8_t> data_vector(2);
-            data_vector.at(0) = writeValue>>8;
+            data_vector.at(0) = writeValue >> 8;
             data_vector.at(1) = writeValue;
             std::cout << mon.get<>(RaduinoCommandI2cWrite(i2cDeviceAddress, registerAddress, 2, data_vector))
                       << std::endl;

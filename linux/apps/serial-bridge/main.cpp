@@ -35,7 +35,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         } break;
         case 'r': {
             {
-            std::string s(optarg);
+                std::string s(optarg);
                 std::vector<uint8_t> address = { 0xF0, 0xF0, 0xF0, 0xF0, 0xC2 };
                 mon.get<>(RaduinoCommandNrf24l01Init(address, address, 121, false));
                 std::cout << mon.get<>(RaduinoCommandRadioUart(s.at(0))) << std::endl;
