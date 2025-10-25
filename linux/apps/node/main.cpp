@@ -42,7 +42,6 @@ void print_usage()
     std::cout << "       -g : reboot node as gateway" << std::endl;
     std::cout << "       -Z : set device name" << std::endl;
     std::cout << "       -z : get device name" << std::endl;
-    std::cout << "       -U : radio uart command <s> send, <r> receive" << std::endl;
     std::cout << "       -j : read vcc" << std::endl;
     std::cout << "       -s : sleep" << std::endl;
     std::cout << "       -w : wake up sleeping rx node" << std::endl;
@@ -152,7 +151,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t keepAliveInterval = 0;
     bool verbose = false;
 
-    while ((option = getopt(argc, argv, "P:DBHeCs:RVvhtTgGNE:Z:zwxqAU:jn:a:k:pr:b:K:u")) != -1) {
+    while ((option = getopt(argc, argv, "P:DBHeCs:RVvhtTgGNE:Z:zwxqAjn:a:k:pr:b:K:u")) != -1) {
         switch (option) {
         case 's': {
             uint32_t delay = atoi(optarg);
@@ -252,18 +251,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'x':
             std::cout << mon.getRadio<>(RaduinoCommandGetStatistics()) << std::endl;
             break;
-        case 'U': {
-            std::string s(optarg);
-            if (s.at(0) == 's') {
-                std::vector<uint8_t> address = { 0xF0, 0xF0, 0xF0, 0xF0, 0xC2 };
-                mon.getRadio<>(RaduinoCommandNrf24l01Init(address, address, 121, true));
-            }
-            if (s.at(0) == 'r') {
-                std::vector<uint8_t> address = { 0xF0, 0xF0, 0xF0, 0xF0, 0xC2 };
-                mon.getRadio<>(RaduinoCommandNrf24l01Init(address, address, 121, false));
-            }
-            std::cout << mon.getRadio<>(RaduinoCommandRadioUart(s.at(0))) << std::endl;
-        } break;
         case 'E': {
             std::string s(optarg);
             mon.getRadio<>(RaduinoCommandSetKey('E', s));
