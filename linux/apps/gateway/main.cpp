@@ -33,7 +33,6 @@ void print_usage()
     std::cout << "       -x : get statistics" << std::endl;
     std::cout << "       -j : read vcc" << std::endl;
     std::cout << "       -s : sleep" << std::endl;
-    std::cout << "       -L : print text on LCD" << std::endl;
     std::cout << "       -p : ping command" << std::endl;
     std::cout << "       -E : set encryption key" << std::endl;
     std::cout << "       -K : set transport key on device (command must be encrypted)" << std::endl;
@@ -50,7 +49,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
 
-    while ((option = getopt(argc, argv, "P:DBSHCs:RVvhtTgGE:K:b:r:Z:zL:Jjpaxnu")) != -1) {
+    while ((option = getopt(argc, argv, "P:DBSHCs:RVvhtTgGE:K:b:r:Z:zJjpaxnu")) != -1) {
         switch (option) {
         case 's': {
             uint32_t delay = atoi(optarg);
@@ -74,10 +73,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'B':
             std::cout << mon.get<>(RaduinoCommandBlink(), static_cast<std::chrono::milliseconds>(4000)) << std::endl;
             break;
-        case 'L': {
-            std::string s(optarg);
-            mon.get<>(RaduinoCommandSsd1306(2, s)); // second line
-        } break;
         case 'H':
             std::cout << mon.get<>(RaduinoCommandHotp()) << std::endl;
             break;
