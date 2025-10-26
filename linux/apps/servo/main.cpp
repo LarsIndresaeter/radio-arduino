@@ -14,8 +14,10 @@
 void print_usage()
 {
     std::cout << "raduino-servo" << std::endl;
-    std::cout << "          -g : get pulse width from servo controller 100-200 (1-2 ms)" << std::endl;
-    std::cout << "  -s <value> : set pulse width 100-200 (1-2 ms)" << std::endl;
+    std::cout << "          -g : get pulse width from servo controller 100-200 (1-2 ms) on gateway" << std::endl;
+    std::cout << "          -G : get pulse width from servo controller 100-200 (1-2 ms) on node" << std::endl;
+    std::cout << "  -s <value> : set pulse width 100-200 (1-2 ms) on gateway" << std::endl;
+    std::cout << "  -S <value> : set pulse width 100-200 (1-2 ms) on node" << std::endl;
     std::cout << "          -V : Verbose on" << std::endl;
     std::cout << "          -h : print this text" << std::endl;
 }
@@ -24,14 +26,21 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 {
     char option = 0;
 
-    while ((option = getopt(argc, argv, "gs:Vh")) != -1) {
+    while ((option = getopt(argc, argv, "gGs:S:Vh")) != -1) {
         switch (option) {
         case 'g':
             std::cout << mon.get<>(RaduinoCommandTimer()) << std::endl;
             break;
+        case 'G':
+            std::cout << mon.getRadio<>(RaduinoCommandTimer()) << std::endl;
+            break;
         case 's': {
             uint8_t value = atoi(optarg);
             std::cout << mon.get<>(RaduinoCommandPwm('b', 2, value)) << std::endl;
+        } break;
+        case 'S': {
+            uint8_t value = atoi(optarg);
+            std::cout << mon.getRadio<>(RaduinoCommandPwm('b', 2, value)) << std::endl;
         } break;
         case 'V':
             mon.printDebug(true);
