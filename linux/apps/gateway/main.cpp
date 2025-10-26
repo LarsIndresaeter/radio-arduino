@@ -21,7 +21,6 @@ void print_usage()
     std::cout << "       -B : Blink command" << std::endl;
     std::cout << "       -S : SHA1 command " << std::endl;
     std::cout << "       -H : HOTP command" << std::endl;
-    std::cout << "       -P : pwm command" << std::endl;
     std::cout << "       -R : get random bytes command" << std::endl;
     std::cout << "       -C : print counter values" << std::endl;
     std::cout << "       -D : debug command" << std::endl;
@@ -49,7 +48,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
 
-    while ((option = getopt(argc, argv, "P:DBSHCs:RVvhtTgGE:K:b:r:Z:zJjpaxnu")) != -1) {
+    while ((option = getopt(argc, argv, "DBSHCs:RVvhtTgGE:K:b:r:Z:zJjpaxnu")) != -1) {
         switch (option) {
         case 's': {
             uint32_t delay = atoi(optarg);
@@ -76,10 +75,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'H':
             std::cout << mon.get<>(RaduinoCommandHotp()) << std::endl;
             break;
-        case 'P': {
-            uint8_t value = atoi(optarg);
-            std::cout << mon.get<>(RaduinoCommandPwm('b', 2, value)) << std::endl;
-        } break;
         case 'G':
             std::cout << mon.get<>(RaduinoCommandGpio()) << std::endl;
             break;
