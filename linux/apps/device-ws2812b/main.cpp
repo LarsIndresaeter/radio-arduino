@@ -15,8 +15,8 @@
 void print_usage()
 {
     std::cout << "raduino-device-ws2812b" << std::endl;
+    std::cout << "       -V : Verbose on" << std::endl;
     std::cout << "       -w : WS2812B <string>" << std::endl;
-    std::cout << "       -s : Read servo PWM signal and display on ws2812b ring" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -25,64 +25,52 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     char option = 0;
     uint8_t spiRegister = 0;
 
-    while ((option = getopt(argc, argv, "w:sh")) != -1) {
+    std::vector<uint8_t> red(8);
+    std::vector<uint8_t> green(8);
+    std::vector<uint8_t> blue(8);
+
+    COMMANDS::WS2812B::command_t command;
+
+    using namespace std::chrono;
+
+    while ((option = getopt(argc, argv, "Vw:ah")) != -1) {
         switch (option) {
+        case 'V':
+            mon.printDebug(true);
+            mon.setPrintResponseTime(true);
+            break;
         case 'w': {
-            std::vector<uint8_t> red(45);
-            std::vector<uint8_t> green(45);
-            std::vector<uint8_t> blue(45);
-            COMMANDS::WS2812B::command_t command;
             std::string s(optarg);
 
-            if (s.at(0) == 'a') {
-                using namespace std::chrono;
-                int random_variable
-                    = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count() % 90 + 45;
-                for (int k = 0; k < random_variable; k++) {
-                    for (int i = 0; i < sizeof(command.red); i++) {
-                        if (i % 9 < 3) {
-                            red.at(i) = 1;
-                        }
-                        else if (i % 9 > 5) {
-                            green.at(i) = 1;
-                        }
-                        else {
-                            blue.at(i) = 1;
-                        }
-                    }
-
-                    red.at(k) = 8;
-                    green.at(k) = 8;
-                    blue.at(k) = 8;
-                    RaduinoCommandWs2812b ws2812b(red, green, blue);
-                    mon.get<>(ws2812b);
-                    std::this_thread::sleep_for((k + 5) * 1ms);
-                }
-            }
+            red.at(1) = 8;
+            green.at(1) = 8;
+            blue.at(1) = 8;
+            std::cout << mon.get<>(RaduinoCommandWs2812b(red, green, blue)) << std::endl;
 
         } break;
-        case 's': {
-            while (true) {
-                auto r = mon.get<>(RaduinoCommandTimer());
-
-                uint16_t pulse_width = r.responseStruct().getPulsewidth();
-
-                std::cout << "pulse_width=" << pulse_width << std::endl;
-
-                if ((pulse_width > 1000) && (pulse_width < 2000)) {
-                    std::vector<uint8_t> red(45);
-                    std::vector<uint8_t> green(45);
-                    std::vector<uint8_t> blue(45);
-
-                    int v = (pulse_width - 1000) / 22;
-                    for (int i = 0; i < v; i++) {
-                        red.at(i) = 1;
-                        green.at(i) = 1;
-                        blue.at(i) = 1;
+        case 'a': {
+            for (int k = 0; k < 19; k++) {
+                for (int i = 0; i < sizeof(command.red); i++) {
+                    if (k % 3 == 0) {
+                        red.at(i) = 3;
+                        green.at(i) = 0;
+                        blue.at(i) = 0;
                     }
 
-                    RaduinoCommandWs2812b ws2812b(red, green, blue);
-                    mon.get<>(ws2812b);
+                    if (k % 3 == 1) {
+                        red.at(i) = 0;
+                        green.at(i) = 3;
+                        blue.at(i) = 0;
+                    }
+
+                    if (k % 3 == 2) {
+                        red.at(i) = 0;
+                        green.at(i) = 0;
+                        blue.at(i) = 3;
+                    }
+
+                    mon.get<>(RaduinoCommandWs2812b(red, green, blue));
+                    std::this_thread::sleep_for(100ms);
                 }
             }
         } break;
