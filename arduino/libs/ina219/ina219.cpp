@@ -1,10 +1,11 @@
+#include "include/ina219.hpp"
 #include <ina219.hpp>
 
 void configureIna219(uint8_t address)
 {
     // set configuration register
-    uint16_t configurationValue = range_40_mV << 11;
-    configurationValue |= samples_2 << 3;
+    uint16_t configurationValue = range_160_mV << 12; // 1.6A
+    configurationValue |= samples_4 << 3; // 2.13 ms
     configurationValue |= mode_shunt_and_bus_triggered << 0;
     I2C_Init();
     I2C_Start(address);
@@ -27,7 +28,7 @@ bool ina219NotConfigured = true;
 
 uint16_t readIna219Voltage(void)
 {
-    uint8_t address = 0x80;
+    uint8_t address = device_address_ina219;
     uint16_t voltage;
 
     if (ina219NotConfigured) {
@@ -52,7 +53,7 @@ uint16_t readIna219Voltage(void)
 
 uint16_t readIna219Current(void)
 {
-    uint8_t address = 0x80;
+    uint8_t address = device_address_ina219;
     uint16_t current;
 
     if (ina219NotConfigured) {

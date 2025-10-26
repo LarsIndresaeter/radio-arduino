@@ -13,7 +13,7 @@
 
 #define range_40_mV 0x00
 #define range_80_mV 0x01
-#define range_160_mv 0x10
+#define range_160_mV 0x10
 #define range_320_mV 0x11 // 3.2A range with 0.1 ohm resistor
 
 #define samples_1_9bit 0x0011  // 84 uS conversion time
@@ -42,6 +42,8 @@
 #define ina219_register_power 3
 #define ina219_register_current 4
 #define ina219_register_calibration 5
+
+#define device_address_ina219 0x80
 
 uint16_t readIna219Voltage(void);
 uint16_t readIna219Current(void);
