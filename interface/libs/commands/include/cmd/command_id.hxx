@@ -3,7 +3,7 @@
 
 namespace COMMANDS {
 
-constexpr uint8_t MAX_PAYLOAD_LENGTH = 136;
+constexpr uint8_t MAX_PAYLOAD_LENGTH = 64;
 constexpr uint8_t MAX_PACKAGE_LENGTH = (MAX_PAYLOAD_LENGTH + 4 + 2 + 20); // + header, crypto, checksum
 
 enum class OI

@@ -34,7 +34,7 @@ public:
 
         m_payload.at(offsetof(COMMANDS::NRF24L01_READ::command_t, length)) = length;
 
-        for (int i = 0; i < data.size() && i < 128; i++) {
+        for (int i = 0; i < data.size() && i < 32; i++) {
             m_payload.at(
                 offsetof(COMMANDS::NRF24L01_READ::command_t, data[0]) + i)
                 = data.at(i);
@@ -47,7 +47,7 @@ public:
         out << " length=" << static_cast<int>(response.getLength());
         out << " data=[ ";
         out << std::setfill('0') << std::hex << std::uppercase;
-        for (uint8_t i = 0; i < 128; i++) {
+        for (uint8_t i = 0; i < 32; i++) {
             out << std::setw(2) << static_cast<int>(response.data[i]) << " ";
         }
         out << "]";
@@ -60,10 +60,10 @@ public:
         COMMANDS::NRF24L01_READ::response_t response = responseStruct();
 
         retval.append("[");
-        for (uint8_t i = 0; i < 128; i++) {
+        for (uint8_t i = 0; i < 32; i++) {
             retval.append(" \"");
             retval.append(std::to_string(static_cast<int>(response.data[i])));
-            if (i < (128 - 1)) {
+            if (i < (32 - 1)) {
                 retval.append("\",");
             }
             else {

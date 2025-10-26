@@ -7,8 +7,8 @@
 namespace COMMANDS {
 
 namespace NRF24L01_WRITE {
-    constexpr uint8_t COMMAND_LENGTH = 129;
-    constexpr uint8_t RESPONSE_LENGTH = 129;
+    constexpr uint8_t COMMAND_LENGTH = 33;
+    constexpr uint8_t RESPONSE_LENGTH = 33;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
     static_assert(RESPONSE_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "RESPONSE_LENGTH larger than max payload");
@@ -19,7 +19,7 @@ namespace NRF24L01_WRITE {
             OI = static_cast<uint8_t>(COMMANDS::OI::NRF24L01_WRITE);
             OL = COMMAND_LENGTH;
             length = 0;
-            for (uint8_t i = 0; i < 128; i++) {
+            for (uint8_t i = 0; i < 32; i++) {
                 data[i] = 0;
             }
         }
@@ -29,7 +29,7 @@ namespace NRF24L01_WRITE {
             OI = cmd[0];
             OL = cmd[1];
             length = cmd[2];
-            for (uint8_t i = 0; i < 128; i++) {
+            for (uint8_t i = 0; i < 32; i++) {
                 data[i] = cmd[3 + i];
             }
         }
@@ -47,7 +47,7 @@ namespace NRF24L01_WRITE {
         uint8_t OI;
         uint8_t OL;
         uint8_t length;
-        uint8_t data[128];
+        uint8_t data[32];
     } command_t;
 
     typedef struct response {
@@ -56,7 +56,7 @@ namespace NRF24L01_WRITE {
             OI = static_cast<uint8_t>(COMMANDS::OI::NRF24L01_WRITE);
             OL = RESPONSE_LENGTH;
             length = 0;
-            for (uint8_t i = 0; i < 128; i++) {
+            for (uint8_t i = 0; i < 32; i++) {
                 data[i] = 0;
             }
         }
@@ -66,7 +66,7 @@ namespace NRF24L01_WRITE {
             OI = res[0];
             OL = res[1];
             length = res[2];
-            for (uint8_t i = 0; i < 128; i++) {
+            for (uint8_t i = 0; i < 32; i++) {
                 data[i] = res[3 + i];
             }
         }
@@ -76,7 +76,7 @@ namespace NRF24L01_WRITE {
             response[0] = OI;
             response[1] = OL;
             response[2] = length;
-            for (uint8_t i = 0; i < 128; i++) {
+            for (uint8_t i = 0; i < 32; i++) {
                 response[3 + i] = data[i];
             }
         }
@@ -94,7 +94,7 @@ namespace NRF24L01_WRITE {
         uint8_t OI;
         uint8_t OL;
         uint8_t length;
-        uint8_t data[128];
+        uint8_t data[32];
 
     } response_t;
 }

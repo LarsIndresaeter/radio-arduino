@@ -7,7 +7,7 @@
 namespace COMMANDS {
 
 namespace WS2812B {
-    constexpr uint8_t COMMAND_LENGTH = 135;
+    constexpr uint8_t COMMAND_LENGTH = 24;
     constexpr uint8_t RESPONSE_LENGTH = 0;
 
     static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
@@ -18,13 +18,13 @@ namespace WS2812B {
         {
             OI = static_cast<uint8_t>(COMMANDS::OI::WS2812B);
             OL = COMMAND_LENGTH;
-            for (uint8_t i = 0; i < 45; i++) {
+            for (uint8_t i = 0; i < 8; i++) {
                 red[i] = 0;
             }
-            for (uint8_t i = 0; i < 45; i++) {
+            for (uint8_t i = 0; i < 8; i++) {
                 green[i] = 0;
             }
-            for (uint8_t i = 0; i < 45; i++) {
+            for (uint8_t i = 0; i < 8; i++) {
                 blue[i] = 0;
             }
         }
@@ -33,22 +33,22 @@ namespace WS2812B {
         {
             OI = cmd[0];
             OL = cmd[1];
-            for (uint8_t i = 0; i < 45; i++) {
+            for (uint8_t i = 0; i < 8; i++) {
                 red[i] = cmd[2 + i];
             }
-            for (uint8_t i = 0; i < 45; i++) {
-                green[i] = cmd[47 + i];
+            for (uint8_t i = 0; i < 8; i++) {
+                green[i] = cmd[10 + i];
             }
-            for (uint8_t i = 0; i < 45; i++) {
-                blue[i] = cmd[92 + i];
+            for (uint8_t i = 0; i < 8; i++) {
+                blue[i] = cmd[18 + i];
             }
         }
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t red[45];
-        uint8_t green[45];
-        uint8_t blue[45];
+        uint8_t red[8];
+        uint8_t green[8];
+        uint8_t blue[8];
     } command_t;
 
     typedef struct response {
