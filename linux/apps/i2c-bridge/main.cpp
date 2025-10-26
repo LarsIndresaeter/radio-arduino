@@ -65,18 +65,23 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         }
     }
 
-    // std::cout << "device address   = " << std::to_string(i2cDeviceAddress) << std::endl;
-    std::cout << "register address = " << std::to_string(registerAddress) << std::endl;
-    // std::cout << "length           = " << std::to_string(length) << std::endl;
-    // std::cout << "write string     = " << writeString << std::endl;
-
     if (readOperation && writeOperation) {
         std::cout << "you can only read or write, not both. exit" << std::endl;
         exit(1);
     }
 
     if (readOperation) {
-        std::cout << mon.get<>(RaduinoCommandI2cRead(i2cDeviceAddress, registerAddress, length)) << std::endl;
+        if(length == 2)
+        {
+            auto result = mon.get<>(RaduinoCommandI2cRead(i2cDeviceAddress, registerAddress, length));
+            uint16_t value = result.responseStruct().data[0] << 8;
+            value |= result.responseStruct().data[1];
+
+            //std::cout << "register[" << std::to_string(registerAddress) << "]=" << std::to_string(value) << std::endl;
+            std::cout << "register[" << std::dec << registerAddress << "]=" << value << ", 0x" << std::hex << value << std::endl;
+        } else{
+            std::cout << mon.get<>(RaduinoCommandI2cRead(i2cDeviceAddress, registerAddress, length)) << std::endl;
+        }
     }
     else if (writeOperation) {
         if (writeString == "") {
