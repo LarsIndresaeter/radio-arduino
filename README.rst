@@ -1,7 +1,7 @@
 radio-arduino
 =============
 
-software for the `rf-nano <https://ardunic.com/product/RF-Nano-Board-NRF24L01-Wireless-Module>`_.
+software for the `rf-nano <https://ardunic.com/product/RF-Nano-Board-NRF24L01-Wireless-Module>`.
 
 Features
 --------
@@ -11,3 +11,4 @@ Features
 * Binary message protocol for serial and radio communication between arduino and PC.
 * Command line tools for interacting with gateway and node, including mqtt client.
 
+Read more in the `doc folder<./doc/README.rst>`
