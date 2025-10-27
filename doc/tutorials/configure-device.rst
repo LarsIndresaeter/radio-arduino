@@ -5,7 +5,7 @@ help menu
 
 .. code-block:: sh
 
-    raduino-node
+    raduino-personalize
            -n : set device name
            -c : current transport key
            -t : new transport key

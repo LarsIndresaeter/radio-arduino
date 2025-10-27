@@ -1,7 +1,8 @@
-. flash arduino
+flash arduino
+=============
 
 flash using provided tools
-==========================
+--------------------------
 
 There is a tools folder in the root of this repository. Use that to flash arduino
 

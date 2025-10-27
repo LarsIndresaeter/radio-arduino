@@ -1,11 +1,7 @@
-. how to compile
-
-compile the code using
-======================
+how to compile
+==============
 
 For local development you need to install conan. 
-
-
 
 build using conan
 ------------------
@@ -16,12 +12,12 @@ build using conan
     raduino all
 
 compile the code in a docker container
-======================================
+--------------------------------------
 
 Docker is useful for continouous integration or if you don't want to install conan on your system. 
 
 install docker
---------------
+''''''''''''''
 
 1. install docker
 2. create image
@@ -31,7 +27,7 @@ install docker
     ./tools/docker/build_in_docker.sh dockerbuild
 
 build using docker
-------------------
+''''''''''''''''''
 
 .. code-block:: sh
 
@@ -39,7 +35,7 @@ build using docker
     raduino all
 
 build and output folder
-=======================
+-----------------------
 
 a successful build should result in two folders beeing created:
 
