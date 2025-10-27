@@ -13,3 +13,5 @@ The best way to experiment with this is to set up a mqtt broker on localhost and
          text <text> : write <text> on lcd display
           subscribe  : subscribe to radio-arduino topic
 
+The topic names are inspired by the sparkplugB standard but the payload is json (and not protobuf).
+

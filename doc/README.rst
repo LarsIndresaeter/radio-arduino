@@ -3,6 +3,10 @@ Documentation
 
 Inspired by https://docs.divio.com/documentation-system/
 
+.. note::
+
+    a word of notice: I have written the code in this repository with exception of the third party libraries with the `motivation <./explanation/motivation-for-this-work.rst>`_ to learn. 
+
 `Tutorials <./tutorials/README.rst>`_
 =====================================
 
