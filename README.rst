@@ -11,4 +11,4 @@ Features
 * Binary message protocol for serial and radio communication between arduino and PC.
 * Command line tools for interacting with gateway and node, including mqtt client.
 
-Read more in the `doc folder<./doc/README.rst>`_
+Read more in the `doc folder <./doc/README.rst>`_
