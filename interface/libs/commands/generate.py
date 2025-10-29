@@ -261,7 +261,6 @@ def generateCommandFile(commandName,
         outfile.write("    }\n")
         outfile.write("\n")
 
-        # seher
         # getters for arrays
         for item in responsePayloadByteNames:
             arraySize = arraySizeFromVariableName(item)
