@@ -31,6 +31,8 @@ void print_usage()
     std::cout << "       -Z : get device name from node" << std::endl;
     std::cout << "       -s : sleep gateway" << std::endl;
     std::cout << "       -S : sleep node" << std::endl;
+    std::cout << "       -t : get pulse width from servo controller 100-200 (1-2 ms) on gateway" << std::endl;
+    std::cout << "       -T : get pulse width from servo controller 100-200 (1-2 ms) on node" << std::endl;
     std::cout << "      -h : print this text" << std::endl;
 }
 
@@ -39,7 +41,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     char option = 0;
     uint8_t spiRegister = 0;
 
-    while ((option = getopt(argc, argv, "bBgGjJy:p:P:qQY:zZs:S:h")) != -1) {
+    while ((option = getopt(argc, argv, "bBgGjJy:p:P:qQY:zZs:S:tTh")) != -1) {
         switch (option) {
         case 'b':
             std::cout << mon.get<>(RaduinoCommandBlink(), static_cast<std::chrono::milliseconds>(4000)) << std::endl;
@@ -97,6 +99,12 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             std::cout << mon.getRadio<>(RaduinoCommandSleep(delay), static_cast<std::chrono::milliseconds>(delay + 2000))
                       << std::endl;
         } break;
+        case 't':
+            std::cout << mon.get<>(RaduinoCommandTimer()) << std::endl;
+            break;
+        case 'T':
+            std::cout << mon.getRadio<>(RaduinoCommandTimer()) << std::endl;
+            break;
         case 'h':
             print_usage();
             break;
