@@ -67,7 +67,7 @@ void initialize()
         DDRC &= ~(1 << PC2); // set PC2 input (SW)
         PCICR = 0x02;        // enable PCINT1
         PCMSK1 = 0x05;       // enable pin PCINT8 (PC0) and PCINT10 (PC2)
-                             // seher
+
         PORTC |= 0x07;       // enable pull-up resistor
 
         sei();

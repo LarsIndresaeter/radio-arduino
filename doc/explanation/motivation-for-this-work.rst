@@ -6,6 +6,7 @@ This repository is the result of several learning projects which has influenced 
 * conan
 * cmake
 * modern C++
+* template meta programming
 * custom binary protocol with support for encrypted payloads
 * OpenSSl 3.1
 * Radio communication using the nrf24l01

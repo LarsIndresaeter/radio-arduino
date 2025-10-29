@@ -221,7 +221,6 @@ void NRF24L01_tx(uint8_t* tx_buffer, uint8_t length)
 
     NRF24L01_wait_for_tx_complete();
 
-    // seher
     NRF24L01_write_register(NRF24L01_REGISTER_STATUS, 0x70); // clear RX_DR, TX_DS and MAX_TR
 
     NRF24L01_set_rx_as_master(false);
