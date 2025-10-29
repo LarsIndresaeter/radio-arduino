@@ -148,18 +148,6 @@ void parseOpt(int argc, char* argv[], monitor& mon)
         case 'I':
             std::cout << mon.get<>(RaduinoCommandI2cRead(i2cDeviceAddress, i2cDeviceOffset, atoi(optarg))) << std::endl;
             break;
-        case 'U': {
-            std::string s(optarg);
-            if (s.at(0) == 's') {
-                std::vector<uint8_t> address = { 0xF0, 0xF0, 0xF0, 0xF0, 0xC2 };
-                mon.get<>(RaduinoCommandNrf24l01Init(address, address, 121, true));
-            }
-            if (s.at(0) == 'r') {
-                std::vector<uint8_t> address = { 0xF0, 0xF0, 0xF0, 0xF0, 0xC2 };
-                mon.get<>(RaduinoCommandNrf24l01Init(address, address, 121, false));
-            }
-            std::cout << mon.get<>(RaduinoCommandRadioUart(s.at(0))) << std::endl;
-        } break;
         case 'S': {
             RadioSession radioSession(mon, 0);
             radioSession.wakeupNotResponding();

@@ -15,6 +15,7 @@
 void print_usage()
 {
     std::cout << "raduino-device-nrf24l01" << std::endl;
+    std::cout << "      -i : initialize nrf24l01 on gateway" << std::endl;
     std::cout << "      -r : set device in serial bridge as reader" << std::endl;
     std::cout << "      -s : set device in serial bridge as sender" << std::endl;
     std::cout << "      -h : print this text" << std::endl;
@@ -25,13 +26,18 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     char option = 0;
     uint8_t spiRegister = 0;
 
-    while ((option = getopt(argc, argv, "r:s:h")) != -1) {
+    while ((option = getopt(argc, argv, "ir:s:h")) != -1) {
         switch (option) {
         case 's': {
             std::string s(optarg);
             std::vector<uint8_t> address = { 0xF0, 0xF0, 0xF0, 0xF0, 0xC2 };
             mon.get<>(RaduinoCommandNrf24l01Init(address, address, 121, true));
             std::cout << mon.get<>(RaduinoCommandRadioUart(s.at(0))) << std::endl;
+        } break;
+        case 'i': {
+            std::string s(optarg);
+            std::vector<uint8_t> address = { 0xF0, 0xF0, 0xF0, 0xF0, 0xC2 };
+            mon.get<>(RaduinoCommandNrf24l01Init(address, address, 121, true));
         } break;
         case 'r': {
             {
