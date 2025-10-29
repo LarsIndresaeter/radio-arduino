@@ -11,5 +11,5 @@ servos for RC is controlled by a pwm signal, 50Hz and pulse width ranging from 1
 
 .. code-block:: sh
 
-    /bin/raduino-servo -s 100
+    /bin/raduino-device-atmega328 -s 100
 
