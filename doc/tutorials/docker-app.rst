@@ -71,10 +71,10 @@ loading an image from a tar file
 
    docker image load -i raduino-0.2.0.tar
 
-running a docker app without the tool suite
--------------------------------------------
+running a docker app without the toolkit
+----------------------------------------
 
-if you have obtained the docker image and do not want to run the raduino suite
+if you have obtained the docker image and do not want to run the raduino toolkit
 
 .. code-block:: sh
 

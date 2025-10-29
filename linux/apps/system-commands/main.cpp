@@ -40,7 +40,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 {
     char option = 0;
 
-    while ((option = getopt(argc, argv, "xXrRdDpPt:T:uUvVzZh")) != -1) {
+    while ((option = getopt(argc, argv, "xXrRdDpPt:T:us:S:UvVzZh")) != -1) {
         switch (option) {
         case 'x':
             std::cout << mon.get<>(RaduinoCommandHotp()) << std::endl;

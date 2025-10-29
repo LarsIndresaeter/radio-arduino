@@ -1,5 +1,5 @@
 tools
 =====
 
-* `raduino <./raduino.rst>`_ is a suite of tools provided by this project.
+* `raduino <./raduino.rst>`_ is a toolkit provided by this project.
 

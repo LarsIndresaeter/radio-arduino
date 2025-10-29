@@ -26,7 +26,7 @@ else
         echo "${RADINO_CUSTOM_COMMAND} command ready"
     elif [ "$1" == "local" ]
     then
-        alias "${RADINO_CUSTOM_COMMAND}"="${RADINO_TOOLS_DIR}/suite.sh"
+        alias "${RADINO_CUSTOM_COMMAND}"="${RADINO_TOOLS_DIR}/toolkit.sh"
         echo "${RADINO_CUSTOM_COMMAND} command ready"
     else
         echo "you must specity 'docker' or 'local' tool setup"

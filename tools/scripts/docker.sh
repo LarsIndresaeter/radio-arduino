@@ -4,7 +4,7 @@
 
 . tools/scripts/export_environment.sh
 
-tools/suite.sh $@
+tools/toolkit.sh $@
 
 echo ""
 echo "done"
