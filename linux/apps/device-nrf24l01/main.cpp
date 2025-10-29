@@ -14,7 +14,7 @@
 
 void print_usage()
 {
-    std::cout << "raduino-spi-bridge" << std::endl;
+    std::cout << "raduino-device-nrf24l01" << std::endl;
     std::cout << "      -r : set device in serial bridge as reader" << std::endl;
     std::cout << "      -s : set device in serial bridge as sender" << std::endl;
     std::cout << "      -h : print this text" << std::endl;
