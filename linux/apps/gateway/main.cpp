@@ -18,7 +18,6 @@ void print_usage()
     std::cout << "raduino-gateway" << std::endl;
     std::cout << "       -V : Verbose on" << std::endl;
     std::cout << "       -v : Verbose off" << std::endl;
-    std::cout << "       -B : Blink command" << std::endl;
     std::cout << "       -S : SHA1 command " << std::endl;
     std::cout << "       -H : HOTP command" << std::endl;
     std::cout << "       -R : get random bytes command" << std::endl;
@@ -26,12 +25,8 @@ void print_usage()
     std::cout << "       -D : debug command" << std::endl;
     std::cout << "       -t : disable transport encryption" << std::endl;
     std::cout << "       -T : enable transport encryption" << std::endl;
-    std::cout << "       -Z : set device name" << std::endl;
-    std::cout << "       -z : get device name" << std::endl;
     std::cout << "       -a : get device version" << std::endl;
     std::cout << "       -x : get statistics" << std::endl;
-    std::cout << "       -j : read vcc" << std::endl;
-    std::cout << "       -s : sleep" << std::endl;
     std::cout << "       -p : ping command" << std::endl;
     std::cout << "       -E : set encryption key" << std::endl;
     std::cout << "       -K : set transport key on device (command must be encrypted)" << std::endl;
@@ -48,13 +43,8 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
 
-    while ((option = getopt(argc, argv, "DBSHCs:RVvhtTgGE:K:b:r:Z:zJjpaxnu")) != -1) {
+    while ((option = getopt(argc, argv, "DSHCRVvhtTgGE:K:b:r:Jpaxnu")) != -1) {
         switch (option) {
-        case 's': {
-            uint32_t delay = atoi(optarg);
-            std::cout << mon.get<>(RaduinoCommandSleep(delay), static_cast<std::chrono::milliseconds>(delay + 2000))
-                      << std::endl;
-        } break;
         case 'V':
             mon.printDebug(true);
             mon.setPrintResponseTime(true);
@@ -69,14 +59,8 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             mon.printDebug(false);
             mon.setPrintResponseTime(false);
             break;
-        case 'B':
-            std::cout << mon.get<>(RaduinoCommandBlink(), static_cast<std::chrono::milliseconds>(4000)) << std::endl;
-            break;
         case 'H':
             std::cout << mon.get<>(RaduinoCommandHotp()) << std::endl;
-            break;
-        case 'G':
-            std::cout << mon.get<>(RaduinoCommandGpio()) << std::endl;
             break;
         case 'R':
             std::cout << mon.get<>(RaduinoCommandRandom()) << std::endl;
@@ -89,9 +73,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             break;
         case 'p':
             std::cout << mon.get<>(RaduinoCommandPing()) << std::endl;
-            break;
-        case 'j':
-            std::cout << mon.get<>(RaduinoCommandVcc()) << std::endl;
             break;
         case 'E': {
             std::string s(optarg);
@@ -120,13 +101,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         } break;
         case 'u':
             std::cout << mon.get<>(RaduinoCommandUnlockSession()) << std::endl;
-            break;
-        case 'Z': {
-            std::string s(optarg);
-            mon.get<>(RaduinoCommandSetDeviceName(s));
-        } break;
-        case 'z':
-            std::cout << mon.get<>(RaduinoCommandGetDeviceName()) << std::endl;
             break;
         case 'a':
             std::cout << mon.get<>(RaduinoCommandGetVersion()) << std::endl;

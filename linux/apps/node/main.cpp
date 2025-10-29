@@ -28,10 +28,7 @@ void print_usage()
     std::cout << "raduino-node" << std::endl;
     std::cout << "       -V : Verbose on" << std::endl;
     std::cout << "       -v : Verbose off" << std::endl;
-    std::cout << "       -B : Blink command" << std::endl;
-    std::cout << "       -e : EEPROM command" << std::endl;
     std::cout << "       -H : HOTP command" << std::endl;
-    std::cout << "       -P : pwm command" << std::endl;
     std::cout << "       -R : get random bytes command" << std::endl;
     std::cout << "       -C : print counter values" << std::endl;
     std::cout << "       -D : debug command" << std::endl;
@@ -40,13 +37,8 @@ void print_usage()
     std::cout << "       -x : get statistics" << std::endl;
     std::cout << "       -E : set AES Key" << std::endl;
     std::cout << "       -g : reboot node as gateway" << std::endl;
-    std::cout << "       -Z : set device name" << std::endl;
-    std::cout << "       -z : get device name" << std::endl;
-    std::cout << "       -j : read vcc" << std::endl;
-    std::cout << "       -s : sleep" << std::endl;
     std::cout << "       -w : wake up sleeping rx node" << std::endl;
     std::cout << "       -N : wake up sleeping rx node if data available flag is set" << std::endl;
-    std::cout << "       -q : read quadrature encoder" << std::endl;
     std::cout << "       -A : read quadrature encoder on change" << std::endl;
     std::cout << "       -n : wakeup node address" << std::endl;
     std::cout << "       -a : update node address" << std::endl;
@@ -151,14 +143,8 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t keepAliveInterval = 0;
     bool verbose = false;
 
-    while ((option = getopt(argc, argv, "P:DBHeCs:RVvhtTgGNE:Z:zwxqAjn:a:k:pr:b:K:u")) != -1) {
+    while ((option = getopt(argc, argv, "DHCRVvhtTgNE:wxqAjn:a:k:pr:b:K:u")) != -1) {
         switch (option) {
-        case 's': {
-            uint32_t delay = atoi(optarg);
-            std::cout << mon.getRadio<>(
-                RaduinoCommandSleep(delay), static_cast<std::chrono::milliseconds>(delay + 2000))
-                      << std::endl;
-        } break;
         case 'V':
             verbose = true;
             mon.printDebug(true);
@@ -184,9 +170,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             std::cout << mon.get<>(RaduinoCommandWakeup(true), static_cast<std::chrono::milliseconds>(12000))
                       << std::endl;
             break;
-        case 'q':
-            std::cout << mon.getRadio<>(RaduinoCommandQuadratureEncoder()) << std::endl;
-            break;
         case 'A': {
             while (1) {
                 mon.get<>(RaduinoCommandWakeup(true), static_cast<std::chrono::milliseconds>(12000));
@@ -200,39 +183,12 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             verbose = false;
             mon.setPrintResponseTime(false);
             break;
-        case 'B':
-            std::cout << mon.getRadio<>(RaduinoCommandBlink()) << std::endl;
-            break;
-        case 'O': {
-            std::cout << "blink : " << mon.getRadio<>(RaduinoCommandBlink()) << std::endl;
-            std::cout << "gpio  : " << mon.getRadio<>(RaduinoCommandGpio()) << std::endl;
-            std::cout << "blink : " << mon.getRadio<>(RaduinoCommandBlink()) << std::endl;
-            std::cout << "gpio  : " << mon.getRadio<>(RaduinoCommandGpio()) << std::endl;
-            std::cout << "device: " << mon.getRadio<>(RaduinoCommandGetDeviceName()) << std::endl;
-        } break;
-        case 'e':
-            std::cout << mon.getRadio<>(RaduinoCommandEepromWrite(2, 3)) << std::endl;
-            std::cout << mon.getRadio<>(RaduinoCommandEepromRead(2)) << std::endl;
-            compareResult(3, mon.getRadio<>(RaduinoCommandEepromRead(2)).responseStruct().data);
-
-            std::cout << mon.getRadio<>(RaduinoCommandEepromWrite(600, 3)) << std::endl;
-            std::cout << mon.getRadio<>(RaduinoCommandEepromRead(600)) << std::endl;
-            compareResult(3, mon.getRadio<>(RaduinoCommandEepromRead(600)).responseStruct().data);
-
-            break;
         case 'g': {
             std::cout << mon.getRadio<>(RaduinoCommandSetRadioRole('g')) << std::endl;
             std::cout << mon.getRadio<>(RaduinoCommandSoftReset()) << std::endl;
         } break;
         case 'H':
             std::cout << mon.getRadio<>(RaduinoCommandHotp()) << std::endl;
-            break;
-        case 'P': {
-            uint8_t value = atoi(optarg);
-            std::cout << mon.getRadio<>(RaduinoCommandPwm('b', 2, value)) << std::endl;
-        } break;
-        case 'G':
-            std::cout << mon.getRadio<>(RaduinoCommandGpio()) << std::endl;
             break;
         case 'R':
             std::cout << mon.getRadio<>(RaduinoCommandRandom()) << std::endl;
@@ -243,27 +199,12 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'D':
             std::cout << mon.getRadio<>(RaduinoCommandDebug()) << std::endl;
             break;
-        case 'j': {
-            RadioSession radioSession(mon, radioAddress);
-            radioSession.wakeupNotResponding();
-            std::cout << mon.getRadio<>(RaduinoCommandVcc()) << std::endl;
-        } break;
         case 'x':
             std::cout << mon.getRadio<>(RaduinoCommandGetStatistics()) << std::endl;
             break;
         case 'E': {
             std::string s(optarg);
             mon.getRadio<>(RaduinoCommandSetKey('E', s));
-        } break;
-        case 'Z': {
-            std::string s(optarg);
-            mon.getRadio<>(RaduinoCommandSetDeviceName(s));
-        } break;
-        case 'z': {
-            RadioSession radioSession(mon, radioAddress);
-            radioSession.setKeepAliveInterval(keepAliveInterval);
-            radioSession.wakeupNotResponding();
-            std::cout << mon.getRadio<>(RaduinoCommandGetDeviceName()) << std::endl;
         } break;
         case 'h':
             print_usage();
