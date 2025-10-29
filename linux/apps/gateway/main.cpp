@@ -19,21 +19,13 @@ void print_usage()
     std::cout << "       -V : Verbose on" << std::endl;
     std::cout << "       -v : Verbose off" << std::endl;
     std::cout << "       -S : SHA1 command " << std::endl;
-    std::cout << "       -H : HOTP command" << std::endl;
-    std::cout << "       -R : get random bytes command" << std::endl;
     std::cout << "       -C : print counter values" << std::endl;
-    std::cout << "       -D : debug command" << std::endl;
     std::cout << "       -t : disable transport encryption" << std::endl;
     std::cout << "       -T : enable transport encryption" << std::endl;
-    std::cout << "       -a : get device version" << std::endl;
-    std::cout << "       -x : get statistics" << std::endl;
-    std::cout << "       -p : ping command" << std::endl;
     std::cout << "       -E : set encryption key" << std::endl;
     std::cout << "       -K : set transport key on device (command must be encrypted)" << std::endl;
     std::cout << "       -b : use transport key" << std::endl;
-    std::cout << "       -r : set transport encryption required (command must be encrypted)" << std::endl;
     std::cout << "       -n : reboot gateway as node" << std::endl;
-    std::cout << "       -u : unencrypted session (command must be encrypted)" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -43,7 +35,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
 
-    while ((option = getopt(argc, argv, "DSHCRVvhtTgGE:K:b:r:Jpaxnu")) != -1) {
+    while ((option = getopt(argc, argv, "SCVvhtTgGE:K:b:Jn")) != -1) {
         switch (option) {
         case 'V':
             mon.printDebug(true);
@@ -59,20 +51,8 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             mon.printDebug(false);
             mon.setPrintResponseTime(false);
             break;
-        case 'H':
-            std::cout << mon.get<>(RaduinoCommandHotp()) << std::endl;
-            break;
-        case 'R':
-            std::cout << mon.get<>(RaduinoCommandRandom()) << std::endl;
-            break;
         case 'C':
             mon.printCounterValues();
-            break;
-        case 'D':
-            std::cout << mon.get<>(RaduinoCommandDebug()) << std::endl;
-            break;
-        case 'p':
-            std::cout << mon.get<>(RaduinoCommandPing()) << std::endl;
             break;
         case 'E': {
             std::string s(optarg);
@@ -95,19 +75,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             cryptoHandler.setTransportKey((uint8_t*)&key[0]);
             cryptoHandler.setMacKey((uint8_t*)&key[0]);
         } break;
-        case 'r': {
-            uint8_t flag = atoi(optarg);
-            std::cout << mon.get<>(RaduinoCommandRequireTransportEncryption(flag)) << std::endl;
-        } break;
-        case 'u':
-            std::cout << mon.get<>(RaduinoCommandUnlockSession()) << std::endl;
-            break;
-        case 'a':
-            std::cout << mon.get<>(RaduinoCommandGetVersion()) << std::endl;
-            break;
-        case 'x':
-            std::cout << mon.get<>(RaduinoCommandGetStatistics()) << std::endl;
-            break;
         case 'n':
             std::cout << mon.get<>(RaduinoCommandSetRadioRole('n')) << std::endl;
             std::cout << mon.get<>(RaduinoCommandSoftReset()) << std::endl;

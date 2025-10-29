@@ -28,13 +28,9 @@ void print_usage()
     std::cout << "raduino-node" << std::endl;
     std::cout << "       -V : Verbose on" << std::endl;
     std::cout << "       -v : Verbose off" << std::endl;
-    std::cout << "       -H : HOTP command" << std::endl;
-    std::cout << "       -R : get random bytes command" << std::endl;
     std::cout << "       -C : print counter values" << std::endl;
-    std::cout << "       -D : debug command" << std::endl;
     std::cout << "       -t : disable transport encryption" << std::endl;
     std::cout << "       -T : enable transport encryption" << std::endl;
-    std::cout << "       -x : get statistics" << std::endl;
     std::cout << "       -E : set AES Key" << std::endl;
     std::cout << "       -g : reboot node as gateway" << std::endl;
     std::cout << "       -w : wake up sleeping rx node" << std::endl;
@@ -43,11 +39,8 @@ void print_usage()
     std::cout << "       -n : wakeup node address" << std::endl;
     std::cout << "       -a : update node address" << std::endl;
     std::cout << "       -k : set keep alive interval" << std::endl;
-    std::cout << "       -p : ping radio node" << std::endl;
     std::cout << "       -K : set transport key on device (command must be encrypted)" << std::endl;
     std::cout << "       -b : use transport key" << std::endl;
-    std::cout << "       -r : set transport encryption required (command must be encrypted)" << std::endl;
-    std::cout << "       -u : unencrypted session (command must be encrypted)" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -143,7 +136,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t keepAliveInterval = 0;
     bool verbose = false;
 
-    while ((option = getopt(argc, argv, "DHCRVvhtTgNE:wxqAjn:a:k:pr:b:K:u")) != -1) {
+    while ((option = getopt(argc, argv, "CVvtTgNE:wqAjn:a:k:b:K:h")) != -1) {
         switch (option) {
         case 'V':
             verbose = true;
@@ -156,12 +149,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'T':
             mon.setTransportEncryption(true);
             break;
-        case 'p': {
-            RadioSession radioSession(mon, radioAddress);
-            radioSession.setKeepAliveInterval(keepAliveInterval);
-            radioSession.wakeupNotResponding();
-            std::cout << mon.getRadio<>(RaduinoCommandPing()) << std::endl;
-        } break;
         case 'w':
             std::cout << mon.get<>(RaduinoCommandWakeup(false), static_cast<std::chrono::milliseconds>(12000))
                       << std::endl;
@@ -187,20 +174,8 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             std::cout << mon.getRadio<>(RaduinoCommandSetRadioRole('g')) << std::endl;
             std::cout << mon.getRadio<>(RaduinoCommandSoftReset()) << std::endl;
         } break;
-        case 'H':
-            std::cout << mon.getRadio<>(RaduinoCommandHotp()) << std::endl;
-            break;
-        case 'R':
-            std::cout << mon.getRadio<>(RaduinoCommandRandom()) << std::endl;
-            break;
         case 'C':
             mon.printCounterValues();
-            break;
-        case 'D':
-            std::cout << mon.getRadio<>(RaduinoCommandDebug()) << std::endl;
-            break;
-        case 'x':
-            std::cout << mon.getRadio<>(RaduinoCommandGetStatistics()) << std::endl;
             break;
         case 'E': {
             std::string s(optarg);
@@ -239,13 +214,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             cryptoHandler.setTransportKey((uint8_t*)&key[0]);
             cryptoHandler.setMacKey((uint8_t*)&key[0]);
         } break;
-        case 'r': {
-            uint8_t flag = atoi(optarg);
-            std::cout << mon.getRadio<>(RaduinoCommandRequireTransportEncryption(flag)) << std::endl;
-        } break;
-        case 'u':
-            std::cout << mon.getRadio<>(RaduinoCommandUnlockSession()) << std::endl;
-            break;
         case 'K': {
             std::string s(optarg);
             mon.getRadio<>(RaduinoCommandSetKey('T', s));
