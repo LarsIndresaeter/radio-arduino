@@ -15,14 +15,6 @@
 #include <thread>
 #include <uart.hpp>
 
-using namespace std::chrono_literals;
-
-int timeMs()
-{
-    using namespace std::chrono;
-    return (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()) % 1000;
-}
-
 void print_usage()
 {
     std::cout << "raduino-node" << std::endl;
@@ -34,7 +26,6 @@ void print_usage()
     std::cout << "       -E : set AES Key" << std::endl;
     std::cout << "       -g : reboot node as gateway" << std::endl;
     std::cout << "       -w : wake up sleeping rx node" << std::endl;
-    std::cout << "       -N : wake up sleeping rx node if data available flag is set" << std::endl;
     std::cout << "       -A : read quadrature encoder on change" << std::endl;
     std::cout << "       -n : wakeup node address" << std::endl;
     std::cout << "       -a : update node address" << std::endl;
@@ -42,91 +33,6 @@ void print_usage()
     std::cout << "       -K : set transport key on device (command must be encrypted)" << std::endl;
     std::cout << "       -b : use transport key" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
-}
-
-void compareResult(uint8_t expected, uint8_t actual)
-{
-    if (expected != actual) {
-        std::cout << std::endl;
-        std::cout << "ERROR: invalid result! expected: " << static_cast<int>(expected)
-                  << " actual: " << static_cast<int>(actual) << std::endl;
-        std::cout << std::endl;
-    }
-}
-
-void readCurrentAndVoltage(monitor& mon, int samples)
-{
-    auto ina219 = mon.getRadio<>(RaduinoCommandIna219());
-    std::vector<float> currentData, voltageData;
-    int16_t intval = 0;
-    float currentMin, currentMax, current, stdev;
-    float voltageMin, voltageMax, voltage;
-    int time, timePrev;
-    int loopCounter = 0;
-
-    for (int i = 0; i <= samples; i++) {
-        time = 1;
-        timePrev = 0;
-        currentMin = 1000.0;
-        currentMax = 0.0;
-        voltageMin = 50.0;
-        voltageMax = 0.0;
-        currentData.clear();
-        voltageData.clear();
-        while (time > timePrev) {
-            ina219 = mon.getRadio<>(RaduinoCommandIna219());
-            intval = ina219.responseStruct().getCurrent();
-            current = ((int16_t)intval) * 0.001;
-
-            intval = ina219.responseStruct().getVoltage();
-            intval = intval >> 3; // ignore 3 LSB
-            voltage = ((int16_t)intval) * 0.004;
-
-            if (current < currentMin) {
-                currentMin = current;
-            }
-            if (current > currentMax) {
-                currentMax = current;
-            }
-
-            if (voltage < voltageMin) {
-                voltageMin = voltage;
-            }
-            if (voltage > voltageMax) {
-                voltageMax = voltage;
-            }
-
-            currentData.push_back(current);
-            voltageData.push_back(voltage);
-            timePrev = time;
-            time = timeMs();
-        }
-
-        double sum = std::accumulate(currentData.begin(), currentData.end(), 0.0);
-        double mean = sum / currentData.size();
-
-        double voltageSum = std::accumulate(voltageData.begin(), voltageData.end(), 0.0);
-        double voltageMean = voltageSum / voltageData.size();
-
-        std::vector<double> diff(currentData.size());
-        std::transform(currentData.begin(), currentData.end(), diff.begin(), std::bind2nd(std::minus<double>(), mean));
-        double sq_sum = std::inner_product(diff.begin(), diff.end(), diff.begin(), 0.0);
-        double stdev = std::sqrt(sq_sum / currentData.size());
-
-        if (loopCounter > 0) {
-            time_t now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-            struct tm t = *localtime(&now);
-            std::cout << 1900 + t.tm_year << std::setfill('0') << "-" << std::setw(2) << t.tm_mon << "-" << std::setw(2)
-                      << t.tm_mday << " " << std::setw(2) << t.tm_hour << ":" << std::setw(2) << t.tm_min << ":"
-                      << std::setw(2) << t.tm_sec;
-
-            std::cout << std::fixed << std::setprecision(3) << ", " << currentData.size() << ", " << currentMin << ", "
-                      << mean << ", " << currentMax << ", " << stdev << ", " << voltageMin << ", " << voltageMean
-                      << ", " << voltageMax << std::endl;
-        }
-
-        loopCounter++;
-    }
 }
 
 void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)
@@ -153,18 +59,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             std::cout << mon.get<>(RaduinoCommandWakeup(false), static_cast<std::chrono::milliseconds>(12000))
                       << std::endl;
             break;
-        case 'N':
-            std::cout << mon.get<>(RaduinoCommandWakeup(true), static_cast<std::chrono::milliseconds>(12000))
-                      << std::endl;
-            break;
-        case 'A': {
-            while (1) {
-                mon.get<>(RaduinoCommandWakeup(true), static_cast<std::chrono::milliseconds>(12000));
-                if (mon.lastCommandReturnedValidResponse()) {
-                    std::cout << mon.getRadio<>(RaduinoCommandQuadratureEncoder()) << std::endl;
-                }
-            }
-        } break;
         case 'v':
             mon.printDebug(false);
             verbose = false;

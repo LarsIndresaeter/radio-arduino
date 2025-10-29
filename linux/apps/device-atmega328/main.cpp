@@ -25,6 +25,8 @@ void print_usage()
     std::cout << "       -P : pwm command to node" << std::endl;
     std::cout << "       -q : read quadrature encoder from gateway" << std::endl;
     std::cout << "       -Q : read quadrature encoder from node" << std::endl;
+    std::cout << "       -C : wake up sleeping rx node if data available flag is set" << std::endl;
+    std::cout << "       -A : read quadrature encoder from node on change" << std::endl;
     std::cout << "       -y : set device name from gateway" << std::endl;
     std::cout << "       -Y : set device name from node" << std::endl;
     std::cout << "       -z : get device name from gateway" << std::endl;
@@ -41,7 +43,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     char option = 0;
     uint8_t spiRegister = 0;
 
-    while ((option = getopt(argc, argv, "bBgGjJy:p:P:qQY:zZs:S:tTh")) != -1) {
+    while ((option = getopt(argc, argv, "AbBCgGjJy:p:P:qQY:zZs:S:tTh")) != -1) {
         switch (option) {
         case 'b':
             std::cout << mon.get<>(RaduinoCommandBlink(), static_cast<std::chrono::milliseconds>(4000)) << std::endl;
@@ -75,6 +77,18 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'Q':
             std::cout << mon.getRadio<>(RaduinoCommandQuadratureEncoder()) << std::endl;
             break;
+        case 'C':
+            std::cout << mon.get<>(RaduinoCommandWakeup(true), static_cast<std::chrono::milliseconds>(12000))
+                      << std::endl;
+            break;
+        case 'A': {
+            while (1) {
+                mon.get<>(RaduinoCommandWakeup(true), static_cast<std::chrono::milliseconds>(12000));
+                if (mon.lastCommandReturnedValidResponse()) {
+                    std::cout << mon.getRadio<>(RaduinoCommandQuadratureEncoder()) << std::endl;
+                }
+            }
+        } break;
         case 'y': {
             std::string s(optarg);
             mon.get<>(RaduinoCommandSetDeviceName(s));
