@@ -18,6 +18,7 @@
 void print_usage()
 {
     std::cout << "raduino-node" << std::endl;
+    std::cout << "       -K : encrypt command with transport key" << std::endl;
     std::cout << "       -V : Verbose on" << std::endl;
     std::cout << "       -v : Verbose off" << std::endl;
     std::cout << "       -C : print counter values" << std::endl;
@@ -28,7 +29,6 @@ void print_usage()
     std::cout << "       -n : wakeup node address" << std::endl;
     std::cout << "       -a : update node address" << std::endl;
     std::cout << "       -k : set keep alive interval" << std::endl;
-    std::cout << "       -b : use transport key" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -39,7 +39,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t keepAliveInterval = 0;
     bool verbose = false;
 
-    while ((option = getopt(argc, argv, "CVvtTgNwqjn:a:k:b:h")) != -1) {
+    while ((option = getopt(argc, argv, "CVvtTgNwqjn:a:k:K:h")) != -1) {
         switch (option) {
         case 'V':
             verbose = true;
@@ -88,7 +88,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'k':
             keepAliveInterval = atoi(optarg);
             break;
-        case 'b': {
+        case 'K': {
             std::string s(optarg);
             std::vector<uint8_t> key(16, 0);
 
@@ -100,6 +100,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             // set key
             cryptoHandler.setTransportKey((uint8_t*)&key[0]);
             cryptoHandler.setMacKey((uint8_t*)&key[0]);
+            mon.setTransportEncryption(true);
         } break;
         }
     }

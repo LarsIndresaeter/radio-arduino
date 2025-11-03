@@ -12,8 +12,8 @@
 void print_usage()
 {
     std::cout << "raduino-personalize" << std::endl;
+    std::cout << "       -K : encrypt command with transport key" << std::endl;
     std::cout << "       -n : set device name" << std::endl;
-    std::cout << "       -c : current transport key" << std::endl;
     std::cout << "       -t : new transport key" << std::endl;
     std::cout << "       -e : new encryption key" << std::endl;
     std::cout << "       -d : dump eeprom contents" << std::endl;
@@ -63,6 +63,7 @@ void setCurrentEncryptionKey(monitor& mon, LinuxCryptoHandler& cryptoHandler, st
 
     cryptoHandler.setTransportKey((uint8_t*)&key[0]);
     cryptoHandler.setMacKey((uint8_t*)&key[0]);
+    mon.setTransportEncryption(true);
 }
 
 void pingAndExitIfNoResponse(monitor& mon)
@@ -96,13 +97,13 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     bool dump_eeprom = false;
     bool name_option_present = false;
 
-    while ((option = getopt(argc, argv, "n:c:t:e:r:ds:h")) != -1) {
+    while ((option = getopt(argc, argv, "n:K:t:e:r:ds:h")) != -1) {
         switch (option) {
         case 'n':
             setNewDeviceName = optarg;
             name_option_present = true;
             break;
-        case 'c':
+        case 'K':
             currentTransportKey = optarg;
             break;
         case 't':

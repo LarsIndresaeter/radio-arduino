@@ -15,11 +15,12 @@
 void print_usage()
 {
     std::cout << "raduino-spi-bridge" << std::endl;
-    std::cout << "      -o : offset SPI register" << std::endl;
-    std::cout << "      -r : SPI read <length> bytes" << std::endl;
-    std::cout << "      -w : SPI write command" << std::endl;
-    std::cout << "      -V : Verbose on" << std::endl;
-    std::cout << "      -h : print this text" << std::endl;
+    std::cout << "       -K : encrypt command with transport key" << std::endl;
+    std::cout << "       -o : offset SPI register" << std::endl;
+    std::cout << "       -r : SPI read <length> bytes" << std::endl;
+    std::cout << "       -w : SPI write command" << std::endl;
+    std::cout << "       -V : Verbose on" << std::endl;
+    std::cout << "       -h : print this text" << std::endl;
 }
 
 void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)
@@ -27,8 +28,23 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     char option = 0;
     uint8_t spiRegister = 0;
 
-    while ((option = getopt(argc, argv, "Vo:r:w:h")) != -1) {
+    while ((option = getopt(argc, argv, "K:Vo:r:w:h")) != -1) {
         switch (option) {
+        case 'K': {
+            std::string s(optarg);
+            std::vector<uint8_t> key(16, 0);
+
+            // read key ascii values
+            for (uint8_t i = 0; i < s.size() && i < 16; i++) {
+                key.at(i) = s.at(i);
+            }
+
+            // set key
+            cryptoHandler.setTransportKey((uint8_t*)&key[0]);
+            cryptoHandler.setMacKey((uint8_t*)&key[0]);
+            mon.setTransportEncryption(true);
+        } break;
+
         case 'V':
             mon.printDebug(true);
             mon.setPrintResponseTime(true);

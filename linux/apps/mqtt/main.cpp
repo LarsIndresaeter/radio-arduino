@@ -100,13 +100,14 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client, std::
 void print_usage()
 {
     std::cout << "raduino-mqtt-client" << std::endl;
+    std::cout << "       -K : encrypt command with transport key" << std::endl;
     std::cout << "       -n : gateway address" << std::endl;
     std::cout << "       -T : encrypt messages to rf node" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
     std::cout << std::endl;
 }
 
-void parseOpt(int argc, char* argv[], monitor& mon)
+void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)
 {
     const std::string DFLT_ADDRESS { "tcp://localhost:1883" };
     const auto PERIOD = std::chrono::seconds(5);
@@ -127,8 +128,23 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     std::vector<uint8_t> nodeAddressList;
     char option = 0;
 
-    while ((option = getopt(argc, argv, "hn:T")) != -1) {
+    while ((option = getopt(argc, argv, "K:hn:T")) != -1) {
         switch (option) {
+        case 'K': {
+            std::string s(optarg);
+            std::vector<uint8_t> key(16, 0);
+
+            // read key ascii values
+            for (uint8_t i = 0; i < s.size() && i < 16; i++) {
+                key.at(i) = s.at(i);
+            }
+
+            // set key
+            cryptoHandler.setTransportKey((uint8_t*)&key[0]);
+            cryptoHandler.setMacKey((uint8_t*)&key[0]);
+            mon.setTransportEncryption(true);
+        } break;
+
         case 'T':
             mon.setTransportEncryption(true);
             break;
@@ -171,7 +187,7 @@ int main(int argc, char* argv[])
 
     std::thread readerThread(&EventProcess::Run, &ep);
 
-    parseOpt(argc, argv, mon);
+    parseOpt(argc, argv, mon, cryptoHandler);
 
     readerThread.join();
 

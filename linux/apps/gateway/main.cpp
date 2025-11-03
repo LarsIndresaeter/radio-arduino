@@ -16,12 +16,12 @@ using namespace std::chrono_literals;
 void print_usage()
 {
     std::cout << "raduino-gateway" << std::endl;
+    std::cout << "       -K : encrypt command with transport key" << std::endl;
     std::cout << "       -V : Verbose on" << std::endl;
     std::cout << "       -v : Verbose off" << std::endl;
     std::cout << "       -C : print counter values" << std::endl;
     std::cout << "       -t : disable transport encryption" << std::endl;
     std::cout << "       -T : enable transport encryption" << std::endl;
-    std::cout << "       -b : use transport key" << std::endl;
     std::cout << "       -n : reboot gateway as node" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
@@ -32,7 +32,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
 
-    while ((option = getopt(argc, argv, "CVvhtTgGb:Jn")) != -1) {
+    while ((option = getopt(argc, argv, "CVvhtTgGK:Jn")) != -1) {
         switch (option) {
         case 'V':
             mon.printDebug(true);
@@ -51,7 +51,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'C':
             mon.printCounterValues();
             break;
-        case 'b': {
+        case 'K': {
             std::string s(optarg);
             std::vector<uint8_t> key(16, 0);
 
@@ -63,6 +63,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             // set key
             cryptoHandler.setTransportKey((uint8_t*)&key[0]);
             cryptoHandler.setMacKey((uint8_t*)&key[0]);
+            mon.setTransportEncryption(true);
         } break;
         case 'n':
             std::cout << mon.get<>(RaduinoCommandSetRadioRole('n')) << std::endl;

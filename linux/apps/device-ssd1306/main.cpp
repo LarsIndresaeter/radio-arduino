@@ -16,6 +16,7 @@
 void print_usage()
 {
     std::cout << "raduino-device-ws2812b" << std::endl;
+    std::cout << "       -K : encrypt command with transport key" << std::endl;
     std::cout << "       -l : write text on ssd1306 LCD on gateway" << std::endl;
     std::cout << "       -L : write text on ssd1306 LCD on node" << std::endl;
     std::cout << "       -n : wakeup node address" << std::endl;
@@ -28,8 +29,23 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t spiRegister = 0;
     uint8_t radioAddress = 0;
 
-    while ((option = getopt(argc, argv, "l:L:n:h")) != -1) {
+    while ((option = getopt(argc, argv, "K:l:L:n:h")) != -1) {
         switch (option) {
+        case 'K': {
+            std::string s(optarg);
+            std::vector<uint8_t> key(16, 0);
+
+            // read key ascii values
+            for (uint8_t i = 0; i < s.size() && i < 16; i++) {
+                key.at(i) = s.at(i);
+            }
+
+            // set key
+            cryptoHandler.setTransportKey((uint8_t*)&key[0]);
+            cryptoHandler.setMacKey((uint8_t*)&key[0]);
+            mon.setTransportEncryption(true);
+        } break;
+
         case 'l': {
             std::string s(optarg);
             mon.get<>(RaduinoCommandSsd1306(2, s)); // second line

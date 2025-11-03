@@ -63,6 +63,7 @@ void testAes(monitor& mon)
 void print_usage()
 {
     std::cout << "raduino-test" << std::endl;
+    std::cout << "       -K : encrypt command with transport key" << std::endl;
     std::cout << "       -A : test AES" << std::endl;
     std::cout << "       -C : print counter values" << std::endl;
     std::cout << "       -e : EEPROM command" << std::endl;
@@ -85,14 +86,29 @@ void compareResult(uint8_t expected, uint8_t actual)
     }
 }
 
-void parseOpt(int argc, char* argv[], monitor& mon)
+void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)
 {
     char option = 0;
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
 
-    while ((option = getopt(argc, argv, "ACeI:O:gbSsh")) != -1) {
+    while ((option = getopt(argc, argv, "K:ACeI:O:gbSsh")) != -1) {
         switch (option) {
+        case 'K': {
+            std::string s(optarg);
+            std::vector<uint8_t> key(16, 0);
+
+            // read key ascii values
+            for (uint8_t i = 0; i < s.size() && i < 16; i++) {
+                key.at(i) = s.at(i);
+            }
+
+            // set key
+            cryptoHandler.setTransportKey((uint8_t*)&key[0]);
+            cryptoHandler.setMacKey((uint8_t*)&key[0]);
+            mon.setTransportEncryption(true);
+        } break;
+
         case 'e':
             std::cout << mon.get<>(RaduinoCommandEepromWrite(2, 3)) << std::endl;
             std::cout << mon.get<>(RaduinoCommandEepromRead(2)) << std::endl;
@@ -215,7 +231,7 @@ int main(int argc, char* argv[])
 
     std::thread readerThread(&EventProcess::Run, &ep);
 
-    parseOpt(argc, argv, mon);
+    parseOpt(argc, argv, mon, cryptoHandler);
 
     readerThread.join();
 

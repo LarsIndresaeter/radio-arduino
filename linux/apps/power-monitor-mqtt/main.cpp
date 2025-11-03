@@ -20,12 +20,13 @@ using namespace std::chrono_literals;
 void print_usage()
 {
     std::cout << "power-monitor" << std::endl;
+    std::cout << "       -K : encrypt command with transport key" << std::endl;
     std::cout << "       -n : ina219 power monitor, stats for <N> seconds" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
     std::cout << std::endl;
 }
 
-void parseOpt(int argc, char* argv[], monitor& mon)
+void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)
 {
     const std::string DFLT_ADDRESS { "tcp://localhost:1883" };
     const auto PERIOD = std::chrono::seconds(5);
@@ -45,8 +46,23 @@ void parseOpt(int argc, char* argv[], monitor& mon)
 
     char option = 0;
 
-    while ((option = getopt(argc, argv, "n:h")) != -1) {
+    while ((option = getopt(argc, argv, "K:n:h")) != -1) {
         switch (option) {
+        case 'K': {
+            std::string s(optarg);
+            std::vector<uint8_t> key(16, 0);
+
+            // read key ascii values
+            for (uint8_t i = 0; i < s.size() && i < 16; i++) {
+                key.at(i) = s.at(i);
+            }
+
+            // set key
+            cryptoHandler.setTransportKey((uint8_t*)&key[0]);
+            cryptoHandler.setMacKey((uint8_t*)&key[0]);
+            mon.setTransportEncryption(true);
+        } break;
+
         case 'n':
             readCurrentAndVoltage(mon, mqtt_client, atoi(optarg));
             break;
@@ -84,7 +100,7 @@ int main(int argc, char* argv[])
 
     std::thread readerThread(&EventProcess::Run, &ep);
 
-    parseOpt(argc, argv, mon);
+    parseOpt(argc, argv, mon, cryptoHandler);
 
     readerThread.join();
 

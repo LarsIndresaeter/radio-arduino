@@ -14,6 +14,7 @@
 void print_usage()
 {
     std::cout << "raduino-i2c-bridge" << std::endl;
+    std::cout << "          -K : encrypt command with transport key" << std::endl;
     std::cout << "          -a : device address" << std::endl;
     std::cout << "          -c : control register address" << std::endl;
     std::cout << " -r <length> : read <length> bytes" << std::endl;
@@ -35,8 +36,23 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     std::string writeString = "";
     uint16_t writeValue = 0;
 
-    while ((option = getopt(argc, argv, "a:c:r:s:w:Vh")) != -1) {
+    while ((option = getopt(argc, argv, "K:a:c:r:s:w:Vh")) != -1) {
         switch (option) {
+        case 'K': {
+            std::string s(optarg);
+            std::vector<uint8_t> key(16, 0);
+
+            // read key ascii values
+            for (uint8_t i = 0; i < s.size() && i < 16; i++) {
+                key.at(i) = s.at(i);
+            }
+
+            // set key
+            cryptoHandler.setTransportKey((uint8_t*)&key[0]);
+            cryptoHandler.setMacKey((uint8_t*)&key[0]);
+            mon.setTransportEncryption(true);
+        } break;
+
         case 'a':
             i2cDeviceAddress = atoi(optarg);
             break;

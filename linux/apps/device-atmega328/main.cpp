@@ -15,6 +15,7 @@
 void print_usage()
 {
     std::cout << "raduino-device-atmega328" << std::endl;
+    std::cout << "       -K : encrypt command with transport key" << std::endl;
     std::cout << "       -b : Blink command to gateway" << std::endl;
     std::cout << "       -B : Blink command to node" << std::endl;
     std::cout << "       -g : get gpio values on gateway" << std::endl;
@@ -43,8 +44,23 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     char option = 0;
     uint8_t spiRegister = 0;
 
-    while ((option = getopt(argc, argv, "AbBCgGjJy:p:P:qQY:zZs:S:tTh")) != -1) {
+    while ((option = getopt(argc, argv, "K:AbBCgGjJy:p:P:qQY:zZs:S:tTh")) != -1) {
         switch (option) {
+        case 'K': {
+            std::string s(optarg);
+            std::vector<uint8_t> key(16, 0);
+
+            // read key ascii values
+            for (uint8_t i = 0; i < s.size() && i < 16; i++) {
+                key.at(i) = s.at(i);
+            }
+
+            // set key
+            cryptoHandler.setTransportKey((uint8_t*)&key[0]);
+            cryptoHandler.setMacKey((uint8_t*)&key[0]);
+            mon.setTransportEncryption(true);
+        } break;
+
         case 'b':
             std::cout << mon.get<>(RaduinoCommandBlink(), static_cast<std::chrono::milliseconds>(4000)) << std::endl;
             break;

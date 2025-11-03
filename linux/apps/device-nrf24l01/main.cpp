@@ -15,10 +15,11 @@
 void print_usage()
 {
     std::cout << "raduino-device-nrf24l01" << std::endl;
-    std::cout << "      -i : initialize nrf24l01 on gateway" << std::endl;
-    std::cout << "      -r : set device in serial bridge as reader" << std::endl;
-    std::cout << "      -s : set device in serial bridge as sender" << std::endl;
-    std::cout << "      -h : print this text" << std::endl;
+    std::cout << "       -K : encrypt command with transport key" << std::endl;
+    std::cout << "       -i : initialize nrf24l01 on gateway" << std::endl;
+    std::cout << "       -r : set device in serial bridge as reader" << std::endl;
+    std::cout << "       -s : set device in serial bridge as sender" << std::endl;
+    std::cout << "       -h : print this text" << std::endl;
 }
 
 void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)
@@ -26,8 +27,23 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     char option = 0;
     uint8_t spiRegister = 0;
 
-    while ((option = getopt(argc, argv, "ir:s:h")) != -1) {
+    while ((option = getopt(argc, argv, "K:ir:s:h")) != -1) {
         switch (option) {
+        case 'K': {
+            std::string s(optarg);
+            std::vector<uint8_t> key(16, 0);
+
+            // read key ascii values
+            for (uint8_t i = 0; i < s.size() && i < 16; i++) {
+                key.at(i) = s.at(i);
+            }
+
+            // set key
+            cryptoHandler.setTransportKey((uint8_t*)&key[0]);
+            cryptoHandler.setMacKey((uint8_t*)&key[0]);
+            mon.setTransportEncryption(true);
+        } break;
+
         case 's': {
             std::string s(optarg);
             std::vector<uint8_t> address = { 0xF0, 0xF0, 0xF0, 0xF0, 0xC2 };

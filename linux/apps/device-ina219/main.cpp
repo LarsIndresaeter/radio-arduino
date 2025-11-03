@@ -15,6 +15,7 @@
 void print_usage()
 {
     std::cout << "raduino-device-ina219" << std::endl;
+    std::cout << "       -K : encrypt command with transport key" << std::endl;
     std::cout << "       -s : read ina219 on gateway" << std::endl;
     std::cout << "       -s : read ina219 on node" << std::endl;
     std::cout << "       -n : ina219 stats for <N> seconds on gateway" << std::endl;
@@ -112,8 +113,23 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     char option = 0;
     uint8_t spiRegister = 0;
 
-    while ((option = getopt(argc, argv, "sSn:h")) != -1) {
+    while ((option = getopt(argc, argv, "K:sSn:h")) != -1) {
         switch (option) {
+        case 'K': {
+            std::string s(optarg);
+            std::vector<uint8_t> key(16, 0);
+
+            // read key ascii values
+            for (uint8_t i = 0; i < s.size() && i < 16; i++) {
+                key.at(i) = s.at(i);
+            }
+
+            // set key
+            cryptoHandler.setTransportKey((uint8_t*)&key[0]);
+            cryptoHandler.setMacKey((uint8_t*)&key[0]);
+            mon.setTransportEncryption(true);
+        } break;
+
         case 's': {
             auto result = mon.get<>(RaduinoCommandIna219());
 
