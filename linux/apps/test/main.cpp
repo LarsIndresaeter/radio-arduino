@@ -69,7 +69,6 @@ void print_usage()
     std::cout << "       -C : print counter values" << std::endl;
     std::cout << "       -e : EEPROM command" << std::endl;
     std::cout << "       -I : I2C read command" << std::endl;
-    std::cout << "       -O : Test SPI commands" << std::endl;
     std::cout << "       -s : test sha1 command" << std::endl;
     std::cout << "       -g : dump eeprom from mega328p" << std::endl;
     std::cout << "       -b : test json formatter" << std::endl;
@@ -97,7 +96,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t radioAddress = 0;
     bool verbose = false;
 
-    while ((option = getopt(argc, argv, "K:N:vVACeI:O:gbSsh")) != -1) {
+    while ((option = getopt(argc, argv, "K:N:vVACeI:gbSsh")) != -1) {
         switch (option) {
         case 'K': {
             std::string s(optarg);
