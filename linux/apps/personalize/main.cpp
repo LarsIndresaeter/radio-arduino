@@ -152,7 +152,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         dumpEeprom(mon, 10);
     }
 
-    mon.setTransportEncryption(true);
     std::cout << mon.get<>(RaduinoCommandSetDeviceName(setNewDeviceName)) << std::endl;
     std::cout << mon.get<>(RaduinoCommandSetKey('D', setNewEncryptionKey)) << std::endl;
     std::cout << mon.get<>(RaduinoCommandSetKey('T', setNewTransportKey)) << std::endl;

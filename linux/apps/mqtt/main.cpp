@@ -102,7 +102,6 @@ void print_usage()
     std::cout << "raduino-mqtt-client" << std::endl;
     std::cout << "       -K : encrypt command with transport key" << std::endl;
     std::cout << "       -n : gateway address" << std::endl;
-    std::cout << "       -T : encrypt messages to rf node" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
     std::cout << std::endl;
 }
@@ -128,7 +127,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     std::vector<uint8_t> nodeAddressList;
     char option = 0;
 
-    while ((option = getopt(argc, argv, "K:hn:T")) != -1) {
+    while ((option = getopt(argc, argv, "K:hn:")) != -1) {
         switch (option) {
         case 'K': {
             std::string s(optarg);
@@ -144,10 +143,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             cryptoHandler.setMacKey((uint8_t*)&key[0]);
             mon.setTransportEncryption(true);
         } break;
-
-        case 'T':
-            mon.setTransportEncryption(true);
-            break;
         case 'n':
             nodeAddressList.push_back(atoi(optarg));
             break;

@@ -22,8 +22,6 @@ void print_usage()
     std::cout << "       -V : Verbose on" << std::endl;
     std::cout << "       -v : Verbose off" << std::endl;
     std::cout << "       -C : print counter values" << std::endl;
-    std::cout << "       -t : disable transport encryption" << std::endl;
-    std::cout << "       -T : enable transport encryption" << std::endl;
     std::cout << "       -g : reboot node as gateway" << std::endl;
     std::cout << "       -w : wake up sleeping rx node" << std::endl;
     std::cout << "       -n : wakeup node address" << std::endl;
@@ -39,18 +37,12 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t keepAliveInterval = 0;
     bool verbose = false;
 
-    while ((option = getopt(argc, argv, "CVvtTgNwqjn:a:k:K:h")) != -1) {
+    while ((option = getopt(argc, argv, "CVvgNwqjn:a:k:K:h")) != -1) {
         switch (option) {
         case 'V':
             verbose = true;
             mon.printDebug(true);
             mon.setPrintResponseTime(true);
-            break;
-        case 't':
-            mon.setTransportEncryption(false);
-            break;
-        case 'T':
-            mon.setTransportEncryption(true);
             break;
         case 'w':
             std::cout << mon.get<>(RaduinoCommandWakeup(false), static_cast<std::chrono::milliseconds>(12000))

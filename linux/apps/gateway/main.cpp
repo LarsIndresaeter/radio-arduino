@@ -20,8 +20,6 @@ void print_usage()
     std::cout << "       -V : Verbose on" << std::endl;
     std::cout << "       -v : Verbose off" << std::endl;
     std::cout << "       -C : print counter values" << std::endl;
-    std::cout << "       -t : disable transport encryption" << std::endl;
-    std::cout << "       -T : enable transport encryption" << std::endl;
     std::cout << "       -n : reboot gateway as node" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
@@ -32,17 +30,11 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
 
-    while ((option = getopt(argc, argv, "CVvhtTgGK:Jn")) != -1) {
+    while ((option = getopt(argc, argv, "CVvhgGK:Jn")) != -1) {
         switch (option) {
         case 'V':
             mon.printDebug(true);
             mon.setPrintResponseTime(true);
-            break;
-        case 't':
-            mon.setTransportEncryption(false);
-            break;
-        case 'T':
-            mon.setTransportEncryption(true);
             break;
         case 'v':
             mon.printDebug(false);
