@@ -68,7 +68,7 @@ void initialize()
         PCICR = 0x02;        // enable PCINT1
         PCMSK1 = 0x05;       // enable pin PCINT8 (PC0) and PCINT10 (PC2)
 
-        PORTC |= 0x07;       // enable pull-up resistor
+        PORTC |= 0x07; // enable pull-up resistor
 
         sei();
     }

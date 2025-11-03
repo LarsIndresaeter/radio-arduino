@@ -5,7 +5,7 @@ void configureIna219(uint8_t address)
 {
     // set configuration register
     uint16_t configurationValue = range_160_mV << 12; // 1.6A
-    configurationValue |= samples_4 << 3; // 2.13 ms
+    configurationValue |= samples_4 << 3;             // 2.13 ms
     configurationValue |= mode_shunt_and_bus_triggered << 0;
     I2C_Init();
     I2C_Start(address);
