@@ -14,8 +14,8 @@ void print_usage()
     std::cout << "raduino-personalize" << std::endl;
     std::cout << "       -K : encrypt command with transport key" << std::endl;
     std::cout << "       -n : set device name" << std::endl;
-    std::cout << "       -t : new transport key" << std::endl;
-    std::cout << "       -e : new encryption key" << std::endl;
+    std::cout << "       -t : set transport encryption key" << std::endl;
+    std::cout << "       -e : set data encryption key" << std::endl;
     std::cout << "       -d : dump eeprom contents" << std::endl;
     std::cout << "       -r : set radio role <gateway|node>" << std::endl;
     std::cout << "       -s : set requireTransportEncyption flag <0|1>" << std::endl;
