@@ -14,7 +14,6 @@
 #include <radioSession.hpp>
 #include <thread>
 #include <uart.hpp>
-#include <radioSession.hpp>
 
 void print_usage()
 {
@@ -55,9 +54,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             radioAddress = atoi(optarg);
             {
                 RadioSession radioSession(mon, radioAddress);
-                if (verbose) {
-                    radioSession.setVerbose(true);
-                }
                 radioSession.wakeupNotResponding();
             }
             break;
