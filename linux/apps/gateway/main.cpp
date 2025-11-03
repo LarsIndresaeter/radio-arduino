@@ -21,8 +21,6 @@ void print_usage()
     std::cout << "       -C : print counter values" << std::endl;
     std::cout << "       -t : disable transport encryption" << std::endl;
     std::cout << "       -T : enable transport encryption" << std::endl;
-    std::cout << "       -E : set encryption key" << std::endl;
-    std::cout << "       -K : set transport key on device (command must be encrypted)" << std::endl;
     std::cout << "       -b : use transport key" << std::endl;
     std::cout << "       -n : reboot gateway as node" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
@@ -34,7 +32,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
 
-    while ((option = getopt(argc, argv, "CVvhtTgGE:K:b:Jn")) != -1) {
+    while ((option = getopt(argc, argv, "CVvhtTgGb:Jn")) != -1) {
         switch (option) {
         case 'V':
             mon.printDebug(true);
@@ -53,14 +51,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'C':
             mon.printCounterValues();
             break;
-        case 'E': {
-            std::string s(optarg);
-            mon.get<>(RaduinoCommandSetKey('D', s));
-        } break;
-        case 'K': {
-            std::string s(optarg);
-            mon.get<>(RaduinoCommandSetKey('T', s));
-        } break;
         case 'b': {
             std::string s(optarg);
             std::vector<uint8_t> key(16, 0);

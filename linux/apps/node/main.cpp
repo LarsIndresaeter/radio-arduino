@@ -23,13 +23,11 @@ void print_usage()
     std::cout << "       -C : print counter values" << std::endl;
     std::cout << "       -t : disable transport encryption" << std::endl;
     std::cout << "       -T : enable transport encryption" << std::endl;
-    std::cout << "       -E : set AES Key" << std::endl;
     std::cout << "       -g : reboot node as gateway" << std::endl;
     std::cout << "       -w : wake up sleeping rx node" << std::endl;
     std::cout << "       -n : wakeup node address" << std::endl;
     std::cout << "       -a : update node address" << std::endl;
     std::cout << "       -k : set keep alive interval" << std::endl;
-    std::cout << "       -K : set transport key on device (command must be encrypted)" << std::endl;
     std::cout << "       -b : use transport key" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
@@ -41,7 +39,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t keepAliveInterval = 0;
     bool verbose = false;
 
-    while ((option = getopt(argc, argv, "CVvtTgNE:wqjn:a:k:b:K:h")) != -1) {
+    while ((option = getopt(argc, argv, "CVvtTgNwqjn:a:k:b:h")) != -1) {
         switch (option) {
         case 'V':
             verbose = true;
@@ -70,10 +68,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'C':
             mon.printCounterValues();
             break;
-        case 'E': {
-            std::string s(optarg);
-            mon.getRadio<>(RaduinoCommandSetKey('D', s));
-        } break;
         case 'h':
             print_usage();
             break;
@@ -106,10 +100,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             // set key
             cryptoHandler.setTransportKey((uint8_t*)&key[0]);
             cryptoHandler.setMacKey((uint8_t*)&key[0]);
-        } break;
-        case 'K': {
-            std::string s(optarg);
-            mon.getRadio<>(RaduinoCommandSetKey('T', s));
         } break;
         }
     }

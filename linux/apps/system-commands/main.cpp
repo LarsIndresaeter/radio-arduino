@@ -22,6 +22,10 @@ void print_usage()
     std::cout << "       -D : debug command on node" << std::endl;
     std::cout << "       -p : ping gateway" << std::endl;
     std::cout << "       -P : ping node" << std::endl;
+    std::cout << "       -f : set data encryption key on gateway" << std::endl;
+    std::cout << "       -F : set data encryption key on node" << std::endl;
+    std::cout << "       -g : set transport encryption key on gateway" << std::endl;
+    std::cout << "       -G : set transport encryption key on node" << std::endl;
     std::cout << "       -r : get random bytes command on gateway" << std::endl;
     std::cout << "       -R : get random bytes command on node" << std::endl;
     std::cout << "       -s : get statistics from gateway" << std::endl;
@@ -40,7 +44,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 {
     char option = 0;
 
-    while ((option = getopt(argc, argv, "c:C:xXrRdDpPt:T:us:S:UvVzZh")) != -1) {
+    while ((option = getopt(argc, argv, "c:C:f:F:g:G:xXrRdDpPt:T:us:S:UvVzZh")) != -1) {
         switch (option) {
         case 'c': {
             std::string s(optarg);
@@ -48,7 +52,23 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         } break;
         case 'C': {
             std::string s(optarg);
-            std::cout << mon.get<>(RaduinoCommandSha1(s)) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandSha1(s)) << std::endl;
+        } break;
+        case 'f': {
+            std::string s(optarg);
+            mon.get<>(RaduinoCommandSetKey('D', s));
+        } break;
+        case 'F': {
+            std::string s(optarg);
+            mon.getRadio<>(RaduinoCommandSetKey('D', s));
+        } break;
+        case 'g': {
+            std::string s(optarg);
+            mon.get<>(RaduinoCommandSetKey('T', s));
+        } break;
+        case 'G': {
+            std::string s(optarg);
+            mon.getRadio<>(RaduinoCommandSetKey('T', s));
         } break;
         case 'x':
             std::cout << mon.get<>(RaduinoCommandHotp()) << std::endl;
