@@ -72,7 +72,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             break;
         case 'E': {
             std::string s(optarg);
-            mon.getRadio<>(RaduinoCommandSetKey('E', s));
+            mon.getRadio<>(RaduinoCommandSetKey('D', s));
         } break;
         case 'h':
             print_usage();

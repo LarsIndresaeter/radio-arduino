@@ -55,7 +55,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             break;
         case 'E': {
             std::string s(optarg);
-            mon.get<>(RaduinoCommandSetKey('E', s));
+            mon.get<>(RaduinoCommandSetKey('D', s));
         } break;
         case 'K': {
             std::string s(optarg);
