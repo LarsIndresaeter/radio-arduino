@@ -67,13 +67,11 @@ void print_usage()
     std::cout << "       -C : print counter values" << std::endl;
     std::cout << "       -e : EEPROM command" << std::endl;
     std::cout << "       -I : I2C read command" << std::endl;
-    std::cout << "       -E : set AES Key" << std::endl;
     std::cout << "       -O : Test SPI commands" << std::endl;
     std::cout << "       -s : test sha1 command" << std::endl;
     std::cout << "       -g : dump eeprom from mega328p" << std::endl;
     std::cout << "       -b : test json formatter" << std::endl;
     std::cout << "       -S : rx and tx statistics for node and gateway" << std::endl;
-    std::cout << "       -K : set transport key on device" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -93,7 +91,7 @@ void parseOpt(int argc, char* argv[], monitor& mon)
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
 
-    while ((option = getopt(argc, argv, "ACeI:E:O:gbSsK:h")) != -1) {
+    while ((option = getopt(argc, argv, "ACeI:O:gbSsh")) != -1) {
         switch (option) {
         case 'e':
             std::cout << mon.get<>(RaduinoCommandEepromWrite(2, 3)) << std::endl;
@@ -175,14 +173,6 @@ void parseOpt(int argc, char* argv[], monitor& mon)
             std::cout << mon.get<>(RaduinoCommandGetStatistics()).getJson() << std::endl;
             std::cout << mon.get<>(RaduinoCommandPing()).getJson() << std::endl;
             break;
-        case 'E': {
-            std::string s(optarg);
-            mon.get<>(RaduinoCommandSetKey('D', s));
-        } break;
-        case 'K': {
-            std::string s(optarg);
-            mon.get<>(RaduinoCommandSetKey('T', s));
-        } break;
         case 's': {
             // printf "best\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" | xxd
             // printf "best\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0" | sha1sum
