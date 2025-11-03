@@ -12,10 +12,10 @@ void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
 
     if (PARSER::lastReceivedCommandWasEncrypted()) {
         if (command.keyId == 'E') {
-            EEPROM_DATA_STORE::writeToSpareAndSetAsActive(offsetof(eeprom_data_t, EK_KEY), &command.keyValue[0], 16);
+            EEPROM_DATA_STORE::writeToSpareAndSetAsActive(offsetof(eeprom_data_t, dataEncryptionKey), &command.keyValue[0], 16);
         }
         else if (command.keyId == 'T') {
-            EEPROM_DATA_STORE::writeToSpareAndSetAsActive(offsetof(eeprom_data_t, TK_KEY), &command.keyValue[0], 16);
+            EEPROM_DATA_STORE::writeToSpareAndSetAsActive(offsetof(eeprom_data_t, transportEncryptionKey), &command.keyValue[0], 16);
         }
     }
 

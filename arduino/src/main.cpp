@@ -160,7 +160,7 @@ int main()
 {
     RADIOLINK::setNodeAddress(0);
     uint8_t transport_key[16] = { 0 };
-    EEPROM_DATA_STORE::readFromActive(offsetof(eeprom_data_t, TK_KEY), &transport_key[0], 16);
+    EEPROM_DATA_STORE::readFromActive(offsetof(eeprom_data_t, transportEncryptionKey), &transport_key[0], 16);
     ArduinoCryptoHandler cryptoHandler(&transport_key[0]);
 
     rx_mode_gateway = EEPROM_DATA_STORE::readRxModeGatewayFromEeprom();

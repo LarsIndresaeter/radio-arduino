@@ -6,8 +6,9 @@
 
 typedef struct eeprom_data {
     uint8_t deviceName[16];
-    uint8_t EK_KEY[16];
-    uint8_t TK_KEY[16];
+    uint8_t dataEncryptionKey[16];
+    uint8_t transportEncryptionKey[16];
+    //uint8_t keyEncryptionKey[16];
     // uint8_t HMAC_KEY[16];
     // uint8_t HOTP_KEY[16];
     uint32_t dataVersion;

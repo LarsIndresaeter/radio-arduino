@@ -11,7 +11,7 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::AES::response_t response;
 
     uint8_t aes_key[16] = {};
-    EEPROM_DATA_STORE::readFromActive(offsetof(eeprom_data_t, EK_KEY), &aes_key[0], 16);
+    EEPROM_DATA_STORE::readFromActive(offsetof(eeprom_data_t, dataEncryptionKey), &aes_key[0], 16);
 
     uint8_t aes_iv[16] = { 0 };
 
