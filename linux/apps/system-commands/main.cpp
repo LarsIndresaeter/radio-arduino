@@ -16,23 +16,23 @@ using namespace std::chrono_literals;
 void print_usage()
 {
     std::cout << "raduino-system-commands" << std::endl;
-    std::cout << "       -s : SHA1 command on gateway" << std::endl;
-    std::cout << "       -S : SHA1 command on node" << std::endl;
-    std::cout << "       -x : HOTP command on gateway" << std::endl;
-    std::cout << "       -X : HOTP command on node" << std::endl;
-    std::cout << "       -r : get random bytes command on gateway" << std::endl;
-    std::cout << "       -R : get random bytes command on node" << std::endl;
+    std::cout << "       -c : SHA1 command on gateway" << std::endl;
+    std::cout << "       -C : SHA1 command on node" << std::endl;
     std::cout << "       -d : debug command on gateway" << std::endl;
     std::cout << "       -D : debug command on node" << std::endl;
-    std::cout << "       -v : get device version from gateway" << std::endl;
-    std::cout << "       -V : get device version from node" << std::endl;
-    std::cout << "       -s : get statistics from gateway" << std::endl;
-    std::cout << "       -S : get statistics from node" << std::endl;
     std::cout << "       -p : ping gateway" << std::endl;
     std::cout << "       -P : ping node" << std::endl;
-    std::cout << "       -r : set transport encryption required (command must be encrypted) on gateway" << std::endl;
-    std::cout << "       -R : set transport encryption required (command must be encrypted) on node" << std::endl;
+    std::cout << "       -r : get random bytes command on gateway" << std::endl;
+    std::cout << "       -R : get random bytes command on node" << std::endl;
+    std::cout << "       -s : get statistics from gateway" << std::endl;
+    std::cout << "       -S : get statistics from node" << std::endl;
+    std::cout << "       -t : set transport encryption required (command must be encrypted) on gateway" << std::endl;
+    std::cout << "       -T : set transport encryption required (command must be encrypted) on node" << std::endl;
     std::cout << "       -u : unencrypted session (command must be encrypted)" << std::endl;
+    std::cout << "       -v : get device version from gateway" << std::endl;
+    std::cout << "       -V : get device version from node" << std::endl;
+    std::cout << "       -x : HOTP command on gateway" << std::endl;
+    std::cout << "       -X : HOTP command on node" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -40,8 +40,16 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 {
     char option = 0;
 
-    while ((option = getopt(argc, argv, "xXrRdDpPt:T:us:S:UvVzZh")) != -1) {
+    while ((option = getopt(argc, argv, "c:C:xXrRdDpPt:T:us:S:UvVzZh")) != -1) {
         switch (option) {
+        case 'c': {
+            std::string s(optarg);
+            std::cout << mon.get<>(RaduinoCommandSha1(s)) << std::endl;
+        } break;
+        case 'C': {
+            std::string s(optarg);
+            std::cout << mon.get<>(RaduinoCommandSha1(s)) << std::endl;
+        } break;
         case 'x':
             std::cout << mon.get<>(RaduinoCommandHotp()) << std::endl;
             break;
