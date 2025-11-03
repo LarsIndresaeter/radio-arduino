@@ -10,11 +10,11 @@
 #include <linuxCryptoHandler.hpp>
 #include <monitor.hpp>
 #include <numeric>
+#include <radioSession.hpp>
 #include <sstream>
 #include <string>
 #include <thread>
 #include <uart.hpp>
-#include <radioSession.hpp>
 
 using namespace std::chrono_literals;
 

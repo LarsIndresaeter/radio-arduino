@@ -9,9 +9,9 @@
 #include <linuxCryptoHandler.hpp>
 #include <monitor.hpp>
 #include <numeric>
+#include <radioSession.hpp>
 #include <thread>
 #include <uart.hpp>
-#include <radioSession.hpp>
 
 void print_usage()
 {
@@ -52,7 +52,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
                 radioSession.wakeupNotResponding();
             }
             break;
-
 
         case 'x':
             std::cout << mon.get<>(RaduinoCommandDs18b20()) << std::endl;

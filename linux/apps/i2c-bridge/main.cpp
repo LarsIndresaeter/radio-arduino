@@ -8,9 +8,9 @@
 #include <linuxCryptoHandler.hpp>
 #include <monitor.hpp>
 #include <numeric>
+#include <radioSession.hpp>
 #include <thread>
 #include <uart.hpp>
-#include <radioSession.hpp>
 
 void print_usage()
 {
@@ -63,7 +63,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             }
             break;
 
-
         case 'a':
             i2cDeviceAddress = atoi(optarg);
             break;
@@ -98,15 +97,17 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     }
 
     if (readOperation) {
-        if(length == 2)
-        {
+        if (length == 2) {
             auto result = mon.get<>(RaduinoCommandI2cRead(i2cDeviceAddress, registerAddress, length));
             uint16_t value = result.responseStruct().data[0] << 8;
             value |= result.responseStruct().data[1];
 
-            //std::cout << "register[" << std::to_string(registerAddress) << "]=" << std::to_string(value) << std::endl;
-            std::cout << "register[" << std::dec << registerAddress << "]=" << value << ", 0x" << std::hex << value << std::endl;
-        } else{
+            // std::cout << "register[" << std::to_string(registerAddress) << "]=" << std::to_string(value) <<
+            // std::endl;
+            std::cout << "register[" << std::dec << registerAddress << "]=" << value << ", 0x" << std::hex << value
+                      << std::endl;
+        }
+        else {
             std::cout << mon.get<>(RaduinoCommandI2cRead(i2cDeviceAddress, registerAddress, length)) << std::endl;
         }
     }

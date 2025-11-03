@@ -131,7 +131,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             mon.setPrintResponseTime(false);
             break;
 
-
         case 'e':
             std::cout << mon.get<>(RaduinoCommandEepromWrite(2, 3)) << std::endl;
             std::cout << mon.get<>(RaduinoCommandEepromRead(2)) << std::endl;

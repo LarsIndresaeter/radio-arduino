@@ -17,7 +17,6 @@
 #include <string>
 #include <thread>
 #include <uart.hpp>
-#include <radioSession.hpp>
 
 using namespace std::chrono_literals;
 
@@ -153,7 +152,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
                 radioSession.wakeupNotResponding();
             }
             break;
-
 
         case 'n':
             nodeAddressList.push_back(atoi(optarg));

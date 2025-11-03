@@ -8,9 +8,9 @@
 #include <linuxCryptoHandler.hpp>
 #include <monitor.hpp>
 #include <numeric>
+#include <radioSession.hpp>
 #include <thread>
 #include <uart.hpp>
-#include <radioSession.hpp>
 
 using namespace std::chrono_literals;
 

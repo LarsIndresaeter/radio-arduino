@@ -9,9 +9,9 @@
 #include <linuxCryptoHandler.hpp>
 #include <monitor.hpp>
 #include <numeric>
+#include <radioSession.hpp>
 #include <thread>
 #include <uart.hpp>
-#include <radioSession.hpp>
 
 void print_usage()
 {
@@ -71,12 +71,12 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             }
             break;
 
-
         case 'b':
             std::cout << mon.get<>(RaduinoCommandBlink(), static_cast<std::chrono::milliseconds>(4000)) << std::endl;
             break;
         case 'B':
-            std::cout << mon.getRadio<>(RaduinoCommandBlink(), static_cast<std::chrono::milliseconds>(4000)) << std::endl;
+            std::cout << mon.getRadio<>(RaduinoCommandBlink(), static_cast<std::chrono::milliseconds>(4000))
+                      << std::endl;
             break;
         case 'g':
             std::cout << mon.get<>(RaduinoCommandGpio()) << std::endl;
@@ -137,7 +137,8 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         } break;
         case 'S': {
             uint32_t delay = atoi(optarg);
-            std::cout << mon.getRadio<>(RaduinoCommandSleep(delay), static_cast<std::chrono::milliseconds>(delay + 2000))
+            std::cout << mon.getRadio<>(
+                RaduinoCommandSleep(delay), static_cast<std::chrono::milliseconds>(delay + 2000))
                       << std::endl;
         } break;
         case 't':
