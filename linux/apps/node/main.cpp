@@ -21,8 +21,6 @@ void print_usage()
     std::cout << "raduino-node" << std::endl;
     std::cout << "       -K : encrypt command with transport key" << std::endl;
     std::cout << "       -N : wakeup node address" << std::endl;
-    std::cout << "       -V : Verbose on" << std::endl;
-    std::cout << "       -v : Verbose off" << std::endl;
     std::cout << "       -C : print counter values" << std::endl;
     std::cout << "       -g : reboot node as gateway" << std::endl;
     std::cout << "       -w : wake up sleeping rx node" << std::endl;
@@ -36,23 +34,12 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     char option = 0;
     uint8_t radioAddress = 0;
     uint8_t keepAliveInterval = 0;
-    bool verbose = false;
 
-    while ((option = getopt(argc, argv, "K:N:CVvgwqja:k:h")) != -1) {
+    while ((option = getopt(argc, argv, "K:N:Cgwqja:k:h")) != -1) {
         switch (option) {
-        case 'V':
-            verbose = true;
-            mon.printDebug(true);
-            mon.setPrintResponseTime(true);
-            break;
         case 'w':
             std::cout << mon.get<>(RaduinoCommandWakeup(false), static_cast<std::chrono::milliseconds>(12000))
                       << std::endl;
-            break;
-        case 'v':
-            mon.printDebug(false);
-            verbose = false;
-            mon.setPrintResponseTime(false);
             break;
         case 'g': {
             std::cout << mon.getRadio<>(RaduinoCommandSetRadioRole('g')) << std::endl;

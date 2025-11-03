@@ -74,6 +74,8 @@ void print_usage()
     std::cout << "       -g : dump eeprom from mega328p" << std::endl;
     std::cout << "       -b : test json formatter" << std::endl;
     std::cout << "       -S : rx and tx statistics for node and gateway" << std::endl;
+    std::cout << "       -V : Verbose on" << std::endl;
+    std::cout << "       -v : Verbose off" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
 }
 
@@ -93,8 +95,9 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
     uint8_t radioAddress = 0;
+    bool verbose = false;
 
-    while ((option = getopt(argc, argv, "K:N:ACeI:O:gbSsh")) != -1) {
+    while ((option = getopt(argc, argv, "K:N:vVACeI:O:gbSsh")) != -1) {
         switch (option) {
         case 'K': {
             std::string s(optarg);
@@ -116,6 +119,16 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
                 RadioSession radioSession(mon, radioAddress);
                 radioSession.wakeupNotResponding();
             }
+            break;
+        case 'V':
+            verbose = true;
+            mon.printDebug(true);
+            mon.setPrintResponseTime(true);
+            break;
+        case 'v':
+            mon.printDebug(false);
+            verbose = false;
+            mon.setPrintResponseTime(false);
             break;
 
 
