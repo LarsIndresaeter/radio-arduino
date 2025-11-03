@@ -11,5 +11,5 @@ find_package(nlohmann_json REQUIRED)
 add_definitions(-DUSE_FEATURE_MQTT=1)
 
 add_executable(raduino-power-monitor-mqtt currentMonitor.cpp mqtt-common.cpp main.cpp ../../libs/crypto/crypto.cpp)
-target_link_libraries(raduino-power-monitor-mqtt ${CONAN_LIBS} epollevent eventprocess monitor uart protocol pthread)
+target_link_libraries(raduino-power-monitor-mqtt ${CONAN_LIBS} epollevent eventprocess monitor uart protocol radiosession pthread)
 

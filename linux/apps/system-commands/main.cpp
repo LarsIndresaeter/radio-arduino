@@ -10,6 +10,7 @@
 #include <numeric>
 #include <thread>
 #include <uart.hpp>
+#include <radioSession.hpp>
 
 using namespace std::chrono_literals;
 
@@ -17,6 +18,7 @@ void print_usage()
 {
     std::cout << "raduino-system-commands" << std::endl;
     std::cout << "       -K : encrypt command with transport key" << std::endl;
+    std::cout << "       -N : wakeup node address" << std::endl;
     std::cout << "       -c : SHA1 command on gateway" << std::endl;
     std::cout << "       -C : SHA1 command on node" << std::endl;
     std::cout << "       -d : debug command on gateway" << std::endl;
@@ -44,8 +46,9 @@ void print_usage()
 void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)
 {
     char option = 0;
+    uint8_t radioAddress = 0;
 
-    while ((option = getopt(argc, argv, "K:c:C:f:F:g:G:xXrRdDpPt:T:us:S:UvVzZh")) != -1) {
+    while ((option = getopt(argc, argv, "K:N:c:C:f:F:g:G:xXrRdDpPt:T:us:S:UvVzZh")) != -1) {
         switch (option) {
         case 'K': {
             std::string s(optarg);
@@ -61,6 +64,13 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             cryptoHandler.setMacKey((uint8_t*)&key[0]);
             mon.setTransportEncryption(true);
         } break;
+        case 'N':
+            radioAddress = atoi(optarg);
+            {
+                RadioSession radioSession(mon, radioAddress);
+                radioSession.wakeupNotResponding();
+            }
+            break;
 
         case 'c': {
             std::string s(optarg);

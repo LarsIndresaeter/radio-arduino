@@ -14,17 +14,18 @@
 #include <radioSession.hpp>
 #include <thread>
 #include <uart.hpp>
+#include <radioSession.hpp>
 
 void print_usage()
 {
     std::cout << "raduino-node" << std::endl;
     std::cout << "       -K : encrypt command with transport key" << std::endl;
+    std::cout << "       -N : wakeup node address" << std::endl;
     std::cout << "       -V : Verbose on" << std::endl;
     std::cout << "       -v : Verbose off" << std::endl;
     std::cout << "       -C : print counter values" << std::endl;
     std::cout << "       -g : reboot node as gateway" << std::endl;
     std::cout << "       -w : wake up sleeping rx node" << std::endl;
-    std::cout << "       -n : wakeup node address" << std::endl;
     std::cout << "       -a : update node address" << std::endl;
     std::cout << "       -k : set keep alive interval" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
@@ -37,7 +38,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t keepAliveInterval = 0;
     bool verbose = false;
 
-    while ((option = getopt(argc, argv, "CVvgNwqjn:a:k:K:h")) != -1) {
+    while ((option = getopt(argc, argv, "K:N:CVvgwqja:k:h")) != -1) {
         switch (option) {
         case 'V':
             verbose = true;
@@ -63,11 +64,10 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'h':
             print_usage();
             break;
-        case 'n':
+        case 'N':
             radioAddress = atoi(optarg);
             {
                 RadioSession radioSession(mon, radioAddress);
-                radioSession.setKeepAliveInterval(keepAliveInterval);
                 if (verbose) {
                     radioSession.setVerbose(true);
                 }

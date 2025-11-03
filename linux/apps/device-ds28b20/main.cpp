@@ -11,11 +11,13 @@
 #include <numeric>
 #include <thread>
 #include <uart.hpp>
+#include <radioSession.hpp>
 
 void print_usage()
 {
     std::cout << "raduino-device-ds28b20" << std::endl;
     std::cout << "       -K : encrypt command with transport key" << std::endl;
+    std::cout << "       -N : wakeup node address" << std::endl;
     std::cout << "       -x : ds18b20 temperature sensor from gateway" << std::endl;
     std::cout << "       -X : ds18b20 temperature sensor from node" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
@@ -25,8 +27,9 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 {
     char option = 0;
     uint8_t spiRegister = 0;
+    uint8_t radioAddress = 0;
 
-    while ((option = getopt(argc, argv, "K:Xh")) != -1) {
+    while ((option = getopt(argc, argv, "K:N:Xh")) != -1) {
         switch (option) {
         case 'K': {
             std::string s(optarg);
@@ -42,6 +45,14 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             cryptoHandler.setMacKey((uint8_t*)&key[0]);
             mon.setTransportEncryption(true);
         } break;
+        case 'N':
+            radioAddress = atoi(optarg);
+            {
+                RadioSession radioSession(mon, radioAddress);
+                radioSession.wakeupNotResponding();
+            }
+            break;
+
 
         case 'x':
             std::cout << mon.get<>(RaduinoCommandDs18b20()) << std::endl;

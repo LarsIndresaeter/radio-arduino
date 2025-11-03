@@ -10,6 +10,7 @@
 #include <numeric>
 #include <thread>
 #include <uart.hpp>
+#include <radioSession.hpp>
 
 using namespace std::chrono_literals;
 
@@ -17,6 +18,7 @@ void print_usage()
 {
     std::cout << "raduino-gateway" << std::endl;
     std::cout << "       -K : encrypt command with transport key" << std::endl;
+    std::cout << "       -N : wakeup node address" << std::endl;
     std::cout << "       -V : Verbose on" << std::endl;
     std::cout << "       -v : Verbose off" << std::endl;
     std::cout << "       -C : print counter values" << std::endl;
@@ -29,8 +31,9 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     char option = 0;
     uint16_t i2cDeviceOffset = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
+    uint8_t radioAddress = 0;
 
-    while ((option = getopt(argc, argv, "CVvhgGK:Jn")) != -1) {
+    while ((option = getopt(argc, argv, "K:N:CVvhgGJn")) != -1) {
         switch (option) {
         case 'V':
             mon.printDebug(true);
@@ -57,6 +60,15 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             cryptoHandler.setMacKey((uint8_t*)&key[0]);
             mon.setTransportEncryption(true);
         } break;
+        case 'N':
+            radioAddress = atoi(optarg);
+            {
+                RadioSession radioSession(mon, radioAddress);
+                radioSession.wakeupNotResponding();
+            }
+            break;
+
+
         case 'n':
             std::cout << mon.get<>(RaduinoCommandSetRadioRole('n')) << std::endl;
             std::cout << mon.get<>(RaduinoCommandSoftReset()) << std::endl;

@@ -14,6 +14,7 @@
 #include <string>
 #include <thread>
 #include <uart.hpp>
+#include <radioSession.hpp>
 
 using namespace std::chrono_literals;
 
@@ -21,6 +22,7 @@ void print_usage()
 {
     std::cout << "power-monitor" << std::endl;
     std::cout << "       -K : encrypt command with transport key" << std::endl;
+    std::cout << "       -N : wakeup node address" << std::endl;
     std::cout << "       -n : ina219 power monitor, stats for <N> seconds" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
     std::cout << std::endl;
@@ -45,8 +47,9 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     mqtt_client.connect(connOpts)->wait();
 
     char option = 0;
+    uint8_t radioAddress = 0;
 
-    while ((option = getopt(argc, argv, "K:n:h")) != -1) {
+    while ((option = getopt(argc, argv, "K:N:n:h")) != -1) {
         switch (option) {
         case 'K': {
             std::string s(optarg);
@@ -62,6 +65,13 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             cryptoHandler.setMacKey((uint8_t*)&key[0]);
             mon.setTransportEncryption(true);
         } break;
+        case 'N':
+            radioAddress = atoi(optarg);
+            {
+                RadioSession radioSession(mon, radioAddress);
+                radioSession.wakeupNotResponding();
+            }
+            break;
 
         case 'n':
             readCurrentAndVoltage(mon, mqtt_client, atoi(optarg));

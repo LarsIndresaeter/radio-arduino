@@ -96,8 +96,9 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t setRequireTransportEncryption = 0;
     bool dump_eeprom = false;
     bool name_option_present = false;
+    uint8_t radioAddress = 0;
 
-    while ((option = getopt(argc, argv, "n:K:t:e:r:ds:h")) != -1) {
+    while ((option = getopt(argc, argv, "K:n:t:e:r:ds:h")) != -1) {
         switch (option) {
         case 'n':
             setNewDeviceName = optarg;
