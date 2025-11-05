@@ -2,7 +2,7 @@
 #include <command-handlers-eeprom.hpp>
 #include <eeprom.hpp>
 
-namespace COMMAND_HANDLERS {
+namespace EEPROM {
 
 void commandSetDeviceName(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -58,4 +58,4 @@ void commandSetRadioRole(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-} // namespace COMMAND_HANDLERS
+} // namespace EEPROM

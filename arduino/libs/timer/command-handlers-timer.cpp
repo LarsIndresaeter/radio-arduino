@@ -2,7 +2,7 @@
 #include <command-handlers-timer.hpp>
 #include <timer.hpp>
 
-namespace COMMAND_HANDLERS {
+namespace TIMER {
 
 void commandTimer(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -14,4 +14,4 @@ void commandTimer(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-} // namespace COMMAND_HANDLERS
+} // namespace TIMER

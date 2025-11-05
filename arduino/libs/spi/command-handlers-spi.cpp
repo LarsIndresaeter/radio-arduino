@@ -2,7 +2,7 @@
 #include <command-handlers-spi.hpp>
 #include <spi.hpp>
 
-namespace COMMAND_HANDLERS {
+namespace LIBSPI {
 
 void commandSpiRead(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -47,4 +47,4 @@ void commandSpiWrite(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-} // namespace COMMAND_HANDLERS
+} // namespace LIBSPI

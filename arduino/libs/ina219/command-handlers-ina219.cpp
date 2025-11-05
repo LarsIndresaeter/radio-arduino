@@ -2,7 +2,7 @@
 #include <command-handlers-ina219.hpp>
 #include <ina219.hpp>
 
-namespace COMMAND_HANDLERS {
+namespace INA219 {
 
 void commandIna219(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -15,4 +15,4 @@ void commandIna219(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-} // namespace COMMAND_HANDLERS
+} // namespace INA219

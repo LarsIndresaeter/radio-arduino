@@ -2,7 +2,7 @@
 #include <cmd/payloads.hxx>
 #include <command-handlers-adc.hpp>
 
-namespace COMMAND_HANDLERS {
+namespace AtmelAdc {
 
 void commandVcc(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -14,4 +14,4 @@ void commandVcc(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-} // namespace COMMAND_HANDLERS
+} // namespace AtmelAdc

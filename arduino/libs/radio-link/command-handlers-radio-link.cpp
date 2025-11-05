@@ -4,7 +4,7 @@
 
 extern bool rx_mode_gateway;
 
-namespace COMMAND_HANDLERS {
+namespace RADIOLINK {
 
 void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -28,4 +28,4 @@ void commandSetNodeAddress(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-} // namespace COMMAND_HANDLERS
+} // namespace RADIOLINK

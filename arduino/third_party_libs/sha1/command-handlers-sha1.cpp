@@ -2,7 +2,7 @@
 #include <command-handlers-sha1.hpp>
 #include <sha1.hpp>
 
-namespace COMMAND_HANDLERS {
+namespace SHA1 {
 
 void commandSha1(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -38,4 +38,4 @@ void commandHotp(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-} // namespace COMMAND_HANDLERS
+} // namespace SHA1

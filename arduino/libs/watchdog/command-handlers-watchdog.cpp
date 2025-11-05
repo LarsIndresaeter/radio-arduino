@@ -2,7 +2,7 @@
 #include <command-handlers-watchdog.hpp>
 #include <watchdog.hpp>
 
-namespace COMMAND_HANDLERS {
+namespace WATCHDOG {
 
 void commandSoftReset(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -13,4 +13,4 @@ void commandSoftReset(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-} // namespace COMMAND_HANDLERS
+} // namespace WATCHDOG

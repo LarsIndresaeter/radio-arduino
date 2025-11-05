@@ -2,7 +2,7 @@
 #include <command-handlers-ds18b20.hpp>
 #include <ds18b20.h>
 
-namespace COMMAND_HANDLERS {
+namespace DS18B20 {
 
 void commandDs18b20(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -21,4 +21,4 @@ void commandDs18b20(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-} // namespace COMMAND_HANDLERS
+} // namespace DS18B20

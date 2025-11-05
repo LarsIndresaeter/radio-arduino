@@ -4,7 +4,7 @@
 #include <nrf24l01.hpp>
 #include <radioUart.hpp>
 
-namespace COMMAND_HANDLERS {
+namespace RADIOUART {
 
 void commandRadioUart(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInterface* comBus)
 {
@@ -55,4 +55,4 @@ void commandRadioUart(uint8_t* commandPayload, uint8_t* responsePayload, ComBusI
     response.serialize(responsePayload);
 }
 
-} // namespace COMMAND_HANDLERS
+} // namespace RADIOUART

@@ -2,7 +2,7 @@
 #include <command-handlers-i2c.hpp>
 #include <i2c.hpp>
 
-namespace COMMAND_HANDLERS {
+namespace LIBI2C {
 
 void commandI2cWrite(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -49,4 +49,4 @@ void commandI2cRead(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-} // namespace COMMAND_HANDLERS
+} // namespace LIBI2C

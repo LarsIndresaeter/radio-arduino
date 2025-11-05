@@ -35,40 +35,40 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
 
     switch (static_cast<COMMANDS::OI>(cmd_id)) {
     case COMMANDS::OI::BLINK:
-        COMMAND_HANDLERS::commandBlink(commandPayload, responsePayload);
+        GPIO::commandBlink(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::RANDOM:
-        COMMAND_HANDLERS::commandRandom(commandPayload, responsePayload);
+        RANDOM::commandRandom(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SHA1:
-        COMMAND_HANDLERS::commandSha1(commandPayload, responsePayload);
+        SHA1::commandSha1(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SSD1306:
-        COMMAND_HANDLERS::commandSsd1306(commandPayload, responsePayload);
+        LIBSSD1306::commandSsd1306(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::HOTP:
-        COMMAND_HANDLERS::commandHotp(commandPayload, responsePayload);
+        SHA1::commandHotp(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::EEPROM_WRITE:
-        COMMAND_HANDLERS::commandEepromWrite(commandPayload, responsePayload);
+        EEPROM::commandEepromWrite(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::EEPROM_READ:
-        COMMAND_HANDLERS::commandEepromRead(commandPayload, responsePayload);
+        EEPROM::commandEepromRead(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::WS2812B:
-        COMMAND_HANDLERS::commandWs2812b(commandPayload, responsePayload);
+        LIBWS2812B::commandWs2812b(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::AES:
-        COMMAND_HANDLERS::commandAes(commandPayload, responsePayload);
+        AES::commandAes(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::PWM:
-        COMMAND_HANDLERS::commandPwm(commandPayload, responsePayload);
+        PWM::commandPwm(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SLEEP:
-        COMMAND_HANDLERS::commandSleep(commandPayload, responsePayload);
+        SLEEP::commandSleep(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::GPIO:
-        COMMAND_HANDLERS::commandGpio(commandPayload, responsePayload);
+        GPIO::commandGpio(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::DEBUG:
         COMMAND_HANDLERS::commandDebug(commandPayload, responsePayload);
@@ -77,49 +77,49 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
         COMMAND_HANDLERS::commandPing(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::VCC:
-        COMMAND_HANDLERS::commandVcc(commandPayload, responsePayload);
+        AtmelAdc::commandVcc(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::RADIO_UART:
-        COMMAND_HANDLERS::commandRadioUart(commandPayload, responsePayload, comBus);
+        RADIOUART::commandRadioUart(commandPayload, responsePayload, comBus);
         break;
     case COMMANDS::OI::TIMER:
-        COMMAND_HANDLERS::commandTimer(commandPayload, responsePayload);
+        TIMER::commandTimer(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::I2C_READ:
-        COMMAND_HANDLERS::commandI2cRead(commandPayload, responsePayload);
+        LIBI2C::commandI2cRead(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SPI_READ:
-        COMMAND_HANDLERS::commandSpiRead(commandPayload, responsePayload);
+        LIBSPI::commandSpiRead(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::INA219:
-        COMMAND_HANDLERS::commandIna219(commandPayload, responsePayload);
+        INA219::commandIna219(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::DS18B20:
-        COMMAND_HANDLERS::commandDs18b20(commandPayload, responsePayload);
+        DS18B20::commandDs18b20(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::I2C_WRITE:
-        COMMAND_HANDLERS::commandI2cWrite(commandPayload, responsePayload);
+        LIBI2C::commandI2cWrite(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SPI_WRITE:
-        COMMAND_HANDLERS::commandSpiWrite(commandPayload, responsePayload);
+        LIBSPI::commandSpiWrite(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::NRF24L01_INIT:
-        COMMAND_HANDLERS::commandNrf24l01Init(commandPayload, responsePayload);
+        NRF24L01::commandNrf24l01Init(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::NRF24L01_READ:
-        COMMAND_HANDLERS::commandNrf24l01Read(commandPayload, responsePayload);
+        NRF24L01::commandNrf24l01Read(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::NRF24L01_WRITE:
-        COMMAND_HANDLERS::commandNrf24l01Write(commandPayload, responsePayload);
+        NRF24L01::commandNrf24l01Write(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SET_KEY:
-        COMMAND_HANDLERS::commandSetKey(commandPayload, responsePayload);
+        PARSER::commandSetKey(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SET_DEVICE_NAME:
-        COMMAND_HANDLERS::commandSetDeviceName(commandPayload, responsePayload);
+        EEPROM::commandSetDeviceName(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::GET_DEVICE_NAME:
-        COMMAND_HANDLERS::commandGetDeviceName(commandPayload, responsePayload);
+        EEPROM::commandGetDeviceName(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::GET_VERSION:
         COMMAND_HANDLERS::commandGetVersion(commandPayload, responsePayload);
@@ -128,28 +128,28 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
         COMMAND_HANDLERS::commandGetStatistics(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::WAKEUP:
-        COMMAND_HANDLERS::commandWakeup(commandPayload, responsePayload);
+        RADIOLINK::commandWakeup(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::QUADRATURE_ENCODER:
-        COMMAND_HANDLERS::commandQuadratureEncoder(commandPayload, responsePayload);
+        QUADENCODER::commandQuadratureEncoder(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SET_NODE_ADDRESS:
-        COMMAND_HANDLERS::commandSetNodeAddress(commandPayload, responsePayload);
+        RADIOLINK::commandSetNodeAddress(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::KEEP_ALIVE:
-        COMMAND_HANDLERS::commandKeepAlive(commandPayload, responsePayload);
+        PARSER::commandKeepAlive(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::REQUIRE_TRANSPORT_ENCRYPTION:
-        COMMAND_HANDLERS::commandRequireTransportEncryption(commandPayload, responsePayload);
+        PARSER::commandRequireTransportEncryption(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::UNLOCK_SESSION:
-        COMMAND_HANDLERS::commandUnlockSession(commandPayload, responsePayload);
+        PARSER::commandUnlockSession(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SET_RADIO_ROLE:
-        COMMAND_HANDLERS::commandSetRadioRole(commandPayload, responsePayload);
+        EEPROM::commandSetRadioRole(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::SOFT_RESET:
-        COMMAND_HANDLERS::commandSoftReset(commandPayload, responsePayload);
+        WATCHDOG::commandSoftReset(commandPayload, responsePayload);
         break;
     default:
         break;

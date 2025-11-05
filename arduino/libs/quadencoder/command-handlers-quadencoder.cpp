@@ -2,7 +2,7 @@
 #include <command-handlers-quadencoder.hpp>
 #include <quadencoder.hpp>
 
-namespace COMMAND_HANDLERS {
+namespace QUADENCODER {
 
 void commandQuadratureEncoder(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -19,4 +19,4 @@ void commandQuadratureEncoder(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-} // namespace COMMAND_HANDLERS
+} // namespace QUADENCODER
