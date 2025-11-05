@@ -22,7 +22,6 @@ void print_usage()
     std::cout << "       -N : wakeup node address" << std::endl;
     std::cout << "       -C : print counter values" << std::endl;
     std::cout << "       -g : reboot node as gateway" << std::endl;
-    std::cout << "       -w : wake up sleeping rx node" << std::endl;
     std::cout << "       -a : update node address" << std::endl;
     std::cout << "       -k : set keep alive interval" << std::endl;
     std::cout << "       -h : print this text" << std::endl;
@@ -34,12 +33,8 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t radioAddress = 0;
     uint8_t keepAliveInterval = 0;
 
-    while ((option = getopt(argc, argv, "K:N:Cgwqja:k:h")) != -1) {
+    while ((option = getopt(argc, argv, "K:N:Cgqja:k:h")) != -1) {
         switch (option) {
-        case 'w':
-            std::cout << mon.get<>(RaduinoCommandWakeup(false), static_cast<std::chrono::milliseconds>(12000))
-                      << std::endl;
-            break;
         case 'g': {
             std::cout << mon.getRadio<>(RaduinoCommandSetRadioRole('g')) << std::endl;
             std::cout << mon.getRadio<>(RaduinoCommandSoftReset()) << std::endl;
