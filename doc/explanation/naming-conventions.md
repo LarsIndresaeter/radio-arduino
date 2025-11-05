@@ -1,5 +1,9 @@
 # naming conventions
 
+## project name
+
+The name `radio-arduino` was selected to be a generic name. Currently only the nrf24l01 radio module is supported but the RadioUart class is designed with though that a variant can be made for a LoRa chip.
+
 ## file names
 
 * C++ files have names reflecting the class name

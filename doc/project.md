@@ -1,5 +1,17 @@
-feature requests
-================
+# project
+
+## history
+
+History of this project
+
+| year | focus                       |
+| ---- | --------------------------- |
+| 2022 | conan and binary protocol   |
+| 2023 |                             |
+| 2023 | mqtt                        |
+| 2025 | documentation and usability |
+
+## feature requests
 
 List of requested features with a description:
 
