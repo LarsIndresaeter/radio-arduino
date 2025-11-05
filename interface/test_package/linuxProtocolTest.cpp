@@ -28,7 +28,7 @@ TEST_F(LinuxProtocolTest, testParseBinary)
     validatePacket(
         packet,
         {
-            0xfe, 0xed, 2,    4 + 20, // packet header
+            0xfe, 0xed, 3,    4 + 20, // packet header
             0x33, 0x33, 0x33, 0x33,   // checksum
             0x00, 0x00, 0x00, 0x00,   // message id
             0x11, 0x11, 0x11, 0x11,   // nonce
@@ -47,7 +47,7 @@ TEST_F(LinuxProtocolTest, testParsingOfIncompletePacket)
     validatePacket(
         buffer,
         {
-            0xfe, 0xed, 2,    4 + 20, // packet header
+            0xfe, 0xed, 3,    4 + 20, // packet header
             0x33, 0x33, 0x33, 0x33,   // checksum
             0x00, 0x00, 0x00, 0x00,   // message id
             0x11, 0x11, 0x11, 0x11,   // nonce
@@ -88,7 +88,7 @@ TEST_F(LinuxProtocolTest, testParseLargeBinary)
     validatePacket(
         packet,
         {
-            0xfe, 0xed, 2,    static_cast<uint8_t>(packet.size() - 8),
+            0xfe, 0xed, 3,    static_cast<uint8_t>(packet.size() - 8),
             0x33, 0x33, 0x33, 0x33, // checksum
             0x00, 0x00, 0x00, 0x00, // message id
             0x11, 0x11, 0x11, 0x11, // nonce

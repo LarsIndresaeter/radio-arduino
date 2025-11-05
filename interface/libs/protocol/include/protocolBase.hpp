@@ -27,14 +27,16 @@ namespace HEADER {
     constexpr uint8_t SYNC_PATTERN_BYTE_0 = 0xFE;
     constexpr uint8_t SYNC_PATTERN_BYTE_1 = 0xED;
 
+    // version[2]=radio
+    // version[1]=encrypted
+    // version[0]=1 (0 is undefined)
     enum class VERSION
     {
         UNDEFINED = 0,
-        BINARY_AND_TEXT = 1,
-        ENCRYPTED_BINARY_AND_TEXT = 2,
-        RADIO_BINARY_AND_TEXT = 3,
-        RADIO_ENCRYPTED_BINARY_AND_TEXT = 4,
-        JSON = 5
+        BINARY_AND_TEXT = 1,                 // 0b0000 0001
+        ENCRYPTED_BINARY_AND_TEXT = 3,       // 0b0000 0011
+        RADIO_BINARY_AND_TEXT = 5,           // 0b0000 0101
+        RADIO_ENCRYPTED_BINARY_AND_TEXT = 7, // 0b0000 0111
     };
 }
 
