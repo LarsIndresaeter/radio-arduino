@@ -63,13 +63,11 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             spiRegister = atoi(optarg);
             break;
         case 'w': {
-            std::string s(optarg);
-            std::vector<uint8_t> vec(s.begin(), s.end());
-            uint8_t length = vec.size();
-            if (length > 32) {
-                length = 32;
-            }
-            std::cout << mon.get<>(RaduinoCommandSpiWrite(spiRegister, length, vec)) << std::endl;
+            uint8_t inputValue = atoi(optarg);
+            std::vector<uint8_t> writeValues;
+            writeValues.push_back(inputValue);
+            uint8_t length = 1;
+            std::cout << mon.get<>(RaduinoCommandSpiWrite(spiRegister, length, writeValues)) << std::endl;
         } break;
         case 'r': {
             uint8_t length = atoi(optarg);
