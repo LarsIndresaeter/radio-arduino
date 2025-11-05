@@ -3,7 +3,7 @@
 #include <eeprom.hpp>
 #include <parser.hpp>
 
-namespace COMMAND_HANDLERS {
+namespace PARSER {
 
 void commandSetKey(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -59,4 +59,4 @@ void commandUnlockSession(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-} // namespace COMMAND_HANDLERS
+} // namespace PARSER

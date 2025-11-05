@@ -4,7 +4,7 @@
 #include <command-handlers-ssd1306.hpp>
 #include <i2c.hpp>
 
-namespace COMMAND_HANDLERS {
+namespace LIBSSD1306 {
 
 void commandSsd1306(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -25,4 +25,4 @@ void commandSsd1306(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-} // namespace COMMAND_HANDLERS
+} // namespace LIBSSD1306

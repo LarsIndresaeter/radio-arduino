@@ -4,8 +4,8 @@
 #include <stddef.h>
 #include <util/delay.h>
 
-namespace COMMAND_HANDLERS {
+namespace LIBWS2812B {
 
 void commandWs2812b(uint8_t* commandPayload, uint8_t* responsePayload);
 
-} // namespace COMMAND_HANDLERS
+} // namespace LIBWS2812B

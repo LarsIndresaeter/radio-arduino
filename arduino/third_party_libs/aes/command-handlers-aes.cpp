@@ -3,7 +3,7 @@
 #include <command-handlers-aes.hpp>
 #include <eeprom.hpp>
 
-namespace COMMAND_HANDLERS {
+namespace AES {
 
 void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -35,4 +35,4 @@ void commandAes(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-} // namespace COMMAND_HANDLERS
+} // namespace AES

@@ -2,7 +2,7 @@
 #include <command-handlers-sleep.hpp>
 #include <sleep.hpp>
 
-namespace COMMAND_HANDLERS {
+namespace SLEEP {
 
 void commandSleep(uint8_t* commandPayload, uint8_t* responsePayload)
 {
@@ -14,4 +14,4 @@ void commandSleep(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-} // namespace COMMAND_HANDLERS
+} // namespace SLEEP
