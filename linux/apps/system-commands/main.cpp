@@ -33,6 +33,8 @@ void print_usage()
     std::cout << "       -R : get random bytes command on node" << std::endl;
     std::cout << "       -s : get statistics from gateway" << std::endl;
     std::cout << "       -S : get statistics from node" << std::endl;
+    std::cout << "       -m : get device name from gateway" << std::endl;
+    std::cout << "       -M : get device name from node" << std::endl;
     std::cout << "       -t : set transport encryption required (command must be encrypted) on gateway" << std::endl;
     std::cout << "       -T : set transport encryption required (command must be encrypted) on node" << std::endl;
     std::cout << "       -u : unencrypted session (command must be encrypted)" << std::endl;
@@ -48,7 +50,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     char option = 0;
     uint8_t radioAddress = 0;
 
-    while ((option = getopt(argc, argv, "K:N:c:C:f:F:g:G:xXrRdDpPt:T:usSUvVzZh")) != -1) {
+    while ((option = getopt(argc, argv, "K:N:c:C:f:F:g:G:mMxXrRdDpPt:T:usSUvVzZh")) != -1) {
         switch (option) {
         case 'K': {
             std::string s(optarg);
@@ -96,6 +98,12 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             std::string s(optarg);
             mon.getRadio<>(RaduinoCommandSetKey('T', s));
         } break;
+        case 'm':
+            std::cout << mon.get<>(RaduinoCommandGetDeviceName()) << std::endl;
+            break;
+        case 'M':
+            std::cout << mon.getRadio<>(RaduinoCommandGetDeviceName()) << std::endl;
+            break;
         case 'x':
             std::cout << mon.get<>(RaduinoCommandHotp()) << std::endl;
             break;
