@@ -24,3 +24,17 @@ List of requested features with a description:
 | conan 2            | update to conan 2                               | On hold for now                        |
 | modbus command     | interact with modbus device on radio node       | under evaluation                       |
 
+## sprint goal
+
+The current sprint goal is to learn how to write better documentation
+
+## previous sprint goals
+
+- learn how to use conan to build for atmega328
+- C++ templates
+- how to write radio protocols
+
+## what remains
+
+- [ ] read HOTP key from eeprom
+- [ ] clean up linux uart code
