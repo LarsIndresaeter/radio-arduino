@@ -58,4 +58,24 @@ void commandSetRadioRole(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
+void commandSetUniqueId(uint8_t* commandPayload, uint8_t* responsePayload)
+{
+    COMMANDS::SET_UNIQUE_ID::command_t command(commandPayload);
+    COMMANDS::SET_UNIQUE_ID::response_t response;
+
+    EEPROM_DATA_STORE::setUniqueId(command.getId());
+
+    response.serialize(responsePayload);
+}
+
+void commandGetUniqueId(uint8_t* commandPayload, uint8_t* responsePayload)
+{
+    COMMANDS::GET_UNIQUE_ID::command_t command(commandPayload);
+    COMMANDS::GET_UNIQUE_ID::response_t response;
+
+    response.setId(EEPROM_DATA_STORE::getUniqueId());
+
+    response.serialize(responsePayload);
+}
+
 } // namespace EEPROM

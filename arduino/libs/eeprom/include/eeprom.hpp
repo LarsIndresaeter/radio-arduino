@@ -15,7 +15,8 @@ typedef struct eeprom_data {
     uint8_t requireEncryption;
     uint8_t isRadioNode; // otherwise it is a gateway
     uint16_t restarts;
-    uint8_t padding[100];
+    uint32_t uniqueId;
+    uint8_t padding[96];
     uint32_t crc;
 } eeprom_data_t;
 
@@ -44,4 +45,6 @@ uint8_t getIsRadioNode();
 void incrementRestarts();
 uint16_t getRestarts();
 bool readRxModeGatewayFromEeprom();
+uint32_t getUniqueId();
+void setUniqueId(uint32_t uniqueId);
 } // namespace EEPROM_DATA_STORE

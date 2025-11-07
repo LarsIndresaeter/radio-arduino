@@ -151,6 +151,12 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
     case COMMANDS::OI::SOFT_RESET:
         WATCHDOG::commandSoftReset(commandPayload, responsePayload);
         break;
+    case COMMANDS::OI::SET_UNIQUE_ID:
+        EEPROM::commandSetUniqueId(commandPayload, responsePayload);
+        break;
+    case COMMANDS::OI::GET_UNIQUE_ID:
+        EEPROM::commandGetUniqueId(commandPayload, responsePayload);
+        break;
     default:
         break;
     }
