@@ -658,6 +658,8 @@ def commandDefinitions():
     generateCommandAndPayloadFile(38, "set_radio_role", ["isRadioNode"], [])
     generateCommandAndPayloadFile(39, "soft_reset", [], [])
     generateCommandAndPayloadFile(40, "unlock_session", [], [])
+    generateCommandAndPayloadFile(41, "set_unique_id", ["id[4]"], [])
+    generateCommandAndPayloadFile(42, "get_unique_id", [], ["id[4]"])
 
 def main():
     generateCommonHeaderFilesOpen()

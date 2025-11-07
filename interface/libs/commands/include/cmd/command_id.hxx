@@ -49,6 +49,8 @@ enum class OI
     SET_RADIO_ROLE = 38,
     SOFT_RESET = 39,
     UNLOCK_SESSION = 40,
+    SET_UNIQUE_ID = 41,
+    GET_UNIQUE_ID = 42,
 };
 
 } // namespace COMMANDS
