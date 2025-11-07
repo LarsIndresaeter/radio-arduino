@@ -85,16 +85,13 @@ void increamentSpareVersion()
 
 void clearData()
 {
-    for (uint8_t i = 0; i < sizeof(full_eeprom_t); i++) {
+    for (uint16_t i = 0; i < sizeof(full_eeprom_t); i++) {
         EEPROM::write(i, 0x00);
     }
 
     eeprom_data_t A;
     EEPROM::readMultiple(offsetof(full_eeprom_t, A), (uint8_t*)&A, sizeof(eeprom_data_t));
 
-    uint32_t dataVersion = 0;
-    EEPROM::writeMultiple(
-        offsetof(full_eeprom_t, A) + offsetof(eeprom_data_t, dataVersion), (uint8_t*)&dataVersion, sizeof(uint32_t));
     uint32_t crc = 0;
     CRC32_calculate((uint8_t*)&A, sizeof(eeprom_data_t) - 4, &crc);
     EEPROM::writeMultiple(offsetof(full_eeprom_t, A) + offsetof(eeprom_data_t, crc), (uint8_t*)&crc, sizeof(uint32_t));

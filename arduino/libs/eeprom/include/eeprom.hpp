@@ -15,11 +15,11 @@ typedef struct eeprom_data {
     uint8_t requireEncryption;
     uint8_t isRadioNode; // otherwise it is a gateway
     uint16_t restarts;
-    uint8_t padding[4];
+    uint8_t padding[100];
     uint32_t crc;
 } eeprom_data_t;
 
-static_assert(sizeof(eeprom_data_t) % 16 == 0, "eeprom_data_t is not a multiple of 16 bytes");
+static_assert(sizeof(eeprom_data_t) == 160, "eeprom_data_t is not expected size");
 
 // valid data struct is the one with valid crc and the highest version number
 typedef struct full_eeprom {
