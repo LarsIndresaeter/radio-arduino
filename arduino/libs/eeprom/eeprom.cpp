@@ -256,6 +256,19 @@ void incrementRestarts()
     calculateCrcAndSetSpareAsActive();
 }
 
+uint32_t getUniqueId()
+{
+    findActivePartition();
+    uint32_t uniqueId;
+    EEPROM::readMultiple(offsetActiveStruct() + offsetof(eeprom_data, uniqueId), (uint8_t*)&uniqueId, sizeof(uint32_t));
+    return uniqueId;
+}
+
+void setUniqueId(uint32_t uniqueId)
+{
+    writeToSpareAndSetAsActive(offsetof(eeprom_data_t, uniqueId), (uint8_t*)&uniqueId, sizeof(uint32_t));
+}
+
 bool readRxModeGatewayFromEeprom()
 {
     bool mode = true; // new unprogrammed device is gateway

@@ -44,3 +44,5 @@
 #include <cmd/set_radio_role/payload.hxx>
 #include <cmd/soft_reset/payload.hxx>
 #include <cmd/unlock_session/payload.hxx>
+#include <cmd/set_unique_id/payload.hxx>
+#include <cmd/get_unique_id/payload.hxx>

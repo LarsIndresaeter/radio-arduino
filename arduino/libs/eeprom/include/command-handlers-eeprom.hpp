@@ -11,5 +11,7 @@ void commandEepromWrite(uint8_t* commandPayload, uint8_t* responsePayload);
 void commandSetDeviceName(uint8_t* commandPayload, uint8_t* responsePayload);
 void commandGetDeviceName(uint8_t* commandPayload, uint8_t* responsePayload);
 void commandSetRadioRole(uint8_t* commandPayload, uint8_t* responsePayload);
+void commandSetUniqueId(uint8_t* commandPayload, uint8_t* responsePayload);
+void commandGetUniqueId(uint8_t* commandPayload, uint8_t* responsePayload);
 
 } // namespace EEPROM
