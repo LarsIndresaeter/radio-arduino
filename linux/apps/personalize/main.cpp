@@ -16,6 +16,7 @@ void print_usage()
     std::cout << "       -n : set device name" << std::endl;
     std::cout << "       -t : set transport encryption key" << std::endl;
     std::cout << "       -e : set data encryption key" << std::endl;
+    std::cout << "       -i : set unique id" << std::endl;
     std::cout << "       -d : dump eeprom contents" << std::endl;
     std::cout << "       -r : set radio role <gateway|node>" << std::endl;
     std::cout << "       -s : set requireTransportEncyption flag <0|1>" << std::endl;
@@ -97,8 +98,9 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     bool dump_eeprom = false;
     bool name_option_present = false;
     uint8_t radioAddress = 0;
+    uint32_t uniqueId = 0;
 
-    while ((option = getopt(argc, argv, "K:n:t:e:r:ds:h")) != -1) {
+    while ((option = getopt(argc, argv, "K:n:t:e:i:r:ds:h")) != -1) {
         switch (option) {
         case 'n':
             setNewDeviceName = optarg;
@@ -112,6 +114,9 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             break;
         case 'e':
             setNewEncryptionKey = optarg;
+            break;
+        case 'i':
+            uniqueId = atoi(optarg);
             break;
         case 's':
             setRequireTransportEncryption = atoi(optarg);
@@ -157,6 +162,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     std::cout << mon.get<>(RaduinoCommandSetKey('D', setNewEncryptionKey)) << std::endl;
     std::cout << mon.get<>(RaduinoCommandSetKey('T', setNewTransportKey)) << std::endl;
     std::cout << mon.get<>(RaduinoCommandRequireTransportEncryption(setRequireTransportEncryption)) << std::endl;
+    std::cout << mon.get<>(RaduinoCommandSetUniqueId(uniqueId)) << std::endl;
     std::cout << mon.get<>(RaduinoCommandSetRadioRole(setRadioRole)) << std::endl;
 
     if (dump_eeprom) {

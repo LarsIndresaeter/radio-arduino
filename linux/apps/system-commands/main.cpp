@@ -29,6 +29,8 @@ void print_usage()
     std::cout << "       -F : set data encryption key on node" << std::endl;
     std::cout << "       -g : set transport encryption key on gateway" << std::endl;
     std::cout << "       -G : set transport encryption key on node" << std::endl;
+    std::cout << "       -i : get unique id from gateway" << std::endl;
+    std::cout << "       -I : get unique id from node" << std::endl;
     std::cout << "       -r : get random bytes command on gateway" << std::endl;
     std::cout << "       -R : get random bytes command on node" << std::endl;
     std::cout << "       -s : get statistics from gateway" << std::endl;
@@ -50,7 +52,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     char option = 0;
     uint8_t radioAddress = 0;
 
-    while ((option = getopt(argc, argv, "K:N:c:C:f:F:g:G:mMxXrRdDpPt:T:usSUvVzZh")) != -1) {
+    while ((option = getopt(argc, argv, "K:N:c:C:f:F:g:G:iImMxXrRdDpPt:T:usSUvVzZh")) != -1) {
         switch (option) {
         case 'K': {
             std::string s(optarg);
@@ -115,6 +117,12 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             break;
         case 'R':
             std::cout << mon.getRadio<>(RaduinoCommandRandom()) << std::endl;
+            break;
+        case 'i':
+            std::cout << mon.get<>(RaduinoCommandGetUniqueId()) << std::endl;
+            break;
+        case 'I':
+            std::cout << mon.getRadio<>(RaduinoCommandGetUniqueId()) << std::endl;
             break;
         case 'd':
             std::cout << mon.get<>(RaduinoCommandDebug()) << std::endl;
