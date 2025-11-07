@@ -34,6 +34,10 @@ The current sprint goal is to learn how to write better documentation
 - C++ templates
 - how to write radio protocols
 
+## known issues
+
+The arduino code has only 2k of RAM and can crash if too large objects are placed on the stack. Be aware of strange behavior when adding new functionality that place large objects on the stack. 
+
 ## what remains
 
 - [ ] read HOTP key from eeprom

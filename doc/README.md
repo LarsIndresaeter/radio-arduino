@@ -18,13 +18,13 @@ Guides that take the reader through the steps to solve a real-world problem. For
 
 * how to add a new command
 
-[Reference guides](./reference-guides/README.md)
+## [Reference guides](./reference-guides/README.md)
 
 Technical descriptions of the machinery and how to operate it. For example:
 
 * How conan and cmake is used to configure the build of the C++ code
 
-[Explanation](./explanation)
+## [Explanation](./explanation)
 
 Explanation, or discussions, clarify and illuminate a particular topic. For example:
 

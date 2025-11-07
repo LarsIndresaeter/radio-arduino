@@ -13,5 +13,7 @@ Read more in the [doc folder](./doc/README.md)
 
 ## User story 
 
+The code in this repository solves the user story:
+
 > I want to connect a sensor to a arduino board and send the data to the cloud
 
