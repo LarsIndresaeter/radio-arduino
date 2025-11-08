@@ -37,8 +37,10 @@ void print_usage()
     std::cout << "                 -S : get statistics from node" << std::endl;
     std::cout << "                 -m : get device name from gateway" << std::endl;
     std::cout << "                 -M : get device name from node" << std::endl;
-    std::cout << "          -t <flag> : set transport encryption required (command must be encrypted) on gateway <0|1>" << std::endl;
-    std::cout << "          -T <flag> : set transport encryption required (command must be encrypted) on node <0|1>" << std::endl;
+    std::cout << "          -t <flag> : set transport encryption required (command must be encrypted) on gateway <0|1>"
+              << std::endl;
+    std::cout << "          -T <flag> : set transport encryption required (command must be encrypted) on node <0|1>"
+              << std::endl;
     std::cout << "                 -u : unencrypted session (command must be encrypted)" << std::endl;
     std::cout << "                 -v : get device version from gateway" << std::endl;
     std::cout << "                 -V : get device version from node" << std::endl;
