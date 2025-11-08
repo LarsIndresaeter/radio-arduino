@@ -1,9 +1,31 @@
 from conans import ConanFile, CMake, tools
 from conans.tools import os_info, SystemPackageTool
 
+def gitSemVerAddGitSha():
+    git = tools.Git() 
+
+    versionString = ""
+
+    try:
+        versionString = str(git.run("describe --tags --abbrev=0"))
+
+        gitsha = str(git.run("log --pretty=format:'%h' -n 1"))
+        commits_not_in_main = int(git.run(f"rev-list --count HEAD --not main"))
+
+        versionString += f".{commits_not_in_main}"
+        versionString += f"+{gitsha}"
+
+        filesNotCommited = str(git.run("status --short"))
+        if len(filesNotCommited) > 0:
+            versionString += "-dirty"
+    except:
+        pass
+
+    return versionString
+
 class UartApiConan(ConanFile):
     name = "raduino-api"
-    version = "0.0.1"
+    version=gitSemVerAddGitSha()
     license = "gpl"
     author = "Lars Indresaeter"
     url = "https://github.com/LarsIndresaeter/snippets.git"

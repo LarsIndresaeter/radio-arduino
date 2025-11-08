@@ -1,9 +1,31 @@
 from conans import ConanFile, CMake, tools
 from conans.tools import os_info, SystemPackageTool
 
+def gitSemVerAddGitSha():
+    git = tools.Git() 
+
+    versionString = ""
+
+    try:
+        versionString = str(git.run("describe --tags --abbrev=0"))
+
+        gitsha = str(git.run("log --pretty=format:'%h' -n 1"))
+        commits_not_in_main = int(git.run(f"rev-list --count HEAD --not main"))
+
+        versionString += f".{commits_not_in_main}"
+        versionString += f"+{gitsha}"
+
+        filesNotCommited = str(git.run("status --short"))
+        if len(filesNotCommited) > 0:
+            versionString += "-dirty"
+    except:
+        pass
+
+    return versionString
+
 class AvrUartConan(ConanFile):
     name = "raduino-api-test"
-    version = "0.0.1"
+    version=gitSemVerAddGitSha()
     license = "gpl"
     author = "Lars Indresaeter"
     url = "https://github.com/LarsIndresaeter/snippets.git"
@@ -15,11 +37,11 @@ class AvrUartConan(ConanFile):
             "CMakeLists.txt",
             "*.cpp",
             ]
-    test_type = "raduino-api/0.0.1@raduino/test"
+    test_type = "raduino-api/0.1.0@raduino/test"
 
     def requirements(self):
         self.requires("gtest/1.8.1")
-        self.requires("raduino-api/0.0.1@raduino/test",private=True)
+        self.requires("raduino-api/[>0.0.2, include_prerelease=True]@raduino/test",private=True)
 
     def build_requirements(self):
         self.build_requires("gtest/1.8.1", force_host_context=True)

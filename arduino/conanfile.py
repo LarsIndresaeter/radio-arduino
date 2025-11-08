@@ -5,9 +5,11 @@ import os
 def gitSemVerAddGitSha():
     git = tools.Git() 
 
-    versionString = str(git.run("describe --tags --abbrev=0"))
+    versionString = ""
 
     try:
+        versionString = str(git.run("describe --tags --abbrev=0"))
+
         gitsha = str(git.run("log --pretty=format:'%h' -n 1"))
         commits_not_in_main = int(git.run(f"rev-list --count HEAD --not main"))
 
@@ -45,7 +47,7 @@ class AvrUartConan(ConanFile):
             ]
 
     def requirements(self):
-        self.requires("raduino-api/0.0.1@raduino/test")
+        self.requires("raduino-api/[>0.0.2, include_prerelease=True]@raduino/test",private=True)
 
     def imports(self):
         self.copy("*.hpp", dst="libs", src="libs", root_package="raduino-api")
