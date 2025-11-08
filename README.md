@@ -2,11 +2,9 @@
 
 software for the [rf-nano](https://ardunic.com/product/RF-Nano-Board-NRF24L01-Wireless-Module).
 
-## User story 
-
-The code in this repository solves the user story:
-
-> I want to connect a sensor to an arduino board and send the data to the cloud
+> **The code in this repository solves the user story:**
+> 
+> _As a hobbyist I want to connect a sensor to an arduino board and send the data to the cloud_
 
 ## Features
 
