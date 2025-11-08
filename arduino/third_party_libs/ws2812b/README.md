@@ -1,18 +1,17 @@
-copied from
-===========
+# ws2812b library
+
+## copied from
 
 * https://github.com/pololu/pololu-led-strip-avr
 
-modifications
-=============
+## modifications
 
 * renamed led_strip.c to ws2812b.cpp
 * removed main method
 * created a class named Ws2812b
 * cleaned up constants and comments
 
-License
-=======
+## License
 
 Copyright (c) 2012 Pololu Corporation.  For more information, see
 

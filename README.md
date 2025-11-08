@@ -9,4 +9,4 @@ software for the [rf-nano](https://ardunic.com/product/RF-Nano-Board-NRF24L01-Wi
 - Binary message protocol for serial and radio communication between arduino and PC.
 - Command line tools for interacting with gateway and node, including mqtt client.
 
-Read more in the [doc folder ](./doc/README.md)
+Read more in the [doc folder](./doc/README.md)

@@ -1,15 +1,14 @@
-copied from
-===========
+# ds18b20 library
+
+## copied from
 
 * https://github.com/Jacajack/avr-ds18b20
 
-modifications
-=============
+## modifications
 
 * formatting
 * include paths
 
-License
-=======
+## License
 
 * MIT License

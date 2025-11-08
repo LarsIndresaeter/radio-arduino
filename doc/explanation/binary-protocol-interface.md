@@ -139,7 +139,7 @@ r: FE ED 02 16 F9 9C 96 90 54 4B 96 15 90 96 BB C8 6C F9 E4 4B 58 62 DB C0 0A 92
 [48102]complete : PING                   :
 ```
 
-### Performance on AVR:
+### Performance on AVR
 
 * Response time increased from 2.882 ms to 58.102 ms. The added time of 45.220 ms is mostly due to the 4 AES block operations which take around 11.3 ms each.
 

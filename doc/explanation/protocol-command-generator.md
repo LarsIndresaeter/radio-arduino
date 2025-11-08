@@ -1,6 +1,6 @@
 # protocol generator
 
-## why create a custom generator?
+## why create a custom generator
 
 The C++ files for payload structs and commands are mostly boilerplate code and suitable for code generation. The code has to be very compact to fit into the avr and no usable protocol was found.
 

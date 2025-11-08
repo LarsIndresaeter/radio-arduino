@@ -1,16 +1,15 @@
-copied from
-===========
+# ssd1306 library
+
+## copied from
 
 * https://github.com/tibounise/SSD1306-AVR
 
-modifications
-=============
+## modifications
 
 * used i2c library from this project
 * changed fonts
 * changed offset_variables
 
-License
-=======
+## License
 
 * unlicense.org
