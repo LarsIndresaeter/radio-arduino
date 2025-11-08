@@ -3,16 +3,14 @@
 ```mermaid
 classDiagram
     raduinoCommandBase <|-- ping
-    raduinoCommandBase: +getCommandName()
-    raduinoCommandBase: +getPayload()
+    raduinoCommandBase: +getCommandId()
     raduinoCommandBase: +getTimestamp()
-    raduinoCommandBase: +print()
+    raduinoCommandBase: +getPayload()
     class ping{
       +getCommandName()
       +getJson()
-      +getData()
+      +printResponse()
       +responseStruct()
-      +getPayload()
     }
 ```
 

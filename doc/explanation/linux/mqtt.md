@@ -22,3 +22,18 @@ radio-arduino/NBIRTH/lcd {"dateString: "2025-11-08 11:36:06"}
 radio-arduino/NDATA/lcd/vcc {"name":"vcc", "timestamp":1762601767008, "vcc":4624}
 radio-arduino/NDATA/lcd/gpio {"name":"gpio", "timestamp":1762601767024, "portB":15, "portC":48, "portD":3}
 ```
+
+## messages published by raduino-bin/raduino-power-monitor-mqtt
+
+The command
+
+```console
+./bin/raduino-power-monitor-mqtt -n 5
+```
+
+will read voltage and current from an attached ina219 power monitor chip and publish json formatted messages to a mqtt server on localhost. Below is one of these messages.
+
+```
+radio-arduino/DDATA/power-monitor/ina219 {"voltage":5.069762, "current":0.045977, "stddev":0.000164, "messageCounter":5, "timestamp": "2025-11-08 17:33:57", "secondsSinceEpoch":1762623237}
+```
+

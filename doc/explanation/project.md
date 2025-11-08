@@ -42,3 +42,7 @@ The arduino code has only 2k of RAM and can crash if too large objects are place
 
 - [ ] read HOTP key from eeprom
 - [ ] clean up linux uart code
+- [ ] migrate to conan 2
+- [ ] make mqtt server address and port configurable
+- [ ] send unique id in discover message
+
