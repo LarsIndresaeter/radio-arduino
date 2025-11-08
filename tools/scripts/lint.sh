@@ -9,7 +9,6 @@ if [ "${PARAM}" == "doc" ]
 then
     echo "lint rst: rst-lint ${REPO_BASE_DIR}"
 
-    rst-lint ${REPO_BASE_DIR}
-
+    mdl ${REPO_BASE_DIR}
 fi
 
