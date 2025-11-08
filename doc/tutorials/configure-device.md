@@ -4,13 +4,15 @@ help menu
 
 ```console
 raduino-personalize
-       -n : set device name
-       -c : current transport key
-       -t : new transport key
-       -e : new encryption key
-       -d : dump eeprom contents
-       -r : set radio role <gateway|node>
-       -h : print this text
+        -K <key> : encrypt command with transport key
+       -n <name> : set device name
+        -t <key> : set transport encryption key
+        -e <key> : set data encryption key
+         -i <id> : set unique id
+              -d : dump eeprom contents
+       -r <role> : set radio role <gateway|node>
+       -s <flag> : set requireTransportEncyption flag <0|1>
+              -h : print this text
 ```
 
 Example 
