@@ -16,12 +16,12 @@
 void print_usage()
 {
     std::cout << "raduino-device-ina219" << std::endl;
-    std::cout << "       -K : encrypt command with transport key" << std::endl;
-    std::cout << "       -N : wakeup node address" << std::endl;
-    std::cout << "       -s : read ina219 on gateway" << std::endl;
-    std::cout << "       -s : read ina219 on node" << std::endl;
-    std::cout << "       -n : ina219 stats for <N> seconds on gateway" << std::endl;
-    std::cout << "       -h : print this text" << std::endl;
+    std::cout << "           -K <key> : encrypt command with transport key" << std::endl;
+    std::cout << "       -N <address> : wakeup node address" << std::endl;
+    std::cout << "                 -s : read ina219 on gateway" << std::endl;
+    std::cout << "                 -s : read ina219 on node" << std::endl;
+    std::cout << "                 -n : ina219 stats for <N> seconds on gateway" << std::endl;
+    std::cout << "                 -h : print this text" << std::endl;
 }
 
 int timeMs()

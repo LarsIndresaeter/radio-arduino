@@ -16,29 +16,29 @@
 void print_usage()
 {
     std::cout << "raduino-device-atmega328" << std::endl;
-    std::cout << "       -K : encrypt command with transport key" << std::endl;
-    std::cout << "       -N : wakeup node address" << std::endl;
-    std::cout << "       -b : Blink command to gateway" << std::endl;
-    std::cout << "       -B : Blink command to node" << std::endl;
-    std::cout << "       -g : get gpio values on gateway" << std::endl;
-    std::cout << "       -G : get gpio values on node" << std::endl;
-    std::cout << "       -j : read vcc from gateway" << std::endl;
-    std::cout << "       -J : read vcc from node" << std::endl;
-    std::cout << "       -p : pwm command to gateway" << std::endl;
-    std::cout << "       -P : pwm command to node" << std::endl;
-    std::cout << "       -q : read quadrature encoder from gateway" << std::endl;
-    std::cout << "       -Q : read quadrature encoder from node" << std::endl;
-    std::cout << "       -C : wake up sleeping rx node if data available flag is set" << std::endl;
-    std::cout << "       -A : read quadrature encoder from node on change" << std::endl;
-    std::cout << "       -y : set device name from gateway" << std::endl;
-    std::cout << "       -Y : set device name from node" << std::endl;
-    std::cout << "       -z : get device name from gateway" << std::endl;
-    std::cout << "       -Z : get device name from node" << std::endl;
-    std::cout << "       -s : sleep gateway" << std::endl;
-    std::cout << "       -S : sleep node" << std::endl;
-    std::cout << "       -t : get pulse width from servo controller 100-200 (1-2 ms) on gateway" << std::endl;
-    std::cout << "       -T : get pulse width from servo controller 100-200 (1-2 ms) on node" << std::endl;
-    std::cout << "      -h : print this text" << std::endl;
+    std::cout << "           -K <key> : encrypt command with transport key" << std::endl;
+    std::cout << "       -N <address> : wakeup node address" << std::endl;
+    std::cout << "                 -b : Blink command to gateway" << std::endl;
+    std::cout << "                 -B : Blink command to node" << std::endl;
+    std::cout << "         -g <value> : get gpio values on gateway" << std::endl;
+    std::cout << "         -G <value> : get gpio values on node" << std::endl;
+    std::cout << "                 -j : read vcc from gateway" << std::endl;
+    std::cout << "                 -J : read vcc from node" << std::endl;
+    std::cout << "         -p <value> : pwm command to gateway" << std::endl;
+    std::cout << "         -P <value> : pwm command to node" << std::endl;
+    std::cout << "                 -q : read quadrature encoder from gateway" << std::endl;
+    std::cout << "                 -Q : read quadrature encoder from node" << std::endl;
+    std::cout << "                 -C : wake up sleeping rx node if data available flag is set" << std::endl;
+    std::cout << "                 -A : read quadrature encoder from node on change" << std::endl;
+    std::cout << "          -y <name> : set device name from gateway" << std::endl;
+    std::cout << "          -Y <name> : set device name from node" << std::endl;
+    std::cout << "                 -z : get device name from gateway" << std::endl;
+    std::cout << "                 -Z : get device name from node" << std::endl;
+    std::cout << "                 -s : sleep gateway" << std::endl;
+    std::cout << "                 -S : sleep node" << std::endl;
+    std::cout << "                 -t : get pulse width from servo controller 100-200 (1-2 ms) on gateway" << std::endl;
+    std::cout << "                 -T : get pulse width from servo controller 100-200 (1-2 ms) on node" << std::endl;
+    std::cout << "                 -h : print this text" << std::endl;
 }
 
 void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)

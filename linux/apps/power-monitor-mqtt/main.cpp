@@ -21,11 +21,10 @@ using namespace std::chrono_literals;
 void print_usage()
 {
     std::cout << "power-monitor" << std::endl;
-    std::cout << "       -K : encrypt command with transport key" << std::endl;
-    std::cout << "       -N : wakeup node address" << std::endl;
-    std::cout << "       -n : ina219 power monitor, stats for <N> seconds" << std::endl;
-    std::cout << "       -h : print this text" << std::endl;
-    std::cout << std::endl;
+    std::cout << "           -K <key> : encrypt command with transport key" << std::endl;
+    std::cout << "       -N <address> : wakeup node address" << std::endl;
+    std::cout << "       -n <seconds> : ina219 power monitor, stats for <N> seconds" << std::endl;
+    std::cout << "                 -h : print this text" << std::endl;
 }
 
 void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)

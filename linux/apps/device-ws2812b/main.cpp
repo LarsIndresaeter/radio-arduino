@@ -16,11 +16,11 @@
 void print_usage()
 {
     std::cout << "raduino-device-ws2812b" << std::endl;
-    std::cout << "       -K : encrypt command with transport key" << std::endl;
-    std::cout << "       -N : wakeup node address" << std::endl;
-    std::cout << "       -V : Verbose on" << std::endl;
-    std::cout << "       -w : WS2812B <string>" << std::endl;
-    std::cout << "       -h : print this text" << std::endl;
+    std::cout << "           -K <key> : encrypt command with transport key" << std::endl;
+    std::cout << "       -N <address> : wakeup node address" << std::endl;
+    std::cout << "                 -V : Verbose on" << std::endl;
+    std::cout << "        -w <string> : WS2812B <string>" << std::endl;
+    std::cout << "                 -h : print this text" << std::endl;
 }
 
 void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)

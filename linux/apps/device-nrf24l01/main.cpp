@@ -16,12 +16,12 @@
 void print_usage()
 {
     std::cout << "raduino-device-nrf24l01" << std::endl;
-    std::cout << "       -K : encrypt command with transport key" << std::endl;
-    std::cout << "       -N : wakeup node address" << std::endl;
-    std::cout << "       -i : initialize nrf24l01 on gateway" << std::endl;
-    std::cout << "       -r : set device in serial bridge as reader" << std::endl;
-    std::cout << "       -s : set device in serial bridge as sender" << std::endl;
-    std::cout << "       -h : print this text" << std::endl;
+    std::cout << "           -K <key> : encrypt command with transport key" << std::endl;
+    std::cout << "       -N <address> : wakeup node address" << std::endl;
+    std::cout <<           "       -i : initialize nrf24l01 on gateway" << std::endl;
+    std::cout << "                 -r : set device in serial bridge as reader" << std::endl;
+    std::cout << "                 -s : set device in serial bridge as sender" << std::endl;
+    std::cout << "                 -h : print this text" << std::endl;
 }
 
 void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)

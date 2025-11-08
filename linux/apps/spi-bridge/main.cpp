@@ -16,13 +16,13 @@
 void print_usage()
 {
     std::cout << "raduino-spi-bridge" << std::endl;
-    std::cout << "       -K : encrypt command with transport key" << std::endl;
-    std::cout << "       -N : wakeup node address" << std::endl;
-    std::cout << "       -o : offset SPI register" << std::endl;
-    std::cout << "       -r : SPI read <length> bytes" << std::endl;
-    std::cout << "       -w : SPI write command" << std::endl;
-    std::cout << "       -V : Verbose on" << std::endl;
-    std::cout << "       -h : print this text" << std::endl;
+    std::cout << "            -K <key> : encrypt command with transport key" << std::endl;
+    std::cout << "        -N <address> : wakeup node address" << std::endl;
+    std::cout << "       -o <register> : offset SPI register" << std::endl;
+    std::cout << "         -r <length> : SPI read <length> bytes" << std::endl;
+    std::cout << "          -w <value> : SPI write command" << std::endl;
+    std::cout << "                  -V : Verbose on" << std::endl;
+    std::cout << "                  -h : print this text" << std::endl;
 }
 
 void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)

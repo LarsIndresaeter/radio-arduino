@@ -15,15 +15,15 @@
 void print_usage()
 {
     std::cout << "raduino-i2c-bridge" << std::endl;
-    std::cout << "          -K : encrypt command with transport key" << std::endl;
-    std::cout << "          -N : wakeup node address" << std::endl;
-    std::cout << "          -a : device address" << std::endl;
-    std::cout << "          -c : control register address" << std::endl;
-    std::cout << " -r <length> : read <length> bytes" << std::endl;
-    std::cout << " -s <string> : write <string>" << std::endl;
-    std::cout << "  -w <value> : write <value>" << std::endl;
-    std::cout << "          -V : Verbose on" << std::endl;
-    std::cout << "          -h : print this text" << std::endl;
+    std::cout << "               -K <key> : encrypt command with transport key" << std::endl;
+    std::cout << "           -N <address> : wakeup node address" << std::endl;
+    std::cout << "           -a <address> : device address" << std::endl;
+    std::cout << "          -c <register> : control register address" << std::endl;
+    std::cout << "            -r <length> : read <length> bytes" << std::endl;
+    std::cout << "            -s <string> : write <string>" << std::endl;
+    std::cout << "             -w <value> : write <value>" << std::endl;
+    std::cout << "                     -V : Verbose on" << std::endl;
+    std::cout << "                     -h : print this text" << std::endl;
 }
 
 void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)

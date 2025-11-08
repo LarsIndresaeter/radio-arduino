@@ -63,19 +63,19 @@ void testAes(monitor& mon)
 void print_usage()
 {
     std::cout << "raduino-test" << std::endl;
-    std::cout << "       -K : encrypt command with transport key" << std::endl;
-    std::cout << "       -N : wakeup node address" << std::endl;
-    std::cout << "       -A : test AES" << std::endl;
-    std::cout << "       -C : print counter values" << std::endl;
-    std::cout << "       -e : EEPROM command" << std::endl;
-    std::cout << "       -I : I2C read command" << std::endl;
-    std::cout << "       -s : test sha1 command" << std::endl;
-    std::cout << "       -g : dump eeprom from mega328p" << std::endl;
-    std::cout << "       -b : test json formatter" << std::endl;
-    std::cout << "       -S : rx and tx statistics for node and gateway" << std::endl;
-    std::cout << "       -V : Verbose on" << std::endl;
-    std::cout << "       -v : Verbose off" << std::endl;
-    std::cout << "       -h : print this text" << std::endl;
+    std::cout << "           -K <key> : encrypt command with transport key" << std::endl;
+    std::cout << "       -N <address> : wakeup node address" << std::endl;
+    std::cout << "                 -A : test AES" << std::endl;
+    std::cout << "                 -C : print counter values" << std::endl;
+    std::cout << "                 -e : EEPROM command" << std::endl;
+    std::cout << "                 -I : I2C read command" << std::endl;
+    std::cout << "                 -s : test sha1 command" << std::endl;
+    std::cout << "                 -g : dump eeprom from mega328p" << std::endl;
+    std::cout << "                 -b : test json formatter" << std::endl;
+    std::cout << "                 -S : rx and tx statistics for node and gateway" << std::endl;
+    std::cout << "                 -V : Verbose on" << std::endl;
+    std::cout << "                 -v : Verbose off" << std::endl;
+    std::cout << "                 -h : print this text" << std::endl;
 }
 
 void compareResult(uint8_t expected, uint8_t actual)

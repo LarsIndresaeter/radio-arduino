@@ -16,10 +16,10 @@ using namespace std::chrono_literals;
 void print_usage()
 {
     std::cout << "raduino-gateway" << std::endl;
-    std::cout << "       -K : encrypt command with transport key" << std::endl;
-    std::cout << "       -C : print counter values" << std::endl;
-    std::cout << "       -n : reboot gateway as node" << std::endl;
-    std::cout << "       -h : print this text" << std::endl;
+    std::cout << "       -K <key> : encrypt command with transport key" << std::endl;
+    std::cout << "             -C : print counter values" << std::endl;
+    std::cout << "             -n : reboot gateway as node" << std::endl;
+    std::cout << "             -h : print this text" << std::endl;
 }
 
 void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)

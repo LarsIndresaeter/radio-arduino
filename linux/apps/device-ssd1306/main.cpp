@@ -16,12 +16,11 @@
 void print_usage()
 {
     std::cout << "raduino-device-ws2812b" << std::endl;
-    std::cout << "       -K : encrypt command with transport key" << std::endl;
-    std::cout << "       -N : wakeup node address" << std::endl;
-    std::cout << "       -l : write text on ssd1306 LCD on gateway" << std::endl;
-    std::cout << "       -L : write text on ssd1306 LCD on node" << std::endl;
-    std::cout << "       -n : wakeup node address" << std::endl;
-    std::cout << "       -h : print this text" << std::endl;
+    std::cout << "           -K <key> : encrypt command with transport key" << std::endl;
+    std::cout << "       -N <address> : wakeup node address" << std::endl;
+    std::cout << "       -l <message> : write text on ssd1306 LCD on gateway" << std::endl;
+    std::cout << "       -L <message> : write text on ssd1306 LCD on node" << std::endl;
+    std::cout << "                 -h : print this text" << std::endl;
 }
 
 void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)
@@ -30,7 +29,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t spiRegister = 0;
     uint8_t radioAddress = 0;
 
-    while ((option = getopt(argc, argv, "K:N:l:L:n:h")) != -1) {
+    while ((option = getopt(argc, argv, "K:N:l:L:h")) != -1) {
         switch (option) {
         case 'K': {
             std::string s(optarg);
@@ -58,9 +57,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             std::string s(optarg);
             mon.get<>(RaduinoCommandSsd1306(2, s)); // second line
         } break;
-        case 'n':
-            radioAddress = atoi(optarg);
-            break;
         case 'L': {
             std::string s(optarg);
             RadioSession radioSession(mon, radioAddress);

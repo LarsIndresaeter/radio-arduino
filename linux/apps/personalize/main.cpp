@@ -12,15 +12,15 @@
 void print_usage()
 {
     std::cout << "raduino-personalize" << std::endl;
-    std::cout << "       -K : encrypt command with transport key" << std::endl;
-    std::cout << "       -n : set device name" << std::endl;
-    std::cout << "       -t : set transport encryption key" << std::endl;
-    std::cout << "       -e : set data encryption key" << std::endl;
-    std::cout << "       -i : set unique id" << std::endl;
-    std::cout << "       -d : dump eeprom contents" << std::endl;
-    std::cout << "       -r : set radio role <gateway|node>" << std::endl;
-    std::cout << "       -s : set requireTransportEncyption flag <0|1>" << std::endl;
-    std::cout << "       -h : print this text" << std::endl;
+    std::cout << "        -K <key> : encrypt command with transport key" << std::endl;
+    std::cout << "       -n <name> : set device name" << std::endl;
+    std::cout << "        -t <key> : set transport encryption key" << std::endl;
+    std::cout << "        -e <key> : set data encryption key" << std::endl;
+    std::cout << "         -i <id> : set unique id" << std::endl;
+    std::cout << "              -d : dump eeprom contents" << std::endl;
+    std::cout << "       -r <role> : set radio role <gateway|node>" << std::endl;
+    std::cout << "       -s <flag> : set requireTransportEncyption flag <0|1>" << std::endl;
+    std::cout << "              -h : print this text" << std::endl;
 }
 
 void dumpEeprom(monitor& mon, int length)
