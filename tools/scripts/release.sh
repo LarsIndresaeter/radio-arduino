@@ -17,7 +17,7 @@ NEW_TAG=""
 if [ "${ACTION}" == "" ] 
 then
     echo "no action provided"
-    echo "raduino releaze <action> :"
+    echo "raduino release <action> :"
     echo "           bump <number> : bump number <major|minor|patch> and create tag"
     echo "                    push : push latest tag to origin"
     echo "                  detect : detect change but do not create tag"

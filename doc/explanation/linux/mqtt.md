@@ -14,3 +14,11 @@ commands:
 
 The topic names are inspired by the sparkplugB standard but the payload is json (and not protobuf).
 
+## messages published by radiuino-mqtt
+
+```console
+radio-arduino/NBIRTH/gateway {"dateString: "2025-11-08 11:36:03"}
+radio-arduino/NBIRTH/lcd {"dateString: "2025-11-08 11:36:06"}
+radio-arduino/NDATA/lcd/vcc {"name":"vcc", "timestamp":1762601767008, "vcc":4624}
+radio-arduino/NDATA/lcd/gpio {"name":"gpio", "timestamp":1762601767024, "portB":15, "portC":48, "portD":3}
+```
