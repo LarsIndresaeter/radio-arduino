@@ -47,7 +47,7 @@ class AvrUartConan(ConanFile):
             ]
 
     def requirements(self):
-        self.requires("raduino-api/0.0.1@raduino/test")
+        self.requires("raduino-api/[>0.0.2, include_prerelease=True]@raduino/test",private=True)
 
     def imports(self):
         self.copy("*.hpp", dst="libs", src="libs", root_package="raduino-api")

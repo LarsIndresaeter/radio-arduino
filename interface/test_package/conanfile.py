@@ -3,7 +3,7 @@ from conans.tools import os_info, SystemPackageTool
 
 class AvrUartConan(ConanFile):
     name = "raduino-api-test"
-    version = "0.0.1"
+    version = "0.1.0"
     license = "gpl"
     author = "Lars Indresaeter"
     url = "https://github.com/LarsIndresaeter/snippets.git"
@@ -15,11 +15,11 @@ class AvrUartConan(ConanFile):
             "CMakeLists.txt",
             "*.cpp",
             ]
-    test_type = "raduino-api/0.0.1@raduino/test"
+    test_type = "raduino-api/0.1.0@raduino/test"
 
     def requirements(self):
         self.requires("gtest/1.8.1")
-        self.requires("raduino-api/0.0.1@raduino/test",private=True)
+        self.requires("raduino-api/[>0.0.2, include_prerelease=True]@raduino/test",private=True)
 
     def build_requirements(self):
         self.build_requires("gtest/1.8.1", force_host_context=True)

@@ -3,7 +3,7 @@ from conans.tools import os_info, SystemPackageTool
 
 class UartApiConan(ConanFile):
     name = "raduino-api"
-    version = "0.0.1"
+    version = "0.1.0"
     license = "gpl"
     author = "Lars Indresaeter"
     url = "https://github.com/LarsIndresaeter/snippets.git"
