@@ -109,7 +109,7 @@ This is a command with no command payload and thus the size of the protocol pack
 ```console
 w: FE ED 01 02 21 00 F2 BA F7 FA 
 r: FE ED 01 02 21 00 F2 BA F7 FA 
-[2566]complete : PING                   :
+[2566]PING                   :
 ```
 
 sync: FE ED
@@ -127,7 +127,7 @@ ping command without encryption. If you have studied the matrix long enough you 
 lars@lionfish:~/priv/radio-arduino$ ./bin/raduino-gateway -Vp
 w: FE ED 01 02 21 00 F2 BA F7 FA 
 r: FE ED 01 02 21 00 F2 BA F7 FA 
-[2882]complete : PING                   : 
+[2882]PING                   : 
 ```
 
 ping command with encryption. The protocol payload is enctypted using AES128 CBC-CTS.
@@ -136,7 +136,7 @@ ping command with encryption. The protocol payload is enctypted using AES128 CBC
 lars@lionfish:~/priv/radio-arduino$ ./bin/raduino-gateway -VTp
 w: FE ED 02 16 83 93 4B DB 61 3D F8 27 54 93 46 FC 0F 18 26 0A 94 2A 52 5B 26 99 F2 27 58 EC 
 r: FE ED 02 16 F9 9C 96 90 54 4B 96 15 90 96 BB C8 6C F9 E4 4B 58 62 DB C0 0A 92 3F 46 A5 B1 
-[48102]complete : PING                   :
+[48102]PING                   :
 ```
 
 ### Performance on AVR

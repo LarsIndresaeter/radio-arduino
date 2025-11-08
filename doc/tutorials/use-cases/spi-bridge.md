@@ -19,6 +19,6 @@ Read RF_CH register (5) on nrf24l01 on rf-nano
 output (note that 33 decimal is 0x21 hex)
 
 ```console
-complete : SPI_READ               :  reg=5 length=1 data=[ 21 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ]
+SPI_READ               :  reg=5 length=1 data=[ 21 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ]
 ```
 

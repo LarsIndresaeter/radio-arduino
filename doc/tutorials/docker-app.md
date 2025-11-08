@@ -78,7 +78,7 @@ run a command
 ```console
 docker run -it --rm --device=/dev/ttyUSB0 raduino:0.2.0 bash
 lars@332c4a94182b:/$ raduino-gateway -z
-complete : GET_DEVICE_NAME        :  nameString="rauino-gateway"
+GET_DEVICE_NAME        :  nameString="rauino-gateway"
 lars@332c4a94182b:/$ exit
 exit
 ```
