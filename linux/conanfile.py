@@ -4,9 +4,11 @@ from conans.tools import os_info, SystemPackageTool
 def gitSemVerAddGitSha():
     git = tools.Git() 
 
-    versionString = str(git.run("describe --tags --abbrev=0"))
+    versionString = ""
 
     try:
+        versionString = str(git.run("describe --tags --abbrev=0"))
+
         gitsha = str(git.run("log --pretty=format:'%h' -n 1"))
         commits_not_in_main = int(git.run(f"rev-list --count HEAD --not main"))
 
