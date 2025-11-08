@@ -161,6 +161,11 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         }
     }
 
+    if(nodeAddressList.size() == 0)
+    {
+        nodeAddressList.push_back(0);
+    }
+
     readMultipleRadioNodes(mon, mqtt_client, nodeAddressList);
 
     mqtt_client.disconnect()->wait();
