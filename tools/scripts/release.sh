@@ -82,7 +82,7 @@ then
     fi
 elif [ "${ACTION}" == "push" ] 
 then
-    git push ${TAG_LATEST} origin
+    git push origin ${TAG_LATEST}
 elif [ "${ACTION}" == "latest" ] 
 then
     echo "$TAG_LATEST"
