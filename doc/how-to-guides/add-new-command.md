@@ -24,6 +24,12 @@ generateCommandAndPayloadFile(42, "get_unique_id", [], ["id[4]"])
 
 Running the script with the command `python generate.py` in the folder `interface/libs/commands/` created payload structs used by the arduino code and command classes used by the linux application code
 
+this can be done using the command
+
+```console
+raduino generate commands
+```
+
 ### files changed in interface directory
 
 ```

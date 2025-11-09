@@ -1,5 +1,9 @@
 # naming conventions
 
+## inteded audience
+
+The intended audience for this project is hobbyists experimenting with rf-nano or developers that want to learn. See [motivation for this work](../motivation-for-this-work.md)
+
 ## project name
 
 The name `radio-arduino` was selected to be a generic name. Currently only the nrf24l01 radio module is supported but the RadioUart class is designed with though that a variant can be made for a LoRa chip.

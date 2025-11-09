@@ -9,6 +9,8 @@ Explanations follow the folder structure of the project with arduino, interface,
 | [arduino](./arduino/README.md)        | source code for atmega328p                              |
 | [interface](./interface/README.md)    | API interface between arduino and linux                 |
 | [linux](./linux/README.md)            | source code for linux host applications                 |
+| tools                                 | toolkit for working with the code in this repository    |
+| doc                                   | documentation folder                                    |
 | build                                 | build area for arduino, interface and linux source code |
 | bin                                   | compiled binary files                                   |
 
