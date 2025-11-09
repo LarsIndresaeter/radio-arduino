@@ -26,7 +26,7 @@ Technical descriptions of the machinery and how to operate it. For example:
 
 * which commands are available
 
-## [Explanation](./explanation)
+## [Explanation](./explanation/README.md)
 
 Explanation, or discussions, clarify and illuminate a particular topic. For example:
 
