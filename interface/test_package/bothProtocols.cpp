@@ -25,12 +25,12 @@ public:
 TEST_F(BothProtocolsTest, testParseBinary)
 {
     auto packet = linuxProtocol.createBinaryCommand(
-        { 64, 2, 0, 1 }, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT));
+        { 64, 2, 0, 1 }, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY_ENCRYPTED));
 
     validatePacket(
         packet,
         {
-            0xfe, 0xed, 2,    4 + 20, // packet header
+            0xfe, 0xed, 3,    4 + 20, // packet header
             0x33, 0x33, 0x33, 0x33,   // checksum
             0x00, 0x00, 0x00, 0x00,   // message id
             0x11, 0x11, 0x11, 0x11,   // nonce

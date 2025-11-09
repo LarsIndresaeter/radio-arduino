@@ -6,6 +6,7 @@
 #define CRC32_POLY 0x04C11DB7 /* AUTODIN II, Ethernet, & FDDI */
 
 namespace PROTOCOL {
+
 namespace ENCRYPTED {
     constexpr uint8_t CHECKSUM_OFFSET = 4 + 0;   // inner checksum. Verify correct decryption
     constexpr uint8_t MESSAGE_ID_OFFSET = 4 + 4; // should be incremented for each message to prevent playback
@@ -27,14 +28,17 @@ namespace HEADER {
     constexpr uint8_t SYNC_PATTERN_BYTE_0 = 0xFE;
     constexpr uint8_t SYNC_PATTERN_BYTE_1 = 0xED;
 
+    constexpr uint8_t VERSION_FLAG_RADUINO_PAYLOAD = 0x01;
+    constexpr uint8_t VERSION_FLAG_ENCRYPTED = 0x02;
+    constexpr uint8_t VERSION_FLAG_DESTINATION_NODE = 0x04;
+
     enum class VERSION
     {
         UNDEFINED = 0,
-        BINARY_AND_TEXT = 1,
-        ENCRYPTED_BINARY_AND_TEXT = 2,
-        RADIO_BINARY_AND_TEXT = 3,
-        RADIO_ENCRYPTED_BINARY_AND_TEXT = 4,
-        JSON = 5
+        GATEWAY = VERSION_FLAG_RADUINO_PAYLOAD,                                                                 // 1
+        GATEWAY_ENCRYPTED = VERSION_FLAG_RADUINO_PAYLOAD | VERSION_FLAG_ENCRYPTED,                              // 3
+        NODE = VERSION_FLAG_RADUINO_PAYLOAD | VERSION_FLAG_DESTINATION_NODE,                                    // 5
+        NODE_ENCRYPTED = VERSION_FLAG_RADUINO_PAYLOAD | VERSION_FLAG_ENCRYPTED | VERSION_FLAG_DESTINATION_NODE, // 7
     };
 }
 

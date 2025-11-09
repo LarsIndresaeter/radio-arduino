@@ -30,12 +30,12 @@ public:
 
                 else if (index == PROTOCOL::HEADER::VERSION_OFFSET) {
                     protocolVersion = c;
-                    if (!((protocolVersion == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::BINARY_AND_TEXT))
+                    if (!((protocolVersion == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY))
                           || (protocolVersion
-                              == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT))
-                          || (protocolVersion == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::RADIO_BINARY_AND_TEXT))
+                              == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY_ENCRYPTED))
+                          || (protocolVersion == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::NODE))
                           || (protocolVersion
-                              == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::RADIO_ENCRYPTED_BINARY_AND_TEXT)))) {
+                              == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::NODE_ENCRYPTED)))) {
                         return 0;
                     }
                 }
@@ -67,9 +67,9 @@ public:
 
                     if (checksumReceived == checksumCalculated) {
                         if (protocolVersion
-                                == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT)
+                                == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY_ENCRYPTED)
                             || protocolVersion
-                                == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::RADIO_ENCRYPTED_BINARY_AND_TEXT)) {
+                                == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::NODE_ENCRYPTED)) {
                             length = decryptPayload(length, payload);
                         }
 

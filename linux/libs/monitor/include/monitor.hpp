@@ -35,20 +35,20 @@ public:
     {
         if (m_transportEncryption) {
             return get(
-                cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT), default_timeout);
+                cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY_ENCRYPTED), default_timeout);
         }
         else {
-            return get(cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::BINARY_AND_TEXT), default_timeout);
+            return get(cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY), default_timeout);
         }
     }
 
     template <typename T> T get(T cmd, std::chrono::milliseconds timeout)
     {
         if (m_transportEncryption) {
-            return get(cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT), timeout);
+            return get(cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY_ENCRYPTED), timeout);
         }
         else {
-            return get(cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::BINARY_AND_TEXT), timeout);
+            return get(cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY), timeout);
         }
     }
 
@@ -56,20 +56,20 @@ public:
     {
         if (m_transportEncryption) {
             return get(
-                cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::RADIO_ENCRYPTED_BINARY_AND_TEXT), default_timeout);
+                cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::NODE_ENCRYPTED), default_timeout);
         }
         else {
-            return get(cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::RADIO_BINARY_AND_TEXT), default_timeout);
+            return get(cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::NODE), default_timeout);
         }
     }
 
     template <typename T> T getRadio(T cmd, std::chrono::milliseconds timeout)
     {
         if (m_transportEncryption) {
-            return get(cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::RADIO_ENCRYPTED_BINARY_AND_TEXT), timeout);
+            return get(cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::NODE_ENCRYPTED), timeout);
         }
         else {
-            return get(cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::RADIO_BINARY_AND_TEXT), timeout);
+            return get(cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::NODE), timeout);
         }
     }
 

@@ -17,7 +17,7 @@ public:
             payload.size(),
             payload.data(),
             buffer.data(),
-            static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::BINARY_AND_TEXT));
+            static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY));
         arduinoProtocol.appendData(buffer);
 
         std::vector<uint8_t> commandPayload(256);
@@ -108,7 +108,7 @@ public:
             responsePayload.size(),
             responsePayload.data(),
             packet.data(),
-            static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::BINARY_AND_TEXT));
+            static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY));
         return packet;
     }
 
