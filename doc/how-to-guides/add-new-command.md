@@ -24,7 +24,7 @@ generateCommandAndPayloadFile(42, "get_unique_id", [], ["id[4]"])
 
 Running the script with the command `python generate.py` in the folder `interface/libs/commands/` created payload structs used by the arduino code and command classes used by the linux application code
 
-### files changed
+### files changed in interface directory
 
 ```
 interface/libs/commands/generate.py
@@ -80,7 +80,7 @@ case COMMANDS::OI::GET_UNIQUE_ID:
     break;
 ```
 
-### files changed
+### files changed in arduino directory
 
 ```
 arduino/libs/eeprom/command-handlers-eeprom.cpp
@@ -114,7 +114,7 @@ std::cout << mon.get<>(RaduinoCommandSetUniqueId(uniqueId)) << std::endl;
 
 Learn more about the [command objects](doc/reference-guides/commands/list-of-commands.md).
 
-### files changed
+### files changed linux directory
 
 ```
 linux/apps/personalize/main.cpp
