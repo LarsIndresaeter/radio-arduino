@@ -11,6 +11,11 @@ then
     echo "RADINO_CUSTOM_COMMAND=${RADINO_CUSTOM_COMMAND}"
 fi
 
+if [ "${PARAM}" == "generate" ]
+then
+    ${RADUINO_SCRIPTS_DIR}/generate.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
+fi
+
 if [ "${PARAM}" == "dockerapp" ]
 then
     ${RADUINO_SCRIPTS_DIR}/dockerapp.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
