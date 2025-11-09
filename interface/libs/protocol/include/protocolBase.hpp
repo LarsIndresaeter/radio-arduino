@@ -33,10 +33,10 @@ namespace HEADER {
     enum class VERSION
     {
         UNDEFINED = 0,
-        BINARY_AND_TEXT = 1,                 // 0b0000 0001
-        ENCRYPTED_BINARY_AND_TEXT = 3,       // 0b0000 0011
-        RADIO_BINARY_AND_TEXT = 5,           // 0b0000 0101
-        RADIO_ENCRYPTED_BINARY_AND_TEXT = 7, // 0b0000 0111
+        GATEWAY= 1,            // 0b0000 0001
+        GATEWAY_ENCRYPTED = 3, // 0b0000 0011
+        NODE= 5,               // 0b0000 0101
+        NODE_ENCRYPTED = 7,    // 0b0000 0111
     };
 }
 

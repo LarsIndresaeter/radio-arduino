@@ -23,7 +23,7 @@ public:
 TEST_F(LinuxProtocolTest, testParseBinary)
 {
     auto packet = linuxProtocol.createBinaryCommand(
-        { 0, 1, 2, 3 }, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT));
+        { 0, 1, 2, 3 }, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY_ENCRYPTED));
 
     validatePacket(
         packet,
@@ -41,7 +41,7 @@ TEST_F(LinuxProtocolTest, testParseBinary)
 TEST_F(LinuxProtocolTest, testParsingOfIncompletePacket)
 {
     auto buffer = linuxProtocol.createBinaryCommand(
-        { 0, 1, 2, 3 }, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT));
+        { 0, 1, 2, 3 }, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY_ENCRYPTED));
     std::vector<uint8_t> packet;
 
     validatePacket(
@@ -83,7 +83,7 @@ TEST_F(LinuxProtocolTest, testParseLargeBinary)
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
             0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
         },
-        static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT));
+        static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY_ENCRYPTED));
 
     validatePacket(
         packet,

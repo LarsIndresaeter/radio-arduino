@@ -30,7 +30,7 @@ TEST_F(ProtocolClassTest, testStreamProtocol)
         payload.size(),
         payload.data(),
         command.data(),
-        static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::BINARY_AND_TEXT));
+        static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY));
 
     arduinoProtocol.appendData(command);
     arduinoProtocol.getChar(); // first byte already popped by parser in arduino code

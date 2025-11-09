@@ -25,7 +25,7 @@ public:
 TEST_F(BothProtocolsTest, testParseBinary)
 {
     auto packet = linuxProtocol.createBinaryCommand(
-        { 64, 2, 0, 1 }, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT));
+        { 64, 2, 0, 1 }, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY_ENCRYPTED));
 
     validatePacket(
         packet,

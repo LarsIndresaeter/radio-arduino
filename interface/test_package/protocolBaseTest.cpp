@@ -33,7 +33,7 @@ TEST_F(ProtocolBaseTest, testCreateCommandFromProtocolBaseClass)
         payload.size(),
         payload.data(),
         packet.data(),
-        static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::BINARY_AND_TEXT));
+        static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY));
 
     validatePacket(
         packet,
@@ -61,7 +61,7 @@ TEST_F(ProtocolBaseTest, testCreateEncryptedPayloadFromProtocolBaseClass)
         payload.size(),
         payload.data(),
         packet.data(),
-        static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT));
+        static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY_ENCRYPTED));
 
     validatePacket(
         packet,
@@ -94,7 +94,7 @@ TEST_F(ProtocolBaseTest, testDecryptPayload)
         payload.size(),
         payload.data(),
         packet.data(),
-        static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::ENCRYPTED_BINARY_AND_TEXT));
+        static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY_ENCRYPTED));
 
     validatePacket(
         packet,
