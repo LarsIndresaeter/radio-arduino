@@ -97,8 +97,8 @@ public:
         else if (u.m_replyStatus == ReplyStatus::Pending) {
             out << "pending  : ";
         }
-        //else if (u.m_replyStatus == ReplyStatus::Complete) {
-            //out << "complete : ";
+        // else if (u.m_replyStatus == ReplyStatus::Complete) {
+        // out << "complete : ";
         //}
 
         if (u.m_replyStatus == ReplyStatus::Complete) {

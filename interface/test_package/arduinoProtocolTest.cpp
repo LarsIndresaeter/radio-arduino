@@ -27,10 +27,7 @@ TEST_F(ProtocolClassTest, testStreamProtocol)
     std::vector<uint8_t> payload = { 0, 1, 2, 3 };
     std::vector<uint8_t> command(PROTOCOL::HEADER::LENGTH + PROTOCOL::CHECKSUM::LENGTH + payload.size());
     arduinoProtocol.createPacket(
-        payload.size(),
-        payload.data(),
-        command.data(),
-        static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY));
+        payload.size(), payload.data(), command.data(), static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY));
 
     arduinoProtocol.appendData(command);
     arduinoProtocol.getChar(); // first byte already popped by parser in arduino code

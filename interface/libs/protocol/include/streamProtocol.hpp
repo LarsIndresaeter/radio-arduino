@@ -31,11 +31,9 @@ public:
                 else if (index == PROTOCOL::HEADER::VERSION_OFFSET) {
                     protocolVersion = c;
                     if (!((protocolVersion == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY))
-                          || (protocolVersion
-                              == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY_ENCRYPTED))
+                          || (protocolVersion == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY_ENCRYPTED))
                           || (protocolVersion == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::NODE))
-                          || (protocolVersion
-                              == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::NODE_ENCRYPTED)))) {
+                          || (protocolVersion == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::NODE_ENCRYPTED)))) {
                         return 0;
                     }
                 }
@@ -66,10 +64,8 @@ public:
                     CRC32_calculate(&payload[0], length, &checksumCalculated);
 
                     if (checksumReceived == checksumCalculated) {
-                        if (protocolVersion
-                                == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY_ENCRYPTED)
-                            || protocolVersion
-                                == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::NODE_ENCRYPTED)) {
+                        if (protocolVersion == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY_ENCRYPTED)
+                            || protocolVersion == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::NODE_ENCRYPTED)) {
                             length = decryptPayload(length, payload);
                         }
 

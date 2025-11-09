@@ -14,10 +14,7 @@ public:
     {
         std::vector<uint8_t> buffer(4 + payload.size() + 4);
         linuxProtocol.createPacket(
-            payload.size(),
-            payload.data(),
-            buffer.data(),
-            static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY));
+            payload.size(), payload.data(), buffer.data(), static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY));
         arduinoProtocol.appendData(buffer);
 
         std::vector<uint8_t> commandPayload(256);

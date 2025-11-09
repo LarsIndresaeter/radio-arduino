@@ -48,8 +48,7 @@ public:
             }
 
             if (protocolVersion == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY_ENCRYPTED)
-                || protocolVersion
-                    == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::NODE_ENCRYPTED)) {
+                || protocolVersion == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::NODE_ENCRYPTED)) {
                 uint8_t decrypt_size = decryptPackage(retval.data());
                 retval.resize(decrypt_size + 8); // header + payload + crc
             }

@@ -30,10 +30,7 @@ TEST_F(ProtocolBaseTest, testCreateCommandFromProtocolBaseClass)
     FakeCryptoHandler cryptoHandler;
     ProtocolBase pb(&cryptoHandler);
     pb.createPacket(
-        payload.size(),
-        payload.data(),
-        packet.data(),
-        static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY));
+        payload.size(), payload.data(), packet.data(), static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY));
 
     validatePacket(
         packet,

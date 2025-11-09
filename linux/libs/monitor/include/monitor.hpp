@@ -34,8 +34,7 @@ public:
     template <typename T> T get(T cmd)
     {
         if (m_transportEncryption) {
-            return get(
-                cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY_ENCRYPTED), default_timeout);
+            return get(cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY_ENCRYPTED), default_timeout);
         }
         else {
             return get(cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY), default_timeout);
@@ -55,8 +54,7 @@ public:
     template <typename T> T getRadio(T cmd)
     {
         if (m_transportEncryption) {
-            return get(
-                cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::NODE_ENCRYPTED), default_timeout);
+            return get(cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::NODE_ENCRYPTED), default_timeout);
         }
         else {
             return get(cmd, static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::NODE), default_timeout);
