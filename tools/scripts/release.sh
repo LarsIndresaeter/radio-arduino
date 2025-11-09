@@ -28,10 +28,20 @@ fi
 
 if [ "${ACTION}" == "detect" ] 
 then
+    COUNT_BREAKING=$(git log ${TAG_LATEST}..HEAD --oneline --pretty=format:%s | grep -c "^BREAKING")
     COUNT_FEAT=$(git log ${TAG_LATEST}..HEAD --oneline --pretty=format:%s | grep -c "^feat")
     COUNT_FIX=$(git log ${TAG_LATEST}..HEAD --oneline --pretty=format:%s | grep -c "^fix")
 
     if [ ${COUNT_FEAT} -gt 0 ]
+    then
+        echo "${COUNT_FEAT} breaking change: commits. Bump major!"
+        if [ "${PARAM}" == "auto" ] 
+        then
+            ACTION="bump"
+            PARAM="major"
+        fi
+        echo "raduino release bump major"
+    elif [ ${COUNT_FEAT} -gt 0 ]
     then
         echo "${COUNT_FEAT} new feat: commits. Bump minor!"
         if [ "${PARAM}" == "auto" ] 
