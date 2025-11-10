@@ -2,12 +2,8 @@
 
 The primary use case for the code in this project is the [gateway and node](./gateway-and-node.md) use-case but other use-cases are also supported.
 
-* [ina219 power monitor](./arduino-nano-ina219-power-monitor.md) : read voltage and current and report min, max and average per second
-* [nrf24l01 sniffer](./nrf24l01-sniffer.md) : configure the nrf24l01 chip to be in an undocumented verbose mode and send data to the serial port
-* [device ina219](./device-ina219.md) : read current and voltage from an ina219 power monitor chip connected to a gateway or node
-* [quadrature encoder](./quadrature-encoder.md) : read quadrature encoder using the RaduinoCommandQuadratureEncoder command
-* [rs232 radio bridge](./rs232-radio-bridge.md) : configure two gateways to bridge data from rs232 to to the serial port. One device is the sender but communication is two-way
-
+* [raduino-power-monitor](../reference-guides/apps/raduino-power-monitor-mqtt.md) : read voltage and current and report min, max and average per second
+* [raduino-device-ina219](../reference-guides/apps/raduino-device-ina219.md) : read current and voltage from an ina219 power monitor chip connected to a gateway or node
 
 ## Gateway and node
 
@@ -24,30 +20,6 @@ This is the default use case. Commands can be sent to either the gateway or the 
     │           │                 │                 │                │                 │
     └───────────┘                 └─────────────────┘                └─────────────────┘
                                        gateway                              node
-```
-
-## rs232 radio bridge
-
-By configuring two rf-nano boards as a gateway and sending RaduinoCommanRadioUart commands you can configure the two boards to create a serial port bridge between two computers.
-
-### configure the two gateways
-
-computer 1 - sender
-
-```console
-./bin/raduino-gateway -U s
-```
-
-computer 2 - receiver
-
-```console
-./bin/raduino-gateway -U r
-```
-
-open another serial program and connect to the serial port for the gateway. 
-
-```console
-minicom -d /dev/ttyUSB0
 ```
 
 ## spi bridge
