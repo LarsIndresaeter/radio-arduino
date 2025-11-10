@@ -34,3 +34,21 @@ raduino-system-commands
                  -h : print this text
 ```
 
+## commands used
+
+- [sha1](../commands/sha1.md)
+- [set_key](../commands/set_key.md)
+- [get_device_name](../commands/get_device_name.md)
+- [hotp](../commands/hotp.md)
+- [random](../commands/random.md)
+- [get_unique_id](../commands/get_unique_id.md)
+- [debug](../commands/debug.md)
+- [ping](../commands/ping.md)
+- [require_transport_encryption](../commands/require_transport_encryption.md)
+- [unlock_session](../commands/unlock_session.md)
+- [get_statistics](../commands/get_statistics.md)
+
+## description 
+
+This app lets you do system specific tasks, ie. tasks that are not interacting with any chip.
+

@@ -29,3 +29,18 @@ raduino-device-atmega328
                  -h : print this text
 ```
 
+## commands used
+
+- [gpio](../commands/gpio.md)
+- [vcc](../commands/vcc.md)
+- [pwm](../commands/pwm.md)
+- [quadrature_encoder](../commands/quadrature_encoder.md)
+- [wakeup](../commands/wakeup.md)
+- [set_device_name](../commands/set_device_name.md)
+- [sleep](../commands/sleep.md)
+- [timer](../commands/timer.md)
+
+## description 
+
+This linux interact with the atmega328 chip. Gpio, adc, timer, watchdog and eeprom.
+

@@ -11,3 +11,11 @@ raduino-device-ws2812b
                  -h : print this text
 ```
 
+## commands used
+
+- [ws2812b](../commands/ws2812b.md)
+
+## description 
+
+This app let you write values to 8 ws2812b RGB leds.
+

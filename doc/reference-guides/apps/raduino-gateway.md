@@ -10,3 +10,12 @@ raduino-gateway
              -h : print this text
 ```
 
+## commands used
+
+- [set_radio_role](../commands/set_radio_role.md)
+- [soft_reset](../commands/soft_reset.md)
+
+## description 
+
+This app allows you to change the radio role from `gateway` to `node`.
+

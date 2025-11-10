@@ -15,3 +15,13 @@ raduino-i2c-bridge
                      -h : print this text
 ```
 
+## commands used
+
+- [i2c_read](../commands/i2c_read.md)
+- [i2c_write](../commands/i2c_write.md)
+
+## description 
+
+This is a general purpose tool for interacting with i2c devices connected to atmega328.
+Typical usage is for experimentation before or during creation of a custom command that interacts with a device on the i2c bus.
+

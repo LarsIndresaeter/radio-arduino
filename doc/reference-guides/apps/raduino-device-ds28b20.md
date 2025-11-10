@@ -11,3 +11,11 @@ raduino-device-ds28b20
                  -h : print this text
 ```
 
+## commands used
+
+- [ds18b20](../commands/ds18b20.md)
+
+## description 
+
+This app reads the temperature from a ds18b20 one-wire temperature sensor
+
