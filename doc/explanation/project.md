@@ -12,6 +12,7 @@ The arduino code has only 2k of RAM and can crash if too large objects are place
 - [ ] migrate to conan 2
 - [ ] make mqtt server address and port configurable
 - [ ] send unique id in discover message
+- [ ] create python libraries for command generation
 
 ## motivation
 
