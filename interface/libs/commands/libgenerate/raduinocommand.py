@@ -11,11 +11,12 @@ def openFiles():
 def closeFiles():
     generateCommonHeaderFilesClose()
 
-def add(commandId, commandName, 
-                 commandPayloadByteNames, 
-                 responsePayloadByteNames):
+def add(commandId,
+        commandName,
+        commandPayloadFields,
+        responsePayloadFields):
 
-    generateCommandFile(commandId, commandName, commandPayloadByteNames, responsePayloadByteNames)
-    generatePayloadFile(commandId, commandName, commandPayloadByteNames, responsePayloadByteNames)
-    generateDocumentationFile(commandId, commandName, commandPayloadByteNames, responsePayloadByteNames)
+    generateCommandFile(commandId, commandName, commandPayloadFields, responsePayloadFields)
+    generatePayloadFile(commandId, commandName, commandPayloadFields, responsePayloadFields)
+    generateDocumentationFile(commandId, commandName, commandPayloadFields, responsePayloadFields)
 
