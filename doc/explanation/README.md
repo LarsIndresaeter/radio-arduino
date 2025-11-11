@@ -20,8 +20,3 @@ Explanations follow the folder structure of the project with arduino, interface,
 * [naming conventions](./naming-conventions.md) used for the code
 * [protocol command generator](./protocol-command-generator.md) is a python script for generating the mostly boilerplate code used for payload structs for arduino and C++ classes for Linux
 
-## Architecture Decisions (ADR)
-
-* Why this project is organized as a mono-repo and what the tradeoffs are if you decide to split it into several repositories.
-* build system (conan and cmake, why and how)
-
