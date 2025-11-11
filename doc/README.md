@@ -25,10 +25,12 @@ Guides that take the reader through the steps to solve a real-world problem. For
 Technical descriptions of the machinery and how to operate it. For example:
 
 * which commands are available
+* which command line tools are available
 
 ## [Explanation](./explanation/README.md)
 
 Explanation, or discussions, clarify and illuminate a particular topic. For example:
 
 * how does the protocol work
+* how does the tools-kit works
 
