@@ -11,7 +11,7 @@ def calculateStructSizeFromNames(commandPayloadFields):
 
     return length 
 
-def generatePayloadFile(commandId, commandName, 
+def generatePayloadFile(commandName, 
                  commandPayloadFields, 
                  responsePayloadFields):
 

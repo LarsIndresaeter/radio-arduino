@@ -17,6 +17,6 @@ def add(commandId,
         responsePayloadFields):
 
     generateCommandFile(commandId, commandName, commandPayloadFields, responsePayloadFields)
-    generatePayloadFile(commandId, commandName, commandPayloadFields, responsePayloadFields)
-    generateDocumentationFile(commandId, commandName, commandPayloadFields, responsePayloadFields)
+    generatePayloadFile(commandName, commandPayloadFields, responsePayloadFields)
+    generateDocumentationFile(commandName, commandPayloadFields, responsePayloadFields)
 

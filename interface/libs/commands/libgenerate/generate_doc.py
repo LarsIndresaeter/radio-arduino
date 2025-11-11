@@ -21,7 +21,7 @@ def appendDocumentationReadme(commandName):
     with open(readmeFile, 'a') as outfile:
         outfile.write("- [" + snakecaseToCamelCase(commandName) + "](./" +commandName + ".md)\n")
 
-def generateDocumentationFile(commandId, commandName, 
+def generateDocumentationFile(commandName, 
                  commandPayloadFields, 
                  responsePayloadFields):
 
