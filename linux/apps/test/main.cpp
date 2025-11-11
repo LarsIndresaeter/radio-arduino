@@ -189,14 +189,14 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 
             std::cout << "PC --> uart, gateway --> node" << std::endl;
             std::cout << mon.getBytesSent() << " --> ";
-            std::cout << gatewayStats.responseStruct().getUart_rx() << ", ";
-            std::cout << gatewayStats.responseStruct().getRf_tx() << " --> ";
-            std::cout << nodeStats.responseStruct().getRf_rx() << std::endl;
+            std::cout << gatewayStats.responseStruct().getUartrx() << ", ";
+            std::cout << gatewayStats.responseStruct().getRadiotx() << " --> ";
+            std::cout << nodeStats.responseStruct().getRadiorx() << std::endl;
 
             std::cout << mon.getBytesReceived() << " <-- ";
-            std::cout << gatewayStats.responseStruct().getUart_tx() << ", ";
-            std::cout << gatewayStats.responseStruct().getRf_rx() << " <-- ";
-            std::cout << nodeStats.responseStruct().getRf_tx() << std::endl;
+            std::cout << gatewayStats.responseStruct().getUarttx() << ", ";
+            std::cout << gatewayStats.responseStruct().getRadiorx() << " <-- ";
+            std::cout << nodeStats.responseStruct().getRadiotx() << std::endl;
         } break;
         case 'b':
             std::cout << mon.get<>(RaduinoCommandGpio()).getJson() << std::endl;

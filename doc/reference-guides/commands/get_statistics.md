@@ -26,23 +26,23 @@
 
 - void setCommandsparsed[2](uint16_t value)
 - uint16_t getCommandsparsed()
-- void setUart_rx[4](uint32_t value)
-- uint32_t getUart_rx()
-- void setUart_tx[4](uint32_t value)
-- uint32_t getUart_tx()
-- void setRf_rx[4](uint32_t value)
-- uint32_t getRf_rx()
-- void setRf_tx[4](uint32_t value)
-- uint32_t getRf_tx()
+- void setUartrx[4](uint32_t value)
+- uint32_t getUartrx()
+- void setUarttx[4](uint32_t value)
+- uint32_t getUarttx()
+- void setRadiorx[4](uint32_t value)
+- uint32_t getRadiorx()
+- void setRadiotx[4](uint32_t value)
+- uint32_t getRadiotx()
 - void setRestarts[2](uint16_t value)
 - uint16_t getRestarts()
 
 ### variables in response struct
 
 - uint8_t[2] commandsParsed
-- uint8_t[4] uart_rx
-- uint8_t[4] uart_tx
-- uint8_t[4] rf_rx
-- uint8_t[4] rf_tx
+- uint8_t[4] uartRx
+- uint8_t[4] uartTx
+- uint8_t[4] radioRx
+- uint8_t[4] radioTx
 - uint8_t[2] restarts
 

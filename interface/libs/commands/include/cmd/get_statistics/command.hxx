@@ -17,10 +17,10 @@ public:
     {
         out << "GET_STATISTICS         : ";
         out << " commandsParsed=" << static_cast<int>(response.getCommandsparsed());
-        out << " uart_rx=" << static_cast<int>(response.getUart_rx());
-        out << " uart_tx=" << static_cast<int>(response.getUart_tx());
-        out << " rf_rx=" << static_cast<int>(response.getRf_rx());
-        out << " rf_tx=" << static_cast<int>(response.getRf_tx());
+        out << " uartRx=" << static_cast<int>(response.getUartrx());
+        out << " uartTx=" << static_cast<int>(response.getUarttx());
+        out << " radioRx=" << static_cast<int>(response.getRadiorx());
+        out << " radioTx=" << static_cast<int>(response.getRadiotx());
         out << " restarts=" << static_cast<int>(response.getRestarts());
     }
 
@@ -38,17 +38,17 @@ public:
         json.append("\"commandsParsed\":");
         json.append(std::to_string(responseStruct().getCommandsparsed()));
         json.append(", ");
-        json.append("\"uart_rx\":");
-        json.append(std::to_string(responseStruct().getUart_rx()));
+        json.append("\"uartRx\":");
+        json.append(std::to_string(responseStruct().getUartrx()));
         json.append(", ");
-        json.append("\"uart_tx\":");
-        json.append(std::to_string(responseStruct().getUart_tx()));
+        json.append("\"uartTx\":");
+        json.append(std::to_string(responseStruct().getUarttx()));
         json.append(", ");
-        json.append("\"rf_rx\":");
-        json.append(std::to_string(responseStruct().getRf_rx()));
+        json.append("\"radioRx\":");
+        json.append(std::to_string(responseStruct().getRadiorx()));
         json.append(", ");
-        json.append("\"rf_tx\":");
-        json.append(std::to_string(responseStruct().getRf_tx()));
+        json.append("\"radioTx\":");
+        json.append(std::to_string(responseStruct().getRadiotx()));
         json.append(", ");
         json.append("\"restarts\":");
         json.append(std::to_string(responseStruct().getRestarts()));

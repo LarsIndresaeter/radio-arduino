@@ -47,10 +47,10 @@ void commandGetStatistics(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::GET_STATISTICS::command_t command(commandPayload);
     COMMANDS::GET_STATISTICS::response_t response;
 
-    response.setUart_rx(UART::getUartRxBytes());
-    response.setUart_tx(UART::getUartTxBytes());
-    response.setRf_rx(NRF24L01_getRxBytes());
-    response.setRf_tx(NRF24L01_getTxBytes());
+    response.setUartrx(UART::getUartRxBytes());
+    response.setUarttx(UART::getUartTxBytes());
+    response.setRadiorx(NRF24L01_getRxBytes());
+    response.setRadiotx(NRF24L01_getTxBytes());
     response.setCommandsparsed(PARSER::getCommandsParsedCounter());
     response.setRestarts(EEPROM_DATA_STORE::getRestarts());
 
