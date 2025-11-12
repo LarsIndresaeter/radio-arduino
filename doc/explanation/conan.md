@@ -109,5 +109,5 @@ the file `arduino/conanfile.py` use the file `arduino/CMakeLists.txt` for settin
         cmake.build()
 ```
 
-This topic is rather large and will not be covered in detail in this documentation. Please refer to [docs.conan.io](https://docs.conan.io/en/1.46/index.html) for more information.
+This topic is rather large and will not be covered in detail in this documentation. Please refer to [docs.conan.io](https://docs.conan.io/en/1.57/index.html) for more information.
 
