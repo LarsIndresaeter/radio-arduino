@@ -32,7 +32,7 @@ raduino is simply the short version of the name radio-arduino. The name radio-ar
 
 > short catch and faster to type
 
-### where is the name used and what does it mean?
+### where is the name used and what does it mean
 
 | where           | meaning                                                                  |
 | --------------- | ------------------------------------------------------------------------ |
