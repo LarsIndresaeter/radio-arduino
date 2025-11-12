@@ -22,7 +22,7 @@ This repository is the result of several learning projects which has influenced 
 * [template meta programming](../../linux/libs/monitor/include/monitor.hpp)
 * custom [binary protocol](./interface/binary-protocol-interface.md) with support for encrypted payloads
 * OpenSSl 3.1
-* [Radio communication](../arduino/radio-communication.md) using the nrf24l01
+* [Radio communication](./arduino/radio-communication.md) using the nrf24l01
 * [mqtt](./linux/mqtt.md)
 * writing better documentation
 
