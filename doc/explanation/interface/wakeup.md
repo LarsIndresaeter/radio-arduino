@@ -1,11 +1,45 @@
 # wakeup 
 
+## wakup of a sleeping node using wakeup command
+
+The diagram below shows how the [radioSession](../../../linux/libs/radiosession/radioSession.cpp) class wake up a sleeping node.
+
+> Note that the node sends a discover message every 5 seconds so it is really waking itself up.
+
+```mermaid
+sequenceDiagram
+    participant a as apps
+    participant g as gateway
+    participant n as node
+    a->>+g: set_node_address command
+    g->>-a: set_node_address response
+    alt node is alive
+        a->>g: ping command
+        g->>+n: ping command packet
+        n-->>-g: ping response packet
+        g-->>a: ping response
+    else node is sleeping
+        a->>g: wakeup command
+        loop 5 seconds
+            n->>g: discover
+        end
+        g-->>a: wakeup response
+    end
+```
+
+## example
+
 Communication capture during wakeup of radio node with command `./bin/raduino-system-commands --device myserial -N 0 -P`.
 
+### commands
 - set_node_address, 0 (OK)
 - ping node (timeout)
 - wakeup (OK)
 - ping timeout (OK)
+
+### communication with gateway
+
+capture serial communication using [socat](../interface/how-to-monitor-serial-trafic-using-socat.md)
 
 ```console
 < 2025/11/11 22:39:25.000931462  length=11 from=0 to=10
