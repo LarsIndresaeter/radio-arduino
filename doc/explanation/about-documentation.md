@@ -1,4 +1,4 @@
-# naming conventions
+# about documentation
 
 ## inteded audience
 

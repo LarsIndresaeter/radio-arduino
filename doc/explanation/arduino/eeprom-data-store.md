@@ -1,6 +1,6 @@
 # eeprom data store
 
-The arduino eeprom library has a data store that has two data sections. The active section is the one with valid crc and the highest `dataVersion` value.
+The arduino [eeprom library](../../../arduino/libs/eeprom/eeprom.cpp) has a data store that has two data sections. The active section is the one with valid crc and the highest `dataVersion` value.
 
 ```cpp
 typedef struct eeprom_data {

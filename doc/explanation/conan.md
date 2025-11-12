@@ -4,7 +4,7 @@
 
 ### setup
 
-the command `raduino setup <target>` will setup the package for ediable mode
+the command `raduino setup <target>` will setup the package for editable mode
 
 ```console
 setup
@@ -19,7 +19,7 @@ If you wish to run the commands yourself then you need to reference the layout f
 
 ### build editable mode
 
-The command `raduino build <target>` will build the package configured for ediable mode
+The command `raduino build <target>` will build the package configured for editable mode
 
 ```console
 clean
@@ -58,7 +58,7 @@ conan create . lars/test
 
 or simply use the command `raduino conan interface`.
 
-this should result in a package in your conan commandTest.commandEepromReadHigh
+this should result in a package in your conan commandTest.
 
 ```console
 conan search raduino-api
@@ -109,5 +109,5 @@ the file `arduino/conanfile.py` use the file `arduino/CMakeLists.txt` for settin
         cmake.build()
 ```
 
-This topic is rather large and will not be covered in detail in this documentation. Please refer to docs.conan.io for more information.
+This topic is rather large and will not be covered in detail in this documentation. Please refer to [docs.conan.io](https://docs.conan.io/en/1.46/index.html) for more information.
 

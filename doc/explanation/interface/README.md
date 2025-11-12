@@ -1,7 +1,12 @@
 # interface
 
-the interface folder contains the definition of the binary protocol and the binary commands.
+the interface folder contains the definition of the binary protocol interface and the binary commands.
 
-The protocol has base classes for parsing byte streams and the specialization if done in a child class in the arduino or linux folders. The common part is in the header files that is packaged as a conan package with a cmake header library.
+- [binary protocol interface](./binary-protocol-interface.md) describe the protocol
+- [command generator](./protocol-command-generator.md) that generate command classes
+- [protocol encryption](./protocol-encryption.md) describe encryption of protocol payloads
 
-The commands are constructed from a base class specialized for each command type. The specializaions are generated from a python script.
+In addition some mechanisms are explained like
+
+- [wakup](./wakeup.md) of a sleeping radio node
+

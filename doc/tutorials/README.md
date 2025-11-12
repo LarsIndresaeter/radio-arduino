@@ -1,6 +1,10 @@
 # tutorials
 
+Lessons that take the reader by the hand through a series of steps to complete a project.
+
 ## getting started
+
+You can build or run the apps nativly or inside a docker container.
 
 ### using docker
 
@@ -8,13 +12,11 @@
 
 ### local build
 
-1. [install tools](./install-tools.md) needed to compile and flash the arduino
-2. [how to compile](./how-to-compile.md)) software using the toolkit in this repository
-3. [flash arduino](./flash-arduino.md) boards using command line tools
+1. [install tools](./install-tools.md) needed to compile and flash the arduino.
+2. [how to compile](./how-to-compile.md)) software using the toolkit in this repository.
+3. [flash arduino](./flash-arduino.md) boards using command line tools.
 
 ### using the linux apps
 
-1. [how to configure](./configure-device.md) a newly programmed board as gateway or node
-2. [how to publish data to a mqtt broker](./how-to-publish-data-to-mqtt-broker.md) using the application raduino-mqtt
-3. [how to control a RC servo](./servo.md) from a rf-nano board configured as gateway or node
-
+1. [how to configure](./configure-device.md) a newly programmed board as gateway or node.
+2. [list of apps](../reference-guides/apps/README.md) used to interact with the arduinos.
