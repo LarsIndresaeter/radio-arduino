@@ -9,7 +9,7 @@
 ## Features
 
 - Command line build [tools](./tools/) for [arduino](./arduino/) and [linux](./linux/) using conan and cmake.
-- Binary message protocol [interface](./interface/) for [serial](./doc/explanation/linux/linux-uart-monitor.md) and radio communication between.
+- Binary message protocol [interface](./interface/) for serial and radio communication between.
 - Same binary for gateway and node, role is configured in eeprom.
 - Command line tools for interacting with gateway and node, including mqtt client.
 
