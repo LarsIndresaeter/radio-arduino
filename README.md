@@ -9,8 +9,8 @@
 ## Features
 
 - Command line build [tools](./tools/) for [arduino](./arduino/) and [linux](./linux/) using conan and cmake.
-- Binary message protocol [interface](./interface/) for serial and radio communication between arduino and PC.
-- Same binary for gateway and node.
+- Binary message protocol [interface](./interface/) for serial and radio communication between.
+- Same binary for gateway and node, role is configured in eeprom.
 - Command line tools for interacting with gateway and node, including mqtt client.
 
 Read more in the [doc](./doc/README.md) folder.

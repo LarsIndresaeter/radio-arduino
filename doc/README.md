@@ -3,7 +3,7 @@
 Documentation is inspired by [divio](https://docs.divio.com/documentation-system/).
 
 > **A word of notice:**
-> I have written the code in this repository with the [motivation](./explanation/motivation-for-this-work.md) to learn, not to make a product.
+> I have written the code in this repository with the motivation to learn, not to make a product.
 
 ## [Tutorials ](./tutorials/README.md)
 
