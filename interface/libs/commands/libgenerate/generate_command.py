@@ -72,8 +72,8 @@ def generateCommandIdAppend(commandId, commandName):
 
 def generateCommandFile(commandId,
                         commandName,
-                        commandPayloadByteNames,
-                        responsePayloadByteNames):
+                        commandPayloadFields,
+                        responsePayloadFields):
     os.makedirs("include/cmd/" + commandName, exist_ok=True)
     # commandFile = "include/cmd/" + commandName + "/command.hxx"
     commandFile = f"include/cmd/{commandName}/command.hxx"
@@ -91,8 +91,8 @@ def generateCommandFile(commandId,
         outfile.write("public:\n")
         outfile.write("    RaduinoCommand" + snakecaseToCamelCase(commandName) + "(")
         # add parameters
-        items = len(commandPayloadByteNames)
-        for item in commandPayloadByteNames:
+        items = len(commandPayloadFields)
+        for item in commandPayloadFields:
             arraySize = arraySizeFromVariableName(item)
             if(arraySize == 1):
                 outfile.write("uint8_t " + item)
@@ -113,7 +113,7 @@ def generateCommandFile(commandId,
         outfile.write("    {\n")
         # initialize command
         outfile.write("        COMMANDS::" + commandName.upper() + "::command_t command;\n")
-        for item in commandPayloadByteNames:
+        for item in commandPayloadFields:
             arraySize = arraySizeFromVariableName(item)
             if(arraySize == 1):
                 outfile.write("\n")
@@ -146,8 +146,8 @@ def generateCommandFile(commandId,
             outfile.write("    // string constructor\n")
             outfile.write("    RaduinoCommand" + snakecaseToCamelCase(commandName) + "(")
             # add parameters
-            items = len(commandPayloadByteNames)
-            for item in commandPayloadByteNames:
+            items = len(commandPayloadFields)
+            for item in commandPayloadFields:
                 arraySize = arraySizeFromVariableName(item)
                 if(arraySize == 1):
                     outfile.write("uint8_t " + item)
@@ -168,7 +168,7 @@ def generateCommandFile(commandId,
             outfile.write("    {\n")
             # initialize command
             outfile.write("        COMMANDS::" + commandName.upper() + "::command_t command;\n")
-            for item in commandPayloadByteNames:
+            for item in commandPayloadFields:
                 arraySize = arraySizeFromVariableName(item)
                 if(arraySize == 1):
                     outfile.write("\n")
@@ -197,7 +197,7 @@ def generateCommandFile(commandId,
         outfile.write("    {\n")
         outfile.write("        out << \"" + commandName.upper().ljust(20) + "   : \";\n")
 
-        for item in responsePayloadByteNames:
+        for item in responsePayloadFields:
             arraySize = arraySizeFromVariableName(item)
             if(arraySize <= 4):
                 outfile.write("        out << \" " + arrayBasenameFromVariableName(item) + "=\" << " + "static_cast<int>(response.get" + arrayBasenameFromVariableName(item).capitalize() + "());\n");
@@ -223,7 +223,7 @@ def generateCommandFile(commandId,
         outfile.write("\n")
 
         # getters for arrays
-        for item in responsePayloadByteNames:
+        for item in responsePayloadFields:
             arraySize = arraySizeFromVariableName(item)
             if(arraySize > 4):
                 if(arrayBasenameFromVariableName(item).lower().find("string") > 0):
@@ -278,7 +278,7 @@ def generateCommandFile(commandId,
         outfile.write("        json.append(\", \");\n")
 
         index = 0
-        for item in responsePayloadByteNames:
+        for item in responsePayloadFields:
             index = index + 1
             arraySize = arraySizeFromVariableName(item)
             if(arraySize <= 4):
@@ -289,7 +289,7 @@ def generateCommandFile(commandId,
                 outfile.write("        json.append(get" + arrayBasenameFromVariableName(item).capitalize() + "());\n");
                 outfile.write("        json.append(\"\");\n")
 
-            if index < len(responsePayloadByteNames):
+            if index < len(responsePayloadFields):
                 outfile.write("        json.append(\", \");\n");
 
         outfile.write("        json.append(\"}\");\n");
