@@ -33,6 +33,9 @@ if [ -x "$(command -v docker)" ]; then
     elif [ "$1" == "dockerapp" ]
     then
         ./tools/scripts/dockerapp.sh "$2" "$3"
+    elif [ "$1" == "devbox" ]
+    then
+        docker run ${USER_STRING} -v ${REPO_BASE_DIR}/:/home/raduino/ -it $CONTAINER_NAME bash
     else
         docker run ${DEVICE_STRING} ${USER_STRING} -v ${REPO_BASE_DIR}/:/home/raduino/ $CONTAINER_NAME bash -c "tools/scripts/docker.sh $1 $2 $3 $4"
     fi
