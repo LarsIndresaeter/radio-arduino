@@ -21,6 +21,11 @@ then
     ${RADUINO_SCRIPTS_DIR}/dockerapp.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
 fi
 
+if [ "${PARAM}" == "devbox" ]
+then
+    ${RADUINO_SCRIPTS_DIR}/devbox.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
+fi
+
 if [ "${PARAM}" == "lint" ]
 then
     ${RADUINO_SCRIPTS_DIR}/lint.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
