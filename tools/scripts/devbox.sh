@@ -8,7 +8,7 @@ PARAM=$1
 if [ "${PARAM}" == "build" ]
 then
     echo "build docker image"
-    ./tools/docker/build_in_docker.sh dockerbuild
+    docker build -t $CONTAINER_NAME -f tools/docker/Dockerfile.build .
 elif [ "${PARAM}" == "clean" ]
 then
     echo "clean caches"
@@ -19,5 +19,8 @@ then
 elif [ "${PARAM}" == "run" ]
 then
     docker run ${USER_STRING} -v ${REPO_BASE_DIR}/:/home/raduino/ -it $CONTAINER_NAME bash
+else
+    echo "valid parameters: clean,build,run"
 fi
+
  

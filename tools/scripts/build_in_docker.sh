@@ -26,13 +26,7 @@ if [ -x "$(command -v docker)" ]; then
         echo "you must build the docker image: $0 dockerbuild"
     fi
 
-    # build image or build code
-    if [ "$1" == "dockerbuild" ]
-    then
-        docker build -t $CONTAINER_NAME -f tools/docker/Dockerfile.build .
-    else
-        docker run ${DEVICE_STRING} ${USER_STRING} -v ${REPO_BASE_DIR}/:/home/raduino/ $CONTAINER_NAME bash -c "tools/scripts/docker.sh $1 $2 $3 $4"
-    fi
+    docker run ${DEVICE_STRING} ${USER_STRING} -v ${REPO_BASE_DIR}/:/home/raduino/ $CONTAINER_NAME bash -c "tools/scripts/docker.sh $1 $2 $3 $4"
 else
     echo "you must install docker"
 fi

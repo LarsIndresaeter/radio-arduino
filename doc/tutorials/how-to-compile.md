@@ -19,7 +19,7 @@ Docker is useful for continouous integration or if you don't want to install con
 2. create image
 
 ```console
-./tools/docker/build_in_docker.sh dockerbuild
+./tools/scripts/build_in_docker.sh dockerbuild
 ```
 
 ### build using docker

@@ -5,12 +5,12 @@ RUN apt-get update && apt-get install -y gcc-avr binutils-avr avr-libc avrdude
 RUN apt-get update && apt-get install -y git vim bc
 RUN apt-get update && apt-get install -y python3 python3-pip
 
-RUN useradd -ms /bin/bash raduino
-USER raduino
-WORKDIR /home/raduino/
+RUN pip3 install conan==1.57
+RUN conan install gtest/1.8.1@ --build=gtest
 
 ENV CONAN_USER_HOME="/home/raduino/"
 ENV HOME="/home/raduino/"
 
-RUN pip3 install conan==1.57
-RUN conan install gtest/1.8.1@ --build=gtest
+RUN useradd -ms /bin/bash raduino
+USER raduino
+WORKDIR /home/raduino/
