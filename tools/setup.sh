@@ -22,7 +22,7 @@ else
 
     if [ "$1" == "docker" ]
     then
-        alias "${RADINO_CUSTOM_COMMAND}"="${RADINO_TOOLS_DIR}/scripts/build_in_docker.sh"
+        alias "${RADINO_CUSTOM_COMMAND}"="${RADINO_TOOLS_DIR}/scripts/run_in_docker.sh"
         echo "${RADINO_CUSTOM_COMMAND} command ready"
     elif [ "$1" == "local" ]
     then
