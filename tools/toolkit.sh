@@ -23,7 +23,7 @@ fi
 
 if [ "${PARAM}" == "devbox" ]
 then
-    ${RADUINO_SCRIPTS_DIR}/devbox.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
+    ${RADINO_TOOLS_DIR}/devbox.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
 fi
 
 if [ "${PARAM}" == "lint" ]

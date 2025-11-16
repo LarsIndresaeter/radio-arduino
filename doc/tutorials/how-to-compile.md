@@ -19,7 +19,7 @@ Docker is useful for continouous integration or if you don't want to install con
 2. create image
 
 ```console
-./tools/scripts/devbox.sh build
+./tools/devbox.sh build
 ```
 
 ### build using docker
