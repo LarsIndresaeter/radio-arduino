@@ -21,6 +21,11 @@ then
     ${RADUINO_SCRIPTS_DIR}/dockerapp.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
 fi
 
+if [ "${PARAM}" == "devbox" ]
+then
+    ${RADINO_TOOLS_DIR}/devbox.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
+fi
+
 if [ "${PARAM}" == "lint" ]
 then
     ${RADUINO_SCRIPTS_DIR}/lint.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
@@ -69,11 +74,6 @@ fi
 if [ "${PARAM}" == "clean" ]
 then
     ${RADUINO_SCRIPTS_DIR}/clean.sh $2
-fi
-
-if [ "${PARAM}" == "config" ]
-then
-    ${RADUINO_SCRIPTS_DIR}/config.sh
 fi
 
 if [ "${PARAM}" == "experiment" ]

@@ -3,3 +3,4 @@ build/
 .cache/
 .conan/
 .vscode/
+.bash_history
