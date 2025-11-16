@@ -1,5 +1,7 @@
 #!/bin/bash
 
+MY_USER_ID=$(id -u)
+MY_GROUP_ID=$(id -g)
 USER_STRING="--user ${MY_USER_ID}:${MY_GROUP_ID}"
 REPO_BASE_DIR=$(git rev-parse --show-toplevel)
 CONTAINER_NAME=radio-arduino-build
@@ -19,9 +21,8 @@ then
     docker rmi -f radio-arduino-build
 elif [ "${PARAM}" == "run" ]
 then
-    docker run ${USER_STRING} -v ${REPO_BASE_DIR}/:/home/raduino/ -it $CONTAINER_NAME /usr/bin/bash
+    docker run ${USER_STRING} -v ${REPO_BASE_DIR}/:/home/raduino/ -it $CONTAINER_NAME /usr/bin/bash -c 'source tools/setup.sh local'
 else
     echo "valid parameters: clean,build,run"
 fi
 
- 

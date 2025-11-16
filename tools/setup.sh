@@ -4,12 +4,19 @@ SCRIPT_PATH="${PWD}/tools/setup.sh"
 
 SOURCE_COMMAND=0
 
+# source command on linux
 if [ "$0" == "-bash" ]
 then
     SOURCE_COMMAND=1
 fi
 
+# source command in docker
 if [ "$0" == "bash" ]
+then
+    SOURCE_COMMAND=1
+fi
+
+if [ "$0" == "/usr/bin/bash" ]
 then
     SOURCE_COMMAND=1
 fi
