@@ -5,7 +5,7 @@ For local development you need to install conan.
 ## build using conan
 
 ```console
-source tools/setup.sh local
+source tools/setup.sh
 raduino all
 ```
 
@@ -24,8 +24,15 @@ Docker is useful for continouous integration or if you don't want to install con
 
 ### build using docker
 
+enter devbox container
+
 ```console
-source tools/setup.sh docker
+./tools/devbox.sh run
+```
+
+use the `raduino` toolkit to build
+
+```console
 raduino all
 ```
 

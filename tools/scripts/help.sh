@@ -1,7 +1,6 @@
 #!/bin/bash
 
 echo "${RADINO_CUSTOM_COMMAND} build menu"
-echo "    config"
 echo "    format <code>"
 echo "    lint <doc>"
 echo "    dockerapp <build,run> build or run a container with raduino apps"

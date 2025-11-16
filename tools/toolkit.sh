@@ -76,11 +76,6 @@ then
     ${RADUINO_SCRIPTS_DIR}/clean.sh $2
 fi
 
-if [ "${PARAM}" == "config" ]
-then
-    ${RADUINO_SCRIPTS_DIR}/config.sh
-fi
-
 if [ "${PARAM}" == "experiment" ]
 then
     ${RADINO_TOOLS_DIR}/experiment.sh

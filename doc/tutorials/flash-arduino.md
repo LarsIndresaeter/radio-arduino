@@ -31,7 +31,7 @@ sudo udevadm control --reload
 before you can use the provided `raduino` tool you must source the environment tool. This has to be done for each terminal window where you want to use the `raduino` tool.
 
 ```console
-source tools/setup.sh local
+source tools/setup.sh
 ```
 
 The command for flashing is `raduino flash <type> <device>`. Use the provided help menu to learn more. For example an arduino nano as a `gateway` can be programmed using this command.

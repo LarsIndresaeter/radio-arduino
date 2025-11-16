@@ -4,7 +4,7 @@ This repository has a tool named `raduino` which is a one-stop-tool for all you 
 
 ## source step
 
-To use the tool you must source it with the command `source tools/setup.sh local` or `source tools/setup.sh docker`. This is also how you choose to use Docker. The Docker version does currently not support flashing of devices.
+To use the tool you must source it with the command `source tools/setup.sh`.
 
 ## help menu
 
