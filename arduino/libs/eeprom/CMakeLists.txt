@@ -5,6 +5,6 @@ add_library(eepromlib
     command-handlers-eeprom.cpp
     )
 
-target_link_libraries(eepromlib protocol)
+target_link_libraries(eepromlib protocol parser)
 
 target_include_directories(eepromlib INTERFACE include)
