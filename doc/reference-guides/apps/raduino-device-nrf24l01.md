@@ -1,5 +1,9 @@
 # raduino-device-nrf24l01
 
+## description
+
+this app interact with the nrf24l01 chip on rf-nano.
+
 ## help menu
 
 ```console
@@ -17,8 +21,4 @@ raduino-device-nrf24l01
 - [nrf24l01_init](../commands/nrf24l01_init.md)
 - [nrf24l01_read](../commands/nrf24l01_read.md)
 - [nrf24l01_write](../commands/nrf24l01_write.md)
-
-## description 
-
-this app interact with the nrf24l01 chip on rf-nano.
 

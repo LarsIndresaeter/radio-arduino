@@ -1,5 +1,9 @@
 # raduino-device-ssd1306
 
+## description
+
+This app sends a string that is printed on a ssd1306 lcd display.
+
 ## help menu
 
 ```console
@@ -14,8 +18,4 @@ raduino-device-ws2812b
 ## commands used
 
 - [ssd1306](../commands/ssd1306.md)
-
-## description 
-
-This app sends a string that is printed on a ssd1306 lcd display.
 

@@ -1,5 +1,10 @@
 # raduino-node
 
+## description
+
+This app allows you to change the radio role from `node` to `gateway` or change
+the address of a `node`
+
 ## help menu
 
 ```console
@@ -17,9 +22,4 @@ raduino-node
 
 - [set_radio_role](../commands/set_radio_role.md)
 - [soft_reset](../commands/soft_reset.md)
-- []()
-
-## description 
-
-This app allows you to change the radio role from `node` to `gateway` or change the address of a `node`
 

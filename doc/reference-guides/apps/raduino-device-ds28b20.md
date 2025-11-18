@@ -1,5 +1,9 @@
 # raduino-device-ds28b20
 
+## description
+
+This app reads the temperature from a ds18b20 one-wire temperature sensor
+
 ## help menu
 
 ```console
@@ -14,8 +18,4 @@ raduino-device-ds28b20
 ## commands used
 
 - [ds18b20](../commands/ds18b20.md)
-
-## description 
-
-This app reads the temperature from a ds18b20 one-wire temperature sensor
 
