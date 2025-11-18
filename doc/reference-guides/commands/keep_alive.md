@@ -23,10 +23,11 @@
 - void setTime(uint8_t value)
 - uint8_t getTime()
 
-
 ### variables in command struct
 
 - uint8_t time
 
 ## struct response_t
+
 - empty response payload
+

@@ -21,7 +21,7 @@
 ### methods in command struct
 
 - void setDelay(uint32_t value)
-- uint32_t getDelay[4]()
+- uint32_t getDelay()
 
 ### variables in command struct
 
