@@ -23,7 +23,6 @@
 - void setAddress(uint16_t value)
 - uint32_t getAddress[2]()
 
-
 ### variables in command struct
 
 - uint8_t[2] address

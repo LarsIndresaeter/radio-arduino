@@ -28,7 +28,6 @@
 - void setLength(uint8_t value)
 - uint8_t getLength()
 
-
 ### variables in command struct
 
 - uint8_t device
@@ -37,4 +36,6 @@
 - uint8_t[16] data
 
 ## struct response_t
+
 - empty response payload
+
