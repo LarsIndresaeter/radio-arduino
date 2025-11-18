@@ -2,7 +2,7 @@
 
 > **user story:**
 > 
-> _As a hobbyist I want to connect a sensor to an arduino board, communicate with the arduino via a radio link and send the data to the cloud_
+> _As a hobbyist I want to connect a sensor to an arduino board, communicate with the arduino via a radio link and send data to the cloud_
 
 **Supported hardware:** [rf-nano](https://ardunic.com/product/RF-Nano-Board-NRF24L01-Wireless-Module)
 
