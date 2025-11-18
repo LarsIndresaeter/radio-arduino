@@ -22,9 +22,9 @@ public:
     void printResponse(std::ostream& out, COMMANDS::PWM::response_t response) const
     {
         out << "PWM                    : ";
-        out << " port=" << static_cast<int>(response.getPort());
-        out << " pin=" << static_cast<int>(response.getPin());
-        out << " value=" << static_cast<int>(response.getValue());
+        out << " port=" << static_cast<uint32_t>(response.getPort());
+        out << " pin=" << static_cast<uint32_t>(response.getPin());
+        out << " value=" << static_cast<uint32_t>(response.getValue());
     }
 
     std::string getCommandName() { return "pwm"; }

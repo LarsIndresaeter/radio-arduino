@@ -16,8 +16,8 @@ public:
     void printResponse(std::ostream& out, COMMANDS::INA219::response_t response) const
     {
         out << "INA219                 : ";
-        out << " current=" << static_cast<int>(response.getCurrent());
-        out << " voltage=" << static_cast<int>(response.getVoltage());
+        out << " current=" << static_cast<uint32_t>(response.getCurrent());
+        out << " voltage=" << static_cast<uint32_t>(response.getVoltage());
     }
 
     std::string getCommandName() { return "ina219"; }

@@ -200,7 +200,7 @@ def generateCommandFile(commandId,
         for item in responsePayloadFields:
             arraySize = arraySizeFromVariableName(item)
             if(arraySize <= 4):
-                outfile.write("        out << \" " + arrayBasenameFromVariableName(item) + "=\" << " + "static_cast<int>(response.get" + arrayBasenameFromVariableName(item).capitalize() + "());\n");
+                outfile.write("        out << \" " + arrayBasenameFromVariableName(item) + "=\" << " + "static_cast<uint32_t>(response.get" + arrayBasenameFromVariableName(item).capitalize() + "());\n");
             else:
                 if(arrayBasenameFromVariableName(item).lower().find("string") > 0):
                     outfile.write("        out << \" " + arrayBasenameFromVariableName(item) + "=\\\"\";\n")
@@ -215,7 +215,7 @@ def generateCommandFile(commandId,
                     outfile.write("        out << \" " + arrayBasenameFromVariableName(item) + "=[ \";\n")
                     outfile.write("        out << std::setfill('0') << std::hex << std::uppercase;\n")
                     outfile.write("        for (uint8_t i = 0; i < " + str(arraySize) + "; i++) {\n")
-                    outfile.write("            out << std::setw(2) << static_cast<int>(response." + arrayBasenameFromVariableName(item) + "[i]) << \" \";\n")
+                    outfile.write("            out << std::setw(2) << static_cast<uint32_t>(response." + arrayBasenameFromVariableName(item) + "[i]) << \" \";\n")
                     outfile.write("        }\n")
                     outfile.write("        out << \"]\";\n")
                     outfile.write("        out << std::dec;\n")
@@ -252,7 +252,7 @@ def generateCommandFile(commandId,
                     outfile.write("        retval.append(\"[\");\n")
                     outfile.write("        for (uint8_t i = 0; i < " + str(arraySize) + "; i++) {\n")
                     outfile.write("            retval.append(\" \\\"\");\n")
-                    outfile.write("            retval.append(std::to_string(static_cast<int>(response." + arrayBasenameFromVariableName(item) + "[i])));\n")
+                    outfile.write("            retval.append(std::to_string(static_cast<uint32_t>(response." + arrayBasenameFromVariableName(item) + "[i])));\n")
                     outfile.write("            if (i < (" + str(arraySize) + " - 1)) {\n")
                     outfile.write("                retval.append(\"\\\",\");\n")
                     outfile.write("            }\n")

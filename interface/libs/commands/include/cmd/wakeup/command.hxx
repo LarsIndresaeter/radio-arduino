@@ -18,7 +18,7 @@ public:
     void printResponse(std::ostream& out, COMMANDS::WAKEUP::response_t response) const
     {
         out << "WAKEUP                 : ";
-        out << " discovered=" << static_cast<int>(response.getDiscovered());
+        out << " discovered=" << static_cast<uint32_t>(response.getDiscovered());
     }
 
     std::string getCommandName() { return "wakeup"; }

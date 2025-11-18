@@ -16,7 +16,7 @@ public:
     void printResponse(std::ostream& out, COMMANDS::VCC::response_t response) const
     {
         out << "VCC                    : ";
-        out << " vcc=" << static_cast<int>(response.getVcc());
+        out << " vcc=" << static_cast<uint32_t>(response.getVcc());
     }
 
     std::string getCommandName() { return "vcc"; }

@@ -16,12 +16,12 @@ public:
     void printResponse(std::ostream& out, COMMANDS::GET_STATISTICS::response_t response) const
     {
         out << "GET_STATISTICS         : ";
-        out << " commandsParsed=" << static_cast<int>(response.getCommandsparsed());
-        out << " uartRx=" << static_cast<int>(response.getUartrx());
-        out << " uartTx=" << static_cast<int>(response.getUarttx());
-        out << " radioRx=" << static_cast<int>(response.getRadiorx());
-        out << " radioTx=" << static_cast<int>(response.getRadiotx());
-        out << " restarts=" << static_cast<int>(response.getRestarts());
+        out << " commandsParsed=" << static_cast<uint32_t>(response.getCommandsparsed());
+        out << " uartRx=" << static_cast<uint32_t>(response.getUartrx());
+        out << " uartTx=" << static_cast<uint32_t>(response.getUarttx());
+        out << " radioRx=" << static_cast<uint32_t>(response.getRadiorx());
+        out << " radioTx=" << static_cast<uint32_t>(response.getRadiotx());
+        out << " restarts=" << static_cast<uint32_t>(response.getRestarts());
     }
 
     std::string getCommandName() { return "get_statistics"; }

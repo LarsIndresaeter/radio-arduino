@@ -16,9 +16,9 @@ public:
     void printResponse(std::ostream& out, COMMANDS::GPIO::response_t response) const
     {
         out << "GPIO                   : ";
-        out << " portB=" << static_cast<int>(response.getPortb());
-        out << " portC=" << static_cast<int>(response.getPortc());
-        out << " portD=" << static_cast<int>(response.getPortd());
+        out << " portB=" << static_cast<uint32_t>(response.getPortb());
+        out << " portC=" << static_cast<uint32_t>(response.getPortc());
+        out << " portD=" << static_cast<uint32_t>(response.getPortd());
     }
 
     std::string getCommandName() { return "gpio"; }

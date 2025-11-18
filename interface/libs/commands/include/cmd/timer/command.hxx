@@ -16,7 +16,7 @@ public:
     void printResponse(std::ostream& out, COMMANDS::TIMER::response_t response) const
     {
         out << "TIMER                  : ";
-        out << " pulseWidth=" << static_cast<int>(response.getPulsewidth());
+        out << " pulseWidth=" << static_cast<uint32_t>(response.getPulsewidth());
     }
 
     std::string getCommandName() { return "timer"; }

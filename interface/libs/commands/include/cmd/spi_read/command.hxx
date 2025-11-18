@@ -20,12 +20,12 @@ public:
     void printResponse(std::ostream& out, COMMANDS::SPI_READ::response_t response) const
     {
         out << "SPI_READ               : ";
-        out << " reg=" << static_cast<int>(response.getReg());
-        out << " length=" << static_cast<int>(response.getLength());
+        out << " reg=" << static_cast<uint32_t>(response.getReg());
+        out << " length=" << static_cast<uint32_t>(response.getLength());
         out << " data=[ ";
         out << std::setfill('0') << std::hex << std::uppercase;
         for (uint8_t i = 0; i < 32; i++) {
-            out << std::setw(2) << static_cast<int>(response.data[i]) << " ";
+            out << std::setw(2) << static_cast<uint32_t>(response.data[i]) << " ";
         }
         out << "]";
         out << std::dec;
@@ -39,7 +39,7 @@ public:
         retval.append("[");
         for (uint8_t i = 0; i < 32; i++) {
             retval.append(" \"");
-            retval.append(std::to_string(static_cast<int>(response.data[i])));
+            retval.append(std::to_string(static_cast<uint32_t>(response.data[i])));
             if (i < (32 - 1)) {
                 retval.append("\",");
             }
