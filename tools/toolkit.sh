@@ -46,11 +46,6 @@ then
     ${RADUINO_SCRIPTS_DIR}/tool.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
 fi
 
-if [ "${PARAM}" == "devices" ]
-then
-    ${RADUINO_SCRIPTS_DIR}/devices.sh "${2}" "${3}" "${4}"
-fi
-
 if [ "${PARAM}" == "mqtt" ]
 then
     ${RADUINO_SCRIPTS_DIR}/mqtt.sh $2 "${3}"
@@ -76,19 +71,9 @@ then
     ${RADUINO_SCRIPTS_DIR}/clean.sh $2
 fi
 
-if [ "${PARAM}" == "experiment" ]
-then
-    ${RADINO_TOOLS_DIR}/experiment.sh
-fi
-
 if [ "${PARAM}" == "help" ]
 then
     ${RADUINO_SCRIPTS_DIR}/help.sh
-fi
-
-if [ "${PARAM}" == "test" ]
-then
-    ${RADUINO_SCRIPTS_DIR}/test.sh
 fi
 
 if [ "${PARAM}" == "conan" ]
@@ -112,3 +97,4 @@ then
     echo ""
     ${RADUINO_SCRIPTS_DIR}/help.sh
 fi
+
