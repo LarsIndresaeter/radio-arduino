@@ -8,7 +8,22 @@ You can build or run the apps nativly or inside a docker container.
 
 ### using docker
 
-1. [docker app](./docker-app.md) is the fastest and easiest way to try this sofware. Almost no installation required.
+1. [docker app](./docker-app.md) is the fastest and easiest way to try this
+sofware. Almost no installation required.
+
+#### devbox
+
+You can use docker for compling
+
+```console
+cd radio-arduino/
+./tools/devbox.sh build
+./tools/devbox.sh run
+```
+
+you will no enter a docker container with all the tools needed. This has been
+tested to work on an x86 PC and [Raspberry Pi](../how-to-guides/develop-on-raspberry-pi.md).
+There are currently [some issues on mac](../how-to-guides/develop-on-mac.md).
 
 ### native build
 
@@ -18,5 +33,7 @@ You can build or run the apps nativly or inside a docker container.
 
 ### using the linux apps
 
-1. [how to configure](./configure-device.md) a newly programmed board as gateway or node.
+1. [how to configure](./configure-device.md) a newly programmed board as gateway
+   or node.
 2. [list of apps](../reference-guides/apps/README.md) used to interact with the arduinos.
+

@@ -27,7 +27,6 @@
 - void setValue(uint8_t value)
 - uint8_t getValue()
 
-
 ### variables in command struct
 
 - uint8_t port

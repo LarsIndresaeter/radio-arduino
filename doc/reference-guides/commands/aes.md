@@ -25,7 +25,6 @@
 - void setType(uint8_t value)
 - uint8_t getType()
 
-
 ### variables in command struct
 
 - uint8_t type

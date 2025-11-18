@@ -1,10 +1,12 @@
-# wakeup 
+# wakeup
 
 ## wakup of a sleeping node using wakeup command
 
-The diagram below shows how the [radioSession](../../../linux/libs/radiosession/radioSession.cpp) class wake up a sleeping node.
+The diagram below shows how the [radioSession](../../../linux/libs/radiosession/radioSession.cpp)
+class wake up a sleeping node.
 
-> Note that the node sends a discover message every 5 seconds so it is really waking itself up.
+> Note that the node sends a discover message every 5 seconds so it is really
+waking itself up.
 
 ```mermaid
 sequenceDiagram
@@ -29,7 +31,8 @@ sequenceDiagram
 
 ## example
 
-Communication capture during wakeup of radio node with command `./bin/raduino-system-commands --device myserial -N 0 -P`.
+Communication capture during wakeup of radio node with command
+`./bin/raduino-system-commands --device myserial -N 0 -P`.
 
 ### commands
 - set_node_address, 0 (OK)
@@ -39,7 +42,7 @@ Communication capture during wakeup of radio node with command `./bin/raduino-sy
 
 ### communication with gateway
 
-capture serial communication using [socat](../interface/how-to-monitor-serial-trafic-using-socat.md)
+capture serial communication using [socat](../../how-to-guides/how-to-monitor-serial-trafic-using-socat.md)
 
 ```console
 < 2025/11/11 22:39:25.000931462  length=11 from=0 to=10

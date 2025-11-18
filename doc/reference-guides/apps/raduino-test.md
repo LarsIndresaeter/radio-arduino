@@ -1,5 +1,10 @@
 # raduino-test
 
+## description
+
+This app is used for testing the if commands return the expected result or just
+printing the result.
+
 ## help menu
 
 ```console
@@ -36,8 +41,4 @@ raduino-test
 - [get_device_name](../commands/get_device_name.md)
 - [vcc](../commands/vcc.md)
 - [ping](../commands/ping.md)
-
-## description 
-
-This app is used for testing the if commands return the expected result or just printing the result.
 

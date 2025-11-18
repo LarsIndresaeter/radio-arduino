@@ -24,11 +24,12 @@
 - void setKeyid(uint8_t value)
 - uint8_t getKeyid()
 
-
 ### variables in command struct
 
 - uint8_t keyId
 - uint8_t[16] keyValue
 
 ## struct response_t
+
 - empty response payload
+

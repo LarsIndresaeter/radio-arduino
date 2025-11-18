@@ -1,8 +1,12 @@
 # linux uart monitor
 
-The [monitor](../libs/monitor/monitor.cpp) and [uart](../linux/libs/uart/uart.cpp) are responsible for asyncronous sending and receiving of data over the serial port. The [epollevent](../linux/libs/epollevent/epollevent.cpp) is responsible for calling the correct callback when data has been received in the readerThread.
+The [monitor](../../../linux/libs/monitor/monitor.cpp) and [uart](../../../linux/libs/uart/uart.cpp)
+are responsible for asyncronous sending and receiving of data over the serial
+port. The [epollevent](../../../linux/libs/epollevent/epollevent.cpp) is responsible
+for calling the correct callback when data has been received in the readerThread.
 
-> how `mon.getRadio<>(RaduinoCommandPing())` is able to return an object of class `RaduinoCommandPing` even if there is no reponse.
+> how `mon.getRadio<>(RaduinoCommandPing())` is able to return an object of
+class `RaduinoCommandPing` even if there is no reponse.
 
 1. monitor is initialized with a protocol handler
 1. monitor.get<> is called from application with a command object
@@ -16,8 +20,10 @@ The [monitor](../libs/monitor/monitor.cpp) and [uart](../linux/libs/uart/uart.cp
 1. serial port read cause an epollevent in Linux which notifies the event thread
 1. the event thread reads data from uart
 1. the event thread sends data to the monitor class in the event thread
-1. when enough data is received in the event thread or a timeout has occured the caller thread is called
-1. the monitor will either return a valid response object or an empty response object of the same type as the command object
+1. when enough data is received in the event thread or a timeout has occured the
+   caller thread is called
+1. the monitor will either return a valid response object or an empty response
+   object of the same type as the command object
 
 
 ```mermaid

@@ -1,5 +1,10 @@
 # raduino-system-commands
 
+## description
+
+This app lets you do system specific tasks, ie. tasks that are not interacting
+with any chip.
+
 ## help menu
 
 ```console
@@ -47,8 +52,4 @@ raduino-system-commands
 - [require_transport_encryption](../commands/require_transport_encryption.md)
 - [unlock_session](../commands/unlock_session.md)
 - [get_statistics](../commands/get_statistics.md)
-
-## description 
-
-This app lets you do system specific tasks, ie. tasks that are not interacting with any chip.
 

@@ -25,7 +25,6 @@
 - void setData(uint8_t value)
 - uint8_t getData()
 
-
 ### variables in command struct
 
 - uint8_t[2] address

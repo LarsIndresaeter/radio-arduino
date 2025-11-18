@@ -25,7 +25,6 @@
 
 ### methods in response struct
 
-
 ### variables in response struct
 
 - uint8_t[32] data

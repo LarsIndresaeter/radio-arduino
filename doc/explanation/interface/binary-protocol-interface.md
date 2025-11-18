@@ -1,5 +1,5 @@
 # binary protocol interface
-   
+
 ## packet
 
 ```mermaid
@@ -32,6 +32,7 @@ packet
 192-223: "outer checksum (encrypted)"
 224-255: "crc"
 ```
+
 byte 4-14 (first 16 byte, ie. 128 bit) is the IV for the CBC-CTS encryption algorithm.
 
 ## packet payload (command)
@@ -49,7 +50,10 @@ packet
 
 ## protocol defines
 
-The protocol defined in the file `interface/libs/protocol/include/protocolBase.hpp` is used by the arduino code and the linux code. This and other header files are part of the `raduino-interface` header only conan package.
+The protocol defined in the file
+`interface/libs/protocol/include/protocolBase.hpp` is used by the arduino code
+and the linux code. This and other header files are part of the
+`raduino-interface` header only conan package.
 
 `constexpr` is used to define constants organized in C++ namespace.
 
@@ -65,7 +69,9 @@ if (index == 1) {
 
 ## cryptoHandlerInterface
 
-The file `interface/libs/protocol/include/cryptoHandlerInterface.hpp` define the interface for the cryptoHandlerInterface. The implementation is done in the arduino and linux source folders.
+The file `interface/libs/protocol/include/cryptoHandlerInterface.hpp` define
+the interface for the cryptoHandlerInterface. The implementation is done in the
+arduino and linux source folders.
 
 ## example command
 
@@ -104,7 +110,8 @@ binary: 06 03 00 02 03
 
 example using the ping command `./bin/raduino-gateway -Vp`
 
-This is a command with no command payload and thus the size of the protocol packet is the minimum size of 10 bytes.
+This is a command with no command payload and thus the size of the protocol
+packet is the minimum size of 10 bytes.
 
 ```console
 w: FE ED 01 02 21 00 F2 BA F7 FA 
@@ -121,7 +128,8 @@ Checksum: F2 BA F7 FA
 
 ## example of encrypted command
 
-ping command without encryption. If you have studied the matrix long enough you can see a pattern.
+ping command without encryption. If you have studied the matrix long enough you
+can see a pattern.
 
 ```console
 lars@lionfish:~/priv/radio-arduino$ ./bin/raduino-gateway -Vp
@@ -141,7 +149,8 @@ r: FE ED 02 16 F9 9C 96 90 54 4B 96 15 90 96 BB C8 6C F9 E4 4B 58 62 DB C0 0A 92
 
 ### Performance on AVR
 
-* Response time increased from 2.882 ms to 58.102 ms. The added time of 45.220 ms is mostly due to the 4 AES block operations which take around 11.3 ms each.
+- Response time increased from 2.882 ms to 58.102 ms. The added time of 45.220ms
+is mostly due to the 4 AES block operations which take around 11.3 ms each.
 
 be gentle with me. I am not a crypto expert.
 

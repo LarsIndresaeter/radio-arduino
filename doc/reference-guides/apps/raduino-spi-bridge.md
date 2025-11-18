@@ -1,5 +1,10 @@
 # raduino-spi-bridge
 
+## description
+
+This app is used for writing to and reading from spi registers. This is useful
+for debugging or testing a new device connected to the spi bus.
+
 ## help menu
 
 ```console
@@ -17,8 +22,4 @@ raduino-spi-bridge
 
 - [spi_read](../commands/spi_read.md)
 - [spi_write](../commands/spi_write.md)
-
-## description 
-
-This app is used for writing to and reading from spi registers. This is useful for debugging or testing a new device connected to the spi bus.
 

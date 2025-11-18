@@ -1,5 +1,9 @@
 # raduino-device-ina219
 
+## description
+
+This app reads voltage and current from a ina219 power monitor chips.
+
 ## help menu
 
 ```console
@@ -15,8 +19,4 @@ raduino-device-ina219
 ## commands used
 
 - [ina219](../commands/ina219.md)
-
-## description 
-
-This app reads voltage and current from a ina219 power monitor chips.
 

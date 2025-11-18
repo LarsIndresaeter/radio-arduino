@@ -21,11 +21,11 @@
 
 ### methods in command struct
 
-
-
 ### variables in command struct
 
 - uint8_t[16] name
 
 ## struct response_t
+
 - empty response payload
+

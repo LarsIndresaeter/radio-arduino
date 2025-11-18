@@ -1,6 +1,6 @@
 # command handler
 
-* how a typical command handler on the arduino is implemented
+- how a typical command handler on the arduino is implemented
 
 ```cpp
 void commandBlink(uint8_t* commandPayload, uint8_t* responsePayload)
@@ -14,11 +14,15 @@ void commandBlink(uint8_t* commandPayload, uint8_t* responsePayload)
 }
 ```
 
-A typical command handler starts by defining the command struct and initializing it from they command payload read by the protocol handler and an empty resonse struct.
+A typical command handler starts by defining the command struct and initializing
+it from they command payload read by the protocol handler and an empty resonse struct.
 
-The middle of the command handler reads from the command struct and writes to the response struct.
+The middle of the command handler reads from the command struct and writes to
+the response struct.
 
-The final part of the command handler serializes the response struct and write to the response payload pointer.
+The final part of the command handler serializes the response struct and write
+to the response payload pointer.
 
-both the start and the end of the command handler is boilerplate code while the middle part is where the magic happends.
+both the start and the end of the command handler is boilerplate code while the
+middle part is where the magic happends.
 

@@ -22,8 +22,6 @@
 
 ### methods in command struct
 
-
-
 ### variables in command struct
 
 - uint8_t[20] data
@@ -31,7 +29,6 @@
 ## struct response_t
 
 ### methods in response struct
-
 
 ### variables in response struct
 

@@ -15,11 +15,13 @@ setup
          help : print this menu
 ```
 
-If you wish to run the commands yourself then you need to reference the layout files located in `tools/conan/layouts/`
+If you wish to run the commands yourself then you need to reference the layout
+files located in `tools/conan/layouts/`
 
 ### build editable mode
 
-The command `raduino build <target>` will build the package configured for editable mode
+The command `raduino build <target>` will build the package configured for
+editable mode
 
 ```console
 clean
@@ -32,7 +34,9 @@ clean
 
 ## build packages using raduino command
 
-The command `raduino conan` can be used to build single packages or all packages. For example `raduino conan interface` will build the `raduino-api` package.
+The command `raduino conan` can be used to build single packages or all
+packages. For example `raduino conan interface` will build the `raduino-api`
+package.
 
 ```console
 conan_package
@@ -45,7 +49,8 @@ conan_package
 
 ### setup and build in one step
 
-the command `raduino all` will run the commands `raduino setup all` and `raduino build all`. This is the command you will use the most often during development.
+the command `raduino all` will run the commands `raduino setup all` and
+`raduino build all`. This is the command you will use the most often during development.
 
 ## build using conan command
 
@@ -99,7 +104,8 @@ raduino-gateway/0.4.0.4+206cf7e-dirty@lars/test
 
 ## calling cmake from conan
 
-the file `arduino/conanfile.py` use the file `arduino/CMakeLists.txt` for setting up the build using the toolchain defined in the profile `tools/conan/profile/gcc-avr`.
+the file `arduino/conanfile.py` use the file `arduino/CMakeLists.txt` for
+setting up the build using the toolchain defined in the profile `tools/conan/profile/gcc-avr`.
 
 ```python
     def build(self):
@@ -109,5 +115,7 @@ the file `arduino/conanfile.py` use the file `arduino/CMakeLists.txt` for settin
         cmake.build()
 ```
 
-This topic is rather large and will not be covered in detail in this documentation. Please refer to [docs.conan.io](https://docs.conan.io/en/1.57/index.html) for more information.
+This topic is rather large and will not be covered in detail in this
+documentation. Please refer to [docs.conan.io](https://docs.conan.io/en/1.57/index.html)
+for more information.
 
