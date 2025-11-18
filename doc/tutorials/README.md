@@ -10,6 +10,18 @@ You can build or run the apps nativly or inside a docker container.
 
 1. [docker app](./docker-app.md) is the fastest and easiest way to try this sofware. Almost no installation required.
 
+#### devbox
+
+You can use docker for compling
+
+```console
+cd radio-arduino/
+./tools/devbox.sh build
+./tools/devbox.sh run
+```
+
+you will no enter a docker container with all the tools needed. This has been tested to work on an x86 PC and [Raspberry Pi](../how-to-guides/develop-on-raspberry-pi.md). There are currently [some issues on mac](../how-to-guides/develop-on-mac.md).
+
 ### native build
 
 1. [install tools](./install-tools.md) needed to compile and flash the arduino.
