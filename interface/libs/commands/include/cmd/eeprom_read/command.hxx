@@ -19,8 +19,8 @@ public:
     void printResponse(std::ostream& out, COMMANDS::EEPROM_READ::response_t response) const
     {
         out << "EEPROM_READ            : ";
-        out << " address=" << static_cast<int>(response.getAddress());
-        out << " data=" << static_cast<int>(response.getData());
+        out << " address=" << static_cast<uint32_t>(response.getAddress());
+        out << " data=" << static_cast<uint32_t>(response.getData());
     }
 
     std::string getCommandName() { return "eeprom_read"; }

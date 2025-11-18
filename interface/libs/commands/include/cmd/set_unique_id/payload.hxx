@@ -34,13 +34,13 @@ namespace SET_UNIQUE_ID {
 
         uint32_t getId()
         {
-            return (((uint32_t)id[2]) << 16 | ((uint32_t)id[2]) << 16 | ((uint32_t)id[1]) << 8 | id[0]);
+            return (((uint32_t)id[3]) << 24 | ((uint32_t)id[2]) << 16 | ((uint32_t)id[1]) << 8 | id[0]);
         }
 
         void setId(uint32_t val)
         {
             id[3] = (uint8_t)(val >> 24);
-            id[2] = (uint8_t)(val >> 15);
+            id[2] = (uint8_t)(val >> 16);
             id[1] = (uint8_t)(val >> 8);
             id[0] = (uint8_t)val;
         }

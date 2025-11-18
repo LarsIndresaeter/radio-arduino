@@ -16,7 +16,7 @@ public:
     void printResponse(std::ostream& out, COMMANDS::DS18B20::response_t response) const
     {
         out << "DS18B20                : ";
-        out << " temperature=" << static_cast<int>(response.getTemperature());
+        out << " temperature=" << static_cast<uint32_t>(response.getTemperature());
     }
 
     std::string getCommandName() { return "ds18b20"; }

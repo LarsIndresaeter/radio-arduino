@@ -16,7 +16,7 @@ void print_usage()
     std::cout << "       -n <name> : set device name" << std::endl;
     std::cout << "        -t <key> : set transport encryption key" << std::endl;
     std::cout << "        -e <key> : set data encryption key" << std::endl;
-    std::cout << "         -i <id> : set unique id" << std::endl;
+    std::cout << "         -i <id> : set unique id. defaults to unix timestamp" << std::endl;
     std::cout << "              -d : dump eeprom contents" << std::endl;
     std::cout << "       -r <role> : set radio role <gateway|node>" << std::endl;
     std::cout << "       -s <flag> : set requireTransportEncyption flag <0|1>" << std::endl;
@@ -98,7 +98,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     bool dump_eeprom = false;
     bool name_option_present = false;
     uint8_t radioAddress = 0;
-    uint32_t uniqueId = 0;
+    uint32_t uniqueId = (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count()) / 1000;
 
     while ((option = getopt(argc, argv, "K:n:t:e:i:r:ds:h")) != -1) {
         switch (option) {

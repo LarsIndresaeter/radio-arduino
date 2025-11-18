@@ -43,7 +43,7 @@ public:
         out << " data=[ ";
         out << std::setfill('0') << std::hex << std::uppercase;
         for (uint8_t i = 0; i < 20; i++) {
-            out << std::setw(2) << static_cast<int>(response.data[i]) << " ";
+            out << std::setw(2) << static_cast<uint32_t>(response.data[i]) << " ";
         }
         out << "]";
         out << std::dec;
@@ -57,7 +57,7 @@ public:
         retval.append("[");
         for (uint8_t i = 0; i < 20; i++) {
             retval.append(" \"");
-            retval.append(std::to_string(static_cast<int>(response.data[i])));
+            retval.append(std::to_string(static_cast<uint32_t>(response.data[i])));
             if (i < (20 - 1)) {
                 retval.append("\",");
             }

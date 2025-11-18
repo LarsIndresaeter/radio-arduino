@@ -16,7 +16,7 @@ public:
     void printResponse(std::ostream& out, COMMANDS::GET_UNIQUE_ID::response_t response) const
     {
         out << "GET_UNIQUE_ID          : ";
-        out << " id=" << static_cast<int>(response.getId());
+        out << " id=" << static_cast<uint32_t>(response.getId());
     }
 
     std::string getCommandName() { return "get_unique_id"; }

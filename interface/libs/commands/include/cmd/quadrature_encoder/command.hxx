@@ -16,10 +16,10 @@ public:
     void printResponse(std::ostream& out, COMMANDS::QUADRATURE_ENCODER::response_t response) const
     {
         out << "QUADRATURE_ENCODER     : ";
-        out << " countnegative=" << static_cast<int>(response.getCountnegative());
-        out << " countpositive=" << static_cast<int>(response.getCountpositive());
-        out << " switchposition=" << static_cast<int>(response.getSwitchposition());
-        out << " switchcount=" << static_cast<int>(response.getSwitchcount());
+        out << " countnegative=" << static_cast<uint32_t>(response.getCountnegative());
+        out << " countpositive=" << static_cast<uint32_t>(response.getCountpositive());
+        out << " switchposition=" << static_cast<uint32_t>(response.getSwitchposition());
+        out << " switchcount=" << static_cast<uint32_t>(response.getSwitchcount());
     }
 
     std::string getCommandName() { return "quadrature_encoder"; }
