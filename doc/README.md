@@ -5,7 +5,7 @@ Documentation is inspired by [divio](https://docs.divio.com/documentation-system
 > **A word of notice:**
 > I have written the code in this repository with the motivation to learn, not to make a product.
 
-## [Tutorials ](./tutorials/README.md)
+## [Tutorials](./tutorials/README.md)
 
 Lessons that take the reader by the hand through a series of steps to complete a project. For example:
 
