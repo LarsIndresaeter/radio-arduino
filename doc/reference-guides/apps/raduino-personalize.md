@@ -12,7 +12,7 @@ raduino-personalize
        -n <name> : set device name
         -t <key> : set transport encryption key
         -e <key> : set data encryption key
-         -i <id> : set unique id
+         -i <id> : set unique id. defaults to unix timestamp
               -d : dump eeprom contents
        -r <role> : set radio role <gateway|node>
        -s <flag> : set requireTransportEncyption flag <0|1>
