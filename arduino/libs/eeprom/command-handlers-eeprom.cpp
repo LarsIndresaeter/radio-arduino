@@ -1,6 +1,7 @@
 #include <cmd/payloads.hxx>
 #include <command-handlers-eeprom.hpp>
 #include <eeprom.hpp>
+#include <parser.hpp>
 
 namespace EEPROM {
 
@@ -29,8 +30,10 @@ void commandEepromRead(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::EEPROM_READ::command_t command(commandPayload);
     COMMANDS::EEPROM_READ::response_t response;
 
-    response.setAddress(command.getAddress());
-    response.setData(EEPROM::read(command.getAddress()));
+    if (PARSER::lastReceivedCommandWasEncrypted()) {
+        response.setAddress(command.getAddress());
+        response.setData(EEPROM::read(command.getAddress()));
+    }
 
     response.serialize(responsePayload);
 }
@@ -40,10 +43,12 @@ void commandEepromWrite(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::EEPROM_WRITE::command_t command(commandPayload);
     COMMANDS::EEPROM_WRITE::response_t response;
 
-    EEPROM::write(command.getAddress(), command.data);
+    if (PARSER::lastReceivedCommandWasEncrypted()) {
+        EEPROM::write(command.getAddress(), command.data);
 
-    response.setAddress(command.getAddress());
-    response.setData(EEPROM::read(command.getAddress()));
+        response.setAddress(command.getAddress());
+        response.setData(EEPROM::read(command.getAddress()));
+    }
 
     response.serialize(responsePayload);
 }

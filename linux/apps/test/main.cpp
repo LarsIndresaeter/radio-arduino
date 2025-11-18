@@ -73,6 +73,8 @@ void print_usage()
     std::cout << "                 -g : dump eeprom from mega328p" << std::endl;
     std::cout << "                 -b : test json formatter" << std::endl;
     std::cout << "                 -S : rx and tx statistics for node and gateway" << std::endl;
+    std::cout << "                 -t : transport encryption off" << std::endl;
+    std::cout << "                 -T : transport encryption on" << std::endl;
     std::cout << "                 -V : Verbose on" << std::endl;
     std::cout << "                 -v : Verbose off" << std::endl;
     std::cout << "                 -h : print this text" << std::endl;
@@ -96,7 +98,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t radioAddress = 0;
     bool verbose = false;
 
-    while ((option = getopt(argc, argv, "K:N:vVACeI:gbSsh")) != -1) {
+    while ((option = getopt(argc, argv, "K:N:vVACeI:gbSshT:t")) != -1) {
         switch (option) {
         case 'K': {
             std::string s(optarg);
@@ -219,7 +221,23 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             compareResult(0x02, result.responseStruct().data[1]);
             compareResult(0xcf, result.responseStruct().data[2]);
         } break;
+        case 't':
+            mon.setTransportEncryption(false);
+            break;
+        case 'T': {
+            std::string s(optarg);
+            std::vector<uint8_t> key(16, 0);
 
+            // read key ascii values
+            for (uint8_t i = 0; i < s.size() && i < 16; i++) {
+                key.at(i) = s.at(i);
+            }
+
+            // set key
+            cryptoHandler.setTransportKey((uint8_t*)&key[0]);
+            cryptoHandler.setMacKey((uint8_t*)&key[0]);
+            mon.setTransportEncryption(true);
+        } break;
         case 'h':
             print_usage();
             break;
