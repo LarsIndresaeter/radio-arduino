@@ -25,7 +25,6 @@
 - void setLength(uint8_t value)
 - uint8_t getLength()
 
-
 ### variables in command struct
 
 - uint8_t length

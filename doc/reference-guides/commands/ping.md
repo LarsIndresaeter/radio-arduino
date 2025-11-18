@@ -21,4 +21,6 @@
 - empty command payload
 
 ## struct response_t
+
 - empty response payload
+

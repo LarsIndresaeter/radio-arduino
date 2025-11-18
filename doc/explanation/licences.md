@@ -4,7 +4,7 @@ Source code in this repository is distributed under the MIT License
 
 ## Thirst party components
 
-List of licences for components used 
+List of licences for components used.
 
 ## Arduino libraries copied to this repository
 

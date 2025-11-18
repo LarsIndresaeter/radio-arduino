@@ -7,8 +7,10 @@
 
 ### constructors
 
-- RaduinoCommandNrf24l01Init(std::vector<uint8_t> txAddr, std::vector<uint8_t> rxAddr, uint8_t rfChannel, uint8_t gateway)
-- RaduinoCommandNrf24l01Init(std::string txAddr, std::string rxAddr, uint8_t rfChannel, uint8_t gateway)
+- RaduinoCommandNrf24l01Init(std::vector<uint8_t> txAddr, std::vector<uint8_t>
+  rxAddr, uint8_t rfChannel, uint8_t gateway)
+- RaduinoCommandNrf24l01Init(std::string txAddr, std::string rxAddr,
+  uint8_t rfChannel, uint8_t gateway)
 
 ### member methods in response struct
 
@@ -26,7 +28,6 @@
 - void setGateway(uint8_t value)
 - uint8_t getGateway()
 
-
 ### variables in command struct
 
 - uint8_t[5] txAddr
@@ -35,4 +36,6 @@
 - uint8_t gateway
 
 ## struct response_t
+
 - empty response payload
+

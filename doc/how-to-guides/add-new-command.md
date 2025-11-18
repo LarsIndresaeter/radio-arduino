@@ -1,6 +1,8 @@
 # add new command
 
-The best way to learn how to add a command is to inspect the code changes for a new command. The example below is from a branch that adds commands for setting and getting unique id.
+The best way to learn how to add a command is to inspect the code changes for a
+new command. The example below is from a branch that adds commands for setting
+and getting unique id.
 use actual commits (merge commit) as an example
 
 ```console
@@ -22,7 +24,9 @@ generateCommandAndPayloadFile(41, "set_unique_id", ["id[4]"], [])
 generateCommandAndPayloadFile(42, "get_unique_id", [], ["id[4]"])
 ```
 
-Running the script with the command `python generate.py` in the folder `interface/libs/commands/` created payload structs used by the arduino code and command classes used by the linux application code
+Running the script with the command `python generate.py` in the folder
+`interface/libs/commands/` created payload structs used by the arduino code and
+command classes used by the linux application code
 
 this can be done using the command
 
@@ -45,9 +49,13 @@ interface/libs/commands/include/cmd/set_unique_id/payload.hxx
 
 ## implement unique id command on arduino
 
-Command handlers are added following a common pattern where a command struct is constructed from the payload struct extracted by the parser in `arduino/libs/parser/parser.cpp`. 
+Command handlers are added following a common pattern where a command struct is
+constructed from the payload struct extracted by the parser in
+`arduino/libs/parser/parser.cpp`. 
 
-Getter and setter functions are created by the [generator script](doc/explanation/protocol-command-generator.md) and used for extracting the id value in the command or setting the id value in the response.
+Getter and setter functions are created by the
+[generator script](doc/explanation/protocol-command-generator.md) and used for
+extracting the id value in the command or setting the id value in the response.
 
 changes to `arduino/libs/eeprom/command-handlers-eeprom.cpp`
 
@@ -71,8 +79,6 @@ void commandGetUniqueId(uint8_t* commandPayload, uint8_t* responsePayload)
 
     response.serialize(responsePayload);
 }
-
-
 ```
 
 changes to `arduino/src/main`
@@ -100,7 +106,8 @@ arduino/src/main.cpp
 Sending a command and printing the response is as simple as:
 
 1. initializing an object with `RaduinoCommandGetUniqueId()`
-2. calling a template with a [command object](doc/explanation/command-objects.md) `mon.get<>()` will return a response object of the same class. 
+2. calling a template with a command object `mon.get<>()` will return a response
+   object of the same class.
 3. printing the response object using the `<<` stream operator
 
 ```cpp
@@ -112,17 +119,18 @@ case 'I':
     break;
 ```
 
-Sending a command is equally simple, just initialize the command object with the parameter values.
+Sending a command is equally simple, just initialize the command object with the
+parameter values.
 
 ```cpp
 std::cout << mon.get<>(RaduinoCommandSetUniqueId(uniqueId)) << std::endl;
 ```
 
-Learn more about the [command objects](doc/reference-guides/commands/list-of-commands.md).
+Learn more about the [command objects](..//reference-guides/commands/README.md).
 
 ### files changed linux directory
 
-```
+```console
 linux/apps/personalize/main.cpp
 linux/apps/system-commands/main.cpp
 ```

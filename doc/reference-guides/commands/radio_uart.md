@@ -23,10 +23,11 @@
 - void setMode(uint8_t value)
 - uint8_t getMode()
 
-
 ### variables in command struct
 
 - uint8_t mode
 
 ## struct response_t
+
 - empty response payload
+

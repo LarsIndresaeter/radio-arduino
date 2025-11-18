@@ -16,7 +16,7 @@ sudo usermod -a -G dialout $USER
 
 create the file `/etc/udev/rules.d/99-FTDI.rules`
 
-```
+```console
 ACTION=="add", SUBSYSTEM=="usb", ATTRS{idVendor}=="0403", ATTRS={idProduct}=="6001", OWNER="user", MODE="0777", GROUP="dialout"
 ```
 
@@ -28,13 +28,17 @@ sudo udevadm control --reload
 
 ## setup tools
 
-before you can use the provided `raduino` tool you must source the environment tool. This has to be done for each terminal window where you want to use the `raduino` tool.
+before you can use the provided `raduino` tool you must source the environment
+tool. This has to be done for each terminal window where you want to use the
+`raduino` tool.
 
 ```console
 source tools/setup.sh
 ```
 
-The command for flashing is `raduino flash <type> <device>`. Use the provided help menu to learn more. For example an arduino nano as a `gateway` can be programmed using this command.
+The command for flashing is `raduino flash <type> <device>`. Use the provided
+help menu to learn more. For example an arduino nano as a `gateway` can be
+programmed using this command.
 
 ```console
 raduino flash nano gateway
@@ -42,7 +46,8 @@ raduino flash nano gateway
 
 ## flash using docker
 
-if you are using docker to build and flash then you might need to change access rights to the serial device
+if you are using docker to build and flash then you might need to change access
+rights to the serial device
 
 ```console
 sudo chmod 666 /dev/ttyUSB0

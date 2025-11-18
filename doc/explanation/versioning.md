@@ -1,12 +1,18 @@
 # versioning
 
-this project is using semantic versioning, www.semver.org
+this project is using semantic versioning, [semver.org](https://www.semver.org).
 
 ## git tags
 
-Git tags are used to describe major, minor and patch number in the format `major.minor.patch`. The [conan](./conan.md) files have a function for calculating the version string on the format `major.minor.patch.commits_not_in_main+gitsha`. If the code used to build is not commited then `-dirty` is appended. This format agrees with demanding formatting.
+Git tags are used to describe major, minor and patch number in the format
+`major.minor.patch`. The [conan](./conan.md) files have a function for
+calculating the version string on the format
+`major.minor.patch.commits_not_in_main+gitsha`. If the code used to build is
+not commited then `-dirty` is appended. This format agrees with demanding formatting.
 
-For example, if the latest tag is `0.4.0` and 3 commits have been made since the tag was generated and files used to build are not commited then the version string will look like this `0.4.0.3+5aa872e-dirty`.
+For example, if the latest tag is `0.4.0` and 3 commits have been made since the
+tag was generated and files used to build are not commited then the version
+string will look like this `0.4.0.3+5aa872e-dirty`.
 
 ## where the version number is used
 
@@ -20,7 +26,7 @@ The gateay or node can respond with the version it has using the command.
 
 which will resulst in a response similar to this one.
 
-```
+```console
 complete : GET_VERSION            :  versionString="0.4.0.3+31e4e1c"
 ```
 

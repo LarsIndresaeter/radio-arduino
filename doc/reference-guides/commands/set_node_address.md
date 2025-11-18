@@ -23,10 +23,11 @@
 - void setNodeaddress(uint8_t value)
 - uint8_t getNodeaddress()
 
-
 ### variables in command struct
 
 - uint8_t nodeAddress
 
 ## struct response_t
+
 - empty response payload
+

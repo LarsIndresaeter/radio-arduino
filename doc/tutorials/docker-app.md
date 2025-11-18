@@ -15,7 +15,8 @@ docker version
 docker run hello-world
 ```
 
-if this fails then find an online tutorial and follow the steps until you can successfully run the `docker run hello-world` command.
+if this fails then find an online tutorial and follow the steps until you can
+successfully run the `docker run hello-world` command.
 
 ## give user access so serial device
 
@@ -28,7 +29,7 @@ newgrp
 
 create file `/etc/udev/rules.d/60-ch340.rules`
 
-```
+```console
 ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="7523", ENV{ID_MM_DEVICE_MANUAL_SCAN_ONLY}="1"
 SUBSYSTEM=="dialout", MODE="0666", GROUP="dialout", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="7523"
 ```

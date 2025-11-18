@@ -23,10 +23,11 @@
 - void setDelay(uint32_t value)
 - uint32_t getDelay[4]()
 
-
 ### variables in command struct
 
 - uint8_t[4] delay
 
 ## struct response_t
+
 - empty response payload
+

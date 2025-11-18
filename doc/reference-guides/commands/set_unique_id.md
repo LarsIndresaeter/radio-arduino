@@ -21,12 +21,13 @@
 ### methods in command struct
 
 - void setId(uint32_t value)
-- uint32_t getId[4]()
-
+- uint32_t getId()
 
 ### variables in command struct
 
 - uint8_t[4] id
 
 ## struct response_t
+
 - empty response payload
+

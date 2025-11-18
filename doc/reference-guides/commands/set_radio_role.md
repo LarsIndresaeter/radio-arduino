@@ -23,10 +23,11 @@
 - void setIsradionode(uint8_t value)
 - uint8_t getIsradionode()
 
-
 ### variables in command struct
 
 - uint8_t isRadioNode
 
 ## struct response_t
+
 - empty response payload
+

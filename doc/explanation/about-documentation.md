@@ -2,11 +2,14 @@
 
 ## inteded audience
 
-The intended audience for this project is hobbyists experimenting with rf-nano or developers that want to learn. See [motivation for this work](../motivation-for-this-work.md)
+The intended audience for this project is hobbyists experimenting with rf-nano
+or developers that want to learn.
 
 ## project name
 
-The name `radio-arduino` was selected to be a generic name. Currently only the nrf24l01 radio module is supported but the RadioUart class is designed with though that a variant can be made for a sx1276 LoRa chip.
+The name `radio-arduino` was selected to be a generic name. Currently only the
+nrf24l01 radio module is supported but the RadioUart class is designed with
+though that a variant can be made for a sx1276 LoRa chip.
 
 ## file names
 
@@ -24,5 +27,6 @@ The name `radio-arduino` was selected to be a generic name. Currently only the n
 
 In this repo we try to follow [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
 
-Commits messages should be imperative and answer the question: "if applied this commit will ..."
+Commits messages should be imperative and answer the question: "if applied this
+commit will ..."
 
