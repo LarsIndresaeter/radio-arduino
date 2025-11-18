@@ -36,7 +36,7 @@ raduino generate commands
 
 ### files changed in interface directory
 
-```
+```console
 interface/libs/commands/generate.py
 interface/libs/commands/include/cmd/command_id.hxx
 interface/libs/commands/include/cmd/commands.hxx
@@ -51,7 +51,7 @@ interface/libs/commands/include/cmd/set_unique_id/payload.hxx
 
 Command handlers are added following a common pattern where a command struct is
 constructed from the payload struct extracted by the parser in
-`arduino/libs/parser/parser.cpp`. 
+`arduino/libs/parser/parser.cpp`.
 
 Getter and setter functions are created by the
 [generator script](doc/explanation/protocol-command-generator.md) and used for
@@ -94,13 +94,14 @@ case COMMANDS::OI::GET_UNIQUE_ID:
 
 ### files changed in arduino directory
 
-```
+```console
 arduino/libs/eeprom/command-handlers-eeprom.cpp
 arduino/libs/eeprom/eeprom.cpp
 arduino/libs/eeprom/include/command-handlers-eeprom.hpp
 arduino/libs/eeprom/include/eeprom.hpp
 arduino/src/main.cpp
 ```
+
 ## use unique id commands in apps
 
 Sending a command and printing the response is as simple as:

@@ -1,6 +1,6 @@
 # command handler
 
-* how a typical command handler on the arduino is implemented
+- how a typical command handler on the arduino is implemented
 
 ```cpp
 void commandBlink(uint8_t* commandPayload, uint8_t* responsePayload)

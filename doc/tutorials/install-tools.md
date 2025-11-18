@@ -27,10 +27,10 @@ sudo usermod -aG docker $USER
 
 Docker build calls conan and conan will install missing tools like:
 
-* cmake
-* ccache
-* gcc-avr
-* avr-libc
-* avrdude
-* gtest
+- cmake
+- ccache
+- gcc-avr
+- avr-libc
+- avrdude
+- gtest
   
