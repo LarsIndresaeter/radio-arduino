@@ -4,19 +4,26 @@ from libgenerate.generate_command import *
 from libgenerate.generate_payload import *
 from libgenerate.generate_doc import *
 
-def openFiles():
-    generateCommonHeaderFilesOpen()
-    generateDocumentationReadme()
+class raduinoCommandGenerator:
+    def __init__(self, codePath="include/cmd", docPath="../../../doc/reference-guides/commands/"):
+        self.codePath = codePath
+        self.docPath = docPath
+        self.openFiles()
 
-def closeFiles():
-    generateCommonHeaderFilesClose()
+    def openFiles(self):
+        generateCommonHeaderFilesOpen(self.codePath)
+        generateDocumentationReadme(self.docPath)
 
-def add(commandId,
-        commandName,
-        commandPayloadFields,
-        responsePayloadFields):
+    def closeFiles(self):
+        generateCommonHeaderFilesClose(self.codePath)
 
-    generateCommandFile(commandId, commandName, commandPayloadFields, responsePayloadFields)
-    generatePayloadFile(commandName, commandPayloadFields, responsePayloadFields)
-    generateDocumentationFile(commandName, commandPayloadFields, responsePayloadFields)
+    def add(self,
+            commandId,
+            commandName,
+            commandPayloadFields,
+            responsePayloadFields):
+
+        generateCommandFile(self.codePath, commandId, commandName, commandPayloadFields, responsePayloadFields)
+        generatePayloadFile(self.codePath, commandName, commandPayloadFields, responsePayloadFields)
+        generateDocumentationFile(self.docPath, commandName, commandPayloadFields, responsePayloadFields)
 

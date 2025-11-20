@@ -3,9 +3,8 @@
 import os
 from libgenerate.common import *
 
-def generateDocumentationReadme():
+def generateDocumentationReadme(commandDocumentationDirectory):
 
-    commandDocumentationDirectory = "../../../doc/reference-guides/commands/"
     os.makedirs(commandDocumentationDirectory, exist_ok=True)
     readmeFile = commandDocumentationDirectory + "README.md"
 
@@ -13,23 +12,22 @@ def generateDocumentationReadme():
         outfile.write("# commands\n")
         outfile.write("\n")
 
-def appendDocumentationReadme(commandName):
-    commandDocumentationDirectory = "../../../doc/reference-guides/commands/"
+def appendDocumentationReadme(commandDocumentationDirectory, commandName):
     os.makedirs(commandDocumentationDirectory, exist_ok=True)
     readmeFile = commandDocumentationDirectory + "README.md"
 
     with open(readmeFile, 'a') as outfile:
         outfile.write("- [" + snakecaseToCamelCase(commandName) + "](./" +commandName + ".md)\n")
 
-def generateDocumentationFile(commandName, 
-                 commandPayloadFields, 
-                 responsePayloadFields):
+def generateDocumentationFile(commandDocumentationDirectory,
+                              commandName,
+                              commandPayloadFields,
+                              responsePayloadFields):
 
-    commandDocumentationDirectory = "../../../doc/reference-guides/commands/"
     os.makedirs(commandDocumentationDirectory, exist_ok=True)
     commandDocumentationFile = commandDocumentationDirectory + commandName + ".md"
 
-    appendDocumentationReadme(commandName)
+    appendDocumentationReadme(commandDocumentationDirectory, commandName)
 
     ## class
     with open(commandDocumentationFile, 'w') as outfile:

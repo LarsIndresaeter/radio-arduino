@@ -11,13 +11,14 @@ def calculateStructSizeFromNames(commandPayloadFields):
 
     return length 
 
-def generatePayloadFile(commandName, 
-                 commandPayloadFields, 
-                 responsePayloadFields):
+def generatePayloadFile(codePath,
+                        commandName,
+                        commandPayloadFields,
+                        responsePayloadFields):
 
-    os.makedirs("include/cmd/" + commandName, exist_ok=True)
+    os.makedirs(f"{codePath}/{commandName}", exist_ok=True)
 
-    payloadFile = f"include/cmd/{commandName}/payload.hxx"
+    payloadFile = f"{codePath}/{commandName}/payload.hxx"
 
     # header and open both namespaces
     with open(payloadFile, 'w') as outfile:
