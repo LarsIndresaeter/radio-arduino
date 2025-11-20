@@ -32,9 +32,9 @@ then
     COUNT_FEAT=$(git log ${TAG_LATEST}..HEAD --oneline --pretty=format:%s | grep -c "^feat")
     COUNT_FIX=$(git log ${TAG_LATEST}..HEAD --oneline --pretty=format:%s | grep -c "^fix")
 
-    if [ ${COUNT_FEAT} -gt 0 ]
+    if [ ${COUNT_BREAKING} -gt 0 ]
     then
-        echo "${COUNT_FEAT} breaking change: commits. Bump major!"
+        echo "${COUNT_BREAKING} breaking change: commits. Bump major!"
         if [ "${PARAM}" == "auto" ] 
         then
             ACTION="bump"
