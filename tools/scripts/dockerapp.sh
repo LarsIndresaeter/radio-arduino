@@ -6,7 +6,7 @@ TAG=$2
 if [ "${COMMAND}" == "build" ]
 then
     TAG_LATEST=$(git describe --tags --abbrev=0)
-    docker build -t raduino:${TAG_LATEST} --file tools/docker/Dockerfile.dockerapp .
+    docker build -t radio-arduino:${TAG_LATEST} --file tools/docker/Dockerfile.dockerapp .
 elif [ "${COMMAND}" == "run" ]
 then
     if [ "${TAG}" == "" ]
