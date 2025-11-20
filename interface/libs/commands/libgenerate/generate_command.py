@@ -3,9 +3,9 @@
 import os
 from libgenerate.common import *
 
-def generateCommandIdOpen():
-    os.makedirs("include/cmd", exist_ok=True)
-    with open("include/cmd/command_id.hxx", 'w') as outfile:
+def generateCommandIdOpen(codePath):
+    os.makedirs(codePath, exist_ok=True)
+    with open(codePath + "/command_id.hxx", 'w') as outfile:
         outfile.write("#pragma once\n") 
         outfile.write("// This file is generated with the script: `interface/libs/commands/generate.py`\n")
         outfile.write("\n") 
@@ -19,9 +19,9 @@ def generateCommandIdOpen():
         outfile.write("    UNDEFINED = 0,\n")
         outfile.write("    RESERVED = 1,\n")
 
-def generatePayloadsOpen():
-    os.makedirs("include/cmd/", exist_ok=True)
-    with open("include/cmd/payloads.hxx", 'w') as outfile:
+def generatePayloadsOpen(codePath):
+    os.makedirs(codePath, exist_ok=True)
+    with open(codePath + "/payloads.hxx", 'w') as outfile:
         outfile.write("#pragma once\n")
         outfile.write("\n")
         outfile.write("// This file is generated with the script: `interface/libs/commands/generate.py`\n")
@@ -30,9 +30,9 @@ def generatePayloadsOpen():
         outfile.write("\n")
         outfile.write("#include <cmd/command_id.hxx>\n")
 
-def generateCommandsOpen():
-    os.makedirs("include/cmd/", exist_ok=True)
-    with open("include/cmd/commands.hxx", 'w') as outfile:
+def generateCommandsOpen(codePath):
+    os.makedirs(codePath, exist_ok=True)
+    with open(codePath + "/commands.hxx", 'w') as outfile:
         outfile.write("#pragma once\n")
         outfile.write("\n")
         outfile.write("// This file is generated with the script: `interface/libs/commands/generate.py`\n")
@@ -40,45 +40,45 @@ def generateCommandsOpen():
         outfile.write("#include <common/raduinoCommandBase.hpp>\n")
         outfile.write("\n")
 
-def generateCommonHeaderFilesOpen(): 
-    generateCommandIdOpen()
-    generatePayloadsOpen()
-    generateCommandsOpen()
+def generateCommonHeaderFilesOpen(codePath): 
+    generateCommandIdOpen(codePath)
+    generatePayloadsOpen(codePath)
+    generateCommandsOpen(codePath)
 
-def generateCommandIdClose():
-    os.makedirs("include/cmd/", exist_ok=True)
-    with open("include/cmd/command_id.hxx", 'a') as outfile:
+def generateCommandIdClose(codePath):
+    os.makedirs(codePath, exist_ok=True)
+    with open(codePath + "/command_id.hxx", 'a') as outfile:
         outfile.write("};\n")
         outfile.write("\n")
         outfile.write("} // namespace COMMANDS\n")
 
-def generateCommonHeaderFilesClose(): 
-    generateCommandIdClose()
+def generateCommonHeaderFilesClose(codePath): 
+    generateCommandIdClose(codePath)
 
-def generateCommandIdAppend(commandId, commandName):
-    os.makedirs("include/cmd/", exist_ok=True)
+def generateCommandIdAppend(codePath, commandId, commandName):
+    os.makedirs(codePath, exist_ok=True)
 
     # add command to command_id.hxx
-    with open("include/cmd/command_id.hxx", 'a') as outfile:
+    with open(f"{codePath}/command_id.hxx", 'a') as outfile:
         outfile.write("    " + commandName.upper() + " = " + str(commandId) + ",\n")
 
     # add include to payloads.hxx
-    with open("include/cmd/payloads.hxx", 'a') as outfile:
+    with open(f"{codePath}/payloads.hxx", 'a') as outfile:
         outfile.write(f"#include <cmd/{commandName}/payload.hxx>\n")
 
     # add include to commands.hxx
-    with open("include/cmd/commands.hxx", 'a') as outfile:
+    with open(f"{codePath}/commands.hxx", 'a') as outfile:
         outfile.write(f"#include <cmd/{commandName}/command.hxx>\n")
 
-def generateCommandFile(commandId,
+def generateCommandFile(codePath,
+                        commandId,
                         commandName,
                         commandPayloadFields,
                         responsePayloadFields):
-    os.makedirs("include/cmd/" + commandName, exist_ok=True)
-    # commandFile = "include/cmd/" + commandName + "/command.hxx"
-    commandFile = f"include/cmd/{commandName}/command.hxx"
+    os.makedirs(f"{codePath}/{commandName}", exist_ok=True)
+    commandFile = f"{codePath}/{commandName}/command.hxx"
 
-    generateCommandIdAppend(commandId, commandName)
+    generateCommandIdAppend(codePath, commandId, commandName)
 
     with open(commandFile, 'w') as outfile:
         createStringConstructor = False
