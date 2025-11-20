@@ -144,26 +144,38 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             break;
         case 'g': {
             std::vector<uint8_t> eeprom;
-            for (int i = 0; i < 1024; i++) {
-                eeprom.push_back(mon.get<>(RaduinoCommandEepromRead(i)).responseStruct().data);
-            }
+            uint16_t printAddress = 0;
+            std::cout << "addr 0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  D   : ascii" << std::endl;
+            for (int readAddress = 0; readAddress < 1024; readAddress++) {
+                auto responseStruct = mon.get<>(RaduinoCommandEepromRead(readAddress)).responseStruct();
 
-            for (int i = 0; i < 64; i++) {
-                std::cout.fill('0');
-                std::cout.width(4);
-                std::cout << std::hex << static_cast<int>(i * 16) << " ";
-                for (int j = 0; j < 16; j++) {
-                    std::cout.fill('0');
-                    std::cout.width(2);
+                if (responseStruct.getAddress() == readAddress) {
+                    eeprom.push_back(responseStruct.getData());
+                }
+                else {
+                    std::cout << "invalid response from eeprom_read command. abort." << std::endl;
+                    break;
+                }
 
-                    std::cout << std::hex << static_cast<int>(eeprom.at(i * 16 + j));
-                    std::cout << " ";
+                if ((eeprom.size() - printAddress) > 16) {
+                    for (; printAddress < eeprom.size() / 16; printAddress++) {
+                        std::cout.fill('0');
+                        std::cout.width(4);
+                        std::cout << std::hex << static_cast<int>(printAddress * 16) << " ";
+                        for (int j = 0; j < 16; j++) {
+                            std::cout.fill('0');
+                            std::cout.width(2);
+
+                            std::cout << std::hex << static_cast<int>(eeprom.at(printAddress * 16 + j));
+                            std::cout << " ";
+                        }
+                        std::cout << " : ";
+                        for (int j = 0; j < 16; j++) {
+                            std::cout << std::hex << std::uppercase << eeprom.at(printAddress * 16 + j);
+                        }
+                        std::cout << std::endl;
+                    }
                 }
-                std::cout << " : ";
-                for (int j = 0; j < 16; j++) {
-                    std::cout << std::hex << std::uppercase << eeprom.at(i * 16 + j) << " ";
-                }
-                std::cout << std::endl;
             }
 
         } break;
