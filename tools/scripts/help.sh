@@ -3,6 +3,8 @@
 echo "${RADINO_CUSTOM_COMMAND} build menu"
 echo "    format <code>"
 echo "    lint <doc>"
+echo "    generate <commands>"
+echo "          run code generator for commands"
 echo "    dockerapp <build|run>"
 echo "          build or run a container with raduino apps"
 echo "    devbox start up a container where you can build and run this software"
