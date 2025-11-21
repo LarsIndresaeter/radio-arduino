@@ -2,6 +2,8 @@ FROM ubuntu:22.04
 
 RUN apt-get update && apt-get install -y --only-upgrade libstdc++6
 RUN apt-get update && apt-get install -y avrdude
+RUN apt-get update && apt-get install -y libpaho-mqtt1.3
+RUN apt-get update && apt-get install -y openssl
 
 COPY bin/* /bin/
 COPY tools/scripts/raduino-flash.sh /bin/
