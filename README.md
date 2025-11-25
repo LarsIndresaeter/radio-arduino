@@ -4,7 +4,7 @@
 > _As a hobbyist I want to connect a sensor to an
 > [rf-nano](https://ardunic.com/product/RF-Nano-Board-NRF24L01-Wireless-Module)
 > arduino board, communicate with the arduino via a radio link and send data to
-> the cloud using [mqtt](./doc/explanation/linux/mqtt.md).
+> the cloud using [mqtt](./doc/explanation/linux/mqtt.md)._
 
 ## Features
 
