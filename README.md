@@ -17,5 +17,9 @@
 - [Command line tools](./doc/reference-guides/apps/README.md) for interacting
   with gateway and node, including mqtt client.
 
+## try it out using docker images from dockerhub
+
+- dockerhub.com/lars32/radio-arduino
+
 Read more in the [doc](./doc/README.md) folder.
 

@@ -35,6 +35,6 @@ Technical descriptions of the machinery and how to operate it. For example:
 
 Explanation, or discussions, clarify and illuminate a particular topic. For example:
 
-- how does the protocol work
-- how does the tools-kit works
+- how the protocol work
+- how the toolkit works
 
