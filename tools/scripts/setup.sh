@@ -54,6 +54,11 @@ print_help()
     echo "         help : print this menu"
 }
 
+if ! command -v conan &> /dev/null; then
+    echo "conan is not installed"
+    exit 1
+fi
+
 if [ "${PARAM}" == "all" ]
 then
     setup_all

@@ -50,3 +50,11 @@ Note that if you are creating conan packages then the files will be in your
 local conan cache. This tutorial will not teach you the details of how conan
 works. docs.conan.io is great for learning how conan works.
 
+### build time
+
+clean build on i5-1335, command `raduino all`.
+
+- first time: 2m 10s
+- clean build: 13s
+- incremental build: 2s
+
