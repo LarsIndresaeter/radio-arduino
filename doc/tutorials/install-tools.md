@@ -5,11 +5,11 @@ tools. It should idealy be enough to install conan on your developer machine or 
 
 ## install conan
 
-Conanfiles are currently using version 1.57. An example of how this installed
+Conanfiles are currently using version 1.66. An example of how this installed
 can be seen in the Dockerfile in `tools/docker/Dockerfile`
 
 ```console
-RUN pip3 install conan==1.57
+pip3 install --break-system-packages conan==1.66
 ```
 
 ## install docker
