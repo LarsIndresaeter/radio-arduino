@@ -23,3 +23,9 @@
 
 Read more in the [doc](./doc/README.md) folder.
 
+## Use together with mosquitto and influxdb to data collection
+
+- [github.com/LarsIndresaeter/docker-compose-radio-arduino.git](docker-compose-radio-arduino)
+  use the docker imaged created together with mosquitto and influxdb to collect
+  and visualize measurements
+

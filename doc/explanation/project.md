@@ -4,15 +4,28 @@
 
 The arduino code has only 2k of RAM and can crash if too large objects are
 placed on the stack. Be aware of strange behavior when adding new functionality
-that place large objects on the stack. 
+that place large objects on the stack.
 
 ## what remains
 
-- migrate to conan 2
-- make mqtt server address and port configurable
-- read HOTP key from eeprom
-- read HMAC key from eeprom
-- send unique id in discover message
+- mqtt bridge
+  - read json formatted commands on command-topic
+  - write response on response-topic
+- replace digital twin written in C++ with a separate service possibly written
+  in python in a separate repository
+- documentation
+  - script for building a book in linear format. The intention is to improve the
+  structure of the documentation
+- improved handling of multiple radio nodes
+  - send unique id in discover message
+  - optional unique id in wakeup command
+  - set radio channel when waking up a radio node
+  - add unique id of node in raduinoCommandBase
+- Developer experience
+  - migrate to conan 2
+- improve security
+  - read HOTP key from eeprom
+  - read HMAC key from eeprom
 
 ## motivation
 
@@ -41,12 +54,12 @@ chips like sx1276 (a popular LoRa chip) can be used.
 
 ### where is the name used and what does it mean
 
-| where           | meaning                                                                  |
-| --------------- | ------------------------------------------------------------------------ |
-| conan packages  | Package `raduino-api` is simply short for `radio-arduino-api`            |
-| command classes | The class `RaduinoCommandPing` is shorter than `RadioArduinoCommandPing` |
-| toolkit         | The command `raduino` is shorter than `radio-arduino`                    |
-| apps            | `raduino-node` is shorter than `radio-arduino-node`                      |
+| where           | meaning                                                     |
+| --------------- | ----------------------------------------------------------- |
+| conan packages  | Package `raduino-api` is short for `radio-arduino-api`      |
+| command classes | `RaduinoCommandPing` shorter than `RadioArduinoCommandPing` |
+| toolkit         | The command `raduino` is shorter than `radio-arduino`       |
+| apps            | `raduino-node` is shorter than `radio-arduino-node`         |
 
 ### what will it take for the name to change
 
