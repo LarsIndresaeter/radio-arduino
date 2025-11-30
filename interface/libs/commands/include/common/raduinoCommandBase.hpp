@@ -85,6 +85,21 @@ public:
 
     std::string getJson() { return ("{}"); };
 
+    std::string getJsonCommonFields()
+    {
+        std::string json;
+        json.append("\"timestamp\":" + std::to_string(getTimeStamp()) + ", ");
+        json.append("\"responsetimeUs\":" + std::to_string(getResponseTimeUs()) + ", ");
+        json.append("\"responseCode\":");
+        if (m_replyStatus == ReplyStatus::Complete) {
+            json.append("\"success\", ");
+        }
+        else {
+            json.append("\"error\", ");
+        }
+        return (json);
+    };
+
     friend std::ostream& operator<<(std::ostream& out, RaduinoCommandBase const& u)
     {
         uint8_t c;
