@@ -46,6 +46,12 @@ change access to device file
 sudo chmod a+rw /dev/ttyUSB0
 ```
 
+## pull image from dockerhub
+
+```console
+docker pull lars32/radio-arduino:1.2.0
+```
+
 ## build docker app
 
 ```console
@@ -59,12 +65,6 @@ raduino dockerapp run <tag>
 ```
 
 if you do not supply a tag then a list of raduino docker apps will be listed
-
-## loading an image from a tar file
-
-```console
-docker image load -i raduino-0.2.0.tar
-```
 
 ## running a docker app without the toolkit
 

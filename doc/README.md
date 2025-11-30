@@ -2,9 +2,9 @@
 
 Documentation is inspired by [divio](https://docs.divio.com/documentation-system/).
 
-> **A word of notice:**
+> NOTE:
 > I have written the code in this repository with the motivation to learn, not
-to make a product.
+> to make a product.
 
 ## [Tutorials](./tutorials/README.md)
 
@@ -35,6 +35,6 @@ Technical descriptions of the machinery and how to operate it. For example:
 
 Explanation, or discussions, clarify and illuminate a particular topic. For example:
 
-- how does the protocol work
-- how does the tools-kit works
+- how the protocol work
+- how the toolkit works
 
