@@ -15,7 +15,7 @@ then
         echo ""
         docker images raduino
     else
-        docker run -it --rm --device=/dev/ttyUSB0 raduino:${TAG} bash
+        docker run --network host -it --rm --device=/dev/ttyUSB0 radio-arduino:${TAG} bash
     fi
 else
     echo "first parameter should be either build or run"
