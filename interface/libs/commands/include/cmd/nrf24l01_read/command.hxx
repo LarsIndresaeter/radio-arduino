@@ -80,18 +80,16 @@ public:
     {
         std::string json;
         json.append("{");
-        json.append("\"name\":");
-        json.append("\"nrf24l01_read\", ");
-        json.append("\"timestamp\":");
-        json.append(std::to_string(getTimeStamp()));
-        json.append(", ");
+        json.append("\"name\":\"" + getCommandName() + "\", ");
+        json.append(getJsonCommonFields());
+        json.append("\"payload\":{");
         json.append("\"length\":");
         json.append(std::to_string(responseStruct().getLength()));
         json.append(", ");
         json.append("\"data\": ");
-        json.append(getData());
+        json.append("\"" + getData() + "\"");
         json.append("");
-        json.append("}");
+        json.append("}}");
         return (json);
     };
 

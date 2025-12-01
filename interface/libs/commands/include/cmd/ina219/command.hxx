@@ -26,17 +26,15 @@ public:
     {
         std::string json;
         json.append("{");
-        json.append("\"name\":");
-        json.append("\"ina219\", ");
-        json.append("\"timestamp\":");
-        json.append(std::to_string(getTimeStamp()));
-        json.append(", ");
+        json.append("\"name\":\"" + getCommandName() + "\", ");
+        json.append(getJsonCommonFields());
+        json.append("\"payload\":{");
         json.append("\"current\":");
         json.append(std::to_string(responseStruct().getCurrent()));
         json.append(", ");
         json.append("\"voltage\":");
         json.append(std::to_string(responseStruct().getVoltage()));
-        json.append("}");
+        json.append("}}");
         return (json);
     };
 
