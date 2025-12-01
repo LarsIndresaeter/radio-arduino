@@ -30,11 +30,9 @@ public:
     {
         std::string json;
         json.append("{");
-        json.append("\"name\":");
-        json.append("\"get_statistics\", ");
-        json.append("\"timestamp\":");
-        json.append(std::to_string(getTimeStamp()));
-        json.append(", ");
+        json.append("\"name\":\"" + getCommandName() + "\", ");
+        json.append(getJsonCommonFields());
+        json.append("\"payload\":{");
         json.append("\"commandsParsed\":");
         json.append(std::to_string(responseStruct().getCommandsparsed()));
         json.append(", ");
@@ -52,7 +50,7 @@ public:
         json.append(", ");
         json.append("\"restarts\":");
         json.append(std::to_string(responseStruct().getRestarts()));
-        json.append("}");
+        json.append("}}");
         return (json);
     };
 

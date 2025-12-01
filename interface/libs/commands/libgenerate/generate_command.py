@@ -271,11 +271,9 @@ def generateCommandFile(codePath,
         outfile.write("    {\n");
         outfile.write("        std::string json;\n");
         outfile.write("        json.append(\"{\");\n");
-        outfile.write("        json.append(\"\\\"name\\\":\");\n")
-        outfile.write("        json.append(\"\\\"" + commandName + "\\\", \");\n")
-        outfile.write("        json.append(\"\\\"timestamp\\\":\");\n")
-        outfile.write("        json.append(std::to_string(getTimeStamp()));\n")
-        outfile.write("        json.append(\", \");\n")
+        outfile.write("        json.append(\"\\\"name\\\":\\\"\" + getCommandName() + \"\\\", \");\n");
+        outfile.write("        json.append(getJsonCommonFields());\n")
+        outfile.write("        json.append(\"\\\"payload\\\":{\");\n")
 
         index = 0
         for item in responsePayloadFields:
@@ -286,13 +284,13 @@ def generateCommandFile(codePath,
                 outfile.write("        json.append(std::to_string(responseStruct().get" + arrayBasenameFromVariableName(item).capitalize() + "()));\n");
             else:
                 outfile.write("        json.append(\"\\\"" + arrayBasenameFromVariableName(item) + "\\\": \");\n");
-                outfile.write("        json.append(get" + arrayBasenameFromVariableName(item).capitalize() + "());\n");
+                outfile.write("        json.append(\"\\\"\" + get" + arrayBasenameFromVariableName(item).capitalize() + "() + \"\\\"\");\n");
                 outfile.write("        json.append(\"\");\n")
 
             if index < len(responsePayloadFields):
                 outfile.write("        json.append(\", \");\n");
 
-        outfile.write("        json.append(\"}\");\n");
+        outfile.write("        json.append(\"}}\");\n");
         outfile.write("        return (json);\n");
         outfile.write("    };\n");
         outfile.write("\n")

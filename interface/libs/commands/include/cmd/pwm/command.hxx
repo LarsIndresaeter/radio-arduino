@@ -33,11 +33,9 @@ public:
     {
         std::string json;
         json.append("{");
-        json.append("\"name\":");
-        json.append("\"pwm\", ");
-        json.append("\"timestamp\":");
-        json.append(std::to_string(getTimeStamp()));
-        json.append(", ");
+        json.append("\"name\":\"" + getCommandName() + "\", ");
+        json.append(getJsonCommonFields());
+        json.append("\"payload\":{");
         json.append("\"port\":");
         json.append(std::to_string(responseStruct().getPort()));
         json.append(", ");
@@ -46,7 +44,7 @@ public:
         json.append(", ");
         json.append("\"value\":");
         json.append(std::to_string(responseStruct().getValue()));
-        json.append("}");
+        json.append("}}");
         return (json);
     };
 

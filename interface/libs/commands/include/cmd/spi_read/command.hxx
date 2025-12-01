@@ -57,11 +57,9 @@ public:
     {
         std::string json;
         json.append("{");
-        json.append("\"name\":");
-        json.append("\"spi_read\", ");
-        json.append("\"timestamp\":");
-        json.append(std::to_string(getTimeStamp()));
-        json.append(", ");
+        json.append("\"name\":\"" + getCommandName() + "\", ");
+        json.append(getJsonCommonFields());
+        json.append("\"payload\":{");
         json.append("\"reg\":");
         json.append(std::to_string(responseStruct().getReg()));
         json.append(", ");
@@ -69,9 +67,9 @@ public:
         json.append(std::to_string(responseStruct().getLength()));
         json.append(", ");
         json.append("\"data\": ");
-        json.append(getData());
+        json.append("\"" + getData() + "\"");
         json.append("");
-        json.append("}");
+        json.append("}}");
         return (json);
     };
 

@@ -27,14 +27,12 @@ public:
     {
         std::string json;
         json.append("{");
-        json.append("\"name\":");
-        json.append("\"wakeup\", ");
-        json.append("\"timestamp\":");
-        json.append(std::to_string(getTimeStamp()));
-        json.append(", ");
+        json.append("\"name\":\"" + getCommandName() + "\", ");
+        json.append(getJsonCommonFields());
+        json.append("\"payload\":{");
         json.append("\"discovered\":");
         json.append(std::to_string(responseStruct().getDiscovered()));
-        json.append("}");
+        json.append("}}");
         return (json);
     };
 

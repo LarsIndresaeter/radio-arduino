@@ -46,15 +46,13 @@ public:
     {
         std::string json;
         json.append("{");
-        json.append("\"name\":");
-        json.append("\"get_device_name\", ");
-        json.append("\"timestamp\":");
-        json.append(std::to_string(getTimeStamp()));
-        json.append(", ");
+        json.append("\"name\":\"" + getCommandName() + "\", ");
+        json.append(getJsonCommonFields());
+        json.append("\"payload\":{");
         json.append("\"nameString\": ");
-        json.append(getNamestring());
+        json.append("\"" + getNamestring() + "\"");
         json.append("");
-        json.append("}");
+        json.append("}}");
         return (json);
     };
 

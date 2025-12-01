@@ -11,6 +11,7 @@ that place large objects on the stack.
 - mqtt bridge
   - read json formatted commands on command-topic
   - write response on response-topic
+  - generate commands from json commands
 - replace digital twin written in C++ with a separate service possibly written
   in python in a separate repository
 - documentation
