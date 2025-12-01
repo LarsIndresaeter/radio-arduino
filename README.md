@@ -1,31 +1,36 @@
 # radio-arduino
 
-> **user story:**
-> _As a hobbyist I want to connect a sensor to an
+> **user story:**\
+> I want to read a sensor on a
 > [rf-nano](https://ardunic.com/product/RF-Nano-Board-NRF24L01-Wireless-Module)
-> arduino board, communicate with the arduino via a radio link and send data to
-> the cloud using [mqtt](./doc/explanation/linux/mqtt.md)._
+> arduino board via a radio link and send data to
+> the cloud using [mqtt](./doc/explanation/linux/mqtt.md)
+
+- [more user stories](doc/explanation/requirements.md)
 
 ## Features
 
-- Command line build [tools](./tools/) for [arduino](./arduino/) and
-  [linux](./linux/) using conan and cmake including
-  [toolkit](./doc/explanation/raduino-toolkit.md) for common developer commands.
+- Command line [build tools](./tools/) for [arduino](./arduino/) and
+  [linux](./linux/) using conan and cmake.
+- [toolkit](./doc/explanation/raduino-toolkit.md) for common developer commands.
 - Binary message protocol [interface](./interface/) for serial and radio
-  communication with [code generator](./doc/explanation/interface/protocol-command-generator.md).
-- Same binary for gateway and node, role is [configured in eeprom](./doc/tutorials/configure-device.md).
+  communication
+- [code generator](./doc/explanation/interface/protocol-command-generator.md)
+    for C++ command classes.
+- Same binary for gateway and node.
+- Role is [configured in eeprom](./doc/tutorials/configure-device.md) via
+  command line [tool](./doc/reference-guides/apps/raduino-personalize.md)
 - [Command line tools](./doc/reference-guides/apps/README.md) for interacting
   with gateway and node, including mqtt client.
+- Use Docker for [building or running](./doc/how-to-guides/howto-use-dockerapp.md)
+  the application
+- After flashing the rf-nano the [docker-compose-radio-arduino](https://github.com/LarsIndresaeter/docker-compose-radio-arduino)
+docker-compose file can be used to subscribe to data and store it in influxdb.
 
-## try it out using docker images from dockerhub
+## Documentation index
 
-- dockerhub.com/lars32/radio-arduino
-
-Read more in the [doc](./doc/README.md) folder.
-
-## Use together with mosquitto and influxdb to data collection
-
-- [github.com/LarsIndresaeter/docker-compose-radio-arduino.git](docker-compose-radio-arduino)
-  use the docker imaged created together with mosquitto and influxdb to collect
-  and visualize measurements
+- [Tutorials](./doc/tutorials/README.md)
+- [Howto guides](./doc/how-to-guides/README.md)
+- [Reference guides](./doc/reference-guides/README.md)
+- [Explanation](./doc/explanation/README.md)
 

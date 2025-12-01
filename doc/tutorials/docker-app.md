@@ -52,21 +52,19 @@ sudo chmod a+rw /dev/ttyUSB0
 docker pull lars32/radio-arduino:1.2.0
 ```
 
-## build docker app
-
-```console
-raduino dockerapp build
-```
-
-## run docker app
-
-```console
-raduino dockerapp run <tag>
-```
-
 if you do not supply a tag then a list of raduino docker apps will be listed
 
-## running a docker app without the toolkit
+### devbox
+
+devbox is an acronym for building and running the dockerapp.
+
+```console
+cd radio-arduino/
+./tools/devbox.sh build
+./tools/devbox.sh run
+```
+
+## running a docker app without cloning this repository
 
 if you have obtained the docker image and do not want to run the raduino toolkit
 

@@ -12,20 +12,9 @@ can be seen in the Dockerfile in `tools/docker/Dockerfile`
 pip3 install --break-system-packages conan==1.66
 ```
 
-## install docker
-
-Docker can be used for building. The intended use case is for a build server in
-Continouous Integration (CI), but it can also be useful if you are struggeling
-to install conan.
-
-```console
-sudo groupadd docker
-sudo usermod -aG docker $USER
-```
-
 ## Other tools
 
-Docker build calls conan and conan will install missing tools like:
+Docker build calls conan and conan will install these tools if they are missing.
 
 - cmake
 - ccache
@@ -33,4 +22,4 @@ Docker build calls conan and conan will install missing tools like:
 - avr-libc
 - avrdude
 - gtest
-  
+

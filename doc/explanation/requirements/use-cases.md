@@ -17,14 +17,14 @@ node. Cli tools for debugging or demo and mqtt client
 ### communication from PC to arduino
 
 ```console
-    ┌───────────┐                 ┌─────────────────┐                ┌─────────────────┐
-    │           │                 │                 │                │                 │
-    │           │     RS 232      │ ARDUINO NANO    │     RADIO      │ ARDUINO NANO    │
-    │    PC     │◄───────────────►│                 │◄──────────────►│                 │
-    │           │                 │ WITH NRF24L01+  │                │ WITH NRF24L01+  │
-    │           │                 │                 │                │                 │
-    └───────────┘                 └─────────────────┘                └─────────────────┘
-                                       gateway                              node
+   ┌───────────┐              ┌─────────────────┐            ┌─────────────────┐
+   │           │              │                 │            │                 │
+   │           │    RS 232    │ ARDUINO NANO    │    RADIO   │ ARDUINO NANO    │
+   │    PC     │◄────────────►│                 │◄──────────►│                 │
+   │           │              │ WITH NRF24L01+  │            │ WITH NRF24L01+  │
+   │           │              │                 │            │                 │
+   └───────────┘              └─────────────────┘            └─────────────────┘
+                                   gateway                          node
 ```
 
 ## spi bridge

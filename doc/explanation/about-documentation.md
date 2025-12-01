@@ -30,3 +30,5 @@ In this repo we try to follow [conventional commits](https://www.conventionalcom
 Commits messages should be imperative and answer the question: "if applied this
 commit will ..."
 
+> Documentation is inspired by [divio](https://docs.divio.com/documentation-system/).
+

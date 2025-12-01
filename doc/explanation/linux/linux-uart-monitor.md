@@ -25,7 +25,6 @@ class `RaduinoCommandPing` even if there is no reponse.
 1. the monitor will either return a valid response object or an empty response
    object of the same type as the command object
 
-
 ```mermaid
 sequenceDiagram
     participant a as apps

@@ -3,27 +3,26 @@
 Explanation, or discussions, clarify and illuminate a particular topic.
 
 - [about documentation](./about-documentation.md) answers some of the decisions
-  made for this project.
-- [project](./project.md) answers more questions about this project.
-- [binary protocol interface](./interface/binary-protocol-interface.md)
-  explain how the binary interface between Linux and the gateway works
-- [licences](./licences.md) for third party software used by the code in this project
-- [protocol command generator](./interface/protocol-command-generator.md) is a
-  python script for generating the mostly boilerplate code used for payload
-  structs for arduino and C++ classes for Linux
-
-## repo folder structure structure
-
-Explanations follow the folder structure of the project with arduino, interface,
-linux and tools as the main folders.
-
-| folder                                | description                                             |
-| ------------------------------------- | ------------------------------------------------------- |
-| [arduino](./arduino/README.md)        | source code for atmega328p                              |
-| [interface](./interface/README.md)    | API interface between arduino and linux                 |
-| [linux](./linux/README.md)            | source code for linux host applications                 |
-| tools                                 | toolkit for working with the code in this repository    |
-| doc                                   | documentation folder                                    |
-| build                                 | build area for arduino, interface and linux source code |
-| bin                                   | compiled binary files                                   |
+  made for this project
+- [conan](./conan.md)
+- [developer experience](./devex.md)
+- [edge cluster](./edge-cluster.md)
+- [project](./project.md)
+- [raduino toolkit](./raduino-toolkit.md)
+- [requirements](./requirements/README.md) as use-cases and user stories
+- [versioning](./versioning.md)
+- [arduino](./arduino/README.md)
+  - [arduino command handler](./arduino/command-handler.md)
+  - [eeprom store](./arduino/eeprom-data-store.md)
+  - [radio communication](./arduino/radio-communication.md)
+- [interface](./interface/README.md)
+  - [binary protocol interface](./interface/binary-protocol-interface.md)
+    explain how the binary interface between Linux and the gateway works
+  - [protocol encryption](./interface/protocol-encryption.md)
+  - [wakeup](./interface/wakeup.md) a sleeping radio node
+- [linux](./linux/README.md)
+  - [digital twin](./linux/digital-twin.md) of a radio node
+  - [json](./linux/json.md) formatted command response
+  - [linux uart monitor](./linux/linux-uart-monitor.md)
+  - [mqtt](./linux/mqtt.md)
 
