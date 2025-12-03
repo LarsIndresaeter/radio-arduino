@@ -5,7 +5,7 @@
 > arduino board via a radio link and send data to
 > the cloud using [mqtt](./doc/explanation/linux/mqtt.md)
 
-- [more user stories](doc/explanation/requirements/README.md)
+- [more user stories](doc/explanation/requirements.md)
 
 ## Features
 
@@ -18,10 +18,10 @@
     for C++ command classes.
 - Same binary for gateway and node.
 - Role is [configured in eeprom](./doc/tutorials/configure-device.md) via
-  command line [tool](./doc/reference-guides/apps/raduino-personalize.md)
+  command line
 - [Command line tools](./doc/reference-guides/apps/README.md) for interacting
   with gateway and node, including mqtt client.
-- Use Docker for [building or running](./doc/how-to-guides/howto-use-dockerapp.md)
+- Use Docker for [building](./doc/how-to-guides/install-docker.md) or [running](./doc/how-to-guides/howto-use-dockerapp.md)
   the application
 - After flashing the rf-nano the [docker-compose-radio-arduino](https://github.com/LarsIndresaeter/docker-compose-radio-arduino)
 docker-compose file can be used to subscribe to data and store it in influxdb.

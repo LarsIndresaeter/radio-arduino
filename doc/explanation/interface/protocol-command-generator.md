@@ -8,7 +8,9 @@ avr and no usable protocol was found.
 
 ## the generator
 
-The generator is located in one python file:
+The generator entry point is the file [generate.py](../../../interface/libs/commands/generate.py)
+which is using [libgenerate](../../../interface/libs/commands/libgenerate/).
+
 `interface/libs/commands/generate.py` and is executed with the command:
 
 ```console
@@ -18,7 +20,7 @@ python generator.py
 
 ## adding a new command
 
-add a new line:
+add a new line in [generate.py](../../../interface/libs/commands/generate.py):
 
 ```python
 generateCommandAndPayloadFile(33, "new_command", ["c1", "c2[2]"], ["r1"])
