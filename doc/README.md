@@ -1,11 +1,10 @@
 # Documentation
 
-> Note that I have written the code in this repository with the motivation to
-> learn, not to make a product.
+> The code in this repository with the motivation to learn, not to make a product.
 
 ## [Tutorials](./tutorials/README.md)
 
-0. [install tools](./tutorials/install-tools.md) or use the [docker app](./tutorials/docker-app.md)
+0. [install tools](./tutorials/install-tools.md)
 1. [compile](./tutorials/how-to-compile.md)
 2. [flash arduino](./tutorials/flash-arduino.md)
 3. [configure device](./tutorials/configure-device.md) as gateway or node
@@ -13,7 +12,6 @@
 
 ## [How-to guides](./how-to-guides/README.md)
 
-- [how to use dockerapp](./how-to-guides/howto-use-dockerapp.md)
 - [pull image from dockerhub](./how-to-guides/pull-image-from-dockerhub.md)
 - [create and push image to dockerhub](./how-to-guides/create-and-push-image-to-dockerhub.md)
 - [how to add a new command](./how-to-guides/add-new-command.md)
@@ -34,7 +32,7 @@
 - [edge cluster](./explanation/edge-cluster.md)
 - [project](./explanation/project.md)
 - [raduino toolkit](./explanation/raduino-toolkit.md)
-- [requirements](./explanation/requirements/README.md) as use-cases and user stories
+- [requirements](./explanation/requirements.md) as use-cases
 - [versioning](./explanation/versioning.md)
 - [arduino](./explanation/arduino/README.md)
   - [arduino command handler](./explanation/arduino/command-handler.md)

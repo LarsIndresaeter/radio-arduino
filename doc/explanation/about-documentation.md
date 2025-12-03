@@ -1,17 +1,17 @@
 # about documentation
 
-## inteded audience
+## Inteded audience
 
 The intended audience for this project is hobbyists experimenting with rf-nano
 or developers that want to learn.
 
-## project name
+## Project name
 
 The name `radio-arduino` was selected to be a generic name. Currently only the
-nrf24l01 radio module is supported but the RadioUart class is designed with
-though that a variant can be made for a sx1276 LoRa chip.
+nrf24l01 radio module is supported but the RadioUart class is designed
+generic enough that a variant can be made for a sx1276 LoRa chip.
 
-## file names
+## File names
 
 - C++ files have names reflecting the class name
 - C++ source files have the .cpp extension
@@ -19,7 +19,7 @@ though that a variant can be made for a sx1276 LoRa chip.
 - auto generated C++ header files have the .hxx extensions
 - hyphens are used instead of underscore
 
-## variable names
+## Variable names
 
 - camelCase is preferred over *snake_case*
 

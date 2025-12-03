@@ -9,7 +9,7 @@ Explanation, or discussions, clarify and illuminate a particular topic.
 - [edge cluster](./edge-cluster.md)
 - [project](./project.md)
 - [raduino toolkit](./raduino-toolkit.md)
-- [requirements](./requirements/README.md) as use-cases and user stories
+- [requirements](./requirements.md)
 - [versioning](./versioning.md)
 - [arduino](./arduino/README.md)
   - [arduino command handler](./arduino/command-handler.md)

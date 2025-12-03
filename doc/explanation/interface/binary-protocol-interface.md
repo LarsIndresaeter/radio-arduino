@@ -26,7 +26,7 @@ packet
 24-31: "length"
 32-63: "inner checksum (encrypted)"
 64-95: "message counter (encrypted)"
-96-127: "nounce (encrypted)"
+96-127: "nonce (encrypted)"
 128-159: "reserved (encrypted)"
 160-191: "packet payload (encrypted)"
 192-223: "outer checksum (encrypted)"

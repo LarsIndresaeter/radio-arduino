@@ -2,7 +2,6 @@
 
 Guides that take the reader through the steps to solve a real-world problem.
 
-- [how to use dockerapp](./howto-use-dockerapp.md)
 - [pull image from dockerhub](./pull-image-from-dockerhub.md)
 - [create and push image to dockerhub](./create-and-push-image-to-dockerhub.md)
 - [add new command](./add-new-command.md) for your use-case.

@@ -2,11 +2,34 @@
 
 For local development you need to install conan.
 
-## raduino toolkit
+## setup
+
+### build in docker
+
+start a container and use it to build
+
+```console
+./tools/devbox.sh run
+```
+
+### build using conan
 
 ```console
 source tools/setup.sh
+```
+
+## build
+
+clean build
+
+```console
 raduino all
+```
+
+more commands in the raduino toolkit
+
+```console
+raduino help
 ```
 
 ### build and output folder

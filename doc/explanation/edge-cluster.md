@@ -1,7 +1,5 @@
 # edge cluster
 
-Kubernetes is often set up with a cluster for each edge instance. This is
-realized from the code in the repository github.com/LarsIndresaeter/docker-compose-radio-arduino.git
+Example of [how to use docker compose](github.com/LarsIndresaeter/docker-compose-radio-arduino.git)
+to collect data from radio-arduino to an influxdb database.
 
-- use ArgoCD
-- update running software from github and dockerhub
