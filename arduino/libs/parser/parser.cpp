@@ -16,7 +16,7 @@ uint16_t getCommandsParsedCounter() { return commandsParsed; }
 
 void sendMessage(Protocol protocol, ComBusInterface* comBus, uint8_t* payload)
 {
-    uint8_t packet[COMMANDS::MAX_PACKAGE_LENGTH];
+    uint8_t* packet = payload;
     uint8_t length = payload[1] + 2;
 
     if (protocolVersionLastReceivedMessage == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::GATEWAY_ENCRYPTED)
@@ -54,7 +54,7 @@ void sendMessage(Protocol protocol, ComBusInterface* comBus, uint8_t* payload)
 
 void sendPayloadToRadioNode(Protocol protocol, uint8_t* payload, uint8_t length)
 {
-    uint8_t packet[COMMANDS::MAX_PACKAGE_LENGTH];
+    uint8_t* packet = payload;
     uint8_t data_size = 0;
 
     if (protocolVersionLastReceivedMessage == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::NODE)
@@ -106,7 +106,7 @@ void gatewayIdleLoop(ComBusInterface* comBus)
 void parseInput(Protocol protocol, ComBusInterface* comBus)
 {
     uint8_t c = ' ';
-    uint8_t payload[COMMANDS::MAX_PAYLOAD_LENGTH] = {};
+    uint8_t payload[COMMANDS::MAX_PACKAGE_LENGTH] = {};
     uint8_t length = 0;
     uint8_t cnt = 0;
 
