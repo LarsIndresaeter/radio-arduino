@@ -101,13 +101,16 @@ public:
     {
         uint32_t crc = 0;
 
+        // copy payload
+        for (int i = length; i > 0; i--) {
+            packet[PROTOCOL::PAYLOAD::PAYLOAD_OFFSET + i - 1] = payload[i - 1];
+        }
+
         packet[PROTOCOL::HEADER::SYNC0_OFFSET] = PROTOCOL::HEADER::SYNC_PATTERN_BYTE_0;
         packet[PROTOCOL::HEADER::SYNC1_OFFSET] = PROTOCOL::HEADER::SYNC_PATTERN_BYTE_1;
         packet[PROTOCOL::HEADER::VERSION_OFFSET] = protocol_version;
         packet[PROTOCOL::HEADER::LENGTH_OFFSET] = length;
-        for (int i = 0; i < length; i++) {
-            packet[PROTOCOL::PAYLOAD::PAYLOAD_OFFSET + i] = payload[i];
-        }
+
         CRC32_calculate((uint8_t*)&packet[PROTOCOL::PAYLOAD::PAYLOAD_OFFSET], length, &crc);
         writeUint32ToBuffer(&packet[PROTOCOL::HEADER::LENGTH + length], crc);
     }
@@ -115,6 +118,11 @@ public:
     void createEncryptedPacket(uint8_t length, uint8_t* payload, uint8_t* packet, uint8_t protocol_version)
     {
         uint32_t crc = 0;
+
+        // copy payload
+        for (int i = length; i > 0; i--) {
+            packet[PROTOCOL::ENCRYPTED::PAYLOAD_OFFSET + i - 1] = payload[i - 1];
+        }
 
         packet[PROTOCOL::HEADER::SYNC0_OFFSET] = PROTOCOL::HEADER::SYNC_PATTERN_BYTE_0;
         packet[PROTOCOL::HEADER::SYNC1_OFFSET] = PROTOCOL::HEADER::SYNC_PATTERN_BYTE_1;
@@ -127,11 +135,6 @@ public:
         uint32_t nonce = m_cryptoHandler->nonce();
         writeUint32ToBuffer(&packet[PROTOCOL::ENCRYPTED::NONCE_OFFSET], nonce);
         writeUint32ToBuffer(&packet[PROTOCOL::ENCRYPTED::RESERVED_OFFSET], 0);
-
-        // copy payload
-        for (int i = 0; i < length; i++) {
-            packet[PROTOCOL::ENCRYPTED::PAYLOAD_OFFSET + i] = payload[i];
-        }
 
         // inner checksum of nonce, message_id and message
         uint32_t checksum = m_cryptoHandler->checksum(length + 12, &packet[8]);
