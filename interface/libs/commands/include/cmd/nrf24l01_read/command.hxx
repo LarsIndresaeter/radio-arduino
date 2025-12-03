@@ -14,7 +14,7 @@ public:
 
         m_payload.at(offsetof(COMMANDS::NRF24L01_READ::command_t, length)) = length;
 
-        for (int i = 0; i < sizeof(command.data); i++) {
+        for (uint8_t i = 0; i < sizeof(command.data); i++) {
             if (i >= data.size()) {
                 break;
             }
@@ -34,7 +34,7 @@ public:
 
         m_payload.at(offsetof(COMMANDS::NRF24L01_READ::command_t, length)) = length;
 
-        for (int i = 0; i < data.size() && i < 32; i++) {
+        for (uint8_t i = 0; i < data.size() && i < 32; i++) {
             m_payload.at(
                 offsetof(COMMANDS::NRF24L01_READ::command_t, data[0]) + i)
                 = data.at(i);

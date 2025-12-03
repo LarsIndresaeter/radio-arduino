@@ -230,7 +230,7 @@ void NRF24L01_wait_for_tx_complete()
 {
     SPI_ChipSelectLow();
 
-    for (int i = 0; i < 100; i++) {
+    for (uint8_t i = 0; i < 100; i++) {
         SPI_masterTransmitByte(NRF24L01_REGISTER_STATUS);
         uint8_t fifo_status = SPI_masterReceive();
         if (fifo_status & 0x20) {

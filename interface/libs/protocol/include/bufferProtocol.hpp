@@ -43,7 +43,7 @@ public:
         CRC32_calculate(&p[PROTOCOL::PAYLOAD::PAYLOAD_OFFSET], length, &checksumCalculated);
 
         if (checksumReceived == checksumCalculated) {
-            for (int i = 0; i < (PROTOCOL::HEADER::LENGTH + length + PROTOCOL::CHECKSUM::LENGTH); i++) {
+            for (uint8_t i = 0; i < (PROTOCOL::HEADER::LENGTH + length + PROTOCOL::CHECKSUM::LENGTH); i++) {
                 retval.push_back(inputBuffer.at(i));
             }
 
@@ -55,7 +55,7 @@ public:
         }
 
         // remove message from input buffer
-        for (int i = 0; i < (PROTOCOL::HEADER::LENGTH + length + PROTOCOL::CHECKSUM::LENGTH); i++) {
+        for (uint8_t i = 0; i < (PROTOCOL::HEADER::LENGTH + length + PROTOCOL::CHECKSUM::LENGTH); i++) {
             inputBuffer.erase(inputBuffer.begin());
         }
 

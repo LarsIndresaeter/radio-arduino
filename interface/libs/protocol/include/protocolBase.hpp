@@ -102,7 +102,7 @@ public:
         uint32_t crc = 0;
 
         // copy payload
-        for (int i = length; i > 0; i--) {
+        for (uint8_t i = length; i > 0; i--) {
             packet[PROTOCOL::PAYLOAD::PAYLOAD_OFFSET + i - 1] = payload[i - 1];
         }
 
@@ -120,7 +120,7 @@ public:
         uint32_t crc = 0;
 
         // copy payload
-        for (int i = length; i > 0; i--) {
+        for (uint8_t i = length; i > 0; i--) {
             packet[PROTOCOL::ENCRYPTED::PAYLOAD_OFFSET + i - 1] = payload[i - 1];
         }
 

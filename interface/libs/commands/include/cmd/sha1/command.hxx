@@ -12,7 +12,7 @@ public:
     {
         COMMANDS::SHA1::command_t command;
 
-        for (int i = 0; i < sizeof(command.data); i++) {
+        for (uint8_t i = 0; i < sizeof(command.data); i++) {
             if (i >= data.size()) {
                 break;
             }
@@ -30,7 +30,7 @@ public:
     {
         COMMANDS::SHA1::command_t command;
 
-        for (int i = 0; i < data.size() && i < 20; i++) {
+        for (uint8_t i = 0; i < data.size() && i < 20; i++) {
             m_payload.at(
                 offsetof(COMMANDS::SHA1::command_t, data[0]) + i)
                 = data.at(i);

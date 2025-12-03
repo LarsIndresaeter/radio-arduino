@@ -131,7 +131,7 @@ def generateCommandFile(codePath,
             if(arraySize > 4):
                 createStringConstructor = True
                 outfile.write("\n")
-                outfile.write("        for (int i = 0; i < sizeof(command." + arrayBasenameFromVariableName(item) + "); i++) {\n")
+                outfile.write("        for (uint8_t i = 0; i < sizeof(command." + arrayBasenameFromVariableName(item) + "); i++) {\n")
                 outfile.write("            if (i >= " + arrayBasenameFromVariableName(item) + ".size()) {\n")
                 outfile.write("                break;\n")
                 outfile.write("            }\n")
@@ -185,7 +185,7 @@ def generateCommandFile(codePath,
                     outfile.write("        m_payload.at(offsetof(COMMANDS::" + commandName.upper() + "::command_t, " + arrayBasenameFromVariableName(item) + ")) = " + arrayBasenameFromVariableName(item) + ";\n")
                 if(arraySize > 4):
                     outfile.write("\n")
-                    outfile.write("        for (int i = 0; i < " + arrayBasenameFromVariableName(item) + ".size() && i < " + str(arraySize) + "; i++) {\n")
+                    outfile.write("        for (uint8_t i = 0; i < " + arrayBasenameFromVariableName(item) + ".size() && i < " + str(arraySize) + "; i++) {\n")
                     outfile.write("            m_payload.at(\n")
                     outfile.write("                offsetof(COMMANDS::" + commandName.upper() + "::command_t, " + arrayBasenameFromVariableName(item) + "[0]) + i)\n")
                     outfile.write("                = " + arrayBasenameFromVariableName(item) + ".at(i);\n")

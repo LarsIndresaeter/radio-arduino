@@ -19,10 +19,10 @@ void ArduinoCryptoHandler::encrypt(uint8_t length, uint8_t* buffer)
 
     AES::Sanitize();
 
-    for (int i = 0; i < (length - 16); i += 16) {
+    for (uint8_t i = 0; i < (length - 16); i += 16) {
         AES::Crypt(&buffer[i], &m_tk[0], &aes_iv[0]);
 
-        for (int j = 0; j < 16; j++) {
+        for (uint8_t j = 0; j < 16; j++) {
             aes_iv[j] = buffer[i + j];
         }
         // ecb mode
@@ -50,14 +50,14 @@ void ArduinoCryptoHandler::decrypt(uint8_t length, uint8_t* buffer)
         decryptLastBlock(length, buffer);
     }
 
-    for (int i = 0; i < (length - 16); i += 16) {
-        for (int j = 0; j < 16; j++) {
+    for (uint8_t i = 0; i < (length - 16); i += 16) {
+        for (uint8_t j = 0; j < 16; j++) {
             tmp[j] = buffer[i + j];
         }
 
         AES::Decrypt(&buffer[i], &m_tk[0], &aes_iv[0]);
         // ecb mode
-        for (int j = 0; j < 16; j++) {
+        for (uint8_t j = 0; j < 16; j++) {
             aes_iv[j] = tmp[j];
         }
     }
@@ -118,13 +118,13 @@ uint32_t ArduinoCryptoHandler::nonce()
 
 void ArduinoCryptoHandler::setTransportKey(uint8_t tk[16])
 {
-    for (int i = 0; i < 16; i++) {
+    for (uint8_t i = 0; i < 16; i++) {
         m_tk[i] = tk[i];
     }
 }
 void ArduinoCryptoHandler::setMacKey(uint8_t mk[16])
 {
-    for (int i = 0; i < 16; i++) {
+    for (uint8_t i = 0; i < 16; i++) {
         m_mk[i] = mk[i];
     }
 }

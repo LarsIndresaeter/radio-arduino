@@ -19,7 +19,7 @@ public:
 
         m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, length)) = length;
 
-        for (int i = 0; i < sizeof(command.data); i++) {
+        for (uint8_t i = 0; i < sizeof(command.data); i++) {
             if (i >= data.size()) {
                 break;
             }
@@ -44,7 +44,7 @@ public:
 
         m_payload.at(offsetof(COMMANDS::I2C_WRITE::command_t, length)) = length;
 
-        for (int i = 0; i < data.size() && i < 16; i++) {
+        for (uint8_t i = 0; i < data.size() && i < 16; i++) {
             m_payload.at(
                 offsetof(COMMANDS::I2C_WRITE::command_t, data[0]) + i)
                 = data.at(i);
