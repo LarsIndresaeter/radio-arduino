@@ -97,13 +97,18 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     }
 
     if (readOperation) {
-        if (length == 2) {
+        if (length == 1) {
+            auto result = mon.get<>(RaduinoCommandI2cRead(i2cDeviceAddress, registerAddress, length));
+            uint8_t value = result.responseStruct().data[0];
+
+            std::cout << "register[" << std::dec << registerAddress << "]=" << value << ", 0x" << std::hex << value
+                      << std::endl;
+        }
+        else if (length == 2) {
             auto result = mon.get<>(RaduinoCommandI2cRead(i2cDeviceAddress, registerAddress, length));
             uint16_t value = result.responseStruct().data[0] << 8;
             value |= result.responseStruct().data[1];
 
-            // std::cout << "register[" << std::to_string(registerAddress) << "]=" << std::to_string(value) <<
-            // std::endl;
             std::cout << "register[" << std::dec << registerAddress << "]=" << value << ", 0x" << std::hex << value
                       << std::endl;
         }
