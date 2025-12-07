@@ -12,6 +12,21 @@ The steps to support a new command will typically look like this:
 6. Add new linux command line tool
 7. Pubish lsm303d sensor data on mqtt
 
+commits in git history for this code change
+
+```console
+git log --graph --oneline --decorate d0c6b79..49093c4
+* 49093c4 (HEAD -> main) Merge branch 'add-command-read-stm303d'
+* 394aa1f docs(lsm303d): update code walk throug
+* fca3c9f feat(lsm303d): publish accelerometer data on mqtt
+* 9802211 feat(lsm303d): add linux command line tool
+* d5c7737 feat(lsm303d): implement command on arduino
+* b01c76c feat(lsm303d): add generated files for new command
+* 93992b7 feat(lsm303d): define new command get_lsm303d
+* 8952dc2 docs(lsm303d): describe testing in code walkthrough
+* 578a6d8 docs(lsm303d): Add requirements to code walkthrough
+```
+
 ## requirements
 
 The sensor lsm303d has an accelerometer and a magnetometer.
