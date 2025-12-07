@@ -1,11 +1,11 @@
 # radio-arduino
 
-> **user story:** I want to read a sensor on a
+> **use case:** I want to read a sensor on a
 > [rf-nano](https://ardunic.com/product/RF-Nano-Board-NRF24L01-Wireless-Module)
 > arduino board via a radio link and send data to
 > the cloud using [mqtt](./doc/explanation/linux/mqtt.md)
 
-- [more user stories](doc/explanation/requirements.md)
+- [example of use case solution](./doc/how-to-guides/code-walkthrough-add-command-get-lsm303d.md)
 
 ## Features
 
