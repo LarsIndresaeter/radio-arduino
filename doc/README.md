@@ -18,6 +18,7 @@
 - [develop on mac](./how-to-guides/develop-on-mac.md)
 - [develop on rasppberry pi](./how-to-guides/develop-on-raspberry-pi.md)
 - [how to monitor serial traffic using socat](./how-to-guides/how-to-monitor-serial-trafic-using-socat.md)
+- [code walkthrough of adding new commadn lsm303](./how-to-guides/code-walkthrough-add-command-get-lsm303d.md)
 
 ## [Reference guides](./reference-guides/README.md)
 

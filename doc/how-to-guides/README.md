@@ -8,4 +8,5 @@ Guides that take the reader through the steps to solve a real-world problem.
 - [develop on mac](./develop-on-mac.md)
 - [develop on raspberry pi](./develop-on-raspberry-pi.md)
 - [monitor serial commands](./how-to-monitor-serial-trafic-using-socat.md)
+- [code walkthrough of adding new commadn lsm303](./code-walkthrough-add-command-get-lsm303d.md)
 
