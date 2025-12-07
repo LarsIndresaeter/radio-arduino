@@ -46,6 +46,7 @@ generator.add(39, "soft_reset", [], [])
 generator.add(40, "unlock_session", [], [])
 generator.add(41, "set_unique_id", ["id[4]"], [])
 generator.add(42, "get_unique_id", [], ["id[4]"])
+generator.add(43, "get_lsm303d", [], ["accelerometerX[2]", "accelerometerY[2]", "accelerometerZ[2]"])
 
 # close files
 generator.closeFiles()
