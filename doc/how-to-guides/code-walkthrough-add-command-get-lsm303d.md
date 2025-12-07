@@ -49,3 +49,65 @@ Read high register for x axis
 ./bin/raduino-i2c-bridge -a 50 -r 4 -c 41
 ```
 
+## read accelerometer with cli tool
+
+with the new command line tool you can now read lsm303d connected to a gateway or node.
+
+read from gateway
+
+```console
+./bin/raduino-device-lsm303d -N 0 -r
+```
+
+read from node
+
+```console
+./bin/raduino-device-lsm303d -N 0 -R
+```
+
+result
+
+```console
+accelerometer=[-16320, 256, 128]
+```
+
+## test mqtt publishig
+
+start mosquitto and subscribe. Installation of mqtt server is not described here.
+
+```console
+mosquitto_sub -t '#' -v
+```
+
+start mqtt client
+
+```console
+./bin/raduino-mqtt-client
+```
+
+mqtt messages received  by mosquitto_sub:
+
+```console
+radio-arduino/NBIRTH/raduino-gateway- {"dateString: "2025-12-07 09:57:35"}
+radio-arduino/NBIRTH/node-acceleromet {"dateString: "2025-12-07 09:57:40"}
+radio-arduino/NDATA/node-acceleromet/vcc {"name":"vcc", "timestamp":1765101460669, "responsetimeUs":16593, "responseCode":"success", "payload":{"vcc":4860}}
+radio-arduino/NDATA/node-acceleromet/gpio {"name":"gpio", "timestamp":1765101460685, "responsetimeUs":6647, "responseCode":"success", "payload":{"portB":15, "portC":48, "portD":3}}
+radio-arduino/NDATA/node-acceleromet/get_lsm303d {"name":"get_lsm303d", "timestamp":1765101460692, "responsetimeUs":9346, "responseCode":"success", "payload":{"accelerometerX":49152, "accelerometerY":192, "accelerometerZ":65472}}
+```
+
+Pretty print of json message from the new command `get_lsm303d`.
+
+```json
+{
+  "name": "get_lsm303d",
+  "timestamp": 1765101460692,
+  "responsetimeUs": 9346,
+  "responseCode": "success",
+  "payload": {
+    "accelerometerX": 49152,
+    "accelerometerY": 192,
+    "accelerometerZ": 65472
+  }
+}
+```
+
