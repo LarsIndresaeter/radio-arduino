@@ -33,6 +33,7 @@ void DigitalTwin::execute()
         if (m_radioSession.wakeupNotResponding()) {
             readVccAndPublish();
             readGpioAndPublish();
+            readAccelerometerAndPublish();
             m_timeLastPoll = secondsSinceEpoch();
         }
     }
@@ -90,6 +91,16 @@ void DigitalTwin::readGpioAndPublish()
 void DigitalTwin::readQuadencoderAndPublish()
 {
     auto response = m_monitor.getRadio<>(RaduinoCommandQuadratureEncoder());
+
+    if (m_monitor.lastCommandReturnedValidResponse()) {
+        std::string topic = createMqttTopic("NDATA", m_name, response.getCommandName());
+        publishMessage(topic, response.getJson());
+    }
+}
+
+void DigitalTwin::readAccelerometerAndPublish()
+{
+    auto response = m_monitor.getRadio<>(RaduinoCommandGetLsm303d());
 
     if (m_monitor.lastCommandReturnedValidResponse()) {
         std::string topic = createMqttTopic("NDATA", m_name, response.getCommandName());
