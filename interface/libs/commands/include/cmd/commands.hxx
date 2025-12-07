@@ -45,3 +45,4 @@
 #include <cmd/unlock_session/command.hxx>
 #include <cmd/set_unique_id/command.hxx>
 #include <cmd/get_unique_id/command.hxx>
+#include <cmd/get_lsm303d/command.hxx>

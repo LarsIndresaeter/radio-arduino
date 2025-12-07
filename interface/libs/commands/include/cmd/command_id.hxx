@@ -51,6 +51,7 @@ enum class OI
     UNLOCK_SESSION = 40,
     SET_UNIQUE_ID = 41,
     GET_UNIQUE_ID = 42,
+    GET_LSM303D = 43,
 };
 
 } // namespace COMMANDS

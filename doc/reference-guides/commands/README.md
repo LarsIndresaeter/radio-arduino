@@ -41,3 +41,4 @@
 - [UnlockSession](./unlock_session.md)
 - [SetUniqueId](./set_unique_id.md)
 - [GetUniqueId](./get_unique_id.md)
+- [GetLsm303d](./get_lsm303d.md)
