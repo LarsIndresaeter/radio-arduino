@@ -25,6 +25,7 @@
 #include <command-handlers-timer.hpp>
 #include <command-handlers-watchdog.hpp>
 #include <command-handlers-ws2812b.hpp>
+#include <command-handlers-lsm303d.hpp>
 #include <command-handlers.hpp>
 
 bool rx_mode_gateway = true; // default role, update eeprom to switch to node
@@ -57,6 +58,9 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
         break;
     case COMMANDS::OI::WS2812B:
         LIBWS2812B::commandWs2812b(commandPayload, responsePayload);
+        break;
+    case COMMANDS::OI::GET_LSM303D:
+        LSM303D::commandGetLsm303d(commandPayload, responsePayload);
         break;
     case COMMANDS::OI::AES:
         AES::commandAes(commandPayload, responsePayload);

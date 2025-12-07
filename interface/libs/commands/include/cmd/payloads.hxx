@@ -46,3 +46,4 @@
 #include <cmd/unlock_session/payload.hxx>
 #include <cmd/set_unique_id/payload.hxx>
 #include <cmd/get_unique_id/payload.hxx>
+#include <cmd/get_lsm303d/payload.hxx>
