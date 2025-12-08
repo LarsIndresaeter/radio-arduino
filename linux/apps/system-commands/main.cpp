@@ -33,6 +33,8 @@ void print_usage()
     std::cout << "                 -I : get unique id from node" << std::endl;
     std::cout << "                 -r : get random bytes command on gateway" << std::endl;
     std::cout << "                 -R : get random bytes command on node" << std::endl;
+    std::cout << "                 -l : get attached devices csv string from gateway" << std::endl;
+    std::cout << "                 -L : get attached devices csv string from node" << std::endl;
     std::cout << "                 -s : get statistics from gateway" << std::endl;
     std::cout << "                 -S : get statistics from node" << std::endl;
     std::cout << "                 -m : get device name from gateway" << std::endl;
@@ -54,7 +56,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     char option = 0;
     uint8_t radioAddress = 0;
 
-    while ((option = getopt(argc, argv, "K:N:c:C:f:F:g:G:iImMxXrRdDpPt:T:usSUvVzZh")) != -1) {
+    while ((option = getopt(argc, argv, "K:N:c:C:f:F:g:G:lLiImMxXrRdDpPt:T:usSUvVzZh")) != -1) {
         switch (option) {
         case 'K': {
             std::string s(optarg);
@@ -77,7 +79,12 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
                 radioSession.wakeupNotResponding();
             }
             break;
-
+        case 'l':
+            std::cout << mon.get<>(RaduinoCommandGetAttachedDevicesCsvString()) << std::endl;
+            break;
+        case 'L':
+            std::cout << mon.getRadio<>(RaduinoCommandGetAttachedDevicesCsvString()) << std::endl;
+            break;
         case 'c': {
             std::string s(optarg);
             std::cout << mon.get<>(RaduinoCommandSha1(s)) << std::endl;

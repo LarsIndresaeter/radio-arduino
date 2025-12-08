@@ -83,4 +83,26 @@ void commandGetUniqueId(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
+void commandGetAttachedDevicesCsvString(uint8_t* commandPayload, uint8_t* responsePayload)
+{
+    COMMANDS::GET_ATTACHED_DEVICES_CSV_STRING::command_t command(commandPayload);
+    COMMANDS::GET_ATTACHED_DEVICES_CSV_STRING::response_t response;
+
+    EEPROM::readMultiple(
+        offsetof(full_eeprom_t, attached_devices_csv_string), response.csvString, sizeof(response.csvString));
+
+    response.serialize(responsePayload);
+}
+
+void commandSetAttachedDevicesCsvString(uint8_t* commandPayload, uint8_t* responsePayload)
+{
+    COMMANDS::SET_ATTACHED_DEVICES_CSV_STRING::command_t command(commandPayload);
+    COMMANDS::SET_ATTACHED_DEVICES_CSV_STRING::response_t response;
+
+    EEPROM::writeMultiple(
+        offsetof(full_eeprom_t, attached_devices_csv_string), command.csvString, sizeof(command.csvString));
+
+    response.serialize(responsePayload);
+}
+
 } // namespace EEPROM

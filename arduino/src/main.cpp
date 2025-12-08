@@ -161,6 +161,12 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
     case COMMANDS::OI::GET_UNIQUE_ID:
         EEPROM::commandGetUniqueId(commandPayload, responsePayload);
         break;
+    case COMMANDS::OI::GET_ATTACHED_DEVICES_CSV_STRING:
+        EEPROM::commandGetAttachedDevicesCsvString(commandPayload, responsePayload);
+        break;
+    case COMMANDS::OI::SET_ATTACHED_DEVICES_CSV_STRING:
+        EEPROM::commandSetAttachedDevicesCsvString(commandPayload, responsePayload);
+        break;
     default:
         break;
     }

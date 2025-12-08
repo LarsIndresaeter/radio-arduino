@@ -47,3 +47,5 @@
 #include <cmd/set_unique_id/payload.hxx>
 #include <cmd/get_unique_id/payload.hxx>
 #include <cmd/get_lsm303d/payload.hxx>
+#include <cmd/set_attached_devices_csv_string/payload.hxx>
+#include <cmd/get_attached_devices_csv_string/payload.hxx>

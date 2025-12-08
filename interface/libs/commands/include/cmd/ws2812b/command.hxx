@@ -48,19 +48,19 @@ public:
     {
         COMMANDS::WS2812B::command_t command;
 
-        for (uint8_t i = 0; i < red.size() && i < 8; i++) {
+        for (uint8_t i = 0; i < red.size() & i < 8; i++) {
             m_payload.at(
                 offsetof(COMMANDS::WS2812B::command_t, red[0]) + i)
                 = red.at(i);
         }
 
-        for (uint8_t i = 0; i < green.size() && i < 8; i++) {
+        for (uint8_t i = 0; i < green.size() & i < 8; i++) {
             m_payload.at(
                 offsetof(COMMANDS::WS2812B::command_t, green[0]) + i)
                 = green.at(i);
         }
 
-        for (uint8_t i = 0; i < blue.size() && i < 8; i++) {
+        for (uint8_t i = 0; i < blue.size() & i < 8; i++) {
             m_payload.at(
                 offsetof(COMMANDS::WS2812B::command_t, blue[0]) + i)
                 = blue.at(i);

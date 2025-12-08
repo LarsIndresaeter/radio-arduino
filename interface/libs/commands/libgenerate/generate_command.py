@@ -11,7 +11,7 @@ def generateCommandIdOpen(codePath):
         outfile.write("\n") 
         outfile.write("namespace COMMANDS {\n") 
         outfile.write("\n") 
-        outfile.write("constexpr uint8_t MAX_PAYLOAD_LENGTH = 64;\n")
+        outfile.write("constexpr uint8_t MAX_PAYLOAD_LENGTH = 66;\n")
         outfile.write("constexpr uint8_t MAX_PACKAGE_LENGTH = (MAX_PAYLOAD_LENGTH + 4 + 2 + 20); // + header, crypto, checksum\n")
         outfile.write("\n")
         outfile.write("enum class OI\n")
@@ -185,7 +185,7 @@ def generateCommandFile(codePath,
                     outfile.write("        m_payload.at(offsetof(COMMANDS::" + commandName.upper() + "::command_t, " + arrayBasenameFromVariableName(item) + ")) = " + arrayBasenameFromVariableName(item) + ";\n")
                 if(arraySize > 4):
                     outfile.write("\n")
-                    outfile.write("        for (uint8_t i = 0; i < " + arrayBasenameFromVariableName(item) + ".size() && i < " + str(arraySize) + "; i++) {\n")
+                    outfile.write("        for (uint8_t i = 0; i < " + arrayBasenameFromVariableName(item) + ".size() & i < " + str(arraySize) + "; i++) {\n")
                     outfile.write("            m_payload.at(\n")
                     outfile.write("                offsetof(COMMANDS::" + commandName.upper() + "::command_t, " + arrayBasenameFromVariableName(item) + "[0]) + i)\n")
                     outfile.write("                = " + arrayBasenameFromVariableName(item) + ".at(i);\n")

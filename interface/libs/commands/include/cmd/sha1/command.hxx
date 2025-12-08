@@ -30,7 +30,7 @@ public:
     {
         COMMANDS::SHA1::command_t command;
 
-        for (uint8_t i = 0; i < data.size() && i < 20; i++) {
+        for (uint8_t i = 0; i < data.size() & i < 20; i++) {
             m_payload.at(
                 offsetof(COMMANDS::SHA1::command_t, data[0]) + i)
                 = data.at(i);

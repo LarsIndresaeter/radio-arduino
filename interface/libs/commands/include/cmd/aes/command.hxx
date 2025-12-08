@@ -34,7 +34,7 @@ public:
 
         m_payload.at(offsetof(COMMANDS::AES::command_t, type)) = type;
 
-        for (uint8_t i = 0; i < data.size() && i < 16; i++) {
+        for (uint8_t i = 0; i < data.size() & i < 16; i++) {
             m_payload.at(
                 offsetof(COMMANDS::AES::command_t, data[0]) + i)
                 = data.at(i);

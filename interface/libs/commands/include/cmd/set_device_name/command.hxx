@@ -30,7 +30,7 @@ public:
     {
         COMMANDS::SET_DEVICE_NAME::command_t command;
 
-        for (uint8_t i = 0; i < name.size() && i < 16; i++) {
+        for (uint8_t i = 0; i < name.size() & i < 16; i++) {
             m_payload.at(
                 offsetof(COMMANDS::SET_DEVICE_NAME::command_t, name[0]) + i)
                 = name.at(i);

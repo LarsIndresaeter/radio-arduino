@@ -18,6 +18,7 @@ void print_usage()
     std::cout << "        -e <key> : set data encryption key" << std::endl;
     std::cout << "         -i <id> : set unique id. defaults to unix timestamp" << std::endl;
     std::cout << "              -d : dump eeprom contents" << std::endl;
+    std::cout << "              -l : set attached devices csv string" << std::endl;
     std::cout << "       -r <role> : set radio role <gateway|node>" << std::endl;
     std::cout << "       -s <flag> : set requireTransportEncyption flag <0|1>" << std::endl;
     std::cout << "              -h : print this text" << std::endl;
@@ -92,6 +93,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     std::string setNewTransportKey = "transport-key";
     std::string setNewEncryptionKey = "secret";
     std::string currentTransportKey = "";
+    std::string setAttachedDevicesCsvString = "";
     uint8_t set_transport_encryption_required = 0;
     uint8_t setRadioRole = 'g';
     uint8_t setRequireTransportEncryption = 0;
@@ -100,7 +102,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t radioAddress = 0;
     uint32_t uniqueId = (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count()) / 1000;
 
-    while ((option = getopt(argc, argv, "K:n:t:e:i:r:ds:h")) != -1) {
+    while ((option = getopt(argc, argv, "K:n:t:e:i:l:r:ds:h")) != -1) {
         switch (option) {
         case 'n':
             setNewDeviceName = optarg;
@@ -123,6 +125,9 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             break;
         case 'd':
             dump_eeprom = true;
+            break;
+        case 'l':
+            setAttachedDevicesCsvString = optarg;
             break;
         case 'r': {
             std::string role(optarg);
@@ -155,7 +160,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     pingAndExitIfNoResponse(mon);
 
     if (dump_eeprom) {
-        dumpEeprom(mon, 10);
+        dumpEeprom(mon, 24);
     }
 
     std::cout << mon.get<>(RaduinoCommandSetDeviceName(setNewDeviceName)) << std::endl;
@@ -164,9 +169,10 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     std::cout << mon.get<>(RaduinoCommandRequireTransportEncryption(setRequireTransportEncryption)) << std::endl;
     std::cout << mon.get<>(RaduinoCommandSetUniqueId(uniqueId)) << std::endl;
     std::cout << mon.get<>(RaduinoCommandSetRadioRole(setRadioRole)) << std::endl;
+    std::cout << mon.get<>(RaduinoCommandSetAttachedDevicesCsvString(setAttachedDevicesCsvString)) << std::endl;
 
     if (dump_eeprom) {
-        dumpEeprom(mon, 10);
+        dumpEeprom(mon, 24);
     }
 
     std::cout << "reset device" << std::endl;
