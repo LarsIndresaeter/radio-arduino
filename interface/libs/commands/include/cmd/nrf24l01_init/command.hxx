@@ -43,13 +43,13 @@ public:
     {
         COMMANDS::NRF24L01_INIT::command_t command;
 
-        for (uint8_t i = 0; i < txAddr.size() && i < 5; i++) {
+        for (uint8_t i = 0; i < txAddr.size() & i < 5; i++) {
             m_payload.at(
                 offsetof(COMMANDS::NRF24L01_INIT::command_t, txAddr[0]) + i)
                 = txAddr.at(i);
         }
 
-        for (uint8_t i = 0; i < rxAddr.size() && i < 5; i++) {
+        for (uint8_t i = 0; i < rxAddr.size() & i < 5; i++) {
             m_payload.at(
                 offsetof(COMMANDS::NRF24L01_INIT::command_t, rxAddr[0]) + i)
                 = rxAddr.at(i);
