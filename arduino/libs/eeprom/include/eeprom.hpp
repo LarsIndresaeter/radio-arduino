@@ -26,6 +26,7 @@ static_assert(sizeof(eeprom_data_t) == 160, "eeprom_data_t is not expected size"
 typedef struct full_eeprom {
     eeprom_data_t A;
     eeprom_data_t B;
+    uint8_t attached_devices_csv_string[64];
 } full_eeprom_t;
 
 namespace EEPROM {
