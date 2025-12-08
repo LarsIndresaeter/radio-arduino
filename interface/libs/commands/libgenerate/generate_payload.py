@@ -38,8 +38,8 @@ def generatePayloadFile(codePath,
         outfile.write("    constexpr uint8_t COMMAND_LENGTH = " + str(calculateStructSizeFromNames(commandPayloadFields)) + ";\n")
         outfile.write("    constexpr uint8_t RESPONSE_LENGTH = " + str(calculateStructSizeFromNames(responsePayloadFields)) + ";\n")
         outfile.write("\n")
-        outfile.write("    static_assert(COMMAND_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, \"COMMAND_LENGTH larger than max payload\");\n")
-        outfile.write("    static_assert(RESPONSE_LENGTH < COMMANDS::MAX_PAYLOAD_LENGTH, \"RESPONSE_LENGTH larger than max payload\");\n")
+        outfile.write("    static_assert(COMMAND_LENGTH <= COMMANDS::MAX_PAYLOAD_LENGTH, \"COMMAND_LENGTH larger than max payload\");\n")
+        outfile.write("    static_assert(RESPONSE_LENGTH <= COMMANDS::MAX_PAYLOAD_LENGTH, \"RESPONSE_LENGTH larger than max payload\");\n")
         outfile.write("\n")
 
     # add command struct
