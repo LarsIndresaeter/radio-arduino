@@ -1,13 +1,13 @@
-# code walkthrough add new command get_lsm303d
+# code walkthrough add new command get_lsm303/
 
 A typical task is to add support for a new sensor.
 In this example we walk through the code changes for adding the command get_lsm303d.
 The steps to support a new command will typically look like this:
 
 1. Describe requirements
-2. Read registers using the tool `raduino-i2c-bridge`
-3. Define new command
-4. Generate header files for new command
+2. Read i2c registers on the device using the tool `raduino-i2c-bridge`
+3. Define new command in generator script
+4. Generate C++ files for new command
 5. Implement command handler for arduino
 6. Add new linux command line tool
 7. Pubish lsm303d sensor data on mqtt
@@ -31,11 +31,11 @@ git log --graph --oneline --decorate d0c6b79..49093c4
 
 The sensor lsm303d has an accelerometer and a magnetometer.
 
-> **use case:**\
-> \
-> Read the accelerometer from lsm303d
+- Read the accelerometer I2C registers on lsm303d
+- Add command line interface for reading lsm303d
+- publish accelerometer data on mqtt
 
-## Read registers using the tool raduino-i2c-bridge
+## Read I2C registers using the tool raduino-i2c-bridge
 
 Check that we can talk to arduino
 
@@ -43,7 +43,7 @@ Check that we can talk to arduino
 ./bin/raduino-system-commands -p
 ```
 
-From the datasheet we find that:
+From the lsm303d datasheet we find that:
 
 - The 8-bit address is **0x32** _(50 decimal)_
 - Write the value **0x17** _(23 decimal))_ to register ctrl1 to enable the accelerometer
@@ -51,6 +51,8 @@ From the datasheet we find that:
 - The register OUT_X_H_A has the register address **0x29** _(41 decimal)_
 
 ### enable accelerometer
+
+write to the I2C registers using the new app added in commit `9802211`.
 
 ```console
 ./bin/raduino-i2c-bridge -a 50 -c 32 -w 23
@@ -66,15 +68,17 @@ Read high register for x axis
 
 ## read accelerometer with cli tool
 
-with the new command line tool you can now read lsm303d connected to a gateway or node.
+with the new command line tool you can now read lsm303d connected to a gateway
+or node.
 
 read from gateway
 
 ```console
-./bin/raduino-device-lsm303d -N 0 -r
+./bin/raduino-device-lsm303d -r
 ```
 
-read from node
+read from node. Note that `-N 0` will wake up radio node with address 0 in the
+implied addressing scheme between radio-arduino gateway and node.
 
 ```console
 ./bin/raduino-device-lsm303d -N 0 -R
@@ -94,7 +98,7 @@ start mosquitto and subscribe. Installation of mqtt server is not described here
 mosquitto_sub -t '#' -v
 ```
 
-start mqtt client
+start mqtt client which was updated in commit `fca3c9f`.
 
 ```console
 ./bin/raduino-mqtt-client
