@@ -3,7 +3,7 @@
 
 namespace COMMANDS {
 
-constexpr uint8_t MAX_PAYLOAD_LENGTH = 64;
+constexpr uint8_t MAX_PAYLOAD_LENGTH = 66;
 constexpr uint8_t MAX_PACKAGE_LENGTH = (MAX_PAYLOAD_LENGTH + 4 + 2 + 20); // + header, crypto, checksum
 
 enum class OI
@@ -52,6 +52,8 @@ enum class OI
     SET_UNIQUE_ID = 41,
     GET_UNIQUE_ID = 42,
     GET_LSM303D = 43,
+    SET_ATTACHED_DEVICES_CSV_STRING = 44,
+    GET_ATTACHED_DEVICES_CSV_STRING = 45,
 };
 
 } // namespace COMMANDS

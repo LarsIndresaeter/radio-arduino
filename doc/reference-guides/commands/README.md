@@ -42,3 +42,5 @@
 - [SetUniqueId](./set_unique_id.md)
 - [GetUniqueId](./get_unique_id.md)
 - [GetLsm303d](./get_lsm303d.md)
+- [SetAttachedDevicesCsvString](./set_attached_devices_csv_string.md)
+- [GetAttachedDevicesCsvString](./get_attached_devices_csv_string.md)
