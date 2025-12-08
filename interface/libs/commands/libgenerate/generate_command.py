@@ -11,7 +11,7 @@ def generateCommandIdOpen(codePath):
         outfile.write("\n") 
         outfile.write("namespace COMMANDS {\n") 
         outfile.write("\n") 
-        outfile.write("constexpr uint8_t MAX_PAYLOAD_LENGTH = 64;\n")
+        outfile.write("constexpr uint8_t MAX_PAYLOAD_LENGTH = 66;\n")
         outfile.write("constexpr uint8_t MAX_PACKAGE_LENGTH = (MAX_PAYLOAD_LENGTH + 4 + 2 + 20); // + header, crypto, checksum\n")
         outfile.write("\n")
         outfile.write("enum class OI\n")
