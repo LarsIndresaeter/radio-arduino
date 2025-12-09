@@ -105,16 +105,16 @@ void NRF24L01_init(uint8_t* rx_addr, uint8_t* tx_addr, bool master)
     NRF24L01_write_register(NRF24L01_REGISTER_EN_AA,
                             0x01); // Disable auto acknowledgement on data pipe 0
     NRF24L01_write_register(NRF24L01_REGISTER_SETUP_RETR,
-                            0xFF);                              // 750 uS retransmit delay, 3 retransmit count
+                            0x30);                              // 750 uS retransmit delay, 3 retransmit count
     NRF24L01_write_register(NRF24L01_REGISTER_EN_RXADDR, 0x03); // enable RX on pipe 0
     NRF24L01_write_register(NRF24L01_REGISTER_DYNPD,
-                            0x03); // enable dynamic payload length on pipe 0
+                            0x01); // enable dynamic payload length on pipe 0
     NRF24L01_write_register(NRF24L01_REGISTER_RF_CHANNEL, rf_channel);
     NRF24L01_write_register(NRF24L01_REGISTER_RF_SETUP,
                             0x06);                           // 1MBPS, 0dBm (max power)
     NRF24L01_write_register(NRF24L01_REGISTER_STATUS, 0x70); // clear RX_DR, TX_DS and MAX_TR
     NRF24L01_write_register(NRF24L01_REGISTER_FEATURE,
-                            0x07); // enable dynamic payload length and payload with ACK
+                            0x05); // enable dynamic payload length and payload with ACK
 
     NRF24L01_write_register(NRF24L01_REGISTER_RX_ADDR_P0, &rx_addr[0], NRF24L01_ADDR_SIZE);
 
