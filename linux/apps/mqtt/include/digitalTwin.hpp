@@ -22,7 +22,10 @@ private:
     uint8_t m_radioAddress;
     monitor& m_monitor;
     mqtt::async_client& m_mqttClient;
+    std::string m_attachedDevicesCsvString;
 
+    bool hasDeviceAttached(std::string device);
+    void readAttachedDevicesCsvString();
     void readVccAndPublish();
     void readGpioAndPublish();
     void readQuadencoderAndPublish();

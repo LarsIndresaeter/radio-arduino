@@ -1,4 +1,5 @@
 #include "digitalTwin.hpp"
+#include "include/digitalTwin.hpp"
 
 DigitalTwin::DigitalTwin(monitor& monitor, mqtt::async_client& mqtt_client, uint8_t radioAddress, std::string name)
     : m_radioAddress(radioAddress)
@@ -68,6 +69,24 @@ void DigitalTwin::publishMessage(std::string topic, std::string message)
     }
 }
 
+bool DigitalTwin::hasDeviceAttached(std::string device)
+{
+    bool retval = false;
+
+    if (m_attachedDevicesCsvString.find(device) != std::string::npos) {
+        retval = true;
+    }
+
+    return (retval);
+}
+
+void DigitalTwin::readAttachedDevicesCsvString()
+{
+    if (m_attachedDevicesCsvString.empty()) {
+        m_attachedDevicesCsvString = m_monitor.getRadio<>(RaduinoCommandGetAttachedDevicesCsvString()).getCsvstring();
+    }
+}
+
 void DigitalTwin::readVccAndPublish()
 {
     auto response = m_monitor.getRadio<>(RaduinoCommandVcc());
@@ -90,41 +109,48 @@ void DigitalTwin::readGpioAndPublish()
 
 void DigitalTwin::readQuadencoderAndPublish()
 {
-    auto response = m_monitor.getRadio<>(RaduinoCommandQuadratureEncoder());
+    if (hasDeviceAttached("quad")) {
+        auto response = m_monitor.getRadio<>(RaduinoCommandQuadratureEncoder());
 
-    if (m_monitor.lastCommandReturnedValidResponse()) {
-        std::string topic = createMqttTopic("NDATA", m_name, response.getCommandName());
-        publishMessage(topic, response.getJson());
+        if (m_monitor.lastCommandReturnedValidResponse()) {
+            std::string topic = createMqttTopic("NDATA", m_name, response.getCommandName());
+            publishMessage(topic, response.getJson());
+        }
     }
 }
 
 void DigitalTwin::readAccelerometerAndPublish()
 {
-    auto response = m_monitor.getRadio<>(RaduinoCommandGetLsm303d());
+    if (hasDeviceAttached("lsm303d")) {
+        auto response = m_monitor.getRadio<>(RaduinoCommandGetLsm303d());
 
-    if (m_monitor.lastCommandReturnedValidResponse()) {
-        std::string topic = createMqttTopic("NDATA", m_name, response.getCommandName());
-        publishMessage(topic, response.getJson());
+        if (m_monitor.lastCommandReturnedValidResponse()) {
+            std::string topic = createMqttTopic("NDATA", m_name, response.getCommandName());
+            publishMessage(topic, response.getJson());
+        }
     }
 }
 
 void DigitalTwin::updateDisplayText()
 {
-    COMMANDS::SSD1306::command_t command;
-    std::vector<uint8_t> lcd(sizeof(command.data), ' ');
-    std::string displayText = m_desiredState->getDesiredDisplayText();
+    if (hasDeviceAttached("ssd1306")) {
+        COMMANDS::SSD1306::command_t command;
+        std::vector<uint8_t> lcd(sizeof(command.data), ' ');
+        std::string displayText = m_desiredState->getDesiredDisplayText();
 
-    for (uint8_t i = 0; i < displayText.size() && i < static_cast<uint8_t>(sizeof(command.data)); i++) {
-        lcd.at(i) = displayText.at(i);
-    }
+        for (uint8_t i = 0; i < displayText.size() && i < static_cast<uint8_t>(sizeof(command.data)); i++) {
+            lcd.at(i) = displayText.at(i);
+        }
 
-    auto response = m_monitor.getRadio<>(RaduinoCommandSsd1306(2, lcd), static_cast<std::chrono::milliseconds>(500));
-    if (m_monitor.lastCommandReturnedValidResponse()) {
-        std::string topic = m_desiredState->getTopicString() + "/actualState";
-        std::string message
-            = "{\"dateString\": \"" + getDateTimeString() + "\", \"displayText\": \"" + displayText + "\"}";
+        auto response
+            = m_monitor.getRadio<>(RaduinoCommandSsd1306(2, lcd), static_cast<std::chrono::milliseconds>(500));
+        if (m_monitor.lastCommandReturnedValidResponse()) {
+            std::string topic = m_desiredState->getTopicString() + "/actualState";
+            std::string message
+                = "{\"dateString\": \"" + getDateTimeString() + "\", \"displayText\": \"" + displayText + "\"}";
 
-        publishMessage(topic, message);
+            publishMessage(topic, message);
+        }
     }
 }
 
