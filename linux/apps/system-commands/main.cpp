@@ -48,6 +48,8 @@ void print_usage()
     std::cout << "                 -V : get device version from node" << std::endl;
     std::cout << "                 -x : HOTP command on gateway" << std::endl;
     std::cout << "                 -X : HOTP command on node" << std::endl;
+    std::cout << "                 -Z : Verbose on" << std::endl;
+    std::cout << "                 -z : Verbose off" << std::endl;
     std::cout << "                 -h : print this text" << std::endl;
 }
 
@@ -55,6 +57,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 {
     char option = 0;
     uint8_t radioAddress = 0;
+    bool verbose = false;
 
     while ((option = getopt(argc, argv, "K:N:c:C:f:F:g:G:lLiImMxXrRdDpPt:T:usSUvVzZh")) != -1) {
         switch (option) {
@@ -173,6 +176,16 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             break;
         case 'h':
             print_usage();
+            break;
+        case 'Z':
+            verbose = true;
+            mon.printDebug(true);
+            mon.setPrintResponseTime(true);
+            break;
+        case 'z':
+            mon.printDebug(false);
+            verbose = false;
+            mon.setPrintResponseTime(false);
             break;
         }
     }
