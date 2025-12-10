@@ -48,6 +48,7 @@ void print_usage()
     std::cout << "                 -X : HOTP command on node" << std::endl;
     std::cout << "                 -Z : Verbose on" << std::endl;
     std::cout << "                 -z : Verbose off" << std::endl;
+    std::cout << "                 -k : set keep alive time in milliseconds" << std::endl;
     std::cout << "                 -h : print this text" << std::endl;
 }
 
@@ -57,7 +58,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t radioAddress = 0;
     bool verbose = false;
 
-    while ((option = getopt(argc, argv, "K:N:c:C:f:F:g:G:lLiImMxXrRdDpPt:T:usSUvVzZh")) != -1) {
+    while ((option = getopt(argc, argv, "K:N:c:C:f:F:g:G:lLiImMxXrRdDpPt:T:usSUvVzZk:h")) != -1) {
         switch (option) {
         case 'K': {
             std::string s(optarg);
@@ -79,6 +80,9 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
                 RadioSession radioSession(mon, radioAddress);
                 radioSession.wakeupNotResponding();
             }
+            break;
+        case 'k':
+            std::cout << mon.getRadio<>(RaduinoCommandKeepAlive(atoi(optarg))) << std::endl;
             break;
         case 'l':
             std::cout << mon.get<>(RaduinoCommandGetAttachedDevicesCsvString()) << std::endl;

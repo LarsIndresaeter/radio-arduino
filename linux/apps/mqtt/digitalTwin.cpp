@@ -51,7 +51,7 @@ void DigitalTwin::execute()
         readQuadencoderAndPublish();
     }
 
-    // m_radioSession.close();
+    m_radioSession.close();
 }
 
 void DigitalTwin::publishMessage(std::string topic, std::string message)

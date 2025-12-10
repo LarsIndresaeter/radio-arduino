@@ -10,7 +10,6 @@ public:
     bool wakeupNotResponding();
     uint32_t getWakeupSuccessCounter();
     uint32_t getWakeupFailedCounter();
-    void setKeepAliveInterval(uint8_t interval);
     void setVerbose(bool verbose);
 
 private:
@@ -18,7 +17,6 @@ private:
     monitor& m_monitor;
     uint8_t m_radioAddress;
     uint8_t m_keepAliveInterval;
-    uint8_t m_initialKeepAliveInterval;
     uint8_t m_wakeupAttempts;
     bool m_isAlive;
     uint32_t m_wakeupSuccessCounter;

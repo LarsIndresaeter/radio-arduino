@@ -7,8 +7,8 @@ uint16_t commandsParsed = 0;
 
 bool transportEncryptionIsRequired = true;
 
-uint32_t keep_alive_interval_ms = 100; // time in idle loop before entering sleep
-uint32_t idle_loop_cnt_ms = 0;
+constexpr uint16_t inactive_time_before_rfnode_sleep_ms = 1000;
+uint16_t count_down_ms_to_rfnode_sleep = inactive_time_before_rfnode_sleep_ms;
 
 uint8_t protocolVersionLastReceivedMessage = static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::UNDEFINED);
 
@@ -82,12 +82,11 @@ void sendPayloadToRadioNode(Protocol protocol, uint8_t* payload, uint8_t length)
 void nodeIdleLoop()
 {
     _delay_ms(1);
-    idle_loop_cnt_ms++;
-    if (idle_loop_cnt_ms > keep_alive_interval_ms) {
-        // node has been idle for too long so go to sleep and wait for wakeup command
+    if (count_down_ms_to_rfnode_sleep == 0) {
         SLEEP::rfNodeSleepAndPollForWakeup();
-        idle_loop_cnt_ms = 0;
+        count_down_ms_to_rfnode_sleep = inactive_time_before_rfnode_sleep_ms;
     }
+    count_down_ms_to_rfnode_sleep--; // decrement time before going to sleep
 }
 
 void gatewayIdleLoop(ComBusInterface* comBus)
@@ -133,11 +132,10 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
                         sendPayloadToRadioNode(protocol, payload, length);
                     }
                     else {
-                        parseCommand(protocol, comBus, payload);
+                        // reset count down to sleep, this may be overwritten by a RaduinoCommandKeepAlive command
+                        count_down_ms_to_rfnode_sleep = inactive_time_before_rfnode_sleep_ms;
 
-                        if (false == rx_mode_gateway) {
-                            idle_loop_cnt_ms = 0;
-                        }
+                        parseCommand(protocol, comBus, payload);
                     }
                 }
                 c = 0;
@@ -189,15 +187,10 @@ void parseCommand(Protocol& protocol, ComBusInterface* comBus, uint8_t* commandP
 
 void setKeepAliveInterval(uint8_t interval)
 {
-    if (false == rx_mode_gateway) {
-        keep_alive_interval_ms = 100 + interval * 100;
-
-        // TODO: this is probably not what you want
-        if (0 == interval) {
-            // if keep alive interval is set to minimum the go to sleep immediately
-            idle_loop_cnt_ms = keep_alive_interval_ms;
-        }
-    }
+    // the value 0 will cause the device to go so sleep immediately
+    // a value of 100 will in practize do nothing
+    // a value of 200 will double the keep alive time
+    count_down_ms_to_rfnode_sleep = interval * 10;
 }
 
 void setRequireTransportEncryption(uint8_t isRequired)
