@@ -15,7 +15,7 @@ RadioSession::RadioSession(monitor& mon, uint8_t address)
     : m_monitor(mon)
     , m_radioAddress(address)
 {
-    m_wakeupAttempts = 3;
+    m_wakeupAttempts = 1;
     m_isAlive = false;
     m_wakeupSuccessCounter = 0;
     m_wakeupFailedCounter = 0;
@@ -99,7 +99,7 @@ bool RadioSession::wakeupNotResponding()
 
     m_monitor.get<>(RaduinoCommandSetNodeAddress(m_radioAddress));
 
-    while (cnt <= m_wakeupAttempts) {
+    while (cnt < m_wakeupAttempts) {
         cnt++;
         if (wakeupNotRespondingTryOnce()) {
             return (true);
