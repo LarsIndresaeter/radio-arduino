@@ -1,6 +1,5 @@
 
 #include <chrono>
-#include <cinttypes>
 #include <cmath>
 #include <cmd/commands.hxx>
 #include <crypto.hpp>

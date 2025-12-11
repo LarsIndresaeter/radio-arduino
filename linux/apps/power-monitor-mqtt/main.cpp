@@ -1,17 +1,13 @@
 #include "currentMonitor.hpp"
 #include "mqtt-common.hpp"
 #include "mqtt/async_client.h"
-#include <chrono>
 #include <cmath>
 #include <cmd/commands.hxx>
 #include <eventprocess.hpp>
 #include <filesystem>
-#include <iomanip>
 #include <linuxCryptoHandler.hpp>
 #include <monitor.hpp>
-#include <numeric>
 #include <radioSession.hpp>
-#include <sstream>
 #include <string>
 #include <thread>
 #include <uart.hpp>

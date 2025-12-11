@@ -1,6 +1,4 @@
 
-#include <chrono>
-#include <cinttypes>
 #include <cmath>
 #include <cmd/commands.hxx>
 #include <crypto.hpp>
@@ -8,7 +6,6 @@
 #include <filesystem>
 #include <linuxCryptoHandler.hpp>
 #include <monitor.hpp>
-#include <numeric>
 #include <radioSession.hpp>
 #include <thread>
 #include <uart.hpp>

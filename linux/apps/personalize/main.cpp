@@ -5,7 +5,6 @@
 #include <filesystem>
 #include <linuxCryptoHandler.hpp>
 #include <monitor.hpp>
-#include <numeric>
 #include <thread>
 #include <uart.hpp>
 
