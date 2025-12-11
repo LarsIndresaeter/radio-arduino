@@ -63,7 +63,7 @@ uint8_t sendWakeupCommandToNode(uint8_t checkAttentionFlag)
     uint8_t discovered = 0;
 
     if (rx_mode_gateway) {
-        for (uint16_t i = 0; i < 1000; i++) {
+        for (uint16_t i = 0; i < 500; i++) {
             uint8_t length = NRF24L01_read_rx_payload(&read_discover_package[0]);
 
             if (length == 32) {
