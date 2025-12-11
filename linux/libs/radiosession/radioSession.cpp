@@ -15,9 +15,7 @@ RadioSession::RadioSession(monitor& mon, uint8_t address)
     : m_monitor(mon)
     , m_radioAddress(address)
 {
-    m_wakeupAttempts = 3;
-    m_keepAliveInterval = 0;
-    m_initialKeepAliveInterval = 0; // 100 ms
+    m_wakeupAttempts = 1;
     m_isAlive = false;
     m_wakeupSuccessCounter = 0;
     m_wakeupFailedCounter = 0;
@@ -31,18 +29,14 @@ void RadioSession::close()
     if (m_isAlive) {
         uint64_t activeTimeSinceLastWakeup = milliSecondsSinceEpoch() - m_timeLastWakeup;
 
-        m_monitor.getRadio<>(RaduinoCommandKeepAlive(m_keepAliveInterval));
+        //m_monitor.getRadio<>(RaduinoCommandKeepAlive(0)); // tell radio node to go do sleep
 
         if (m_monitor.lastCommandReturnedValidResponse()) {
-            if (m_keepAliveInterval != 0) {
-                m_activeTime = m_activeTime + 100 + m_keepAliveInterval * 100; // new keep alive interval
-            }
-
             m_activeTime = m_activeTime + activeTimeSinceLastWakeup;
         }
         else {
             m_activeTime
-                = m_activeTime + 100 + 100 * m_initialKeepAliveInterval; // keep alive interval set during initial ping
+                = m_activeTime + 1000; // keep alive interval set during initial ping
         }
 
         m_isAlive = false;
@@ -61,8 +55,6 @@ uint32_t RadioSession::getWakeupSuccessCounter() { return (m_wakeupSuccessCounte
 uint32_t RadioSession::getWakeupFailedCounter() { return (m_wakeupFailedCounter); }
 
 uint64_t RadioSession::getActiveTimeForRadioNode() { return (m_activeTime); }
-
-void RadioSession::setKeepAliveInterval(uint8_t interval) { m_keepAliveInterval = interval; }
 
 bool RadioSession::wakeupNotRespondingTryOnce()
 {
@@ -107,7 +99,7 @@ bool RadioSession::wakeupNotResponding()
 
     m_monitor.get<>(RaduinoCommandSetNodeAddress(m_radioAddress));
 
-    while (cnt <= m_wakeupAttempts) {
+    while (cnt < m_wakeupAttempts) {
         cnt++;
         if (wakeupNotRespondingTryOnce()) {
             return (true);

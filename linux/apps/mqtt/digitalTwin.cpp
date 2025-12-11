@@ -32,9 +32,9 @@ void DigitalTwin::execute()
 
     if ((secondsSinceEpoch() - m_timeLastPoll) > m_actualState.getActualPollInterval()) {
         if (m_radioSession.wakeupNotResponding()) {
+            readAccelerometerAndPublish();
             readVccAndPublish();
             readGpioAndPublish();
-            readAccelerometerAndPublish();
             m_timeLastPoll = secondsSinceEpoch();
         }
     }
@@ -46,12 +46,14 @@ void DigitalTwin::execute()
         }
     }
 
-    auto response = m_monitor.get<>(RaduinoCommandWakeup(1));
-    if (response.responseStruct().getDiscovered() == 1) {
-        readQuadencoderAndPublish();
+    if (hasDeviceAttached("quad")) {
+        auto response = m_monitor.get<>(RaduinoCommandWakeup(1));
+        if (response.responseStruct().getDiscovered() == 1) {
+            readQuadencoderAndPublish();
+        }
     }
 
-    // m_radioSession.close();
+    m_radioSession.close();
 }
 
 void DigitalTwin::publishMessage(std::string topic, std::string message)
@@ -72,6 +74,8 @@ void DigitalTwin::publishMessage(std::string topic, std::string message)
 bool DigitalTwin::hasDeviceAttached(std::string device)
 {
     bool retval = false;
+
+    readAttachedDevicesCsvString();
 
     if (m_attachedDevicesCsvString.find(device) != std::string::npos) {
         retval = true;
