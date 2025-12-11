@@ -35,6 +35,9 @@ void DigitalTwin::execute()
             readAccelerometerAndPublish();
             readVccAndPublish();
             readGpioAndPublish();
+            readUniqueuIdAndPublish();
+            readVersionAndPublish();
+            readAttachedDevicesAndPublish();
             m_timeLastPoll = secondsSinceEpoch();
         }
     }
@@ -132,6 +135,36 @@ void DigitalTwin::readAccelerometerAndPublish()
             std::string topic = createMqttTopic("NDATA", m_name, response.getCommandName());
             publishMessage(topic, response.getJson());
         }
+    }
+}
+
+void DigitalTwin::readUniqueuIdAndPublish()
+{
+    auto response = m_monitor.getRadio<>(RaduinoCommandGetUniqueId());
+
+    if (m_monitor.lastCommandReturnedValidResponse()) {
+        std::string topic = createMqttTopic("NDATA", m_name, response.getCommandName());
+        publishMessage(topic, response.getJson());
+    }
+}
+
+void DigitalTwin::readVersionAndPublish()
+{
+    auto response = m_monitor.getRadio<>(RaduinoCommandGetVersion());
+
+    if (m_monitor.lastCommandReturnedValidResponse()) {
+        std::string topic = createMqttTopic("NDATA", m_name, response.getCommandName());
+        publishMessage(topic, response.getJson());
+    }
+}
+
+void DigitalTwin::readAttachedDevicesAndPublish()
+{
+    auto response = m_monitor.getRadio<>(RaduinoCommandGetAttachedDevicesCsvString());
+
+    if (m_monitor.lastCommandReturnedValidResponse()) {
+        std::string topic = createMqttTopic("NDATA", m_name, response.getCommandName());
+        publishMessage(topic, response.getJson());
     }
 }
 

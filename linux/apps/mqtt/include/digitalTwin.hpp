@@ -30,6 +30,9 @@ private:
     void readGpioAndPublish();
     void readQuadencoderAndPublish();
     void readAccelerometerAndPublish();
+    void readUniqueuIdAndPublish();
+    void readVersionAndPublish();
+    void readAttachedDevicesAndPublish();
     void updateDisplayText();
 
     void publishNdeath();

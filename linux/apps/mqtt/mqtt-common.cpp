@@ -89,5 +89,12 @@ std::string getGatewayNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt
         publishNbirth(mqtt_client, gatewayName);
     }
 
+    auto response = mon.get<>(RaduinoCommandGetVersion());
+
+    if (mon.lastCommandReturnedValidResponse()) {
+        mqtt::topic deviceBirth(mqtt_client, createMqttTopic("NDATA", gatewayName, response.getCommandName()), 0, false);
+        deviceBirth.publish(response.getJson());
+    }
+
     return (gatewayName);
 }
