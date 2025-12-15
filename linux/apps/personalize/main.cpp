@@ -20,6 +20,7 @@ void print_usage()
     std::cout << "              -l : set attached devices csv string" << std::endl;
     std::cout << "       -r <role> : set radio role <gateway|node>" << std::endl;
     std::cout << "       -s <flag> : set requireTransportEncyption flag <0|1>" << std::endl;
+    std::cout << "              -p : print programmed values" << std::endl;
     std::cout << "              -h : print this text" << std::endl;
 }
 
@@ -98,10 +99,11 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t setRequireTransportEncryption = 0;
     bool dump_eeprom = false;
     bool name_option_present = false;
+    bool print_programmed_values = false;
     uint8_t radioAddress = 0;
     uint32_t uniqueId = (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count()) / 1000;
 
-    while ((option = getopt(argc, argv, "K:n:t:e:i:l:r:ds:h")) != -1) {
+    while ((option = getopt(argc, argv, "K:n:t:e:i:l:r:ds:ph")) != -1) {
         switch (option) {
         case 'n':
             setNewDeviceName = optarg;
@@ -142,11 +144,21 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
                 exit(1);
             }
         } break;
+        case 'p':
+            print_programmed_values = true;
+            break;
         case 'h':
             print_usage();
             exit(0);
             break;
         }
+    }
+
+    if (print_programmed_values) {
+        std::cout << "read current eeprom settings" << std::endl;
+        std::cout << mon.get<>(RaduinoCommandGetDeviceName()) << std::endl;
+        std::cout << mon.get<>(RaduinoCommandGetAttachedDevicesCsvString()) << std::endl;
+        exit(0);
     }
 
     if (false == name_option_present) {
