@@ -10,7 +10,7 @@ PARAM=$1
 if [ "${PARAM}" == "build" ]
 then
     echo "build docker image"
-    docker build -t $CONTAINER_NAME -f tools/docker/Dockerfile.build .
+    docker build -t $CONTAINER_NAME -f tools/docker/dev/Dockerfile .
 elif [ "${PARAM}" == "clean" ]
 then
     echo "clean caches"
