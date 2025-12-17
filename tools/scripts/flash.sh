@@ -1,76 +1,49 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-_SERIAL_DEVICE_GATEWAY=/dev/ttyUSB0
-_SERIAL_DEVICE_NODE=/dev/ttyUSB1
+DEVICE_TYPE=$1
+DEVICE_ROLE=$2
 
-PARAM=$1
-
-flash_gateway_nano_pro()
+avrdude_flash()
 {
-    avrdude -c arduino -b 115200 -P ${_SERIAL_DEVICE_GATEWAY} -p atmega328p -vv -U flash:w:bin/arduino.hex
+    local _BAUD_RATE=$1
+    local _DEVICE_FILE=$2
+
+    avrdude -c arduino -b ${_BAUD_RATE} -P ${_DEVICE_FILE} -p atmega328p -vv -U flash:w:bin/arduino.hex
 }
 
-flash_node_nano_pro()
+flash_device()
 {
-    avrdude -c arduino -b 115200 -P ${_SERIAL_DEVICE_NODE} -p atmega328p -vv -U flash:w:bin/arduino.hex
-}
+    local _BAUD_RATE=$1
+    local _DEVICE_ROLE=$2
 
-rf-nano-flash()
-{
-    local _DEVICE=$1
+    local _SERIAL_DEVICE_GATEWAY=/dev/ttyUSB0
+    local _SERIAL_DEVICE_NODE=/dev/ttyUSB1
 
-    if [ "${PARAM}" == "node" ] 
+    if [ `echo "${_DEVICE_ROLE}" | grep "^/dev/tty"` ]
     then
-        flash_node_nano_pro
-    elif [ "${PARAM}" == "gateway" ] 
+        avrdude_flash "${_BAUD_RATE}" "${_DEVICE_ROLE}"
+    elif [ "${_DEVICE_ROLE}" == "node" ] 
     then
-        flash_gateway_nano_pro
-    elif [ "${PARAM}" == "both" ] 
+        avrdude_flash "${_BAUD_RATE}" "${_SERIAL_DEVICE_NODE}"
+    elif [ "${_DEVICE_ROLE}" == "gateway" ] 
     then
-        flash_node_nano_pro
-        flash_gateway_nano_pro
+        avrdude_flash "${_BAUD_RATE}" "${_SERIAL_DEVICE_GATEWAY}"
+    elif [ "${_DEVICE_ROLE}" == "both" ] 
+    then
+        avrdude_flash "${_BAUD_RATE}" "${_SERIAL_DEVICE_NODE}"
+        avrdude_flash "${_BAUD_RATE}" "${_SERIAL_DEVICE_GATEWAY}"
     else 
-        echo "missing parameter: node, gateway or both"
+        echo "missing parameter: node, gateway, both or device file e.g. /dev/ttyUSB0"
     fi
 }
 
-flash_gateway()
-{
-    avrdude -c arduino -b 57600 -P ${_SERIAL_DEVICE_GATEWAY} -p atmega328p -vv -U flash:w:bin/arduino.hex
-}
-
-flash_node()
-{
-    avrdude -c arduino -b 57600 -P ${_SERIAL_DEVICE_NODE} -p atmega328p -vv -U flash:w:bin/arduino.hex
-}
-
-nano-pro-flash()
-{
-    local _DEVICE=$1
-
-    if [ "${PARAM}" == "node" ] 
-    then
-        flash_node
-    elif [ "${PARAM}" == "both" ] 
-    then
-        flash_node
-        flash_gateway
-    else 
-        flash_gateway
-    fi
-}
-
-if [ "${PARAM}" == "nano-pro" ]
+if [ "${DEVICE_TYPE}" == "nano-pro" ]
 then
-    nano-pro-flash $2
-fi
-
-if [ "${PARAM}" == "rf-nano" ]
+    flash_device 57600 "${DEVICE_ROLE}"
+elif [ "${DEVICE_TYPE}" == "rf-nano" ]
 then
-    rf-nano-flash $2
-fi
-
-if [ "${PARAM}" == "" ]
-then
+    flash_device 115200 "${DEVICE_ROLE}"
+else
     echo "missing device paramter: nano-pro or rf-nano"
 fi
+
