@@ -72,5 +72,5 @@ fi
 
 if [ "${PARAM}" == "" ]
 then
-    echo "missing device paramter: nano-pro, rf-nano og auto"
+    echo "missing device paramter: nano-pro or rf-nano"
 fi
