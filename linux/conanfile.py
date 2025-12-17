@@ -10,7 +10,7 @@ def gitSemVerAddGitSha():
         versionString = str(git.run("describe --tags --abbrev=0"))
 
         gitsha = str(git.run("log --pretty=format:'%h' -n 1"))
-        commits_not_in_main = int(git.run(f"rev-list --count HEAD --not main"))
+        commits_not_in_main = int(git.run(f"rev-list $(git describe --tags --abbrev=0)..HEAD --count"))
 
         versionString += f".{commits_not_in_main}"
         versionString += f"+{gitsha}"
