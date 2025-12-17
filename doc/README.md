@@ -29,7 +29,6 @@
 
 - [about documentation](./explanation/about-documentation.md)
 - [conan](./explanation/conan.md)
-- [developer experience](./explanation/devex.md)
 - [edge cluster](./explanation/edge-cluster.md)
 - [project](./explanation/project.md)
 - [raduino toolkit](./explanation/raduino-toolkit.md)

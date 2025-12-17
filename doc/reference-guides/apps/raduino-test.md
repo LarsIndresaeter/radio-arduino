@@ -26,7 +26,7 @@ raduino-test
 
 ## commands used
 
-- [aes](../commands/aes)
+- [aes](../commands/aes.md)
 - [eeprom_read](../commands/eeprom_read.md)
 - [eeprom_write](../commands/eeprom_write.md)
 - [i2c_read](../commands/i2c_read.md)

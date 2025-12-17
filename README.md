@@ -21,8 +21,7 @@
   command line
 - [Command line tools](./doc/reference-guides/apps/README.md) for interacting
   with gateway and node, including mqtt client.
-- Use Docker for [building](./doc/how-to-guides/install-docker.md) or [running](./doc/how-to-guides/howto-use-dockerapp.md)
-  the application
+- Use Docker for [building](./doc/how-to-guides/install-docker.md) the application
 - After flashing the rf-nano the [docker-compose-radio-arduino](https://github.com/LarsIndresaeter/docker-compose-radio-arduino)
 docker-compose file can be used to subscribe to data and store it in influxdb.
 

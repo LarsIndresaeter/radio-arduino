@@ -4,7 +4,7 @@
 
 > High level interactions between systems
 
-The primary use case for the code in this project is the [gateway and node](./gateway-and-node.md)
+The primary use case for the code in this project is the gateway and node
 use-case but other use-cases are also supported.
 
 - [raduino-power-monitor](../reference-guides/apps/raduino-power-monitor-mqtt.md):
@@ -31,7 +31,7 @@ node. Cli tools for debugging or demo and mqtt client
                                    gateway                          node
 ```
 
-## [spi bridge](../../reference-guides/apps/raduino-spi-bridge.md)
+## [spi bridge](../reference-guides/apps/raduino-spi-bridge.md)
 
 generic tool. useful for test and developement
 
@@ -55,7 +55,7 @@ output (note that 33 decimal is 0x21 hex)
 SPI_READ               :  reg=5 length=1 data=[ 21 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ]
 ```
 
-## [i2c bridge](../../reference-guides/apps/raduino-i2c-bridge.md)
+## [i2c bridge](../reference-guides/apps/raduino-i2c-bridge.md)
 
 generic tool. useful for test and developement. You will typically use this to
 experiment with a new i2c device before adding a new command specifically for

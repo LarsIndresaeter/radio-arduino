@@ -54,7 +54,7 @@ constructed from the payload struct extracted by the parser in
 `arduino/libs/parser/parser.cpp`.
 
 Getter and setter functions are created by the
-[generator script](doc/explanation/protocol-command-generator.md) and used for
+[generator script](../explanation/interface/protocol-command-generator.md) and used for
 extracting the id value in the command or setting the id value in the response.
 
 changes to `arduino/libs/eeprom/command-handlers-eeprom.cpp`
