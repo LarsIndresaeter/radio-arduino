@@ -9,6 +9,7 @@
 #include <radioSession.hpp>
 #include <thread>
 #include <uart.hpp>
+#include <version.h>
 
 using namespace std::chrono_literals;
 
@@ -17,6 +18,8 @@ void print_usage()
     std::cout << "raduino-system-commands" << std::endl;
     std::cout << "           -K <key> : encrypt command with transport key" << std::endl;
     std::cout << "       -N <address> : wakeup node address" << std::endl;
+    std::cout << "                 -a : check if arduino version is correct on node" << std::endl;
+    std::cout << "                 -A : check if arduino version is correct on gateway" << std::endl;
     std::cout << "                 -c : SHA1 command on gateway" << std::endl;
     std::cout << "                 -C : SHA1 command on node" << std::endl;
     std::cout << "                 -d : debug command on gateway" << std::endl;
@@ -52,14 +55,39 @@ void print_usage()
     std::cout << "                 -h : print this text" << std::endl;
 }
 
+void versionCheck(monitor& mon, std::string actualVersionString)
+{
+    std::string expectedVersionString(ARDUINO_VERSION);
+
+    if (mon.lastCommandReturnedValidResponse()) {
+        if (actualVersionString == expectedVersionString) {
+            std::cout << "OK" << std::endl;
+        }
+        else {
+            std::cout << "FAIL" << std::endl;
+            std::cout << "expected version: " << expectedVersionString << std::endl;
+            std::cout << "actual version  : " << actualVersionString << std::endl;
+        }
+    }
+    else {
+        std::cout << "timeout" << std::endl;
+    }
+}
+
 void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)
 {
     char option = 0;
     uint8_t radioAddress = 0;
     bool verbose = false;
 
-    while ((option = getopt(argc, argv, "K:N:c:C:f:F:g:G:lLiImMxXrRdDpPt:T:usSUvVzZk:h")) != -1) {
+    while ((option = getopt(argc, argv, "aAK:N:c:C:f:F:g:G:lLiImMxXrRdDpPt:T:usSUvVzZk:h")) != -1) {
         switch (option) {
+        case 'a':
+            versionCheck(mon, mon.get<>(RaduinoCommandGetVersion()).getVersionstring());
+            break;
+        case 'A':
+            versionCheck(mon, mon.getRadio<>(RaduinoCommandGetVersion()).getVersionstring());
+            break;
         case 'K': {
             std::string s(optarg);
             std::vector<uint8_t> key(16, 0);

@@ -39,6 +39,7 @@ class AvrUartConan(ConanFile):
     keep_imports=True
     exports_sources = [ 
             "CMakeLists.txt",
+            "include/*",
             "libs/*",
             "apps/*",
             "src/*",
@@ -61,6 +62,7 @@ class AvrUartConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
+        cmake.definitions["ARDUINO_VERSION"] = self.version
         if self.options.mqtt == True:
             cmake.definitions["mqtt"] = 1
         cmake.configure()
