@@ -13,7 +13,7 @@ then
     then
         echo "you must supply a version tag"
         echo ""
-        docker images raduino
+        docker images radio-arduino
     else
         docker run --network host -it --rm --device=/dev/ttyUSB0 radio-arduino:${TAG} bash
     fi
