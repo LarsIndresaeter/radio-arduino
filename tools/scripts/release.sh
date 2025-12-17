@@ -23,6 +23,7 @@ then
     echo "                  detect : detect change but do not create tag"
     echo "             detect auto : detect change and create tag"
     echo "                  latest : print latest tag"
+    echo "                  create : create release"
     exit 1
 fi
 
@@ -86,6 +87,15 @@ then
 elif [ "${ACTION}" == "latest" ] 
 then
     echo "$TAG_LATEST"
+elif [ "${ACTION}" == "create" ]
+then
+    echo "Steps:"
+    echo "  1. ./tools/devbox.sh run"
+    echo "  2. raduino all"
+    echo "  3. exit"
+    echo "  3. raduino dockerapp build"
+    echo "  4. docker login -u lars32"
+    echo "  5. docker tag radio-arduino:${TAG_LATEST} lars32/radio-arduino:${TAG_LATEST}"
+    echo "  6. docker push lars32/radio-arduino:${TAG_LATEST}"
 fi
-
 
