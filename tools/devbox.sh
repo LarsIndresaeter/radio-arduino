@@ -22,7 +22,10 @@ then
 elif [ "${PARAM}" == "run" ]
 then
     docker run ${USER_STRING} -v ${REPO_BASE_DIR}/:/home/raduino/ -it $CONTAINER_NAME /usr/bin/bash --rcfile tools/docker/.bashrc
+elif [ "${PARAM}" == "clean-build" ]
+then
+    docker run ${USER_STRING} -v ${REPO_BASE_DIR}/:/home/raduino/ -t $CONTAINER_NAME /usr/bin/bash -c './tools/scripts/all_clean_build.sh'
 else
-    echo "valid parameters: <clean|build|run>"
+    echo "valid parameters: <clean|build|run|clean-build>"
 fi
 

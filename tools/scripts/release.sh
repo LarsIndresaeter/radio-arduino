@@ -89,13 +89,33 @@ then
     echo "$TAG_LATEST"
 elif [ "${ACTION}" == "create" ]
 then
-    echo "Steps:"
-    echo "  1. ./tools/devbox.sh run"
-    echo "  2. raduino all"
-    echo "  3. exit"
-    echo "  3. raduino dockerapp build"
-    echo "  4. docker login -u lars32"
-    echo "  5. docker tag radio-arduino:${TAG_LATEST} lars32/radio-arduino:${TAG_LATEST}"
-    echo "  6. docker push lars32/radio-arduino:${TAG_LATEST}"
+
+    if [ -n "$(git status --porcelain)" ]; then
+        echo "commit files before creating a release"
+        exit 0
+    fi
+
+    if [ "$(git branch --show-current)" != "main" ]
+    then
+        echo "you can only make a release from the main branch"
+        exit 0
+    fi
+
+    if [ "$(git tag --points-at HEAD)" = "" ]
+    then
+        echo "human interaction required. Rou must create a tag"
+        echo ""
+        echo "raduino release detect auto"
+        echo "raduino release push"
+        exit 0
+    fi
+
+    ./tools/devbox.sh clean-build
+    ./tools/scripts/dockerapp.sh build 
+    docker tag radio-arduino:${TAG_LATEST} lars32/radio-arduino:${TAG_LATEST}
+
+    echo "Manual steps:"
+    echo "  1. docker login -u lars32"
+    echo "  2. docker push lars32/radio-arduino:${TAG_LATEST}"
 fi
 
