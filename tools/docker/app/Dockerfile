@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y libpaho-mqtt1.3
 RUN apt-get update && apt-get install -y openssl
 
 COPY bin/* /bin/
-COPY tools/scripts/raduino-flash.sh /bin/
+COPY tools/docker/app/raduino-flash.sh /bin/
 
 RUN useradd -ms /bin/bash raduino
 
