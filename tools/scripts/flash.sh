@@ -15,7 +15,7 @@ flash_node_nano_pro()
     avrdude -c arduino -b 115200 -P ${_SERIAL_DEVICE_NODE} -p atmega328p -vv -U flash:w:bin/arduino.hex
 }
 
-nano-pro_flash()
+rf-nano-flash()
 {
     local _DEVICE=$1
 
@@ -34,19 +34,40 @@ nano-pro_flash()
     fi
 }
 
+flash_gateway()
+{
+    avrdude -c arduino -b 57600 -P ${_SERIAL_DEVICE_GATEWAY} -p atmega328p -vv -U flash:w:bin/arduino.hex
+}
+
+flash_node()
+{
+    avrdude -c arduino -b 57600 -P ${_SERIAL_DEVICE_NODE} -p atmega328p -vv -U flash:w:bin/arduino.hex
+}
+
+nano-pro-flash()
+{
+    local _DEVICE=$1
+
+    if [ "${PARAM}" == "node" ] 
+    then
+        flash_node
+    elif [ "${PARAM}" == "both" ] 
+    then
+        flash_node
+        flash_gateway
+    else 
+        flash_gateway
+    fi
+}
+
 if [ "${PARAM}" == "nano-pro" ]
 then
-    ${RADUINO_SCRIPTS_DIR}/nano-pro_flash.sh $2
+    nano-pro-flash $2
 fi
 
 if [ "${PARAM}" == "rf-nano" ]
 then
-    ${RADUINO_SCRIPTS_DIR}/rf-nano_flash.sh $2
-fi
-
-if [ "${PARAM}" == "auto" ]
-then
-    ${RADUINO_SCRIPTS_DIR}/auto_flash.sh $2
+    rf-nano-flash $2
 fi
 
 if [ "${PARAM}" == "" ]
