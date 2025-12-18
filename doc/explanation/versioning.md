@@ -53,3 +53,17 @@ raduino release <action> :
 | raduino release detect auto | detect change and automatically create a new tag |
 | raduino release push        | push tag to the remote git server                |
 
+## conventional commits
+
+[conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) are used to
+detect which version number to increase. This project is mostly using these prefixes.
+
+| prefix          | description                           |
+| --------------- | ------------------------------------- |
+| BREAKING CHANGE | increase major number                 |
+| feat            | feature, increase minor number        |
+| fix             | fix, increase patch number            |
+| docs            | changes to the documentation          |
+| chore           | changes not affecting code            |
+| refactor        | changes not changing behavior of code |
+
