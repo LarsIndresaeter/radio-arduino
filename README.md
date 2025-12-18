@@ -34,7 +34,7 @@ docker-compose file can be used to subscribe to data and store it in influxdb.
    2. Configure one board as node: `./bin/raduino-personalize -n <name> -r node`
    3. Blink the led on the node: `./bin/raduino-device-atmega328 -B`
 5. If you have a mqtt broker on localhost
-   1. publish periodic stats like battery voltage with the command `.bin/raduino-mqtt-client`
+   1. publish periodic stats like battery voltage with the command `./bin/raduino-mqtt-client`
 
 ## Documentation index
 
