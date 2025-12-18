@@ -20,7 +20,7 @@
 - After flashing the rf-nano the [docker-compose-radio-arduino](https://github.com/LarsIndresaeter/docker-compose-radio-arduino)
 docker-compose file can be used to subscribe to data and store it in influxdb.
 
-## Try it
+## quick start guide
 
 1. Connect a rf-arduino into the usb port. For the rest of the steps
    `/dev/ttyUSB0` is assumed as the device file.
@@ -33,6 +33,8 @@ docker-compose file can be used to subscribe to data and store it in influxdb.
    1. Configure one board as gateway: `./bin/raduino-personalize -n <name> -r gateway`
    2. Configure one board as node: `./bin/raduino-personalize -n <name> -r node`
    3. Blink the led on the node: `./bin/raduino-device-atmega328 -B`
+5. If you have a mqtt broker on localhost
+   1. publish periodic stats like battery voltage with the command `.bin/raduino-mqtt-client`
 
 ## Documentation index
 
