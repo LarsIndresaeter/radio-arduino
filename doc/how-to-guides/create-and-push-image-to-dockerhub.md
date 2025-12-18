@@ -30,3 +30,15 @@ docker tag radio-arduino:1.2.0 lars32/radio-arduino:1.2.0
 docker push lars32/radio-arduino:1.2.0
 ```
 
+## script for creating release
+
+These steps has been impelemented in the command
+
+```console
+raduino release create
+```
+
+The scrip will ask you to switch to the main branch and create a tag before
+compiling inside the devbox docker container and creating a dockerapp with the
+compiled binaries.
+
