@@ -22,7 +22,7 @@ docker-compose file can be used to subscribe to data and store it in influxdb.
 
 ## quick start guide
 
-1. Connect a rf-arduino into the usb port. For the rest of the steps
+1. Connect a rf-arduino into the usb port. For the rest of the guide
    `/dev/ttyUSB0` is assumed as the device file.
 2. Start dockerapp: `docker run -it --device=/dev/ttyUSB0 radio-arduino:1.6.0 bash`.
    More images on [dockerhub](https://hub.docker.com/r/lars32/radio-arduino).
