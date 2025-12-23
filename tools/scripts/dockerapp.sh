@@ -3,6 +3,24 @@
 COMMAND=$1
 TAG=$2
 
+function checkTty()
+{
+    local TTY=/dev/ttyUSB0
+
+    if [ -e ${TTY} ]
+    then
+        if [ $(ls -l ${TTY} | grep -c 'rw-rw-rw') == "0" ]
+        then
+            echo "give read and write access to all users for ${TTY}"
+            sudo chmod a+rw ${TTY}
+        else
+            echo "all users have access to ${TTY}"
+        fi
+    else
+        echo "no ${TTY} present"
+    fi
+}
+
 if [ "${COMMAND}" == "build" ]
 then
     TAG_LATEST=$(git describe --tags --abbrev=0)
@@ -15,6 +33,7 @@ then
         echo ""
         docker images radio-arduino
     else
+        checkTty
         docker run --network host -it --rm --device=/dev/ttyUSB0 radio-arduino:${TAG} bash
     fi
 else
