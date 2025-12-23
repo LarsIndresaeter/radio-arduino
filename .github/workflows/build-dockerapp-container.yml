@@ -2,8 +2,6 @@ name: Build and Push Docker Image from Tag
 
 on:
   push:
-    branches:
-      - 'release'
     tags:
       - '*.*.*'
 
@@ -34,8 +32,6 @@ jobs:
           image: ghcr.io/larsindresaeter/radio-arduino-devbox:1.0.0
           options: --user 1001:1001 -v ${{ github.workspace }}:/home/raduino
           run: |
-            git tag
-            conan inspect interface/
             ./tools/scripts/setup.sh all
             ./tools/scripts/build.sh all
 
@@ -44,11 +40,10 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ github.repository }} # The name of your image repository
-          tags: 0.0.3
-          #tags: |
-            #type=semver,pattern={{version}} # Extracts semantic version from the Git tag (e.g., v1.0.0 -> 1.0.0)
-            #type=semver,pattern={{major}}.{{minor}}
-            #type=semver,pattern={{major}}
+          tags: |
+            type=semver,pattern={{version}} # Extracts semantic version from the Git tag (e.g., v1.0.0 -> 1.0.0)
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
