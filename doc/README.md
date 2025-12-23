@@ -12,8 +12,7 @@
 
 ## [How-to guides](./how-to-guides/README.md)
 
-- [pull image from dockerhub](./how-to-guides/pull-image-from-dockerhub.md)
-- [create and push image to dockerhub](./how-to-guides/create-and-push-image-to-dockerhub.md)
+- [pull image from ghcr.io](./how-to-guides/pull-image-from-ghcr.md)
 - [how to add a new command](./how-to-guides/add-new-command.md)
 - [develop on mac](./how-to-guides/develop-on-mac.md)
 - [develop on rasppberry pi](./how-to-guides/develop-on-raspberry-pi.md)

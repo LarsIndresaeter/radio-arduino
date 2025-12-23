@@ -2,8 +2,7 @@
 
 Guides that take the reader through the steps to solve a real-world problem.
 
-- [pull image from dockerhub](./pull-image-from-dockerhub.md)
-- [create and push image to dockerhub](./create-and-push-image-to-dockerhub.md)
+- [pull image from ghcr.io](./how-to-guides/pull-image-from-ghcr.md)
 - [add new command](./add-new-command.md) for your use-case.
 - [develop on mac](./develop-on-mac.md)
 - [develop on raspberry pi](./develop-on-raspberry-pi.md)
