@@ -2,6 +2,7 @@
 
 COMMAND=$1
 TAG=$2
+ENGINE=$3
 
 function checkTty()
 {
@@ -34,7 +35,14 @@ then
         docker images radio-arduino
     else
         checkTty
-        docker run --network host -it --rm --device=/dev/ttyUSB0 radio-arduino:${TAG} bash
+
+        if [ "${ENGINE}" == "podman" ]
+        then
+            podman image exists docker-daemon:radio-arduino:${TAG} && podman pull docker-daemon:radio-arduino:${TAG}
+            podman run --network host -it --rm --device=/dev/ttyUSB0 radio-arduino:${TAG} bash
+        else
+            docker run --network host -it --rm --device=/dev/ttyUSB0 radio-arduino:${TAG} bash
+        fi
     fi
 else
     echo "first parameter should be either build or run"
