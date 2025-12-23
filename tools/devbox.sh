@@ -4,9 +4,19 @@ MY_USER_ID=$(id -u)
 MY_GROUP_ID=$(id -g)
 USER_STRING="--user ${MY_USER_ID}:${MY_GROUP_ID}"
 REPO_BASE_DIR=$(git rev-parse --show-toplevel)
-CONTAINER_NAME=ghcr.io/larsindresaeter/radio-arduino-devbox:1.0.0
+CONTAINER_NAME=radio-arduino-build
 
 PARAM=$1
+CONTAINER_PARAM=$2
+
+if [[ "${CONTAINER_PARAM}" =~ "^ghcr" ]]
+then
+    # example: ghcr.io/larsindresaeter/radio-arduino-devbox:1.0.0
+    CONTAINER_NAME = $CONTAINER_PARAM
+fi
+
+echo "use container: ${CONTAINER_NAME}"
+
 if [ "${PARAM}" == "build" ]
 then
     echo "build docker image"
@@ -18,7 +28,7 @@ then
     rm -fr .cache/
     rm -f .bash_history
     echo "remove old image"
-    docker rmi -f radio-arduino-devbox
+    docker rmi -f radio-arduino-build
 elif [ "${PARAM}" == "run" ]
 then
     docker run ${USER_STRING} -v ${REPO_BASE_DIR}/:/home/raduino/ -it $CONTAINER_NAME /usr/bin/bash --rcfile tools/docker/.bashrc
@@ -26,6 +36,6 @@ elif [ "${PARAM}" == "clean-build" ]
 then
     docker run ${USER_STRING} -v ${REPO_BASE_DIR}/:/home/raduino/ -t $CONTAINER_NAME /usr/bin/bash -c './tools/scripts/all_clean_build.sh'
 else
-    echo "valid parameters: <clean|build|run|clean-build>"
+    echo "valid parameters: <clean|build|run|clean-build> <container image>"
 fi
 
