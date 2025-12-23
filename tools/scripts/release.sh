@@ -113,9 +113,5 @@ then
     ./tools/devbox.sh clean-build
     ./tools/scripts/dockerapp.sh build 
     docker tag radio-arduino:${TAG_LATEST} lars32/radio-arduino:${TAG_LATEST}
-
-    echo "Manual steps:"
-    echo "  1. docker login -u lars32"
-    echo "  2. docker push lars32/radio-arduino:${TAG_LATEST}"
 fi
 
