@@ -1,19 +1,40 @@
 # Install tools
 
-## build docker image used to build
+## pull radio-arduino-devbox from ghcr.io
 
-build the docker image for building software
+The easiest way to compile is to use `devbox` build by
+[github actions](../explanation/github-actions.md) and downloaded from ghcr.io.
+
+```console
+docker run -v /path/to/radio-arduino/:home/raduino/ -it ghcr.io/larsindresaeter/radio-arduino-devbox:1.0.0 bash
+```
+
+There are however many use cases where you want to build `devbox` yourself or
+install the tools on your developer machine.
+
+## build radio-arduino-build locally
+
+build the devbox docker image for compiling software.
 
 ```console
 ./tools/devbox.sh build
 ```
 
-## install conan
+use devbox
 
-To make it easy to get started the build system (conan) will install missing
-tools. It should idealy be enough to install conan on your developer machine or docker.
-Conanfiles are currently using version 1.66. An example of how this installed
-can be seen in the Dockerfile in `tools/docker/Dockerfile`
+```console
+./tools/devbox.sh run
+```
+
+> Note that the image is named `radio-arduino-devbox` on ghcr.io and
+> `radio-arduino-build` when build locally.
+
+## install local build tools
+
+Your third option is to install conan on your developer machine.
+The devbox docker image is using conan so the result will be the same with or
+without docker.
+Conan will in turn install missing tools.
 
 ```console
 pip3 install --break-system-packages conan==1.66
@@ -21,7 +42,7 @@ pip3 install --break-system-packages conan==1.66
 
 ## Other tools
 
-Docker build calls conan and conan will install these tools if they are missing.
+Conan will install these tools if they are missing.
 
 - cmake
 - ccache

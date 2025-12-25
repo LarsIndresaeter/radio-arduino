@@ -21,7 +21,7 @@ These apps are useful for experimenting, and fixing problems.
 | [raduino-device-ina219](./raduino-device-ina219.md)           | ina219 voltage and current device                                 |
 | [raduino-device-nrf24l01](./raduino-device-nrf24l01.md)       | nrf24l01 radio device                                             |
 | [raduino-device-ssd1306](./raduino-device-ssd1306.md)         | lcd                                                               |
-| [raduino-device-ws2812b](./raduino-device-ws2812b.md)         | rgp led                                                           |
+| [raduino-device-ws2812b](./raduino-device-ws2812b.md)         | rgb led                                                           |
 | [raduino-gateway](./raduino-gateway.md)                       | commands for arduino board configured as gateway                  |
 | [raduino-i2c-bridge](./raduino-i2c-bridge.md)                 | generic i2c commands                                              |
 | [raduino-node](./raduino-node.md)                             | commands for arduino board configured as a node                   |

@@ -20,12 +20,11 @@
 - After flashing the rf-nano the [docker-compose-radio-arduino](https://github.com/LarsIndresaeter/docker-compose-radio-arduino)
 docker-compose file can be used to subscribe to data and store it in influxdb.
 
-## quick start guide
+## Try it on a rf-nano board
 
-1. Connect a rf-arduino into the usb port. For the rest of the guide
+1. Connect an rf-arduino to the usb port.
    `/dev/ttyUSB0` is assumed as the device file.
-2. Start dockerapp: `docker run -it --device=/dev/ttyUSB0 radio-arduino:1.6.0 bash`.
-   More images on [dockerhub](https://hub.docker.com/r/lars32/radio-arduino).
+2. Run dockerapp: `docker run -it --device=/dev/ttyUSB0 ghcr.io/larsindresaeter/radio-arduino:latest bash`.
 3. Inside the dockerapp
    1. Flash the rf-nano board: `raduino-flash rf-nano /dev/ttyUSB0`
    2. Blink the led: `./bin/raduino-device-atmega328 -b`

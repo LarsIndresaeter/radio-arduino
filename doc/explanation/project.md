@@ -29,7 +29,7 @@ radio-arduino was selected because it is a radio project for aduino. The only
 supported radio chip is nrf24l01, but in the future it is possible that other
 chips like sx1276 (a popular LoRa chip) can be used.
 
-> short catch and faster to type
+> short catchy and faster to type
 
 ### where is the name used and what does it mean
 

@@ -11,7 +11,7 @@ class `RaduinoCommandPing` even if there is no reponse.
 1. monitor is initialized with a protocol handler
 1. monitor.get<> is called from application with a command object
 1. monitor registers callback in eventprocess
-1. monitor sends the commadn to the protocol handler
+1. monitor sends the command to the protocol handler
 1. protocol handler write to the serial port
    - uart write to gateway arduino
    - gateway arduino creates and sends a radio packet

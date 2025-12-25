@@ -5,7 +5,6 @@ Explanation, or discussions, clarify and illuminate a particular topic.
 - [about documentation](./about-documentation.md) answers some of the decisions
   made for this project
 - [conan](./conan.md)
-- [edge cluster](./edge-cluster.md)
 - [project](./project.md)
 - [raduino toolkit](./raduino-toolkit.md)
 - [requirements](./requirements.md)

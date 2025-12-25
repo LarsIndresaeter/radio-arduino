@@ -1,7 +1,5 @@
 # Documentation
 
-> The code in this repository with the motivation to learn, not to make a product.
-
 ## [Tutorials](./tutorials/README.md)
 
 0. [install tools](./tutorials/install-tools.md)
@@ -17,7 +15,7 @@
 - [develop on mac](./how-to-guides/develop-on-mac.md)
 - [develop on rasppberry pi](./how-to-guides/develop-on-raspberry-pi.md)
 - [how to monitor serial traffic using socat](./how-to-guides/how-to-monitor-serial-trafic-using-socat.md)
-- [code walkthrough of adding new commadn lsm303](./how-to-guides/code-walkthrough-add-command-get-lsm303d.md)
+- [code walkthrough of adding new command lsm303](./how-to-guides/code-walkthrough-add-command-get-lsm303d.md)
 
 ## [Reference guides](./reference-guides/README.md)
 
@@ -28,7 +26,6 @@
 
 - [about documentation](./explanation/about-documentation.md)
 - [conan](./explanation/conan.md)
-- [edge cluster](./explanation/edge-cluster.md)
 - [project](./explanation/project.md)
 - [raduino toolkit](./explanation/raduino-toolkit.md)
 - [requirements](./explanation/requirements.md) as use-cases
