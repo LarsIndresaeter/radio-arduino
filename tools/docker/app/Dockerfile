@@ -20,4 +20,7 @@ RUN echo 'echo "    raduino-gateway : communicate with gateway"' >> /home/raduin
 RUN echo 'echo "       raduino-node : communicate with node"' >> /home/raduino/.bashrc
 RUN echo 'echo ""' >> /home/raduino/.bashrc
 
+COPY tools/docker/app/start.sh /usr/local/bin/
+CMD /usr/local/bin/start.sh
+
 USER raduino
