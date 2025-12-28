@@ -2,7 +2,7 @@
 #include <util/delay.h>
 
 namespace RINGBUFFER {
-constexpr uint8_t RINGBUFFER_SIZE = 128;
+constexpr uint8_t RINGBUFFER_SIZE = NRF24L01_PACKET_SIZE;
 uint8_t ringbuffer[RINGBUFFER::RINGBUFFER_SIZE] = { 0 };
 uint8_t rb_length = 0;
 uint8_t rb_idx = 0;
