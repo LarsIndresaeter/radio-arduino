@@ -1,6 +1,11 @@
 # Changelog
 
-## ongoing work
+## Version 1.9.0
+
+- add start script to container
+- upgrade gateway automatically if old version detected
+
+## Version 1.8.0
 
 - refactor random generator to use 106 bytes less static ram on arduino
 - refactor radio-uart to use 32 bytes less static ram on arduino
