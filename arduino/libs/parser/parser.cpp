@@ -120,8 +120,6 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
                 length = protocol.searchForMessage((uint8_t*)payload, &protocolVersionLastReceivedMessage);
 
                 if (length > 0) { // found payload
-                    RANDOM::addEntropy(cnt);
-
                     if ((protocolVersionLastReceivedMessage == static_cast<uint8_t>(PROTOCOL::HEADER::VERSION::NODE)
 
                          || protocolVersionLastReceivedMessage
@@ -136,6 +134,12 @@ void parseInput(Protocol protocol, ComBusInterface* comBus)
                         count_down_ms_to_rfnode_sleep = inactive_time_before_rfnode_sleep_ms;
 
                         parseCommand(protocol, comBus, payload);
+                    }
+
+                    // update entropy pool while we wait for a new command
+                    if (lastReceivedCommandWasEncrypted()) {
+                        RANDOM::addEntropy(cnt);
+                        RANDOM::addEntropyAndMix();
                     }
                 }
                 c = 0;

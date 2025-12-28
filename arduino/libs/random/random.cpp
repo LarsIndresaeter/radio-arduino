@@ -62,7 +62,11 @@ void addEntropy(uint8_t e)
     mix();
 }
 
-uint8_t getRandomByte() { return state[0]; }
+uint8_t getRandomByte()
+{
+    mix();
+    return state[0];
+}
 
 void addEntropyAndMix()
 {
