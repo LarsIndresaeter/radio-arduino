@@ -1,4 +1,5 @@
 #include <arduinoCryptoHandler.hpp>
+#include <random.hpp>
 
 ArduinoCryptoHandler::ArduinoCryptoHandler(uint8_t* tk)
 {
@@ -108,10 +109,12 @@ uint32_t ArduinoCryptoHandler::nonce()
 {
     uint32_t retval = 0;
 
-    retval = ((uint32_t)AtmelAdc::getRandomByte()) << 24;
-    retval |= ((uint32_t)AtmelAdc::getRandomByte()) << 16;
-    retval |= ((uint32_t)AtmelAdc::getRandomByte()) << 8;
-    retval |= ((uint32_t)AtmelAdc::getRandomByte());
+    RANDOM::addEntropyAndMix();
+
+    retval = ((uint32_t)RANDOM::getRandomByte()) << 24;
+    retval |= ((uint32_t)RANDOM::getRandomByte()) << 16;
+    retval |= ((uint32_t)RANDOM::getRandomByte()) << 8;
+    retval |= ((uint32_t)RANDOM::getRandomByte());
 
     return retval;
 }
