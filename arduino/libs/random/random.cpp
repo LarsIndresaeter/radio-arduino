@@ -2,41 +2,73 @@
 
 namespace RANDOM {
 
-constexpr uint8_t randomPoolSize = 16;
-SHA1Context sha;
-uint8_t state[randomPoolSize];
-uint8_t readPos = 0;
-uint8_t writePos = 0;
+uint8_t state[4];
+
+void rotateStateBytes()
+{
+    uint8_t tmp;
+
+    tmp = state[0];
+    state[0] = state[1];
+    state[1] = state[2];
+    state[2] = state[3];
+    state[3] = tmp;
+}
+
+void xorStateBytes()
+{
+    state[0] = state[0] ^ state[3];
+    state[1] = state[1] ^ state[2];
+    state[2] = state[2] ^ state[1];
+    state[3] = state[3] ^ state[0];
+}
+
+void shiftStateBytes()
+{
+    state[0] = state[0] >> 1;
+    if (state[2] & 0x10) {
+        state[0] |= 0x80;
+    }
+
+    state[1] = state[0] >> 1;
+    if (state[0] & 0x20) {
+        state[1] |= 0x80;
+    }
+
+    state[2] = state[0] >> 1;
+    if (state[1] & 0x02) {
+        state[2] |= 0x80;
+    }
+
+    state[3] = state[0] >> 1;
+    if (state[3] & 0x04) {
+        state[3] |= 0x80;
+    }
+}
 
 void mix()
 {
-    SHA1Reset(&sha);
-    SHA1Input(&sha, state, randomPoolSize);
-    SHA1Result(&sha, state);
-    readPos = state[3] % randomPoolSize;
-    writePos = state[9] % randomPoolSize;
+    for (uint8_t i = 0; i < 9; i++) {
+        rotateStateBytes();
+        xorStateBytes();
+        shiftStateBytes();
+        state[1] = state[2] ^ i;
+    }
 }
 
 void addEntropy(uint8_t e)
 {
-    writePos = (writePos + 1) % randomPoolSize;
-    state[writePos] = e;
+    state[1] ^= e;
+    mix();
 }
 
-uint8_t getRandomByte()
-{
-    readPos = (readPos + 1) % randomPoolSize;
-    return state[readPos];
-}
+uint8_t getRandomByte() { return state[0]; }
 
 void addEntropyAndMix()
 {
-    addEntropy(AtmelAdc::getRandomByte());
-    addEntropy(AtmelAdc::getRandomByte());
-    mix();
-    addEntropy(AtmelAdc::getRandomByte());
-    addEntropy(AtmelAdc::getRandomByte());
-    mix();
+    for (uint8_t i = 0; i < 3; i++) {
+        addEntropy(AtmelAdc::getRandomByte());
+    }
 }
 
 } // namespace
