@@ -3,7 +3,7 @@
 ## ongoing work
 
 - refactor random generator to use 106 bytes less static ram on arduino
-- refactor radio-uart to use 102 bytes less static ram on arduino
+- refactor radio-uart to use 32 bytes less static ram on arduino
 
 ## Version 1.7.0
 
