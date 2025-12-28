@@ -15,7 +15,7 @@ sudo chmod a+rw /dev/ttyUSB0
 start docker app
 
 ```console
-docker run -it --rm --device=/dev/ttyUSB0 ghcr.io/larsindresaeter/raduino:1.7.0 bash
+docker run -it --rm --device=/dev/ttyUSB0 ghcr.io/larsindresaeter/raduino:latest bash
 ```
 
 ping

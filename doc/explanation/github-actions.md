@@ -10,7 +10,7 @@ Building of this image is triggered by tags in the format `major.minor.patch`.
 To start this image run the command
 
 ```console
-docker run --rm --device=/dev/ttyUSB0 -it ghcr.io/larsindresaeter/radio-arduino:1.7.0 bash
+docker run --rm --device=/dev/ttyUSB0 -it ghcr.io/larsindresaeter/radio-arduino:latest bash
 ```
 
 If you are not familiar with [podman](https://podman.io/) you might want to

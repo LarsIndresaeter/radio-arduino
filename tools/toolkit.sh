@@ -11,6 +11,11 @@ then
     echo "RADINO_CUSTOM_COMMAND=${RADINO_CUSTOM_COMMAND}"
 fi
 
+if [ "${PARAM}" == "podmand" ]
+then
+    ./tools/scripts/podman.sh $2 $3 $4 $5 $6 $7
+fi
+
 if [ "${PARAM}" == "analyze" ]
 then
     ${RADUINO_SCRIPTS_DIR}/analyze-avr.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
