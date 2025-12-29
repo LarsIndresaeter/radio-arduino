@@ -120,6 +120,8 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 
     mqtt_client.connect(connOpts)->wait();
 
+    publishGatewayInfo(mqtt_client);
+
     std::vector<uint8_t> nodeAddressList;
     char option = 0;
     uint8_t radioAddress = 0;

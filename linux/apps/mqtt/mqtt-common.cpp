@@ -1,4 +1,8 @@
 #include "mqtt-common.hpp"
+#include "version.h"
+#include <iostream>
+#include <unistd.h>
+#include <limits.h>
 
 using namespace std::chrono_literals;
 using time_point = std::chrono::system_clock::time_point;
@@ -62,6 +66,19 @@ void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_cli
         link_bytes_sent_topic.publish(std::move(std::to_string(mon.getBytesSent())));
         link_bytes_received_topic.publish(std::move(std::to_string(mon.getBytesReceived())));
     }
+}
+
+void publishGatewayInfo(mqtt::async_client& mqtt_client)
+{
+    char hostname[HOST_NAME_MAX];
+    std::string hostnameString("gateway");
+
+    if (gethostname(hostname, HOST_NAME_MAX) == 0) {
+        hostnameString = std::string(hostname);
+    }
+
+    mqtt::topic deviceBirth(mqtt_client, createMqttTopic("NBIRTH", hostnameString, "raduino-mqtt-client"), 0, false);
+    deviceBirth.publish(std::move("{\"version: \"" + std::string(ARDUINO_VERSION) + "\"}"));
 }
 
 void publishNbirth(mqtt::async_client& mqtt_client, std::string deviceName)
