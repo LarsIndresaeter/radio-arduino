@@ -8,8 +8,10 @@ print_help()
     echo "    interval <n> : set polling interval to <n> seconds"
     echo "     text <text> : write <text> on lcd display"
     echo "      subscribe  : subscribe to radio-arduino topic"
+    echo "          start  : start mosquitto broker"
+    echo "           stop  : stop mosquitto broker"
 }
-
+ 
 if [ "${PARAM}" == "" ]
 then
     print_help
@@ -30,3 +32,14 @@ if [ "${PARAM}" == "subscribe" ]
 then
     mosquitto_sub -t 'radio-arduino/#' -v
 fi
+
+if [ "${PARAM}" == "start" ]
+then
+    docker run --rm -d --name mosquitto_broker -v "./tools/mosquitto/config/:/mosquitto/config" -p 1883:1883 eclipse-mosquitto
+fi
+
+if [ "${PARAM}" == "stop" ]
+then
+    docker stop mosquitto_broker
+fi
+
