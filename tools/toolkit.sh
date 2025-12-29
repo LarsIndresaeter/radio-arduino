@@ -11,11 +11,6 @@ then
     echo "RADINO_CUSTOM_COMMAND=${RADINO_CUSTOM_COMMAND}"
 fi
 
-if [ "${PARAM}" == "podman-app" ]
-then
-    ./tools/scripts/podman-app.sh $2 $3 $4 $5 $6 $7
-fi
-
 if [ "${PARAM}" == "analyze" ]
 then
     ${RADUINO_SCRIPTS_DIR}/analyze-avr.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
@@ -31,9 +26,19 @@ then
     ${RADUINO_SCRIPTS_DIR}/docker-app.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
 fi
 
+if [ "${PARAM}" == "podman-app" ]
+then
+    ./tools/scripts/podman-app.sh $2 $3 $4 $5 $6 $7
+fi
+
 if [ "${PARAM}" == "docker-devbox" ]
 then
     ${RADINO_TOOLS_DIR}/scripts/docker-devbox.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
+fi
+
+if [ "${PARAM}" == "podman-devbox" ]
+then
+    ${RADINO_TOOLS_DIR}/scripts/podman-devbox.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
 fi
 
 if [ "${PARAM}" == "lint" ]

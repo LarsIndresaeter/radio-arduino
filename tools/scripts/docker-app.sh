@@ -1,8 +1,8 @@
 #!/bin/bash
 
-COMMAND=$1
-TAG=$2
-ENGINE=$3
+REGISTRY=$1
+COMMAND=$2
+TAG=$3
 
 function checkTty()
 {
@@ -22,23 +22,45 @@ function checkTty()
     fi
 }
 
-if [ "${COMMAND}" == "build" ]
+if [ "${REGISTRY}" == "local" ]
 then
-    TAG_LATEST=$(git describe --tags --abbrev=0)
-    docker build -t radio-arduino:${TAG_LATEST} --file tools/docker/app/Dockerfile .
-elif [ "${COMMAND}" == "run" ]
-then
-    if [ "${TAG}" == "" ]
-    then
-        echo "you must supply a version tag"
-        echo ""
-        docker images radio-arduino
-    else
-        checkTty
+    _CONTAINER="radio-arduino"
 
-        docker run --network host -it --rm --device=/dev/ttyUSB0 radio-arduino:${TAG} bash
+    if [ "${COMMAND}" == "build" ]
+    then
+        TAG_LATEST=$(git describe --tags --abbrev=0)
+        docker build -t ${_CONTAINER}:${TAG_LATEST} --file tools/docker/app/Dockerfile .
+    elif [ "${COMMAND}" == "run" ]
+    then
+        if [ "${TAG}" == "" ]
+        then
+            echo "you must supply a version tag"
+            echo ""
+            docker images radio-arduino
+        else
+            checkTty
+
+            docker run --network host -it --rm --device=/dev/ttyUSB0 ${_CONTAINER}:${TAG} bash
+        fi
+    else
+        echo "first parameter should be either build or run"
+    fi
+elif [ "${REGISTRY}" == "remote" ]
+then
+    if [ "${COMMAND}" == "run" ]
+    then
+        if [ "${TAG}" == "" ]
+        then
+            echo "you must supply a version tag. latest or semver"
+        else
+            _CONTAINER="ghcr.io/larsindresaeter/radio-arduino"
+            docker run --network host -it --rm --device=/dev/ttyUSB0 ${_CONTAINER}:${TAG} bash
+        fi
+    else
+        echo "only valid verb for remote registry is <run>"
     fi
 else
-    echo "first parameter should be either build or run"
+    echo "you must specify a valid registry location: <local|remote>"
 fi
+
 
