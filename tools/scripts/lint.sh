@@ -5,10 +5,7 @@ PARAM=$1
 
 REPO_BASE_DIR=$(git rev-parse --show-toplevel)
 
-if [ "${PARAM}" == "doc" ]
-then
-    echo "lint markdown: mdl ${REPO_BASE_DIR}"
+echo "lint markdown: mdl ${REPO_BASE_DIR}"
 
-    mdl ${REPO_BASE_DIR}
-fi
+mdl ${REPO_BASE_DIR}
 
