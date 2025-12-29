@@ -36,11 +36,6 @@ then
     ${RADINO_TOOLS_DIR}/scripts/docker-devbox.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
 fi
 
-if [ "${PARAM}" == "podman-devbox" ]
-then
-    ${RADINO_TOOLS_DIR}/scripts/podman-devbox.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
-fi
-
 if [ "${PARAM}" == "lint" ]
 then
     ${RADUINO_SCRIPTS_DIR}/lint.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"

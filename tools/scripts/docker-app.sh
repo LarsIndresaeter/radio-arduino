@@ -36,10 +36,9 @@ then
         then
             echo "you must supply a version tag"
             echo ""
-            docker images radio-arduino
+            docker images ${_CONTAINER}
         else
             checkTty
-
             docker run --network host -it --rm --device=/dev/ttyUSB0 ${_CONTAINER}:${TAG} bash
         fi
     else
