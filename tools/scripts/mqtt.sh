@@ -5,7 +5,7 @@ PARAM=$1
 print_help()
 {
     echo "commands:"
-    echo "    interval <n> : set polling interval to <n> seconds"
+    echo "interval <n> <t> : set polling interval for node <n> to <s> seconds"
     echo "     text <text> : write <text> on lcd display"
     echo "      subscribe  : subscribe to radio-arduino topic"
     echo "          start  : start mosquitto broker"
@@ -17,9 +17,7 @@ then
     print_help
 elif [ "${PARAM}" == "interval" ]
 then
-    mosquitto_pub -t "radio-arduino/RCMD/solar-lamp" -m "{\"command\": \"desiredState\", \"pollInterval\": $2}"
-    mosquitto_pub -t "radio-arduino/RCMD/breadboard" -m "{\"command\": \"desiredState\", \"pollInterval\": $2}"
-    mosquitto_pub -t "radio-arduino/RCMD/lcd" -m "{\"command\": \"desiredState\", \"pollInterval\": $2}"
+    mosquitto_pub -t "radio-arduino/RCMD/$2" -m "{\"command\": \"desiredState\", \"pollInterval\": $3}"
 elif [ "${PARAM}" == "text" ]
 then
     mosquitto_pub -t "radio-arduino/RCMD/lcd" -m "{\"command\": \"lcd\", \"displayText\": \"$2\"}"

@@ -58,7 +58,7 @@ fi
 
 if [ "${PARAM}" == "mqtt" ]
 then
-    ${RADUINO_SCRIPTS_DIR}/mqtt.sh $2 "${3}"
+    ${RADUINO_SCRIPTS_DIR}/mqtt.sh $2 "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
 fi
 
 if [ "${PARAM}" == "setup" ]
