@@ -1,5 +1,4 @@
 #include "actualState.hpp"
-#include "mqtt-common.hpp"
 
 using nlohmann::json;
 

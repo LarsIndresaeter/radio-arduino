@@ -45,3 +45,4 @@ bool DesiredState::getStateSubscribeVoltage() { return (true); }
 int DesiredState::getDesiredPollInterval() { return (m_desiredPollInterval); }
 
 std::string DesiredState::getDesiredDisplayText() { return (m_desiredDisplayText); }
+

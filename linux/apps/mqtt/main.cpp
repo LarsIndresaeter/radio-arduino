@@ -36,31 +36,6 @@ void registerRadioNode(
     }
 }
 
-void moveRadioNode(
-    monitor& mon,
-    mqtt::async_client& mqtt_client,
-    std::vector<std::shared_ptr<DesiredState>>& desiredStateList,
-    std::vector<std::shared_ptr<DeviceController>>& deviceControllerList,
-    std::string name,
-    uint8_t nodeAddress)
-{
-    RadioSession radioSession(mon, 0);
-    radioSession.wakeupNotResponding();
-
-    std::string nodeName = mon.getRadio<>(RaduinoCommandGetDeviceName()).getNamestring();
-
-    if (nodeName == name) {
-        std::cout << "DEBUG: try to move '" + nodeName + "' to address: " + std::to_string(nodeAddress) << std::endl;
-        mon.getRadio<>(RaduinoCommandSetNodeAddress(nodeAddress));
-
-        if (mon.lastCommandReturnedValidResponse()) {
-            std::cout << "DEBUG: move operation was successful" << std::endl;
-        }
-
-        registerRadioNode(mon, mqtt_client, nodeAddress, desiredStateList, deviceControllerList);
-    }
-}
-
 void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client, std::vector<uint8_t> nodeAddressList)
 {
     const int QOS = 0;
@@ -69,10 +44,6 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client, std::
     std::vector<std::shared_ptr<DeviceController>> deviceControllerList;
 
     getGatewayNameAndPublishBirth(mon, mqtt_client);
-
-    // moveRadioNode(mon, mqtt_client, desiredStateList, deviceControllerList, "solar-lamp", 100);
-    // moveRadioNode(mon, mqtt_client, desiredStateList, deviceControllerList, "breadboard", 101);
-    // moveRadioNode(mon, mqtt_client, desiredStateList, deviceControllerList, "lcd", 102);
 
     for (uint8_t nodeAddress : nodeAddressList) {
         registerRadioNode(mon, mqtt_client, nodeAddress, desiredStateList, deviceControllerList);
@@ -123,7 +94,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 
     std::vector<uint8_t> nodeAddressList;
     char option = 0;
-    uint8_t radioAddress = 0;
 
     while ((option = getopt(argc, argv, "K:hn:")) != -1) {
         switch (option) {

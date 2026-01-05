@@ -89,6 +89,7 @@ bool DeviceController::hasDeviceAttached(std::string device)
 
 void DeviceController::readAttachedDevicesCsvString()
 {
+    //TODO: read once, store flag indicating that value has been read from device
     if (m_attachedDevicesCsvString.empty()) {
         m_attachedDevicesCsvString = m_monitor.getRadio<>(RaduinoCommandGetAttachedDevicesCsvString()).getCsvstring();
     }
