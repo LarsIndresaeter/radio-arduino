@@ -39,7 +39,7 @@
   - [protocol encryption](./explanation/interface/protocol-encryption.md)
   - [wakeup](./explanation/interface/wakeup.md) a sleeping radio node
 - [linux](./explanation/linux/README.md)
-  - [digital twin](./explanation/linux/digital-twin.md) of a radio node
+  - [device controller](./explanation/linux/device-controller.md) of a radio node
   - [json](./explanation/linux/json.md) formatted command response
   - [linux uart monitor](./explanation/linux/linux-uart-monitor.md)
   - [mqtt](./explanation/linux/mqtt.md)

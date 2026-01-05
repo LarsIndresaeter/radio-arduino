@@ -1,7 +1,7 @@
-#include "digitalTwin.hpp"
-#include "include/digitalTwin.hpp"
+#include "deviceController.hpp"
+#include "include/deviceController.hpp"
 
-DigitalTwin::DigitalTwin(monitor& monitor, mqtt::async_client& mqtt_client, uint8_t radioAddress, std::string name)
+DeviceController::DeviceController(monitor& monitor, mqtt::async_client& mqtt_client, uint8_t radioAddress, std::string name)
     : m_radioAddress(radioAddress)
     , m_monitor(monitor)
     , m_radioSession(monitor, radioAddress)
@@ -11,9 +11,9 @@ DigitalTwin::DigitalTwin(monitor& monitor, mqtt::async_client& mqtt_client, uint
 {
 }
 
-std::shared_ptr<DesiredState> DigitalTwin::getDesiredState() { return (m_desiredState); }
+std::shared_ptr<DesiredState> DeviceController::getDesiredState() { return (m_desiredState); }
 
-void DigitalTwin::reconsileState()
+void DeviceController::reconsileState()
 {
     if (m_desiredState->getDesiredPollInterval() != m_actualState.getActualPollInterval()) {
         m_actualState.setActualPollInterval(m_desiredState->getDesiredPollInterval());
@@ -26,7 +26,7 @@ void DigitalTwin::reconsileState()
     }
 }
 
-void DigitalTwin::execute()
+void DeviceController::execute()
 {
     reconsileState();
 
@@ -59,7 +59,7 @@ void DigitalTwin::execute()
     m_radioSession.close();
 }
 
-void DigitalTwin::publishMessage(std::string topic, std::string message)
+void DeviceController::publishMessage(std::string topic, std::string message)
 {
     const int QOS = 0;
     mqtt::topic mqttTopic(m_mqttClient, topic, QOS, false);
@@ -74,7 +74,7 @@ void DigitalTwin::publishMessage(std::string topic, std::string message)
     }
 }
 
-bool DigitalTwin::hasDeviceAttached(std::string device)
+bool DeviceController::hasDeviceAttached(std::string device)
 {
     bool retval = false;
 
@@ -87,14 +87,14 @@ bool DigitalTwin::hasDeviceAttached(std::string device)
     return (retval);
 }
 
-void DigitalTwin::readAttachedDevicesCsvString()
+void DeviceController::readAttachedDevicesCsvString()
 {
     if (m_attachedDevicesCsvString.empty()) {
         m_attachedDevicesCsvString = m_monitor.getRadio<>(RaduinoCommandGetAttachedDevicesCsvString()).getCsvstring();
     }
 }
 
-void DigitalTwin::readVccAndPublish()
+void DeviceController::readVccAndPublish()
 {
     auto response = m_monitor.getRadio<>(RaduinoCommandVcc());
 
@@ -104,7 +104,7 @@ void DigitalTwin::readVccAndPublish()
     }
 }
 
-void DigitalTwin::readGpioAndPublish()
+void DeviceController::readGpioAndPublish()
 {
     auto response = m_monitor.getRadio<>(RaduinoCommandGpio());
 
@@ -114,7 +114,7 @@ void DigitalTwin::readGpioAndPublish()
     }
 }
 
-void DigitalTwin::readQuadencoderAndPublish()
+void DeviceController::readQuadencoderAndPublish()
 {
     if (hasDeviceAttached("quad")) {
         auto response = m_monitor.getRadio<>(RaduinoCommandQuadratureEncoder());
@@ -126,7 +126,7 @@ void DigitalTwin::readQuadencoderAndPublish()
     }
 }
 
-void DigitalTwin::readAccelerometerAndPublish()
+void DeviceController::readAccelerometerAndPublish()
 {
     if (hasDeviceAttached("lsm303d")) {
         auto response = m_monitor.getRadio<>(RaduinoCommandGetLsm303d());
@@ -138,7 +138,7 @@ void DigitalTwin::readAccelerometerAndPublish()
     }
 }
 
-void DigitalTwin::readUniqueuIdAndPublish()
+void DeviceController::readUniqueuIdAndPublish()
 {
     auto response = m_monitor.getRadio<>(RaduinoCommandGetUniqueId());
 
@@ -148,7 +148,7 @@ void DigitalTwin::readUniqueuIdAndPublish()
     }
 }
 
-void DigitalTwin::readVersionAndPublish()
+void DeviceController::readVersionAndPublish()
 {
     auto response = m_monitor.getRadio<>(RaduinoCommandGetVersion());
 
@@ -158,7 +158,7 @@ void DigitalTwin::readVersionAndPublish()
     }
 }
 
-void DigitalTwin::readAttachedDevicesAndPublish()
+void DeviceController::readAttachedDevicesAndPublish()
 {
     auto response = m_monitor.getRadio<>(RaduinoCommandGetAttachedDevicesCsvString());
 
@@ -168,7 +168,7 @@ void DigitalTwin::readAttachedDevicesAndPublish()
     }
 }
 
-void DigitalTwin::updateDisplayText()
+void DeviceController::updateDisplayText()
 {
     if (hasDeviceAttached("ssd1306")) {
         COMMANDS::SSD1306::command_t command;
@@ -191,7 +191,7 @@ void DigitalTwin::updateDisplayText()
     }
 }
 
-void DigitalTwin::publishNdeath()
+void DeviceController::publishNdeath()
 {
     std::string topic = createMqttTopic("NDEATH", m_name, "");
     std::string message = getDateTimeString();

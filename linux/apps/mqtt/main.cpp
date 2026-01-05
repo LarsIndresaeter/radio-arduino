@@ -3,7 +3,7 @@
 #include <cmd/commands.hxx>
 #include <desiredState.hpp>
 #include <desiredStateCallback.hpp>
-#include <digitalTwin.hpp>
+#include <deviceController.hpp>
 #include <eventprocess.hpp>
 #include <filesystem>
 #include <linuxCryptoHandler.hpp>
@@ -21,7 +21,7 @@ void registerRadioNode(
     mqtt::async_client& mqtt_client,
     uint8_t nodeAddress,
     std::vector<std::shared_ptr<DesiredState>>& desiredStateList,
-    std::vector<std::shared_ptr<DigitalTwin>>& digitalTwinList)
+    std::vector<std::shared_ptr<DeviceController>>& deviceControllerList)
 {
     RadioSession radioSession(mon, nodeAddress);
     radioSession.wakeupNotResponding();
@@ -29,10 +29,10 @@ void registerRadioNode(
 
     if (!nodeName.empty()) {
         publishNbirth(mqtt_client, nodeName);
-        DigitalTwin twin(mon, mqtt_client, nodeAddress, nodeName);
+        DeviceController controller(mon, mqtt_client, nodeAddress, nodeName);
 
-        desiredStateList.push_back(twin.getDesiredState());
-        digitalTwinList.push_back(std::make_shared<DigitalTwin>(twin));
+        desiredStateList.push_back(controller.getDesiredState());
+        deviceControllerList.push_back(std::make_shared<DeviceController>(controller));
     }
 }
 
@@ -40,7 +40,7 @@ void moveRadioNode(
     monitor& mon,
     mqtt::async_client& mqtt_client,
     std::vector<std::shared_ptr<DesiredState>>& desiredStateList,
-    std::vector<std::shared_ptr<DigitalTwin>>& digitalTwinList,
+    std::vector<std::shared_ptr<DeviceController>>& deviceControllerList,
     std::string name,
     uint8_t nodeAddress)
 {
@@ -57,7 +57,7 @@ void moveRadioNode(
             std::cout << "DEBUG: move operation was successful" << std::endl;
         }
 
-        registerRadioNode(mon, mqtt_client, nodeAddress, desiredStateList, digitalTwinList);
+        registerRadioNode(mon, mqtt_client, nodeAddress, desiredStateList, deviceControllerList);
     }
 }
 
@@ -66,16 +66,16 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client, std::
     const int QOS = 0;
 
     std::vector<std::shared_ptr<DesiredState>> desiredStateList;
-    std::vector<std::shared_ptr<DigitalTwin>> digitalTwinList;
+    std::vector<std::shared_ptr<DeviceController>> deviceControllerList;
 
     getGatewayNameAndPublishBirth(mon, mqtt_client);
 
-    // moveRadioNode(mon, mqtt_client, desiredStateList, digitalTwinList, "solar-lamp", 100);
-    // moveRadioNode(mon, mqtt_client, desiredStateList, digitalTwinList, "breadboard", 101);
-    // moveRadioNode(mon, mqtt_client, desiredStateList, digitalTwinList, "lcd", 102);
+    // moveRadioNode(mon, mqtt_client, desiredStateList, deviceControllerList, "solar-lamp", 100);
+    // moveRadioNode(mon, mqtt_client, desiredStateList, deviceControllerList, "breadboard", 101);
+    // moveRadioNode(mon, mqtt_client, desiredStateList, deviceControllerList, "lcd", 102);
 
     for (uint8_t nodeAddress : nodeAddressList) {
-        registerRadioNode(mon, mqtt_client, nodeAddress, desiredStateList, digitalTwinList);
+        registerRadioNode(mon, mqtt_client, nodeAddress, desiredStateList, deviceControllerList);
     }
 
     DesiredStateCallback desiredStateCallback(desiredStateList);
@@ -86,8 +86,8 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client, std::
     mqtt_client.subscribe(commandTopic1, QOS)->wait();
 
     while (true) {
-        for (std::shared_ptr<DigitalTwin> digitalTwin : digitalTwinList) {
-            digitalTwin->execute();
+        for (std::shared_ptr<DeviceController> deviceController : deviceControllerList) {
+            deviceController->execute();
         }
         std::this_thread::sleep_for(100ms);
     }

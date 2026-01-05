@@ -6,9 +6,9 @@
 #include <mqtt-common.hpp>
 #include <radioSession.hpp>
 
-class DigitalTwin {
+class DeviceController {
 public:
-    DigitalTwin(monitor& monitor, mqtt::async_client& mqtt_client, uint8_t radioAddress, std::string name);
+    DeviceController(monitor& monitor, mqtt::async_client& mqtt_client, uint8_t radioAddress, std::string name);
     void execute();
     std::shared_ptr<DesiredState> getDesiredState();
 

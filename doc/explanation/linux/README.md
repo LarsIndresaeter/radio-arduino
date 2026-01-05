@@ -6,5 +6,5 @@ publishing responses from the gateway and node to a broker
 - [json](./json.md)
 - [linux uart monitor](./linux-uart-monitor.md) is responsible for asyncronous
   sending of commands on the serial port
-- [digital twin](./digital-twin.md)
+- [device controller](./device-controller.md)
 

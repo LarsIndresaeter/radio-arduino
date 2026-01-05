@@ -65,25 +65,3 @@ If you want to contribute to this code the preffered way is to:
 2. make the suggested changed to the code
 3. create a merge request towards this repository
 
-## what remains
-
-- mqtt bridge
-  - read json formatted commands on command-topic
-  - write response on response-topic
-  - generate commands from json commands
-- replace digital twin written in C++ with a separate service possibly written
-  in python in a separate repository
-- documentation
-  - script for building a book in linear format. The intention is to improve the
-  structure of the documentation
-- improved handling of multiple radio nodes
-  - send unique id in discover message
-  - optional unique id in wakeup command
-  - set radio channel when waking up a radio node
-  - add unique id of node in raduinoCommandBase
-- Developer experience
-  - migrate to conan 2
-- improve security
-  - read HOTP key from eeprom
-  - read HMAC key from eeprom
-

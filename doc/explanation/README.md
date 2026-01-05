@@ -19,7 +19,7 @@ Explanation, or discussions, clarify and illuminate a particular topic.
   - [protocol encryption](./interface/protocol-encryption.md)
   - [wakeup](./interface/wakeup.md) a sleeping radio node
 - [linux](./linux/README.md)
-  - [digital twin](./linux/digital-twin.md) of a radio node
+  - [device controller](./linux/device-controller.md) of a radio node
   - [json](./linux/json.md) formatted command response
   - [linux uart monitor](./linux/linux-uart-monitor.md)
   - [mqtt](./linux/mqtt.md)
