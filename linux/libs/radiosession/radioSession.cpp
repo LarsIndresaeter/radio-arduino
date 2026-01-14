@@ -11,10 +11,11 @@ uint64_t RadioSession::secondsSinceEpoch() { return milliSecondsSinceEpoch() / 1
 
 void RadioSession::setVerbose(bool verbose) { m_verbose = verbose; }
 
-RadioSession::RadioSession(monitor& mon, uint8_t address)
+RadioSession::RadioSession(monitor& mon, uint32_t address)
     : m_monitor(mon)
 {
-    m_wakeupAttempts = 1;
+    m_radioNodeAddress = address;
+    m_wakeupAttempts = 2;
     m_isAlive = false;
     m_wakeupSuccessCounter = 0;
     m_wakeupFailedCounter = 0;
@@ -28,14 +29,13 @@ void RadioSession::close()
     if (m_isAlive) {
         uint64_t activeTimeSinceLastWakeup = milliSecondsSinceEpoch() - m_timeLastWakeup;
 
-        //m_monitor.getRadio<>(RaduinoCommandKeepAlive(0)); // tell radio node to go do sleep
+        // m_monitor.getRadio<>(RaduinoCommandKeepAlive(0)); // tell radio node to go do sleep
 
         if (m_monitor.lastCommandReturnedValidResponse()) {
             m_activeTime = m_activeTime + activeTimeSinceLastWakeup;
         }
         else {
-            m_activeTime
-                = m_activeTime + 1000; // keep alive interval set during initial ping
+            m_activeTime = m_activeTime + 1000; // keep alive interval set during initial ping
         }
 
         m_isAlive = false;
@@ -58,16 +58,17 @@ bool RadioSession::wakeupNotRespondingTryOnce()
 {
     m_isAlive = false;
 
-    m_monitor.getRadio<>(RaduinoCommandPing(), static_cast<std::chrono::milliseconds>(500));
+    auto response = m_monitor.getRadio<>(RaduinoCommandGetUniqueId(), static_cast<std::chrono::milliseconds>(500));
 
-    if (m_monitor.lastCommandReturnedValidResponse()) {
+    if (response.responseStruct().getId() == m_radioNodeAddress) {
         if (m_verbose) {
             std::cout << "DEBUG: radio node responded to ping, no need to wake up" << std::endl;
         }
         m_isAlive = true;
     }
     else {
-        auto response = m_monitor.get<>(RaduinoCommandWakeup(false, 0), static_cast<std::chrono::milliseconds>(10000));
+        auto response = m_monitor.get<>(
+            RaduinoCommandWakeup(false, m_radioNodeAddress), static_cast<std::chrono::milliseconds>(10000));
 
         if (response.responseStruct().getDiscovered() == 1) {
             m_isAlive = true;

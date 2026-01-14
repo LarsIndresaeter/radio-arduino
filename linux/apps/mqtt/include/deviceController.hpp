@@ -8,9 +8,10 @@
 
 class DeviceController {
 public:
-    DeviceController(monitor& monitor, mqtt::async_client& mqtt_client, uint8_t radioAddress, std::string name);
+    DeviceController(monitor& monitor, mqtt::async_client& mqtt_client, uint32_t radioAddress, std::string name);
     void execute();
     std::shared_ptr<DesiredState> getDesiredState();
+    uint32_t getNodeAddress();
 
 private:
     void publishMessage(std::string topic, std::string message);
@@ -19,7 +20,7 @@ private:
     std::shared_ptr<DesiredState> m_desiredState;
     RadioSession m_radioSession;
     std::string m_name;
-    uint8_t m_radioAddress;
+    uint32_t m_radioAddress;
     monitor& m_monitor;
     mqtt::async_client& m_mqttClient;
     std::string m_attachedDevicesCsvString;

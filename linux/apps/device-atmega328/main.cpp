@@ -42,7 +42,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 {
     char option = 0;
     uint8_t spiRegister = 0;
-    uint8_t radioAddress = 0;
+    uint32_t radioAddress = 0;
 
     while ((option = getopt(argc, argv, "K:N:AbBCgGjJy:p:P:qQY:zZs:S:tTh")) != -1) {
         switch (option) {
@@ -102,12 +102,13 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             std::cout << mon.getRadio<>(RaduinoCommandQuadratureEncoder()) << std::endl;
             break;
         case 'C':
-            std::cout << mon.get<>(RaduinoCommandWakeup(true, 0), static_cast<std::chrono::milliseconds>(12000))
+            std::cout << mon.get<>(
+                RaduinoCommandWakeup(true, radioAddress), static_cast<std::chrono::milliseconds>(12000))
                       << std::endl;
             break;
         case 'A': {
             while (1) {
-                mon.get<>(RaduinoCommandWakeup(true, 0), static_cast<std::chrono::milliseconds>(12000));
+                mon.get<>(RaduinoCommandWakeup(true, radioAddress), static_cast<std::chrono::milliseconds>(12000));
                 if (mon.lastCommandReturnedValidResponse()) {
                     std::cout << mon.getRadio<>(RaduinoCommandQuadratureEncoder()) << std::endl;
                 }

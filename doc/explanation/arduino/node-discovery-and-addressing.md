@@ -33,3 +33,13 @@ after fixing it.
 - Communication from wakup to next sleep period using adress calculated from
   node id.
 
+#### gateway
+
+- P0 is set to talk to addressed node
+- P1 is always set to receive discovery messages
+
+#### node
+
+- P0 alternate between broadcast address and node address
+- tx_addr is set to same address as P0
+

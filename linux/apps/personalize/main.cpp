@@ -100,8 +100,11 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     bool dump_eeprom = false;
     bool name_option_present = false;
     bool print_programmed_values = false;
-    uint8_t radioAddress = 0;
-    uint32_t uniqueId = (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count()) / 1000;
+    uint32_t radioAddress = 0;
+    uint32_t uniqueId
+        = (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch())
+               .count())
+        / 1000;
 
     while ((option = getopt(argc, argv, "K:n:t:e:i:l:r:ds:ph")) != -1) {
         switch (option) {

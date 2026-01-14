@@ -1,8 +1,8 @@
 #include "mqtt-common.hpp"
 #include "version.h"
 #include <iostream>
-#include <unistd.h>
 #include <limits.h>
+#include <unistd.h>
 
 using namespace std::chrono_literals;
 using time_point = std::chrono::system_clock::time_point;
@@ -109,7 +109,8 @@ std::string getGatewayNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt
     auto response = mon.get<>(RaduinoCommandGetVersion());
 
     if (mon.lastCommandReturnedValidResponse()) {
-        mqtt::topic deviceBirth(mqtt_client, createMqttTopic("NDATA", gatewayName, response.getCommandName()), 0, false);
+        mqtt::topic deviceBirth(
+            mqtt_client, createMqttTopic("NDATA", gatewayName, response.getCommandName()), 0, false);
         deviceBirth.publish(response.getJson());
     }
 

@@ -11,6 +11,7 @@
 #include <command-handlers-gpio.hpp>
 #include <command-handlers-i2c.hpp>
 #include <command-handlers-ina219.hpp>
+#include <command-handlers-lsm303d.hpp>
 #include <command-handlers-nrf24l01.hpp>
 #include <command-handlers-parser.hpp>
 #include <command-handlers-pwm.hpp>
@@ -25,7 +26,6 @@
 #include <command-handlers-timer.hpp>
 #include <command-handlers-watchdog.hpp>
 #include <command-handlers-ws2812b.hpp>
-#include <command-handlers-lsm303d.hpp>
 #include <command-handlers.hpp>
 
 bool rx_mode_gateway = true; // default role, update eeprom to switch to node
@@ -177,12 +177,12 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
 
 int main()
 {
-    RADIOLINK::initRadioLink();
     uint8_t transport_key[16] = { 0 };
     EEPROM_DATA_STORE::readFromActive(offsetof(eeprom_data_t, transportEncryptionKey), &transport_key[0], 16);
     ArduinoCryptoHandler cryptoHandler(&transport_key[0]);
 
     rx_mode_gateway = EEPROM_DATA_STORE::readRxModeGatewayFromEeprom();
+    RADIOLINK::initRadioLink();
 
     EEPROM_DATA_STORE::incrementRestarts();
 

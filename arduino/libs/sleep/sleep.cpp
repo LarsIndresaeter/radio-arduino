@@ -33,7 +33,6 @@ void rfNodeSleepAndPollForWakeup()
 
     while (wakeup_received == 0) {
         powerDownRadioAndSleep(5000);
-
         wakeup_received = RADIOLINK::sendDiscoverToGateway();
     }
 }

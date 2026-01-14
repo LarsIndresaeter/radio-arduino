@@ -47,5 +47,3 @@ uint16_t lsm303dReadDoubleRegister(uint8_t registerAddress)
 
     return result;
 }
-
-

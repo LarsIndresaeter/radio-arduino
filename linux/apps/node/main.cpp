@@ -26,7 +26,7 @@ void print_usage()
 void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)
 {
     char option = 0;
-    uint8_t radioAddress = 0;
+    uint32_t radioAddress = 0;
 
     while ((option = getopt(argc, argv, "K:N:Cgqjh")) != -1) {
         switch (option) {
