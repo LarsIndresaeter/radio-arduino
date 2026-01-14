@@ -50,7 +50,7 @@ void DeviceController::execute()
     }
 
     if (hasDeviceAttached("quad")) {
-        auto response = m_monitor.get<>(RaduinoCommandWakeup(1));
+        auto response = m_monitor.get<>(RaduinoCommandWakeup(1, 0));
         if (response.responseStruct().getDiscovered() == 1) {
             readQuadencoderAndPublish();
         }

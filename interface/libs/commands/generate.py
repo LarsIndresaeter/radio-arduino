@@ -33,7 +33,7 @@ generator.add(26, "nrf24l01_write", ["length", "data[32]"], ["length", "data[32]
 generator.add(27, "radio_uart", ["mode"], [])
 generator.add(28, "vcc", [], ["vcc[2]"])
 generator.add(29, "sleep", ["delay[4]"], [])
-generator.add(30, "wakeup", ["checkAttentionFlag"], ["discovered"])
+generator.add(30, "wakeup", ["checkAttentionFlag", "id[4]"], ["discovered"])
 generator.add(31, "set_node_address", ["nodeAddress"], [])
 generator.add(32, "keep_alive", ["time"], [])
 generator.add(33, "ping", [], [])

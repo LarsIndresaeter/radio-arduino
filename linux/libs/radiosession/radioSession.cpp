@@ -69,7 +69,7 @@ bool RadioSession::wakeupNotRespondingTryOnce()
         m_isAlive = true;
     }
     else {
-        auto response = m_monitor.get<>(RaduinoCommandWakeup(false), static_cast<std::chrono::milliseconds>(10000));
+        auto response = m_monitor.get<>(RaduinoCommandWakeup(false, 0), static_cast<std::chrono::milliseconds>(10000));
 
         if (response.responseStruct().getDiscovered() == 1) {
             m_isAlive = true;

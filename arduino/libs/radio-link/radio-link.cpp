@@ -6,23 +6,17 @@ namespace RADIOLINK {
 
 uint8_t node_address = 0;
 uint8_t rx_tx_addr[5] = { 0xF0, 0xF0, 0xF0, 0xF0, node_address };
-uint8_t device_id[4] = { 0 };
-uint32_t lastDeviceIdSeen = 0;
+uint32_t id_this_node = 0;
+uint32_t id_from_last_discover_message = 0;
 
 uint32_t getLastDeviceIdSeen()
 {
-    uint32_t tmp = lastDeviceIdSeen;
-    lastDeviceIdSeen = 0;
+    uint32_t tmp = id_from_last_discover_message;
+    id_from_last_discover_message = 0;
     return (tmp);
 }
 
-void setDeviceId(uint32_t id)
-{
-    device_id[0] = id >> 24;
-    device_id[1] = id >> 16;
-    device_id[2] = id >> 8;
-    device_id[3] = id;
-}
+void setDeviceId(uint32_t id) { id_this_node = id; }
 
 // link level package
 constexpr uint8_t discovery_package_prototye[32]
@@ -41,22 +35,22 @@ void populateDiscoverPackage(uint8_t* buffer, uint8_t attentionFlag)
     }
 
     buffer[27] = attentionFlag;
-    buffer[28] = device_id[0];
-    buffer[29] = device_id[1];
-    buffer[30] = device_id[2];
-    buffer[31] = device_id[3];
+    buffer[28] = id_this_node >> 24;
+    buffer[29] = id_this_node >> 16;
+    buffer[30] = id_this_node >> 8;
+    buffer[31] = id_this_node;
 }
 
-void populateWakeupPackage(uint8_t* buffer)
+void populateWakeupPackage(uint8_t* buffer, uint32_t id)
 {
     for (uint8_t i = 0; i < 28; i++) {
         buffer[i] = wakeup_package_prototype[i];
     }
 
-    buffer[28] = device_id[0];
-    buffer[29] = device_id[1];
-    buffer[30] = device_id[2];
-    buffer[31] = device_id[3];
+    buffer[28] = id >> 24;
+    buffer[29] = id >> 16;
+    buffer[30] = id >> 8;
+    buffer[31] = id;
 }
 
 void setNodeAddress(uint8_t address)
@@ -77,7 +71,7 @@ uint8_t sendDiscoverToGateway()
     populateDiscoverPackage(rf_link_discover_package, QUADENCODER::pollChangedFlag());
 
     uint8_t rf_link_wakeup_command[32];
-    populateWakeupPackage(rf_link_wakeup_command);
+    populateWakeupPackage(rf_link_wakeup_command, id_this_node);
 
     // send command to rf gateway
     NRF24L01_tx(&rf_link_discover_package[0], 32);
@@ -87,8 +81,10 @@ uint8_t sendDiscoverToGateway()
     // poll gateway for wakeup command in ack packet
     uint8_t length = NRF24L01_read_rx_payload(&read_wakeup_command[0]);
 
+    // check if wakeup command was sent to me
     if (length == 32) {
         wakeup_received_from_gateway = 1;
+        //for (uint8_t i = 0; i < 32; i++) {
         for (uint8_t i = 0; i < 25; i++) {
             if (read_wakeup_command[i] != rf_link_wakeup_command[i]) {
                 wakeup_received_from_gateway = 0;
@@ -103,13 +99,18 @@ uint8_t sendDiscoverToGateway()
     return wakeup_received_from_gateway;
 }
 
-uint8_t sendWakeupCommandToNode(uint8_t checkAttentionFlag)
+uint8_t sendWakeupCommandToNode(uint32_t id, uint8_t checkAttentionFlag)
 {
     uint8_t read_discover_package[32] = { 0 };
     uint8_t discovered = 0;
 
     uint8_t rf_link_wakeup_command[32];
-    populateWakeupPackage(rf_link_wakeup_command);
+
+    if (id == 0) {
+        id = id_from_last_discover_message;
+    }
+
+    populateWakeupPackage(rf_link_wakeup_command, id);
 
     if (rx_mode_gateway) {
         for (uint16_t i = 0; i < 500; i++) {
@@ -159,10 +160,10 @@ uint8_t isDiscoverPackage(uint8_t response_length, uint8_t* packet)
     }
 
     if (is_wakeup_ack == 1) {
-        lastDeviceIdSeen = packet[31];
-        lastDeviceIdSeen += ((uint32_t)packet[30]) << 8;
-        lastDeviceIdSeen += ((uint32_t)packet[29]) << 16;
-        lastDeviceIdSeen += ((uint32_t)packet[28]) << 24;
+        id_from_last_discover_message = packet[31];
+        id_from_last_discover_message += ((uint32_t)packet[30]) << 8;
+        id_from_last_discover_message += ((uint32_t)packet[29]) << 16;
+        id_from_last_discover_message += ((uint32_t)packet[28]) << 24;
     }
 
     return is_wakeup_ack;
