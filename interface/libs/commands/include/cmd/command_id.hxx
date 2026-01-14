@@ -39,7 +39,7 @@ enum class OI
     VCC = 28,
     SLEEP = 29,
     WAKEUP = 30,
-    SET_NODE_ADDRESS = 31,
+    SET_RADIO_CHANNEL = 31,
     KEEP_ALIVE = 32,
     PING = 33,
     QUADRATURE_ENCODER = 34,

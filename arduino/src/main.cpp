@@ -137,9 +137,6 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
     case COMMANDS::OI::QUADRATURE_ENCODER:
         QUADENCODER::commandQuadratureEncoder(commandPayload, responsePayload);
         break;
-    case COMMANDS::OI::SET_NODE_ADDRESS:
-        RADIOLINK::commandSetNodeAddress(commandPayload, responsePayload);
-        break;
     case COMMANDS::OI::KEEP_ALIVE:
         PARSER::commandKeepAlive(commandPayload, responsePayload);
         break;
@@ -170,6 +167,9 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
     case COMMANDS::OI::GET_LAST_DEVICE_ID_SEEN:
         RADIOLINK::commandGetLastDeviceIdSeen(commandPayload, responsePayload);
         break;
+    case COMMANDS::OI::SET_RADIO_CHANNEL:
+        RADIOLINK::commandSetRadioChannel(commandPayload, responsePayload);
+        break;
     default:
         break;
     }
@@ -177,7 +177,7 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
 
 int main()
 {
-    RADIOLINK::setNodeAddress(0);
+    RADIOLINK::initRadioLink();
     uint8_t transport_key[16] = { 0 };
     EEPROM_DATA_STORE::readFromActive(offsetof(eeprom_data_t, transportEncryptionKey), &transport_key[0], 16);
     ArduinoCryptoHandler cryptoHandler(&transport_key[0]);

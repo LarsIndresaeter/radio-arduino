@@ -33,7 +33,7 @@
 #include <cmd/vcc/command.hxx>
 #include <cmd/sleep/command.hxx>
 #include <cmd/wakeup/command.hxx>
-#include <cmd/set_node_address/command.hxx>
+#include <cmd/set_radio_channel/command.hxx>
 #include <cmd/keep_alive/command.hxx>
 #include <cmd/ping/command.hxx>
 #include <cmd/quadrature_encoder/command.hxx>

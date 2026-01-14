@@ -13,7 +13,6 @@ void RadioSession::setVerbose(bool verbose) { m_verbose = verbose; }
 
 RadioSession::RadioSession(monitor& mon, uint8_t address)
     : m_monitor(mon)
-    , m_radioAddress(address)
 {
     m_wakeupAttempts = 1;
     m_isAlive = false;
@@ -42,8 +41,7 @@ void RadioSession::close()
         m_isAlive = false;
 
         if (m_verbose) {
-            std::cout << "DEBUG: radioAddress=" << std::to_string(m_radioAddress)
-                      << ", activeTime(ms)=" << std::to_string(m_activeTime)
+            std::cout << ", activeTime(ms)=" << std::to_string(m_activeTime)
                       << ", wakeupSuccess=" << std::to_string(getWakeupSuccessCounter())
                       << ", wakeupFailed=" << std::to_string(getWakeupFailedCounter()) << std::endl;
         }
@@ -83,10 +81,10 @@ bool RadioSession::wakeupNotRespondingTryOnce()
 
     if (m_verbose) {
         if (m_isAlive) {
-            std::cout << "DEBUG: Wake up device: " << std::to_string(m_radioAddress) << " (OK)" << std::endl;
+            std::cout << "DEBUG: Wake up device: (OK)" << std::endl;
         }
         else {
-            std::cout << "DEBUG: Wake up device: " << std::to_string(m_radioAddress) << " (FAILED)" << std::endl;
+            std::cout << "DEBUG: Wake up device: (FAILED)" << std::endl;
         }
     }
 
@@ -96,8 +94,6 @@ bool RadioSession::wakeupNotRespondingTryOnce()
 bool RadioSession::wakeupNotResponding()
 {
     uint8_t cnt = 0;
-
-    m_monitor.get<>(RaduinoCommandSetNodeAddress(m_radioAddress));
 
     while (cnt < m_wakeupAttempts) {
         cnt++;

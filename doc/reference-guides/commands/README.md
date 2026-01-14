@@ -29,7 +29,7 @@
 - [Vcc](./vcc.md)
 - [Sleep](./sleep.md)
 - [Wakeup](./wakeup.md)
-- [SetNodeAddress](./set_node_address.md)
+- [SetRadioChannel](./set_radio_channel.md)
 - [KeepAlive](./keep_alive.md)
 - [Ping](./ping.md)
 - [QuadratureEncoder](./quadrature_encoder.md)

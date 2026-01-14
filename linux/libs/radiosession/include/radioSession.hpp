@@ -15,7 +15,6 @@ public:
 private:
     bool wakeupNotRespondingTryOnce();
     monitor& m_monitor;
-    uint8_t m_radioAddress;
     uint8_t m_keepAliveInterval;
     uint8_t m_wakeupAttempts;
     bool m_isAlive;

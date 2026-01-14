@@ -34,7 +34,7 @@
 #include <cmd/vcc/payload.hxx>
 #include <cmd/sleep/payload.hxx>
 #include <cmd/wakeup/payload.hxx>
-#include <cmd/set_node_address/payload.hxx>
+#include <cmd/set_radio_channel/payload.hxx>
 #include <cmd/keep_alive/payload.hxx>
 #include <cmd/ping/payload.hxx>
 #include <cmd/quadrature_encoder/payload.hxx>

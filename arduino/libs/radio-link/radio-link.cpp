@@ -4,8 +4,7 @@ extern bool rx_mode_gateway;
 
 namespace RADIOLINK {
 
-uint8_t node_address = 0;
-uint8_t rx_tx_addr[5] = { 0xF0, 0xF0, 0xF0, 0xF0, node_address };
+uint8_t rx_tx_addr[5] = { 0xF0, 0xF0, 0xF0, 0xF0, 0 };
 uint32_t id_this_node = 0;
 uint32_t id_from_last_discover_message = 0;
 
@@ -53,12 +52,8 @@ void populateWakeupPackage(uint8_t* buffer, uint32_t id)
     buffer[31] = id;
 }
 
-void setNodeAddress(uint8_t address)
+void initRadioLink()
 {
-    node_address = address;
-
-    rx_tx_addr[NRF24L01_ADDR_SIZE - 1] = address;
-
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rx_mode_gateway);
 }
 

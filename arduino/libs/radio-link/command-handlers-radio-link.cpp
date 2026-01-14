@@ -18,12 +18,12 @@ void commandWakeup(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
-void commandSetNodeAddress(uint8_t* commandPayload, uint8_t* responsePayload)
+void commandSetRadioChannel(uint8_t* commandPayload, uint8_t* responsePayload)
 {
-    COMMANDS::SET_NODE_ADDRESS::command_t command(commandPayload);
-    COMMANDS::SET_NODE_ADDRESS::response_t response;
+    COMMANDS::SET_RADIO_CHANNEL::command_t command(commandPayload);
+    COMMANDS::SET_RADIO_CHANNEL::response_t response;
 
-    RADIOLINK::setNodeAddress(command.nodeAddress);
+    NRF24L01_set_rf_channel(command.getChannel());
 
     response.serialize(responsePayload);
 }
