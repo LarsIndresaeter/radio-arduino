@@ -17,6 +17,7 @@ void print_usage()
     std::cout << "       -K <key> : encrypt command with transport key" << std::endl;
     std::cout << "             -C : print counter values" << std::endl;
     std::cout << "             -n : reboot gateway as node" << std::endl;
+    std::cout << "             -l : get last node id seen" << std::endl;
     std::cout << "             -h : print this text" << std::endl;
 }
 
@@ -27,7 +28,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint8_t i2cDeviceAddress = 0b10100000;
     uint8_t radioAddress = 0;
 
-    while ((option = getopt(argc, argv, "K:ChgGJn")) != -1) {
+    while ((option = getopt(argc, argv, "K:ChgGJnl")) != -1) {
         switch (option) {
         case 'C':
             mon.printCounterValues();
@@ -46,7 +47,9 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             cryptoHandler.setMacKey((uint8_t*)&key[0]);
             mon.setTransportEncryption(true);
         } break;
-
+        case 'l':
+            std::cout << mon.get<>(RaduinoCommandGetLastDeviceIdSeen()) << std::endl;
+            break;
         case 'n':
             std::cout << mon.get<>(RaduinoCommandSetRadioRole('n')) << std::endl;
             std::cout << mon.get<>(RaduinoCommandSoftReset()) << std::endl;

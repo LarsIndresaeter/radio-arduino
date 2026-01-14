@@ -69,6 +69,7 @@ void commandSetUniqueId(uint8_t* commandPayload, uint8_t* responsePayload)
     COMMANDS::SET_UNIQUE_ID::response_t response;
 
     EEPROM_DATA_STORE::setUniqueId(command.getId());
+    RADIOLINK::setDeviceId(command.getId());
 
     response.serialize(responsePayload);
 }

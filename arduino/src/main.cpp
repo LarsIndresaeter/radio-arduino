@@ -167,6 +167,9 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
     case COMMANDS::OI::SET_ATTACHED_DEVICES_CSV_STRING:
         EEPROM::commandSetAttachedDevicesCsvString(commandPayload, responsePayload);
         break;
+    case COMMANDS::OI::GET_LAST_DEVICE_ID_SEEN:
+        RADIOLINK::commandGetLastDeviceIdSeen(commandPayload, responsePayload);
+        break;
     default:
         break;
     }
@@ -182,6 +185,8 @@ int main()
     rx_mode_gateway = EEPROM_DATA_STORE::readRxModeGatewayFromEeprom();
 
     EEPROM_DATA_STORE::incrementRestarts();
+
+    RADIOLINK::setDeviceId(EEPROM_DATA_STORE::getUniqueId());
 
     if (rx_mode_gateway) {
         Uart uart;

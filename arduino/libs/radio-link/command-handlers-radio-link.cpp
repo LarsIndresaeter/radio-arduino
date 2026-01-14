@@ -28,4 +28,14 @@ void commandSetNodeAddress(uint8_t* commandPayload, uint8_t* responsePayload)
     response.serialize(responsePayload);
 }
 
+void commandGetLastDeviceIdSeen(uint8_t* commandPayload, uint8_t* responsePayload)
+{
+    COMMANDS::GET_LAST_DEVICE_ID_SEEN::command_t command(commandPayload);
+    COMMANDS::GET_LAST_DEVICE_ID_SEEN::response_t response;
+
+    response.setId(RADIOLINK::getLastDeviceIdSeen());
+
+    response.serialize(responsePayload);
+}
+
 } // namespace RADIOLINK
