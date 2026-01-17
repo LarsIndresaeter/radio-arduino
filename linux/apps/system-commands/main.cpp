@@ -77,7 +77,7 @@ void versionCheck(monitor& mon, std::string actualVersionString)
 void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)
 {
     char option = 0;
-    uint8_t radioAddress = 0;
+    uint32_t radioAddress = 0;
     bool verbose = false;
 
     while ((option = getopt(argc, argv, "aAK:N:c:C:f:F:g:G:lLiImMxXrRdDpPt:T:usSUvVzZk:h")) != -1) {

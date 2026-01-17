@@ -5,7 +5,7 @@
 
 class RaduinoCommandWakeup : public RaduinoCommandBase {
 public:
-    RaduinoCommandWakeup(uint8_t checkAttentionFlag)
+    RaduinoCommandWakeup(uint8_t checkAttentionFlag, uint32_t id)
         : RaduinoCommandBase(
               static_cast<uint8_t>(COMMANDS::OI::WAKEUP),
               COMMANDS::WAKEUP::COMMAND_LENGTH)
@@ -13,6 +13,11 @@ public:
         COMMANDS::WAKEUP::command_t command;
 
         m_payload.at(offsetof(COMMANDS::WAKEUP::command_t, checkAttentionFlag)) = checkAttentionFlag;
+
+        m_payload.at(offsetof(COMMANDS::WAKEUP::command_t, id) + 3) = id>>24;
+        m_payload.at(offsetof(COMMANDS::WAKEUP::command_t, id) + 2) = id>>16;
+        m_payload.at(offsetof(COMMANDS::WAKEUP::command_t, id) + 1) = id>>8;
+        m_payload.at(offsetof(COMMANDS::WAKEUP::command_t, id)) = id;
     };
 
     void printResponse(std::ostream& out, COMMANDS::WAKEUP::response_t response) const

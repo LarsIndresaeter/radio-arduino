@@ -33,7 +33,7 @@
 #include <cmd/vcc/command.hxx>
 #include <cmd/sleep/command.hxx>
 #include <cmd/wakeup/command.hxx>
-#include <cmd/set_node_address/command.hxx>
+#include <cmd/set_radio_channel/command.hxx>
 #include <cmd/keep_alive/command.hxx>
 #include <cmd/ping/command.hxx>
 #include <cmd/quadrature_encoder/command.hxx>
@@ -48,3 +48,4 @@
 #include <cmd/get_lsm303d/command.hxx>
 #include <cmd/set_attached_devices_csv_string/command.hxx>
 #include <cmd/get_attached_devices_csv_string/command.hxx>
+#include <cmd/get_last_device_id_seen/command.hxx>

@@ -34,7 +34,7 @@
 #include <cmd/vcc/payload.hxx>
 #include <cmd/sleep/payload.hxx>
 #include <cmd/wakeup/payload.hxx>
-#include <cmd/set_node_address/payload.hxx>
+#include <cmd/set_radio_channel/payload.hxx>
 #include <cmd/keep_alive/payload.hxx>
 #include <cmd/ping/payload.hxx>
 #include <cmd/quadrature_encoder/payload.hxx>
@@ -49,3 +49,4 @@
 #include <cmd/get_lsm303d/payload.hxx>
 #include <cmd/set_attached_devices_csv_string/payload.hxx>
 #include <cmd/get_attached_devices_csv_string/payload.hxx>
+#include <cmd/get_last_device_id_seen/payload.hxx>

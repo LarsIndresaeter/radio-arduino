@@ -6,7 +6,7 @@
 
 namespace COMMANDS {
 
-namespace SET_NODE_ADDRESS {
+namespace SET_RADIO_CHANNEL {
     constexpr uint8_t COMMAND_LENGTH = 1;
     constexpr uint8_t RESPONSE_LENGTH = 0;
 
@@ -16,37 +16,37 @@ namespace SET_NODE_ADDRESS {
     typedef struct command {
         command()
         {
-            OI = static_cast<uint8_t>(COMMANDS::OI::SET_NODE_ADDRESS);
+            OI = static_cast<uint8_t>(COMMANDS::OI::SET_RADIO_CHANNEL);
             OL = COMMAND_LENGTH;
-            nodeAddress = 0;
+            channel = 0;
         }
 
         command(uint8_t* cmd)
         {
             OI = cmd[0];
             OL = cmd[1];
-            nodeAddress = cmd[2];
+            channel = cmd[2];
         }
 
-        uint8_t getNodeaddress()
+        uint8_t getChannel()
         {
-            return (nodeAddress);
+            return (channel);
         }
 
-        void setNodeaddress(uint8_t val)
+        void setChannel(uint8_t val)
         {
-            nodeAddress = val;
+            channel = val;
         }
 
         uint8_t OI;
         uint8_t OL;
-        uint8_t nodeAddress;
+        uint8_t channel;
     } command_t;
 
     typedef struct response {
         response()
         {
-            OI = static_cast<uint8_t>(COMMANDS::OI::SET_NODE_ADDRESS);
+            OI = static_cast<uint8_t>(COMMANDS::OI::SET_RADIO_CHANNEL);
             OL = RESPONSE_LENGTH;
         }
 

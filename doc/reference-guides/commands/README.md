@@ -29,7 +29,7 @@
 - [Vcc](./vcc.md)
 - [Sleep](./sleep.md)
 - [Wakeup](./wakeup.md)
-- [SetNodeAddress](./set_node_address.md)
+- [SetRadioChannel](./set_radio_channel.md)
 - [KeepAlive](./keep_alive.md)
 - [Ping](./ping.md)
 - [QuadratureEncoder](./quadrature_encoder.md)
@@ -44,3 +44,4 @@
 - [GetLsm303d](./get_lsm303d.md)
 - [SetAttachedDevicesCsvString](./set_attached_devices_csv_string.md)
 - [GetAttachedDevicesCsvString](./get_attached_devices_csv_string.md)
+- [GetLastDeviceIdSeen](./get_last_device_id_seen.md)

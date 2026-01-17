@@ -14,4 +14,3 @@
 #define lsm303d_ctrl1_value 0x27 // 1=6.25 Hz, enable x, y and z
 
 uint16_t lsm303dReadDoubleRegister(uint8_t address);
-

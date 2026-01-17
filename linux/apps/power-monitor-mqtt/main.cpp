@@ -42,7 +42,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     mqtt_client.connect(connOpts)->wait();
 
     char option = 0;
-    uint8_t radioAddress = 0;
+    uint32_t radioAddress = 0;
 
     while ((option = getopt(argc, argv, "K:N:n:h")) != -1) {
         switch (option) {

@@ -28,7 +28,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 {
     char option = 0;
     uint8_t i2cDeviceAddress = 0b10100000;
-    uint8_t radioAddress = 0;
+    uint32_t radioAddress = 0;
 
     bool readOperation = false;
     bool writeOperation = false;

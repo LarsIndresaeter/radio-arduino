@@ -19,36 +19,44 @@ using namespace std::chrono_literals;
 void registerRadioNode(
     monitor& mon,
     mqtt::async_client& mqtt_client,
-    uint8_t nodeAddress,
+    uint32_t nodeAddress,
     std::vector<std::shared_ptr<DesiredState>>& desiredStateList,
-    std::vector<std::shared_ptr<DeviceController>>& deviceControllerList)
+    std::vector<std::shared_ptr<DeviceController>>& deviceControllerList,
+    DesiredStateCallback& desiredStateCallback)
 {
-    RadioSession radioSession(mon, nodeAddress);
-    radioSession.wakeupNotResponding();
-    std::string nodeName = mon.getRadio<>(RaduinoCommandGetDeviceName()).getNamestring();
+    bool isNewNode = true;
 
-    if (!nodeName.empty()) {
-        publishNbirth(mqtt_client, nodeName);
-        DeviceController controller(mon, mqtt_client, nodeAddress, nodeName);
+    for (auto it = deviceControllerList.begin(); it != deviceControllerList.end(); ++it) {
+        if ((*it)->getNodeAddress() == nodeAddress) {
+            isNewNode = false;
+        }
+    }
 
-        desiredStateList.push_back(controller.getDesiredState());
-        deviceControllerList.push_back(std::make_shared<DeviceController>(controller));
+    if (isNewNode) {
+        std::cout << "registerRadioNode:" << std::to_string(nodeAddress) << std::endl;
+        RadioSession radioSession(mon, nodeAddress);
+        radioSession.wakeupNotResponding();
+        std::string nodeName = mon.getRadio<>(RaduinoCommandGetDeviceName()).getNamestring();
+
+        if (!nodeName.empty()) {
+            publishNbirth(mqtt_client, nodeName);
+            DeviceController controller(mon, mqtt_client, nodeAddress, nodeName);
+
+            desiredStateList.push_back(controller.getDesiredState());
+            deviceControllerList.push_back(std::make_shared<DeviceController>(controller));
+            desiredStateCallback.addDesiredState(controller.getDesiredState());
+        }
     }
 }
 
-void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client, std::vector<uint8_t> nodeAddressList)
+void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
 {
     const int QOS = 0;
 
-    std::vector<std::shared_ptr<DesiredState>> desiredStateList;
-    std::vector<std::shared_ptr<DeviceController>> deviceControllerList;
-
     getGatewayNameAndPublishBirth(mon, mqtt_client);
 
-    for (uint8_t nodeAddress : nodeAddressList) {
-        registerRadioNode(mon, mqtt_client, nodeAddress, desiredStateList, deviceControllerList);
-    }
-
+    std::vector<std::shared_ptr<DesiredState>> desiredStateList;
+    std::vector<std::shared_ptr<DeviceController>> deviceControllerList;
     DesiredStateCallback desiredStateCallback(desiredStateList);
 
     mqtt_client.set_callback(desiredStateCallback);
@@ -59,8 +67,13 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client, std::
     while (true) {
         for (std::shared_ptr<DeviceController> deviceController : deviceControllerList) {
             deviceController->execute();
+            std::this_thread::sleep_for(1000ms);
         }
-        std::this_thread::sleep_for(100ms);
+        // std::this_thread::sleep_for(100ms);
+        uint32_t lastNode = mon.get<>(RaduinoCommandGetLastDeviceIdSeen()).responseStruct().getId();
+        if (lastNode != 0) {
+            registerRadioNode(mon, mqtt_client, lastNode, desiredStateList, deviceControllerList, desiredStateCallback);
+        }
     }
 }
 
@@ -68,7 +81,6 @@ void print_usage()
 {
     std::cout << "raduino-mqtt-client" << std::endl;
     std::cout << "           -K <key> : encrypt command with transport key" << std::endl;
-    std::cout << "       -n <address> : gateway address" << std::endl;
     std::cout << "                 -h : p rint this text" << std::endl;
 }
 
@@ -92,10 +104,9 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 
     publishGatewayInfo(mqtt_client);
 
-    std::vector<uint8_t> nodeAddressList;
     char option = 0;
 
-    while ((option = getopt(argc, argv, "K:hn:")) != -1) {
+    while ((option = getopt(argc, argv, "K:h")) != -1) {
         switch (option) {
         case 'K': {
             std::string s(optarg);
@@ -111,20 +122,13 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             cryptoHandler.setMacKey((uint8_t*)&key[0]);
             mon.setTransportEncryption(true);
         } break;
-        case 'n':
-            nodeAddressList.push_back(atoi(optarg));
-            break;
         case 'h':
             print_usage();
             break;
         }
     }
 
-    if (nodeAddressList.size() == 0) {
-        nodeAddressList.push_back(0);
-    }
-
-    readMultipleRadioNodes(mon, mqtt_client, nodeAddressList);
+    readMultipleRadioNodes(mon, mqtt_client);
 
     mqtt_client.disconnect()->wait();
 

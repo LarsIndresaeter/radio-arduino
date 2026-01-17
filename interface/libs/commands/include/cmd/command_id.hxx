@@ -39,7 +39,7 @@ enum class OI
     VCC = 28,
     SLEEP = 29,
     WAKEUP = 30,
-    SET_NODE_ADDRESS = 31,
+    SET_RADIO_CHANNEL = 31,
     KEEP_ALIVE = 32,
     PING = 33,
     QUADRATURE_ENCODER = 34,
@@ -54,6 +54,7 @@ enum class OI
     GET_LSM303D = 43,
     SET_ATTACHED_DEVICES_CSV_STRING = 44,
     GET_ATTACHED_DEVICES_CSV_STRING = 45,
+    GET_LAST_DEVICE_ID_SEEN = 46,
 };
 
 } // namespace COMMANDS

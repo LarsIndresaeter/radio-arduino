@@ -18,6 +18,8 @@ void print_usage()
     std::cout << "                 -i : initialize nrf24l01 on gateway" << std::endl;
     std::cout << "                 -r : set device in serial bridge as reader" << std::endl;
     std::cout << "                 -s : set device in serial bridge as sender" << std::endl;
+    std::cout << "                 -c : set radio channel on node" << std::endl;
+    std::cout << "                 -C : set radio channel on gateway" << std::endl;
     std::cout << "                 -h : print this text" << std::endl;
 }
 
@@ -25,9 +27,9 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 {
     char option = 0;
     uint8_t spiRegister = 0;
-    uint8_t radioAddress = 0;
+    uint32_t radioAddress = 0;
 
-    while ((option = getopt(argc, argv, "K:N:ir:s:h")) != -1) {
+    while ((option = getopt(argc, argv, "K:N:ir:s:c:C:h")) != -1) {
         switch (option) {
         case 'K': {
             std::string s(optarg);
@@ -42,6 +44,14 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             cryptoHandler.setTransportKey((uint8_t*)&key[0]);
             cryptoHandler.setMacKey((uint8_t*)&key[0]);
             mon.setTransportEncryption(true);
+        } break;
+        case 'c': {
+            uint8_t ch = atoi(optarg);
+            mon.get<>(RaduinoCommandSetRadioChannel(ch));
+        } break;
+        case 'C': {
+            uint8_t ch = atoi(optarg);
+            mon.getRadio<>(RaduinoCommandSetRadioChannel(ch));
         } break;
         case 'N':
             radioAddress = atoi(optarg);

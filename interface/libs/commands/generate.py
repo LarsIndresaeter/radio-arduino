@@ -33,8 +33,8 @@ generator.add(26, "nrf24l01_write", ["length", "data[32]"], ["length", "data[32]
 generator.add(27, "radio_uart", ["mode"], [])
 generator.add(28, "vcc", [], ["vcc[2]"])
 generator.add(29, "sleep", ["delay[4]"], [])
-generator.add(30, "wakeup", ["checkAttentionFlag"], ["discovered"])
-generator.add(31, "set_node_address", ["nodeAddress"], [])
+generator.add(30, "wakeup", ["checkAttentionFlag", "id[4]"], ["discovered"])
+generator.add(31, "set_radio_channel", ["channel"], [])
 generator.add(32, "keep_alive", ["time"], [])
 generator.add(33, "ping", [], [])
 generator.add(34, "quadrature_encoder", [], ["countnegative[2]", "countpositive[2]", "switchposition", "switchcount[2]"])
@@ -49,6 +49,7 @@ generator.add(42, "get_unique_id", [], ["id[4]"])
 generator.add(43, "get_lsm303d", [], ["accelerometerX[2]", "accelerometerY[2]", "accelerometerZ[2]"])
 generator.add(44, "set_attached_devices_csv_string", ["csvString[64]"], [])
 generator.add(45, "get_attached_devices_csv_string", [], ["csvString[64]"])
+generator.add(46, "get_last_device_id_seen", [], ["id[4]"])
 
 # close files
 generator.closeFiles()

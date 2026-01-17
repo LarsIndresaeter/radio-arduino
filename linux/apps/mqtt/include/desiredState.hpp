@@ -5,7 +5,7 @@
 
 class DesiredState {
 public:
-    DesiredState(uint8_t radioAddress, std::string name);
+    DesiredState(uint32_t radioAddress, std::string name);
     void parseMessage(std::string topic, std::string message);
 
     bool getStateSubscribeVoltage();

@@ -20,16 +20,15 @@ void print_usage()
     std::cout << "       -N <address> : wakeup node address" << std::endl;
     std::cout << "                 -C : print counter values" << std::endl;
     std::cout << "                 -g : reboot node as gateway" << std::endl;
-    std::cout << "       -a <address> : update node address" << std::endl;
     std::cout << "                 -h : print this text" << std::endl;
 }
 
 void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)
 {
     char option = 0;
-    uint8_t radioAddress = 0;
+    uint32_t radioAddress = 0;
 
-    while ((option = getopt(argc, argv, "K:N:Cgqja:h")) != -1) {
+    while ((option = getopt(argc, argv, "K:N:Cgqjh")) != -1) {
         switch (option) {
         case 'g': {
             std::cout << mon.getRadio<>(RaduinoCommandSetRadioRole('g')) << std::endl;
@@ -47,9 +46,6 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
                 RadioSession radioSession(mon, radioAddress);
                 radioSession.wakeupNotResponding();
             }
-            break;
-        case 'a':
-            std::cout << mon.getRadio<>(RaduinoCommandSetNodeAddress(atoi(optarg))) << std::endl;
             break;
         case 'K': {
             std::string s(optarg);

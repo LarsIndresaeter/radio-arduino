@@ -7,7 +7,7 @@
 namespace COMMANDS {
 
 namespace WAKEUP {
-    constexpr uint8_t COMMAND_LENGTH = 1;
+    constexpr uint8_t COMMAND_LENGTH = 5;
     constexpr uint8_t RESPONSE_LENGTH = 1;
 
     static_assert(COMMAND_LENGTH <= COMMANDS::MAX_PAYLOAD_LENGTH, "COMMAND_LENGTH larger than max payload");
@@ -19,6 +19,9 @@ namespace WAKEUP {
             OI = static_cast<uint8_t>(COMMANDS::OI::WAKEUP);
             OL = COMMAND_LENGTH;
             checkAttentionFlag = 0;
+            for (uint8_t i = 0; i < 4; i++) {
+                id[i] = 0;
+            }
         }
 
         command(uint8_t* cmd)
@@ -26,6 +29,9 @@ namespace WAKEUP {
             OI = cmd[0];
             OL = cmd[1];
             checkAttentionFlag = cmd[2];
+            for (uint8_t i = 0; i < 4; i++) {
+                id[i] = cmd[3 + i];
+            }
         }
 
         uint8_t getCheckattentionflag()
@@ -38,9 +44,23 @@ namespace WAKEUP {
             checkAttentionFlag = val;
         }
 
+        uint32_t getId()
+        {
+            return (((uint32_t)id[3]) << 24 | ((uint32_t)id[2]) << 16 | ((uint32_t)id[1]) << 8 | id[0]);
+        }
+
+        void setId(uint32_t val)
+        {
+            id[3] = (uint8_t)(val >> 24);
+            id[2] = (uint8_t)(val >> 16);
+            id[1] = (uint8_t)(val >> 8);
+            id[0] = (uint8_t)val;
+        }
+
         uint8_t OI;
         uint8_t OL;
         uint8_t checkAttentionFlag;
+        uint8_t id[4];
     } command_t;
 
     typedef struct response {

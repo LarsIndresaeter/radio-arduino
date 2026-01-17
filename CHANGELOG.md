@@ -1,5 +1,12 @@
 # Changelog
 
+## version 2.0.0
+
+- new link level commands for discovery and wakeup and
+- new addressing scheme for radio nodes based on unique id in eeprom
+- discovery of new radio nodes
+- support for communication to multiple nodes
+
 ## Version 1.9.0
 
 - add start script to container

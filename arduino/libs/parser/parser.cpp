@@ -93,7 +93,8 @@ void gatewayIdleLoop(ComBusInterface* comBus)
 {
     // rx gateway reads response in idle loop
     uint8_t ack_packet[32];
-    uint8_t response_length = NRF24L01_rx(&ack_packet[0]);
+
+    uint8_t response_length = RADIOLINK::broadcast_rx(&ack_packet[0]);
 
     uint8_t is_wakeup_ack = RADIOLINK::isDiscoverPackage(response_length, &ack_packet[0]);
 

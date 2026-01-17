@@ -113,7 +113,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 {
     char option = 0;
     uint8_t spiRegister = 0;
-    uint8_t radioAddress = 0;
+    uint32_t radioAddress = 0;
 
     while ((option = getopt(argc, argv, "K:N:sSn:h")) != -1) {
         switch (option) {

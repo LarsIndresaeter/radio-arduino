@@ -5,7 +5,7 @@ using nlohmann::json;
 
 // constexpr int pollInterval=3600;
 
-DesiredState::DesiredState(uint8_t radioAddress, std::string name)
+DesiredState::DesiredState(uint32_t radioAddress, std::string name)
     : m_name(name)
     , m_desiredPollInterval(3600)
     , m_desiredDisplayText("")
@@ -45,4 +45,3 @@ bool DesiredState::getStateSubscribeVoltage() { return (true); }
 int DesiredState::getDesiredPollInterval() { return (m_desiredPollInterval); }
 
 std::string DesiredState::getDesiredDisplayText() { return (m_desiredDisplayText); }
-

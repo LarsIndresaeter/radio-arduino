@@ -40,6 +40,7 @@ void NRF24L01_flush_rx();
 void NRF24L01_set_rx_as_master(bool master);
 uint8_t NRF24L01_read_rx_payload(uint8_t* arr);
 void NRF24L01_write_tx_payload(uint8_t* arr, uint8_t length);
+void NRF24L01_write_tx_payload_no_ack(uint8_t* arr, uint8_t length);
 void NRF24L01_write_ack_payload(uint8_t* arr, uint8_t length);
 void NRF24L01_init(uint8_t* rx_addr, uint8_t* tx_addr, bool master);
 void NRF24L01_write_register(uint8_t reg, uint8_t value);
@@ -49,6 +50,8 @@ void NRF24L01_tx(uint8_t* tx_buffer, uint8_t length);
 uint8_t NRF24L01_rx(uint8_t* rx_buffer);
 
 void NRF24L01_set_rf_channel(uint8_t ch);
+
+void NRF24L01_wait_for_tx_complete();
 
 uint32_t NRF24L01_getRxBytes();
 uint32_t NRF24L01_getTxBytes();

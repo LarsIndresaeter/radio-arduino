@@ -85,9 +85,6 @@ void NRF24L01_set_rx_as_master(bool master)
         reg |= 0x01; // PRIM_RX=1
     }
 
-    // NRF24L01_write_register(
-    // NRF24L01_REGISTER_STATUS, 0x70); // clear RX_DR, TX_DS and MAX_TR
-
     NRF24L01_write_register(NRF24L01_REGISTER_CONFIG, reg);
     NRF24L01_flush_rx();
     NRF24L01_flush_tx();
@@ -103,12 +100,12 @@ void NRF24L01_init(uint8_t* rx_addr, uint8_t* tx_addr, bool master)
     NRF24L01_flush_tx();
 
     NRF24L01_write_register(NRF24L01_REGISTER_EN_AA,
-                            0x01); // Disable auto acknowledgement on data pipe 0
+                            0x03); // Disable auto acknowledgement on data pipe 0
     NRF24L01_write_register(NRF24L01_REGISTER_SETUP_RETR,
                             0x30);                              // 750 uS retransmit delay, 3 retransmit count
-    NRF24L01_write_register(NRF24L01_REGISTER_EN_RXADDR, 0x03); // enable RX on pipe 0
+    NRF24L01_write_register(NRF24L01_REGISTER_EN_RXADDR, 0x03); // enable RX on pipe P0 and P1
     NRF24L01_write_register(NRF24L01_REGISTER_DYNPD,
-                            0x01); // enable dynamic payload length on pipe 0
+                            0x03); // enable dynamic payload length on pipe 0
     NRF24L01_write_register(NRF24L01_REGISTER_RF_CHANNEL, rf_channel);
     NRF24L01_write_register(NRF24L01_REGISTER_RF_SETUP,
                             0x06);                           // 1MBPS, 0dBm (max power)
@@ -116,9 +113,8 @@ void NRF24L01_init(uint8_t* rx_addr, uint8_t* tx_addr, bool master)
     NRF24L01_write_register(NRF24L01_REGISTER_FEATURE,
                             0x05); // enable dynamic payload length and payload with ACK
 
-    NRF24L01_write_register(NRF24L01_REGISTER_RX_ADDR_P0, &rx_addr[0], NRF24L01_ADDR_SIZE);
-
-    NRF24L01_write_register(NRF24L01_REGISTER_TX_ADDR, &tx_addr[0], NRF24L01_ADDR_SIZE);
+    // NRF24L01_write_register(NRF24L01_REGISTER_RX_ADDR_P0, &rx_addr[0], NRF24L01_ADDR_SIZE);
+    // NRF24L01_write_register(NRF24L01_REGISTER_TX_ADDR, &tx_addr[0], NRF24L01_ADDR_SIZE);
 
     NRF24L01_set_rx_as_master(master);
 }
@@ -180,6 +176,34 @@ void NRF24L01_write_tx_payload(uint8_t* arr, uint8_t length)
     }
 
     SPI_ChipSelectHigh();
+}
+
+void NRF24L01_write_tx_payload_no_ack(uint8_t* arr, uint8_t length)
+{
+    // rf_tx += length;
+    NRF24L01_write_register(NRF24L01_REGISTER_STATUS, 0x70); // clear RX_DR, TX_DS and MAX_TR
+
+    NRF24L01_set_rx_as_master(true);
+
+    if (length > NRF24L01_PACKET_SIZE) {
+        length = NRF24L01_PACKET_SIZE;
+    }
+
+    SPI_ChipSelectLow();
+
+    SPI_masterTransmitByte(NRF24L01_W_TX_PAYLOAD_NO_ACK);
+
+    for (uint8_t i = 0; i < length; i++) {
+        SPI_masterTransmitByte(arr[i]);
+    }
+
+    SPI_ChipSelectHigh();
+
+    NRF24L01_wait_for_tx_complete();
+
+    NRF24L01_write_register(NRF24L01_REGISTER_STATUS, 0x70); // clear RX_DR, TX_DS and MAX_TR
+
+    NRF24L01_set_rx_as_master(false);
 }
 
 void NRF24L01_write_ack_payload(uint8_t* arr, uint8_t length)

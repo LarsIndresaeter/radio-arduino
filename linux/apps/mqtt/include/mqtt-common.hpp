@@ -17,4 +17,3 @@ void publishNbirth(mqtt::async_client& mqtt_client, std::string deviceName);
 
 void publishMonitorProtocolStatistics(monitor& mon, mqtt::async_client& mqtt_client, std::string& gatewayName);
 void publishGatewayInfo(mqtt::async_client& mqtt_client);
-

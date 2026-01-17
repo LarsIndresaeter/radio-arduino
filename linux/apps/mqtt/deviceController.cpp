@@ -1,7 +1,8 @@
 #include "deviceController.hpp"
 #include "include/deviceController.hpp"
 
-DeviceController::DeviceController(monitor& monitor, mqtt::async_client& mqtt_client, uint8_t radioAddress, std::string name)
+DeviceController::DeviceController(
+    monitor& monitor, mqtt::async_client& mqtt_client, uint32_t radioAddress, std::string name)
     : m_radioAddress(radioAddress)
     , m_monitor(monitor)
     , m_radioSession(monitor, radioAddress)
@@ -12,6 +13,8 @@ DeviceController::DeviceController(monitor& monitor, mqtt::async_client& mqtt_cl
 }
 
 std::shared_ptr<DesiredState> DeviceController::getDesiredState() { return (m_desiredState); }
+
+uint32_t DeviceController::getNodeAddress() { return (m_radioAddress); }
 
 void DeviceController::reconsileState()
 {
@@ -50,7 +53,7 @@ void DeviceController::execute()
     }
 
     if (hasDeviceAttached("quad")) {
-        auto response = m_monitor.get<>(RaduinoCommandWakeup(1));
+        auto response = m_monitor.get<>(RaduinoCommandWakeup(1, m_radioAddress));
         if (response.responseStruct().getDiscovered() == 1) {
             readQuadencoderAndPublish();
         }
@@ -89,7 +92,7 @@ bool DeviceController::hasDeviceAttached(std::string device)
 
 void DeviceController::readAttachedDevicesCsvString()
 {
-    //TODO: read once, store flag indicating that value has been read from device
+    // TODO: read once, store flag indicating that value has been read from device
     if (m_attachedDevicesCsvString.empty()) {
         m_attachedDevicesCsvString = m_monitor.getRadio<>(RaduinoCommandGetAttachedDevicesCsvString()).getCsvstring();
     }
