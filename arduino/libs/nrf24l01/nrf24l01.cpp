@@ -105,7 +105,7 @@ void NRF24L01_init(uint8_t* rx_addr, uint8_t* tx_addr, bool master)
                             0x30);                              // 750 uS retransmit delay, 3 retransmit count
     NRF24L01_write_register(NRF24L01_REGISTER_EN_RXADDR, 0x03); // enable RX on pipe P0 and P1
     NRF24L01_write_register(NRF24L01_REGISTER_DYNPD,
-                            0x03); // enable dynamic payload length on pipe 0
+                            0x03); // enable dynamic payload length on pipe P0 and P1
     NRF24L01_write_register(NRF24L01_REGISTER_RF_CHANNEL, rf_channel);
     NRF24L01_write_register(NRF24L01_REGISTER_RF_SETUP,
                             0x06);                           // 1MBPS, 0dBm (max power)

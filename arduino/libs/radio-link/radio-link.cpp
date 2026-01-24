@@ -92,20 +92,7 @@ void initRadioLink()
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rx_mode_gateway);
 }
 
-void setDeviceId(uint32_t id)
-{
-    if (id != id_for_communication_data_pipe) {
-        id_for_communication_data_pipe = id;
-    }
-}
-
-uint8_t broadcast_rx(uint8_t* buffer)
-{
-    setupBroadcastPipe();
-    uint8_t length = NRF24L01_read_rx_payload(&buffer[0]);
-    setupCommunicationPipe();
-    return (length);
-}
+void setDeviceId(uint32_t id) { id_for_communication_data_pipe = id; }
 
 void broadcast_tx(uint8_t* buffer)
 {
