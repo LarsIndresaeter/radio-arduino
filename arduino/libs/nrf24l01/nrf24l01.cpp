@@ -116,7 +116,7 @@ void NRF24L01_init(uint8_t* rx_addr, uint8_t* tx_addr, bool master)
     // NRF24L01_write_register(NRF24L01_REGISTER_RX_ADDR_P0, &rx_addr[0], NRF24L01_ADDR_SIZE);
     // NRF24L01_write_register(NRF24L01_REGISTER_TX_ADDR, &tx_addr[0], NRF24L01_ADDR_SIZE);
 
-    NRF24L01_set_rx_as_master(master);
+    NRF24L01_set_rx_as_master(false); // listen for discovery link level packages
 }
 
 uint8_t NRF24L01_read_rx_payload(uint8_t* arr)
