@@ -1,5 +1,9 @@
 # Changelog
 
+## version 2.0.1
+
+- bugfix: initialize gateway in listening for detection of broadcast packages
+
 ## version 2.0.0
 
 - new link level commands for discovery and wakeup
