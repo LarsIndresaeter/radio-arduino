@@ -13,14 +13,11 @@ sequenceDiagram
     participant a as apps
     participant g as gateway
     participant n as node
-    a->>+g: set_node_address command
-    g->>-a: set_node_address response
-    alt node is alive
-        a->>g: ping command
-        g->>+n: ping command packet
-        n-->>-g: ping response packet
-        g-->>a: ping response
-    else node is sleeping
+    a->>g: get_unique_id command
+    g->>+n: get_unique_id command
+    n->>-g: get_unique_id response
+    g->>a: get_unique_id response
+    alt node is sleeping
         a->>g: wakeup command
         loop 5 seconds
             n->>g: discover
@@ -43,6 +40,9 @@ Communication capture during wakeup of radio node with command
 ### communication with gateway
 
 capture serial communication using [socat](../../how-to-guides/how-to-monitor-serial-trafic-using-socat.md)
+
+> Note that this capture is from version 1 of the wakeup protocol.
+> TODO: Update capture
 
 ```console
 < 2025/11/11 22:39:25.000931462  length=11 from=0 to=10
