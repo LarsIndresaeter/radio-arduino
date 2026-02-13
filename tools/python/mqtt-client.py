@@ -11,12 +11,17 @@ if client.connect("localhost", 1883, 60) != 0:
     print("Couldn't connect to the mqtt broker")
     sys.exit(1)
 
+def getNodeList():
+    pass
+
+def getGatewayFromNodeId(node):
+    # if success=0 for both, then select gateway with lowest error counter
+    # else select gateway with highest success counter
+    pass
+
 def sendCommand(client, gatewayName, nodeAddress, command):
     data = {
-            "command": "passThrough",
             "name": command,
-            "device": "node",
-            "gatewayAddress": 1234,
             "nodeAddress": nodeAddress,
             "expirationTime": 1234,
     }

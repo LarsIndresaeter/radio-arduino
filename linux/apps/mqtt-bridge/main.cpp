@@ -1,8 +1,8 @@
+#include "include/deviceController.hpp"
 #include "mqtt/async_client.h"
 #include <cmath>
 #include <cmd/commands.hxx>
 #include <commandCallback.hpp>
-#include <desiredState.hpp>
 #include <deviceController.hpp>
 #include <eventprocess.hpp>
 #include <filesystem>
@@ -19,7 +19,6 @@ void registerRadioNode(
     monitor& mon,
     mqtt::async_client& mqtt_client,
     uint32_t nodeAddress,
-    std::vector<std::shared_ptr<DesiredState>>& desiredStateList,
     std::vector<std::shared_ptr<DeviceController>>& deviceControllerList,
     CommandCallback& commandCallback, std::string gatewayName)
 {
@@ -35,15 +34,15 @@ void registerRadioNode(
         std::cout << "registerRadioNode:" << std::to_string(nodeAddress) << std::endl;
 
             DeviceController controller(mon, mqtt_client, nodeAddress, "nodeName", gatewayName);
+            std::shared_ptr<DeviceController> ctr = std::make_shared<DeviceController>(controller);
 
-            desiredStateList.push_back(controller.getDesiredState());
-            deviceControllerList.push_back(std::make_shared<DeviceController>(controller));
-            commandCallback.addDesiredState(controller.getDesiredState());
+            deviceControllerList.push_back(ctr);
+            commandCallback.addDeviceController(ctr);
     }
     else
     {
         for (std::shared_ptr<DeviceController> deviceController : deviceControllerList) {
-            deviceController->discoveryReceived();
+            deviceController->discoveryReceived(nodeAddress);
         }
     }
 }
@@ -53,9 +52,8 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
     const int QOS = 0;
 
     std::string gatewayName = mon.get<>(RaduinoCommandGetDeviceName()).getNamestring();
-    std::vector<std::shared_ptr<DesiredState>> desiredStateList;
     std::vector<std::shared_ptr<DeviceController>> deviceControllerList;
-    CommandCallback commandCallback(desiredStateList);
+    CommandCallback commandCallback;
 
     mqtt_client.set_callback(commandCallback);
     std::string commandTopic1 = "radio-arduino/RCMD/#";
@@ -70,11 +68,12 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
             deviceController->execute();
             std::this_thread::sleep_for(1000ms);
         }
-        auto response = mon.get<>(RaduinoCommandGetLastDeviceIdSeen());
-        uint32_t lastNode = response.responseStruct().getId();
+        //auto response = mon.get<>(RaduinoCommandGetLastDeviceIdSeen());
+        //uint32_t lastNode = response.responseStruct().getId();
+        uint32_t lastNode = mon.get<>(RaduinoCommandGetLastDeviceIdSeen()).responseStruct().getId();
 
         if (lastNode != 0) {
-            registerRadioNode(mon, mqtt_client, lastNode, desiredStateList, deviceControllerList, commandCallback, gatewayName);
+            registerRadioNode(mon, mqtt_client, lastNode, deviceControllerList, commandCallback, gatewayName);
         }
     }
 }

@@ -2,29 +2,21 @@
 
 using nlohmann::json;
 
-CommandCallback::CommandCallback(std::vector<std::shared_ptr<DesiredState>> dscList)
-{
-    for (int i = 0; i < dscList.size(); i++) {
-        m_desiredState.push_back(dscList.at(i));
-    }
-}
+CommandCallback::CommandCallback() {}
 
-void CommandCallback::addDesiredState(std::shared_ptr<DesiredState> dc) { m_desiredState.push_back(dc); }
+void CommandCallback::addDeviceController(std::shared_ptr<DeviceController> dc) { m_deviceControllerList.push_back(dc); }
 
 void CommandCallback::message_arrived(mqtt::const_message_ptr message)
 {
-    // TODO:
-    //  call gateway desired state
     if (message->get_topic() == "radio-arduino/RCMD") {
-        for (int i = 0; i < m_desiredState.size(); i++) {
-            std::shared_ptr<DesiredState> dc = m_desiredState.at(i);
+        for (int i = 0; i < m_deviceControllerList.size(); i++) {
+            std::shared_ptr<DeviceController> dc = m_deviceControllerList.at(i);
             dc->setPublishBirth(true);
         }
     }
 
-    // std::cout << "DEBUG: got message on topic: " << message->get_topic() << std::endl;
-    for (int i = 0; i < m_desiredState.size(); i++) {
-        std::shared_ptr<DesiredState> dc = m_desiredState.at(i);
+    for (int i = 0; i < m_deviceControllerList.size(); i++) {
+        std::shared_ptr<DeviceController> dc = m_deviceControllerList.at(i);
         if (dc->getTopicString() == message->get_topic()) {
             dc->parseMessage(message->get_topic(), message->get_payload_str());
         }
