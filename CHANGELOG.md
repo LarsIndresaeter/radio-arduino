@@ -1,5 +1,12 @@
 # Changelog
 
+## notable changes on main branch after last release
+
+- new cli tool raduino-mqtt-bridge which receive commands in json formt and
+  publish response from raduino nodes in json format
+- new service raduino-mqtt-proxy which act as a proxy for multiple gateways.
+  This micro service is for use in a container environment.
+
 ## version 2.0.1
 
 - bugfix: initialize gateway in listening for detection of broadcast packages
