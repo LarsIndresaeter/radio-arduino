@@ -8,9 +8,9 @@
 namespace RADIOLINK {
 void setDeviceId(uint32_t id);
 uint32_t getLastDeviceIdSeen();
-uint8_t sendDiscoverToGateway();
+uint8_t sendAdvertisementToGateway();
 uint8_t sendWakeupCommandToNode(uint32_t id, uint8_t checkAttentionFlag);
-uint8_t isDiscoverPackage(uint8_t response_length, uint8_t* _packet);
+uint8_t isAdvertisementPackage(uint8_t response_length, uint8_t* _packet);
 void initRadioLink();
 
 void broadcast_tx(uint8_t* rx_buffer);

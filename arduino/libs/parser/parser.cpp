@@ -96,7 +96,7 @@ void gatewayIdleLoop(ComBusInterface* comBus)
 
     uint8_t response_length = NRF24L01_read_rx_payload(&ack_packet[0]);
 
-    uint8_t is_wakeup_ack = RADIOLINK::isDiscoverPackage(response_length, &ack_packet[0]);
+    uint8_t is_wakeup_ack = RADIOLINK::isAdvertisementPackage(response_length, &ack_packet[0]);
 
     if (is_wakeup_ack == 0) {
         comBus->writeBuffer(&ack_packet[0], response_length);

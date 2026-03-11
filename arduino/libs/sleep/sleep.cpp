@@ -33,7 +33,7 @@ void rfNodeSleepAndPollForWakeup()
 
     while (wakeup_received == 0) {
         powerDownRadioAndSleep(5000);
-        wakeup_received = RADIOLINK::sendDiscoverToGateway();
+        wakeup_received = RADIOLINK::sendAdvertisementToGateway();
     }
 }
 
@@ -55,7 +55,7 @@ void powerDownRadioAndSleep(uint16_t delay)
             i = delay;
         }
         if (1 == QUADENCODER::pollChangedFlag()) {
-            break; // wake up and send discover package
+            break; // wake up and send advertisement package
         }
     }
 
