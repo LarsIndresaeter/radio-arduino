@@ -49,7 +49,7 @@ void DeviceController::execute()
         std::string topic = createMqttTopic(TOPIC_BROADCAST, m_gatewayName, std::to_string(m_radioAddress));
         std::string message = "{\"nodeAddress\": " + std::to_string(m_radioAddress) + ", \"gateway\": \"" + m_gatewayName
             + "\"" + ", \"healthIndicator\": " + std::to_string(healthIndicator)
-            + ", \"lastSeen\": " + std::to_string(timestampLastDiscovery) + "}";
+            + ", \"lastAdvertisement\": " + std::to_string(timestampLastDiscovery) + "}";
         publishMessage(topic, message);
         setPublishBirth(false);
     }

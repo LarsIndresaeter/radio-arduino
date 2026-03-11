@@ -30,12 +30,16 @@ nodepath_t CommandCallback::getNodePath(uint32_t nodeAddress)
     nodepath_t nodePath {};
     int bestHealthIndicator = 0;
 
-
     for (auto n : m_nodePath) {
+        std::cout << "DEBUG: hi: " << std::to_string(n.healthIndicator) << std::endl;
         if (n.nodeAddress == nodeAddress) {
             if (n.healthIndicator >= bestHealthIndicator) {
                 bestHealthIndicator = n.healthIndicator;
-                nodePath = n;
+                nodePath.gatewayName = n.gatewayName;
+                nodePath.nodeAddress = n.nodeAddress;
+                nodePath.lastAdvertisement = n.lastAdvertisement;
+                nodePath.healthIndicator = n.healthIndicator;
+                std::cout << "n.healthIndicator=" << std::to_string(n.healthIndicator) << std::endl;
             }
         }
     }
@@ -43,16 +47,17 @@ nodepath_t CommandCallback::getNodePath(uint32_t nodeAddress)
     return (nodePath);
 }
 
-void CommandCallback::updatePath(std::string gatewayName, uint32_t nodeAddress, uint64_t lastSeen, int healthIndicator)
+void CommandCallback::updatePath(
+    std::string gatewayName, uint32_t nodeAddress, uint64_t lastAdvertisement, int healthIndicator)
 {
     bool nodePathFound = false;
     for (auto n : m_nodePath) {
         if ((n.nodeAddress == nodeAddress) && (n.gatewayName == gatewayName)) {
             nodePathFound = true;
-            n.gatewayName = gatewayName;
-            n.nodeAddress = nodeAddress;
-            n.lastSeen = lastSeen;
+            n.lastAdvertisement = lastAdvertisement;
             n.healthIndicator = healthIndicator;
+            std::cout << "m.healthIndicator=" << std::to_string(n.healthIndicator) << std::endl;
+            std::cout << "healthIndicator=" << std::to_string(healthIndicator) << std::endl;
         }
     }
 
@@ -60,9 +65,10 @@ void CommandCallback::updatePath(std::string gatewayName, uint32_t nodeAddress, 
         nodepath_t n;
         n.gatewayName = gatewayName;
         n.nodeAddress = nodeAddress;
-        n.lastSeen = lastSeen;
+        n.lastAdvertisement = lastAdvertisement;
         n.healthIndicator = healthIndicator;
         m_nodePath.push_back(n);
+        std::cout << "pushback=" << gatewayName << ", healthIndicator=" << std::to_string(healthIndicator) << std::endl;
     }
 }
 
@@ -72,14 +78,13 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
     std::string payload = message->get_payload_str();
 
     if (topic_orig.starts_with("radio-arduino/DBIRTH/")) {
-
         try {
             auto jsonData = json::parse(payload);
             std::string gatewayName = jsonData["gateway"];
             int healthIndicator = jsonData["healthIndicator"];
-            uint64_t lastSeen = jsonData["lastSeen"];
+            uint64_t lastAdvertisement = jsonData["lastAdvertisement"];
             uint32_t nodeAddress = jsonData["nodeAddress"];
-            updatePath(gatewayName, nodeAddress, lastSeen, healthIndicator);
+            updatePath(gatewayName, nodeAddress, lastAdvertisement, healthIndicator);
         }
         catch (std::exception const& e) {
             std::cout << "DEBUG: malformed birth certificate" << std::endl;
@@ -87,7 +92,6 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
     }
 
     if (topic_orig.starts_with("radio-arduino/RCMD/proxy/")) {
-
         try {
             auto jsonData = json::parse(payload);
             uint32_t nodeAddress = jsonData["nodeAddress"];
