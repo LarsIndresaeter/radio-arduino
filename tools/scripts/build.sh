@@ -48,6 +48,7 @@ build_linux()
     #make_build_dir ${WORKDIR}/linux/build/
     make_build_dir ${WORKDIR}/build/linux
     cp build/linux/apps/*/bin/* bin/
+    cp build/linux/services/*/bin/* bin/
 }
 
 build_all()
