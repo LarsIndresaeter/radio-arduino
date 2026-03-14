@@ -77,6 +77,9 @@ void DeviceController::discoveryReceived(uint32_t nodeAddress)
             healthIndicator = 0; // discovery received but no response yet
             setPublishBirth(true);
         }
+        else{
+            healthIndicator++;
+        }
     }
 }
 
@@ -149,7 +152,7 @@ void DeviceController::updateQualityIndicator(bool successfulResponse)
             healthIndicator = 1;
         }
         else {
-            healthIndicator++; // count consequitive successful responses
+            healthIndicator += 1000; // count consequitive successful responses
         }
     }
     else {

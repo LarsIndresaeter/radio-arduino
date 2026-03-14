@@ -58,7 +58,7 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
     mqtt_client.set_callback(commandCallback);
     std::string commandTopic1 = "radio-arduino/RCMD/#";
     std::cout << "connected to gateway: " << gatewayName << std::endl;
-    std::cout << "subscribe to topic: " << commandTopic1 << std::endl;
+    //std::cout << "subscribe to topic: " << commandTopic1 << std::endl;
     mqtt_client.subscribe(commandTopic1, QOS)->wait();
 
     mon.get<>(RaduinoCommandWakeup(true, 0)); // TODO: fix this hack that set gateway in listening mode

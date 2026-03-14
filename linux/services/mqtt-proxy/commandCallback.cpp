@@ -31,7 +31,7 @@ nodepath_t CommandCallback::getNodePath(uint32_t nodeAddress)
     int bestHealthIndicator = 0;
 
     for (auto n : m_nodePath) {
-        std::cout << "DEBUG: hi: " << std::to_string(n.healthIndicator) << std::endl;
+        //std::cout << "DEBUG: hi: " << std::to_string(n.healthIndicator) << std::endl;
         if (n.nodeAddress == nodeAddress) {
             if (n.healthIndicator >= bestHealthIndicator) {
                 bestHealthIndicator = n.healthIndicator;
@@ -39,7 +39,7 @@ nodepath_t CommandCallback::getNodePath(uint32_t nodeAddress)
                 nodePath.nodeAddress = n.nodeAddress;
                 nodePath.lastAdvertisement = n.lastAdvertisement;
                 nodePath.healthIndicator = n.healthIndicator;
-                std::cout << "n.healthIndicator=" << std::to_string(n.healthIndicator) << std::endl;
+                //std::cout << "DEBUG: n.healthIndicator=" << std::to_string(n.healthIndicator) << std::endl;
             }
         }
     }
@@ -56,8 +56,9 @@ void CommandCallback::updatePath(
             nodePathFound = true;
             n.lastAdvertisement = lastAdvertisement;
             n.healthIndicator = healthIndicator;
-            std::cout << "m.healthIndicator=" << std::to_string(n.healthIndicator) << std::endl;
-            std::cout << "healthIndicator=" << std::to_string(healthIndicator) << std::endl;
+            //std::cout << "DEBUG: updatePath()" << std::endl;
+            //std::cout << "DEBUG: m.healthIndicator=" << std::to_string(n.healthIndicator) << std::endl;
+            //std::cout << "DEBUG: healthIndicator=" << std::to_string(healthIndicator) << std::endl;
         }
     }
 
@@ -68,7 +69,7 @@ void CommandCallback::updatePath(
         n.lastAdvertisement = lastAdvertisement;
         n.healthIndicator = healthIndicator;
         m_nodePath.push_back(n);
-        std::cout << "pushback=" << gatewayName << ", healthIndicator=" << std::to_string(healthIndicator) << std::endl;
+        //std::cout << "DEUBG: pushback=" << gatewayName << ", healthIndicator=" << std::to_string(healthIndicator) << std::endl;
     }
 }
 
@@ -81,7 +82,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         try {
             auto jsonData = json::parse(payload);
             std::string gatewayName = jsonData["gateway"];
-            int healthIndicator = jsonData["healthIndicator"];
+            int healthIndicator = jsonData["healthIndicator"].get<int>();
             uint64_t lastAdvertisement = jsonData["lastAdvertisement"];
             uint32_t nodeAddress = jsonData["nodeAddress"];
             updatePath(gatewayName, nodeAddress, lastAdvertisement, healthIndicator);
