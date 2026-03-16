@@ -20,7 +20,8 @@ void registerRadioNode(
     mqtt::async_client& mqtt_client,
     uint32_t nodeAddress,
     std::vector<std::shared_ptr<DeviceController>>& deviceControllerList,
-    CommandCallback& commandCallback, std::string gatewayName)
+    CommandCallback& commandCallback,
+    uint32_t gatewayAddress)
 {
     bool isNewNode = true;
 
@@ -33,14 +34,13 @@ void registerRadioNode(
     if (isNewNode) {
         std::cout << "registerRadioNode:" << std::to_string(nodeAddress) << std::endl;
 
-            DeviceController controller(mon, mqtt_client, nodeAddress, "nodeName", gatewayName);
-            std::shared_ptr<DeviceController> ctr = std::make_shared<DeviceController>(controller);
+        DeviceController controller(mon, mqtt_client, nodeAddress, gatewayAddress);
+        std::shared_ptr<DeviceController> ctr = std::make_shared<DeviceController>(controller);
 
-            deviceControllerList.push_back(ctr);
-            commandCallback.addDeviceController(ctr);
+        deviceControllerList.push_back(ctr);
+        commandCallback.addDeviceController(ctr);
     }
-    else
-    {
+    else {
         for (std::shared_ptr<DeviceController> deviceController : deviceControllerList) {
             deviceController->discoveryReceived(nodeAddress);
         }
@@ -51,30 +51,33 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
 {
     const int QOS = 0;
 
-    std::string gatewayName = mon.get<>(RaduinoCommandGetDeviceName()).getNamestring();
+    uint64_t gatewayAddress = mon.get<>(RaduinoCommandGetUniqueId()).responseStruct().getId();
     std::vector<std::shared_ptr<DeviceController>> deviceControllerList;
     CommandCallback commandCallback;
 
     mqtt_client.set_callback(commandCallback);
     std::string commandTopic1 = "radio-arduino/RCMD/#";
-    std::cout << "connected to gateway: " << gatewayName << std::endl;
-    //std::cout << "subscribe to topic: " << commandTopic1 << std::endl;
+    std::cout << "connected to gateway: " << std::to_string(gatewayAddress) << std::endl;
+    // std::cout << "subscribe to topic: " << commandTopic1 << std::endl;
     mqtt_client.subscribe(commandTopic1, QOS)->wait();
+
+    registerRadioNode(mon, mqtt_client, gatewayAddress, deviceControllerList, commandCallback, gatewayAddress);
 
     mon.get<>(RaduinoCommandWakeup(true, 0)); // TODO: fix this hack that set gateway in listening mode
 
     while (true) {
         for (std::shared_ptr<DeviceController> deviceController : deviceControllerList) {
             deviceController->execute();
-            std::this_thread::sleep_for(1000ms);
-        }
-        //auto response = mon.get<>(RaduinoCommandGetLastDeviceIdSeen());
-        //uint32_t lastNode = response.responseStruct().getId();
-        uint32_t lastNode = mon.get<>(RaduinoCommandGetLastDeviceIdSeen()).responseStruct().getId();
 
-        if (lastNode != 0) {
-            registerRadioNode(mon, mqtt_client, lastNode, deviceControllerList, commandCallback, gatewayName);
+            uint32_t lastNode = deviceController->getLastDeviceIdSeen();
+            // std::cout << "DEBUG: lastNode=" << std::to_string(lastNode) << std::endl;
+
+            if (lastNode != 0) {
+                registerRadioNode(mon, mqtt_client, lastNode, deviceControllerList, commandCallback, gatewayAddress);
+            }
         }
+
+        std::this_thread::sleep_for(1000ms);
     }
 }
 

@@ -10,8 +10,7 @@ public:
         monitor& monitor,
         mqtt::async_client& mqtt_client,
         uint32_t radioAddress,
-        std::string nodeName,
-        std::string gatewayName);
+        uint32_t gatewayAddress);
 
     void execute();
     void discoveryReceived(uint32_t nodeAddress);
@@ -19,6 +18,7 @@ public:
     void parseMessage(std::string topic, std::string message);
     uint32_t getNodeAddress();
     std::string getTopicString();
+    uint32_t getLastDeviceIdSeen();
 
 private:
     std::string createMqttTopicResponse(std::string commandName);
@@ -29,8 +29,6 @@ private:
     void executeJsonCommand();
 
     RadioSession m_radioSession;
-    std::string m_nodeName;
-    std::string m_gatewayName;
     std::string m_topic;
     std::string m_command;
     monitor& m_monitor;
@@ -38,6 +36,8 @@ private:
     int healthIndicator = 0;
     uint64_t timestampLastDiscovery = 0;
     uint32_t m_radioAddress = 0;
+    uint32_t m_gatewayAddress = 0;
+    uint32_t m_lastDeviceIdSeen = 0;
     bool m_publishBirth = false;
     bool m_commandReceived = false;
 };

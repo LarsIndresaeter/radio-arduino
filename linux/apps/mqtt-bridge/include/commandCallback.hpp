@@ -1,8 +1,8 @@
 #pragma once
 
 #include "mqtt/async_client.h"
-#include <nlohmann/json.hpp>
 #include <deviceController.hpp>
+#include <nlohmann/json.hpp>
 
 class CommandCallback : public virtual mqtt::callback {
 public:

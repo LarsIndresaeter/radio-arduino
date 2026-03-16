@@ -9,19 +9,14 @@ const char* TOPIC_COMMAND_PREFIX = "radio-arduino/RCMD/command/";
 const char* TOPIC_RESPONSE_PREFIX = "DDATA";
 
 DeviceController::DeviceController(
-    monitor& monitor,
-    mqtt::async_client& mqtt_client,
-    uint32_t radioAddress,
-    std::string nodeName,
-    std::string gatewayName)
+    monitor& monitor, mqtt::async_client& mqtt_client, uint32_t radioAddress, uint32_t gatewayAddress)
     : m_radioAddress(radioAddress)
     , m_monitor(monitor)
     , m_radioSession(monitor, radioAddress)
     , m_mqttClient(mqtt_client)
-    , m_nodeName(nodeName)
-    , m_gatewayName(gatewayName)
+    , m_gatewayAddress(gatewayAddress)
 {
-    m_topic = createMqttTopic("RCMD", m_gatewayName, std::to_string(m_radioAddress));
+    m_topic = createMqttTopic("RCMD", std::to_string(m_gatewayAddress), std::to_string(m_radioAddress));
 }
 
 uint32_t DeviceController::getNodeAddress() { return (m_radioAddress); }
@@ -29,15 +24,7 @@ uint32_t DeviceController::getNodeAddress() { return (m_radioAddress); }
 void DeviceController::execute()
 {
     if (m_commandReceived) {
-        if (m_radioSession.wakeupNotResponding()) {
-            executeJsonCommand();
-            m_radioSession.close();
-        }
-        else {
-            std::cout << "DEBUG: not able to wake up node" << std::endl;
-            updateQualityIndicator(false);
-        }
-
+        executeJsonCommand();
         setPublishBirth(true);
 
         m_command = "";
@@ -46,18 +33,23 @@ void DeviceController::execute()
     }
 
     if (m_publishBirth) {
-        std::string topic = createMqttTopic(TOPIC_BROADCAST, m_gatewayName, std::to_string(m_radioAddress));
-        std::string message = "{\"nodeAddress\": " + std::to_string(m_radioAddress) + ", \"gateway\": \"" + m_gatewayName
-            + "\"" + ", \"healthIndicator\": " + std::to_string(healthIndicator)
+        std::string topic
+            = createMqttTopic(TOPIC_BROADCAST, std::to_string(m_gatewayAddress), std::to_string(m_radioAddress));
+        std::string message = "{\"nodeAddress\": " + std::to_string(m_radioAddress) + ", \"gateway\": \""
+            + std::to_string(m_gatewayAddress) + "\"" + ", \"healthIndicator\": " + std::to_string(healthIndicator)
             + ", \"lastAdvertisement\": " + std::to_string(timestampLastDiscovery) + "}";
         publishMessage(topic, message);
         setPublishBirth(false);
     }
+
+    m_lastDeviceIdSeen = m_monitor.get<>(RaduinoCommandGetLastDeviceIdSeen()).responseStruct().getId();
+    //std::cout << "DEBUG: lastDeviceIdSeen=" << std::to_string(m_lastDeviceIdSeen) << std::endl;
 }
 
 void DeviceController::publishState()
 {
-    std::string topic = createMqttTopic("STATE", m_gatewayName + "/" + std::to_string(m_radioAddress), "command");
+    std::string topic
+        = createMqttTopic("STATE", std::to_string(m_gatewayAddress) + "/" + std::to_string(m_radioAddress), "command");
     publishMessage(topic, m_command);
 }
 
@@ -77,11 +69,13 @@ void DeviceController::discoveryReceived(uint32_t nodeAddress)
             healthIndicator = 0; // discovery received but no response yet
             setPublishBirth(true);
         }
-        else{
+        else {
             healthIndicator++;
         }
     }
 }
+
+uint32_t DeviceController::getLastDeviceIdSeen() { return (m_lastDeviceIdSeen); }
 
 void DeviceController::executeJsonCommand()
 {
@@ -94,39 +88,62 @@ void DeviceController::executeJsonCommand()
             std::string commandName = jsonData["name"];
 
             std::string topic = createMqttTopic(
-                TOPIC_RESPONSE_PREFIX, m_gatewayName + "/" + std::to_string(m_radioAddress), "response");
+                TOPIC_RESPONSE_PREFIX,
+                std::to_string(m_gatewayAddress) + "/" + std::to_string(m_radioAddress),
+                "response");
 
             std::string jsonResponse = "";
 
-            m_radioSession.wakeupNotResponding();
+            if (nodeAddress == m_gatewayAddress) {
+                // std::cout << "DEBUG: poll gateway. commandName='" << commandName << "'" << std::endl;
 
-            if (commandName == "vcc") {
-                jsonResponse = m_monitor.getRadio<>(RaduinoCommandVcc()).getJson();
+                if (commandName == "get_version") {
+                    jsonResponse = m_monitor.get<>(RaduinoCommandGetVersion()).getJson();
+                }
+                else if (commandName == "get_uniqueue_id") {
+                    jsonResponse = m_monitor.get<>(RaduinoCommandGetUniqueId()).getJson();
+                }
+                else if (commandName == "get_device_name") {
+                    jsonResponse = m_monitor.get<>(RaduinoCommandGetDeviceName()).getJson();
+                }
+                else if (commandName == "get_statistics") {
+                    jsonResponse = m_monitor.get<>(RaduinoCommandGetStatistics()).getJson();
+                }
             }
-            else if (commandName == "get_version") {
-                jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetVersion()).getJson();
-            }
-            else if (commandName == "get_device_name") {
-                jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetDeviceName()).getJson();
-            }
-            else if (commandName == "get_statistics") {
-                jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetStatistics()).getJson();
-            }
-            else if (commandName == "get_lsm303d") {
-                jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetLsm303d()).getJson();
-            }
-            else if (commandName == "get_attached_devices_csv_string") {
-                jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetAttachedDevicesCsvString()).getJson();
-            }
-            else if (commandName == "quadrature_encoder") {
-                jsonResponse = m_monitor.getRadio<>(RaduinoCommandQuadratureEncoder()).getJson();
-            }
-            else if (commandName == "gpio") {
-                jsonResponse = m_monitor.getRadio<>(RaduinoCommandGpio()).getJson();
-            }
-            else if (commandName == "ssd1306") {
-                std::string displayText = jsonData["displayText"];
-                jsonResponse = m_monitor.getRadio<>(RaduinoCommandSsd1306(2, displayText)).getJson();
+            else {
+                if (m_radioSession.wakeupNotResponding()) {
+                    if (commandName == "vcc") {
+                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandVcc()).getJson();
+                    }
+                    else if (commandName == "get_version") {
+                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetVersion()).getJson();
+                    }
+                    else if (commandName == "get_device_name") {
+                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetDeviceName()).getJson();
+                    }
+                    else if (commandName == "get_statistics") {
+                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetStatistics()).getJson();
+                    }
+                    else if (commandName == "get_lsm303d") {
+                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetLsm303d()).getJson();
+                    }
+                    else if (commandName == "get_attached_devices_csv_string") {
+                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetAttachedDevicesCsvString()).getJson();
+                    }
+                    else if (commandName == "quadrature_encoder") {
+                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandQuadratureEncoder()).getJson();
+                    }
+                    else if (commandName == "gpio") {
+                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandGpio()).getJson();
+                    }
+                    else if (commandName == "ssd1306") {
+                        std::string displayText = jsonData["displayText"];
+                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandSsd1306(2, displayText)).getJson();
+                    }
+                }
+                else {
+                    std::cout << "DEBUG: not able to wake up node" << std::endl;
+                }
             }
 
             if (jsonResponse != "") {
@@ -143,7 +160,6 @@ void DeviceController::executeJsonCommand()
 
 void DeviceController::updateQualityIndicator(bool successfulResponse)
 {
-    // seher
     // <0: number of consequitive errors
     //  0: got discovery message but no response or error yet
     // >0: number of consequitive responses

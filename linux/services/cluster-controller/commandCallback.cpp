@@ -65,18 +65,13 @@ std::vector<std::string> CommandCallback::splitString(std::string s, const std::
     return tokens;
 }
 
-void CommandCallback::addSubscription(std::string commandName, uint32_t intervalInSeconds, uint32_t nodeAddress)
-{
-    m_subscriptions.push_back({ commandName, intervalInSeconds, nodeAddress });
-}
-
 void CommandCallback::pollNode(std::string commandName, uint32_t nodeAddress)
 {
-    std::cout << "DEBUG: pollNode(" << commandName << ", " << std::to_string(nodeAddress) << ")" << std::endl;
+    //std::cout << "DEBUG: pollNode(" << commandName << ", " << std::to_string(nodeAddress) << ")" << std::endl;
 
     std::string topic = "radio-arduino/RCMD/proxy/" + std::to_string(nodeAddress);
     std::string message = "{\"name\": \"" + commandName + "\", \"nodeAddress\": " + std::to_string(nodeAddress)
-        + ", \"expirationTime\": 1234}";
+        + ", \"expirationTime\": 0}";
 
     publishMessage(topic, message);
 }
@@ -135,11 +130,13 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
     std::string topic_orig = message->get_topic();
     std::string payload = message->get_payload_str();
 
+    auto tokens = splitString(topic_orig, "/");
+    uint32_t gatewayAddress = std::stoul(tokens.at(2));
+
     if (topic_orig.starts_with("radio-arduino/DBIRTH/")) {
         try {
             auto jsonData = json::parse(payload);
             uint32_t nodeAddress = jsonData["nodeAddress"];
-            std::string gatewayName = jsonData["gateway"];
             int healthIndicator = jsonData["healthIndicator"].get<int>();
             uint64_t lastAdvertisement = jsonData["lastAdvertisement"].get<uint64_t>();
 
@@ -150,24 +147,26 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                 std::cout << "Added radio node: " << std::to_string(nodeAddress) << std::endl;
                 m_radioNodeIdList.push_back(nodeAddress);
                 nodeTwin_t nodeTwin;
-                nodeTwin.lastGatewayName = gatewayName;
-                nodeTwin.lastGatewayHealthIndicator = healthIndicator;
                 nodeTwin.nodeAddress = nodeAddress;
                 nodeTwin.readyForCommand = true;
                 m_nodeTwins.push_back(nodeTwin);
                 // add subscriptions
-                m_subscriptions.push_back({ "vcc", 60*10, nodeAddress });
-                m_subscriptions.push_back({ "gpio", 60*60, nodeAddress });
-                m_subscriptions.push_back({ "get_device_name", 24 * 60 * 60, nodeAddress });
-                m_subscriptions.push_back({ "get_statistics", 60*120, nodeAddress });
-                // m_subscriptions.push_back({ "get_version", 24*60*60, nodeAddress });
-            }
-            else {
-                for (auto nodeTwin : m_nodeTwins) { // update twin
-                    if (nodeTwin.nodeAddress == nodeAddress) {
-                        nodeTwin.lastGatewayName = gatewayName;
-                        nodeTwin.lastGatewayHealthIndicator = healthIndicator;
-                    }
+                if (topic_orig.starts_with("radio-arduino/DBIRTH/" + std::to_string(gatewayAddress) + "/" + std::to_string(gatewayAddress))) {
+                    //std::cout << "DEBUG: add subscription for gatway" << std::endl;
+
+                    m_subscriptions.push_back({ "get_device_name", 24*60*60, nodeAddress });
+                    //m_subscriptions.push_back({ "get_uniqueue_id", 24*60*60, nodeAddress });
+                    m_subscriptions.push_back({ "get_statistics", 60 * 120, nodeAddress });
+                    m_subscriptions.push_back({ "get_version", 24*60*60, nodeAddress });
+                }
+                else {
+                    //std::cout << "DEBUG: add subscription for node" << std::endl;
+
+                    m_subscriptions.push_back({ "vcc", 60 * 10, nodeAddress });
+                    m_subscriptions.push_back({ "gpio", 60 * 60, nodeAddress });
+                    m_subscriptions.push_back({ "get_device_name", 24*60*60, nodeAddress });
+                    m_subscriptions.push_back({ "get_statistics", 60 * 120, nodeAddress });
+                    // m_subscriptions.push_back({ "get_version", 24*60*60, nodeAddress });
                 }
             }
         }

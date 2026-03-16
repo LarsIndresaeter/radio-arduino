@@ -1,4 +1,5 @@
 #include "commandCallback.hpp"
+#include "include/commandCallback.hpp"
 
 using nlohmann::json;
 
@@ -10,15 +11,14 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
 {
     if (message->get_topic() == "radio-arduino/RCMD") {
         for (int i = 0; i < m_deviceControllerList.size(); i++) {
-            std::shared_ptr<DeviceController> dc = m_deviceControllerList.at(i);
-            dc->setPublishBirth(true);
+            m_deviceControllerList.at(i)->setPublishBirth(true);
         }
     }
 
+    // command for node
     for (int i = 0; i < m_deviceControllerList.size(); i++) {
-        std::shared_ptr<DeviceController> dc = m_deviceControllerList.at(i);
-        if (dc->getTopicString() == message->get_topic()) {
-            dc->parseMessage(message->get_topic(), message->get_payload_str());
+        if (m_deviceControllerList.at(i)->getTopicString() == message->get_topic()) {
+            m_deviceControllerList.at(i)->parseMessage(message->get_topic(), message->get_payload_str());
         }
     }
 }

@@ -6,11 +6,7 @@
 #include <vector>
 
 typedef struct nodeTwin {
-    std::string lastGatewayName;
-    int lastGatewayHealthIndicator;
-    std::string nodeName;
     uint32_t nodeAddress;
-    uint64_t lastAdvertisement;
     bool readyForCommand;
 } nodeTwin_t;
 
@@ -19,6 +15,7 @@ typedef struct subscription {
         : commandName(cn)
         , intervalInSeconds(iis)
         , nodeAddress(na)
+        , lastValidResponse("")
     {
     }
 
@@ -44,7 +41,6 @@ private:
     void pollNode(std::string commandName, uint32_t nodeAddress);
     void publishMessage(std::string topic, std::string message);
     std::vector<uint32_t> getRadioNodeIdList();
-    void addSubscription(std::string commandName, uint32_t intervalInSeconds, uint32_t nodeAddress);
 
     mqtt::async_client& m_mqttClient;
     std::vector<uint32_t> m_radioNodeIdList;
