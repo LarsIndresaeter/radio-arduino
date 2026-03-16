@@ -279,7 +279,7 @@ def generateCommandFile(codePath,
         for item in responsePayloadFields:
             index = index + 1
             arraySize = arraySizeFromVariableName(item)
-            if(arraySize <= 4):
+            if(arraySize <= 8):
                 outfile.write("        json.append(\"\\\"" + arrayBasenameFromVariableName(item) + "\\\":\");\n");
                 outfile.write("        json.append(std::to_string(responseStruct().get" + arrayBasenameFromVariableName(item).capitalize() + "()));\n");
             else:

@@ -44,6 +44,57 @@ namespace WS2812B {
             }
         }
 
+        uint64_t getRed()
+        {
+            return (((uint64_t)red[7]) << 56 | ((uint64_t)red[6]) << 48 | ((uint64_t)red[5]) << 40 | ((uint64_t)red[4]) << 32 | ((uint64_t)red[3]) << 24 | ((uint64_t)red[2]) << 16 | ((uint64_t)red[1]) << 8 | red[0]);
+        }
+
+        void setRed(uint64_t val)
+        {
+            red[7] = (uint8_t)(val >> 56);
+            red[6] = (uint8_t)(val >> 48);
+            red[5] = (uint8_t)(val >> 40);
+            red[4] = (uint8_t)(val >> 32);
+            red[3] = (uint8_t)(val >> 24);
+            red[2] = (uint8_t)(val >> 16);
+            red[1] = (uint8_t)(val >> 8);
+            red[0] = (uint8_t)val;
+        }
+
+        uint64_t getGreen()
+        {
+            return (((uint64_t)green[7]) << 56 | ((uint64_t)green[6]) << 48 | ((uint64_t)green[5]) << 40 | ((uint64_t)green[4]) << 32 | ((uint64_t)green[3]) << 24 | ((uint64_t)green[2]) << 16 | ((uint64_t)green[1]) << 8 | green[0]);
+        }
+
+        void setGreen(uint64_t val)
+        {
+            green[7] = (uint8_t)(val >> 56);
+            green[6] = (uint8_t)(val >> 48);
+            green[5] = (uint8_t)(val >> 40);
+            green[4] = (uint8_t)(val >> 32);
+            green[3] = (uint8_t)(val >> 24);
+            green[2] = (uint8_t)(val >> 16);
+            green[1] = (uint8_t)(val >> 8);
+            green[0] = (uint8_t)val;
+        }
+
+        uint64_t getBlue()
+        {
+            return (((uint64_t)blue[7]) << 56 | ((uint64_t)blue[6]) << 48 | ((uint64_t)blue[5]) << 40 | ((uint64_t)blue[4]) << 32 | ((uint64_t)blue[3]) << 24 | ((uint64_t)blue[2]) << 16 | ((uint64_t)blue[1]) << 8 | blue[0]);
+        }
+
+        void setBlue(uint64_t val)
+        {
+            blue[7] = (uint8_t)(val >> 56);
+            blue[6] = (uint8_t)(val >> 48);
+            blue[5] = (uint8_t)(val >> 40);
+            blue[4] = (uint8_t)(val >> 32);
+            blue[3] = (uint8_t)(val >> 24);
+            blue[2] = (uint8_t)(val >> 16);
+            blue[1] = (uint8_t)(val >> 8);
+            blue[0] = (uint8_t)val;
+        }
+
         uint8_t OI;
         uint8_t OL;
         uint8_t red[8];
