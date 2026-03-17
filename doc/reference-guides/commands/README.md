@@ -45,3 +45,4 @@
 - [SetAttachedDevicesCsvString](./set_attached_devices_csv_string.md)
 - [GetAttachedDevicesCsvString](./get_attached_devices_csv_string.md)
 - [GetLastDeviceIdSeen](./get_last_device_id_seen.md)
+- [GetActiveTimeCounter](./get_active_time_counter.md)

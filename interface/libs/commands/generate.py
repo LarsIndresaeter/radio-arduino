@@ -50,6 +50,7 @@ generator.add(43, "get_lsm303d", [], ["accelerometerX[2]", "accelerometerY[2]", 
 generator.add(44, "set_attached_devices_csv_string", ["csvString[64]"], [])
 generator.add(45, "get_attached_devices_csv_string", [], ["csvString[64]"])
 generator.add(46, "get_last_device_id_seen", [], ["id[4]"])
+generator.add(47, "get_active_time_counter", ["timestamp[8]"], ["active_time[8]", "sleep_time[8]"])
 
 # close files
 generator.closeFiles()

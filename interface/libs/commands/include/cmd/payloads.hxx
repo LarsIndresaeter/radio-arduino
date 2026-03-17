@@ -50,3 +50,4 @@
 #include <cmd/set_attached_devices_csv_string/payload.hxx>
 #include <cmd/get_attached_devices_csv_string/payload.hxx>
 #include <cmd/get_last_device_id_seen/payload.hxx>
+#include <cmd/get_active_time_counter/payload.hxx>
