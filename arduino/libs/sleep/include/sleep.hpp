@@ -11,4 +11,5 @@ namespace SLEEP {
 void rfNodeSleepAndPollForWakeup();
 void powerSaveSleepMs(uint8_t delay_ms);
 void powerDownRadioAndSleep(uint16_t delay);
+void commandGetActiveTimeCounter(uint8_t* commandPayload, uint8_t* responsePayload);
 } // namespace

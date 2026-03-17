@@ -20,6 +20,8 @@ void print_usage()
     std::cout << "       -N <address> : wakeup node address" << std::endl;
     std::cout << "                 -a : check if arduino version is correct on node" << std::endl;
     std::cout << "                 -A : check if arduino version is correct on gateway" << std::endl;
+    std::cout << "                 -b : return avtive and sleep time from gateway" << std::endl;
+    std::cout << "                 -B : return avtive and sleep time from node" << std::endl;
     std::cout << "                 -c : SHA1 command on gateway" << std::endl;
     std::cout << "                 -C : SHA1 command on node" << std::endl;
     std::cout << "                 -d : debug command on gateway" << std::endl;
@@ -80,7 +82,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint32_t radioAddress = 0;
     bool verbose = false;
 
-    while ((option = getopt(argc, argv, "aAK:N:c:C:f:F:g:G:lLiImMxXrRdDpPt:T:usSUvVzZk:h")) != -1) {
+    while ((option = getopt(argc, argv, "aAbBK:N:c:C:f:F:g:G:lLiImMxXrRdDpPt:T:usSUvVzZk:h")) != -1) {
         switch (option) {
         case 'a':
             versionCheck(mon, mon.get<>(RaduinoCommandGetVersion()).getVersionstring());
@@ -88,6 +90,38 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
         case 'A':
             versionCheck(mon, mon.getRadio<>(RaduinoCommandGetVersion()).getVersionstring());
             break;
+        case 'b': {
+            using namespace std::chrono;
+            auto start = std::chrono::high_resolution_clock::now();
+            uint64_t time_since_epoch_ms
+                = std::chrono::duration_cast<std::chrono::milliseconds>(start.time_since_epoch()).count();
+            std::vector<uint8_t> timestamp;
+            timestamp.push_back(time_since_epoch_ms);
+            timestamp.push_back(time_since_epoch_ms>>8);
+            timestamp.push_back(time_since_epoch_ms>>16);
+            timestamp.push_back(time_since_epoch_ms>>24);
+            timestamp.push_back(time_since_epoch_ms>>32);
+            timestamp.push_back(time_since_epoch_ms>>40);
+            timestamp.push_back(time_since_epoch_ms>>48);
+            timestamp.push_back(time_since_epoch_ms>>56);
+            std::cout << mon.get<>(RaduinoCommandGetActiveTimeCounter(timestamp)) << std::endl;
+        } break;
+        case 'B': {
+            using namespace std::chrono;
+            auto start = std::chrono::high_resolution_clock::now();
+            uint64_t time_since_epoch_ms
+                = std::chrono::duration_cast<std::chrono::milliseconds>(start.time_since_epoch()).count();
+            std::vector<uint8_t> timestamp;
+            timestamp.push_back(time_since_epoch_ms);
+            timestamp.push_back(time_since_epoch_ms>>8);
+            timestamp.push_back(time_since_epoch_ms>>16);
+            timestamp.push_back(time_since_epoch_ms>>24);
+            timestamp.push_back(time_since_epoch_ms>>32);
+            timestamp.push_back(time_since_epoch_ms>>40);
+            timestamp.push_back(time_since_epoch_ms>>48);
+            timestamp.push_back(time_since_epoch_ms>>56);
+            std::cout << mon.getRadio<>(RaduinoCommandGetActiveTimeCounter(timestamp)) << std::endl;
+        } break;
         case 'K': {
             std::string s(optarg);
             std::vector<uint8_t> key(16, 0);

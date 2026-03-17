@@ -4,8 +4,12 @@ extern bool rx_mode_gateway;
 
 namespace SLEEP {
 
+uint64_t sleep_time = 0;
+
 void powerSaveSleepMs(uint8_t delay_ms)
 {
+    sleep_time += delay_ms; // record the time in sleep mode
+
     cli();
 
     TCCR2A = 0;

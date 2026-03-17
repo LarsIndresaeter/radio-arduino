@@ -131,6 +131,9 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
     case COMMANDS::OI::GET_STATISTICS:
         COMMAND_HANDLERS::commandGetStatistics(commandPayload, responsePayload);
         break;
+    case COMMANDS::OI::GET_ACTIVE_TIME_COUNTER:
+        SLEEP::commandGetActiveTimeCounter(commandPayload, responsePayload);
+        break;
     case COMMANDS::OI::WAKEUP:
         RADIOLINK::commandWakeup(commandPayload, responsePayload);
         break;
