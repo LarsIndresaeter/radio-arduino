@@ -164,6 +164,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
 
                     m_subscriptions.push_back({ "vcc", 60 * 10, nodeAddress });
                     m_subscriptions.push_back({ "gpio", 60 * 60, nodeAddress });
+                    m_subscriptions.push_back({ "get_active_time_counter", 60 * 60, nodeAddress });
                     m_subscriptions.push_back({ "get_device_name", 24*60*60, nodeAddress });
                     m_subscriptions.push_back({ "get_statistics", 60 * 120, nodeAddress });
                     // m_subscriptions.push_back({ "get_version", 24*60*60, nodeAddress });
