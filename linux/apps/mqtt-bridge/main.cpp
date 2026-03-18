@@ -75,9 +75,9 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
             if (lastNode != 0) {
                 registerRadioNode(mon, mqtt_client, lastNode, deviceControllerList, commandCallback, gatewayAddress);
             }
-        }
 
-        std::this_thread::sleep_for(1000ms);
+            std::this_thread::sleep_for(1000ms);
+        }
     }
 }
 

@@ -67,7 +67,7 @@ std::vector<std::string> CommandCallback::splitString(std::string s, const std::
 
 void CommandCallback::pollNode(std::string commandName, uint32_t nodeAddress)
 {
-    //std::cout << "DEBUG: pollNode(" << commandName << ", " << std::to_string(nodeAddress) << ")" << std::endl;
+    // std::cout << "DEBUG: pollNode(" << commandName << ", " << std::to_string(nodeAddress) << ")" << std::endl;
 
     std::string topic = "radio-arduino/RCMD/proxy/" + std::to_string(nodeAddress);
     std::string message = "{\"name\": \"" + commandName + "\", \"nodeAddress\": " + std::to_string(nodeAddress)
@@ -108,6 +108,7 @@ void CommandCallback::executeSubscriptions()
                     if ((diff > subscription.intervalInSeconds * 1000) || diff < 0) {
                         pollNode(subscription.commandName, subscription.nodeAddress);
                         m_nodeTwins.at(i).readyForCommand = false;
+                        std::this_thread::sleep_for(10000ms); // TODO: do we need this?
                     }
                 }
                 else {
@@ -151,22 +152,25 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                 nodeTwin.readyForCommand = true;
                 m_nodeTwins.push_back(nodeTwin);
                 // add subscriptions
-                if (topic_orig.starts_with("radio-arduino/DBIRTH/" + std::to_string(gatewayAddress) + "/" + std::to_string(gatewayAddress))) {
-                    //std::cout << "DEBUG: add subscription for gatway" << std::endl;
+                if (topic_orig.starts_with(
+                        "radio-arduino/DBIRTH/" + std::to_string(gatewayAddress) + "/"
+                        + std::to_string(gatewayAddress))) {
+                    // std::cout << "DEBUG: add subscription for gatway" << std::endl;
 
-                    m_subscriptions.push_back({ "get_device_name", 24*60*60, nodeAddress });
-                    //m_subscriptions.push_back({ "get_uniqueue_id", 24*60*60, nodeAddress });
+                    m_subscriptions.push_back({ "get_device_name", 24 * 60 * 60, nodeAddress });
+                    //m_subscriptions.push_back({ "get_attached_devices_csv_string", 24 * 60 * 60, nodeAddress });
                     m_subscriptions.push_back({ "get_statistics", 60 * 120, nodeAddress });
-                    m_subscriptions.push_back({ "get_version", 24*60*60, nodeAddress });
+                    m_subscriptions.push_back({ "get_version", 24 * 60 * 60, nodeAddress });
                 }
                 else {
-                    //std::cout << "DEBUG: add subscription for node" << std::endl;
+                    // std::cout << "DEBUG: add subscription for node" << std::endl;
 
                     m_subscriptions.push_back({ "vcc", 60 * 10, nodeAddress });
                     m_subscriptions.push_back({ "gpio", 60 * 60, nodeAddress });
-                    m_subscriptions.push_back({ "get_active_time_counter", 60 * 60, nodeAddress });
-                    m_subscriptions.push_back({ "get_device_name", 24*60*60, nodeAddress });
+                    m_subscriptions.push_back({ "get_active_time_counter", 60, nodeAddress });
+                    m_subscriptions.push_back({ "get_device_name", 24 * 60 * 60, nodeAddress });
                     m_subscriptions.push_back({ "get_statistics", 60 * 120, nodeAddress });
+                    m_subscriptions.push_back({ "get_attached_devices_csv_string", 24 * 60 * 60, nodeAddress });
                     // m_subscriptions.push_back({ "get_version", 24*60*60, nodeAddress });
                 }
             }
@@ -196,6 +200,35 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
     }
 
     if (topic_orig.starts_with("radio-arduino/DDATA/")) {
+        try {
+            auto tokens = splitString(topic_orig, "/");
+            if(tokens.size() < 5)
+            {
+                std::cout << "DEBUG: ABORT! parsing" << std::endl;
+            }
+            uint32_t nodeAddress = std::stoul(tokens.at(3));
+            std::string command_name = tokens.at(4);
+
+            if (command_name == "get_attached_devices_csv_string") {
+                auto jsonData = json::parse(payload);
+                std::string csvString = jsonData["payload"]["csvString"];
+                if (csvString.find("lsm303d") != std::string::npos) {
+                    m_subscriptions.push_back({ "get_lsm303d", 60, nodeAddress });
+                }
+                else if (csvString.find("quad") != std::string::npos) {
+                    m_subscriptions.push_back({ "quadrature_encoder", 60, nodeAddress });
+                }
+                else if (csvString.find("ina219") != std::string::npos) {
+                    m_subscriptions.push_back({ "ina219", 60, nodeAddress });
+                }
+            }
+
+            // seher
+        }
+        catch (std::exception const& e) {
+            std::cout << "DEBUG: malformed DDATA" << std::endl;
+        }
+
         try {
             auto jsonData = json::parse(payload);
 

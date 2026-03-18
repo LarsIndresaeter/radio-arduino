@@ -87,11 +87,6 @@ void DeviceController::executeJsonCommand()
         if (nodeAddress == m_radioAddress) {
             std::string commandName = jsonData["name"];
 
-            std::string topic = createMqttTopic(
-                TOPIC_RESPONSE_PREFIX,
-                std::to_string(m_gatewayAddress) + "/" + std::to_string(m_radioAddress),
-                "response");
-
             std::string jsonResponse = "";
 
             if (nodeAddress == m_gatewayAddress) {
@@ -108,6 +103,12 @@ void DeviceController::executeJsonCommand()
                 }
                 else if (commandName == "get_statistics") {
                     jsonResponse = m_monitor.get<>(RaduinoCommandGetStatistics()).getJson();
+                }
+                else if (commandName == "get_attached_devices_csv_string") {
+                    jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetAttachedDevicesCsvString()).getJson();
+                }
+                else {
+                    std::cout << "DEBUG: command not recognized: " << commandName << std::endl;
                 }
             }
             else {
@@ -130,6 +131,24 @@ void DeviceController::executeJsonCommand()
                     else if (commandName == "get_attached_devices_csv_string") {
                         jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetAttachedDevicesCsvString()).getJson();
                     }
+                    else if (commandName == "get_active_time_counter") {
+                        using namespace std::chrono;
+                        auto start = std::chrono::high_resolution_clock::now();
+                        uint64_t time_since_epoch_ms
+                            = std::chrono::duration_cast<std::chrono::milliseconds>(start.time_since_epoch()).count();
+
+                        std::vector<uint8_t> timestamp;
+                        timestamp.push_back(time_since_epoch_ms);
+                        timestamp.push_back(time_since_epoch_ms >> 8);
+                        timestamp.push_back(time_since_epoch_ms >> 16);
+                        timestamp.push_back(time_since_epoch_ms >> 24);
+                        timestamp.push_back(time_since_epoch_ms >> 32);
+                        timestamp.push_back(time_since_epoch_ms >> 40);
+                        timestamp.push_back(time_since_epoch_ms >> 48);
+                        timestamp.push_back(time_since_epoch_ms >> 56);
+
+                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetActiveTimeCounter(timestamp)).getJson();
+                    }
                     else if (commandName == "quadrature_encoder") {
                         jsonResponse = m_monitor.getRadio<>(RaduinoCommandQuadratureEncoder()).getJson();
                     }
@@ -140,13 +159,24 @@ void DeviceController::executeJsonCommand()
                         std::string displayText = jsonData["displayText"];
                         jsonResponse = m_monitor.getRadio<>(RaduinoCommandSsd1306(2, displayText)).getJson();
                     }
+                    else {
+                        std::cout << "DEBUG: command not recognized: " << commandName << std::endl;
+                        std::this_thread::sleep_for(1000ms);
+                    }
                 }
                 else {
                     std::cout << "DEBUG: not able to wake up node" << std::endl;
                 }
             }
 
+            std::this_thread::sleep_for(500ms);
+
             if (jsonResponse != "") {
+                std::string topic = createMqttTopic(
+                    TOPIC_RESPONSE_PREFIX,
+                    std::to_string(m_gatewayAddress) + "/" + std::to_string(m_radioAddress),
+                    commandName);
+
                 publishMessage(topic, jsonResponse);
             }
 
