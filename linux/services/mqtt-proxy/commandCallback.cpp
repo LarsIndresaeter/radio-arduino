@@ -28,18 +28,16 @@ void CommandCallback::publishMessage(std::string topic, std::string message)
 nodepath_t CommandCallback::getNodePath(uint32_t nodeAddress)
 {
     nodepath_t nodePath {};
-    int bestHealthIndicator = 0;
+    int bestHealthIndicator = -10000;
 
-    for (auto n : m_nodePath) {
-        //std::cout << "DEBUG: hi: " << std::to_string(n.healthIndicator) << std::endl;
-        if (n.nodeAddress == nodeAddress) {
-            if (n.healthIndicator >= bestHealthIndicator) {
-                bestHealthIndicator = n.healthIndicator;
-                nodePath.gatewayName = n.gatewayName;
-                nodePath.nodeAddress = n.nodeAddress;
-                nodePath.lastAdvertisement = n.lastAdvertisement;
-                nodePath.healthIndicator = n.healthIndicator;
-                //std::cout << "DEBUG: n.healthIndicator=" << std::to_string(n.healthIndicator) << std::endl;
+    for (int i = 0; i < m_nodePath.size(); i++) {
+        if (m_nodePath.at(i).nodeAddress == nodeAddress) {
+            if (m_nodePath.at(i).healthIndicator >= bestHealthIndicator) {
+                bestHealthIndicator = m_nodePath.at(i).healthIndicator;
+                nodePath.gatewayName = m_nodePath.at(i).gatewayName;
+                nodePath.nodeAddress = m_nodePath.at(i).nodeAddress;
+                nodePath.lastAdvertisement = m_nodePath.at(i).lastAdvertisement;
+                nodePath.healthIndicator = m_nodePath.at(i).healthIndicator;
             }
         }
     }
@@ -51,14 +49,11 @@ void CommandCallback::updatePath(
     std::string gatewayName, uint32_t nodeAddress, uint64_t lastAdvertisement, int healthIndicator)
 {
     bool nodePathFound = false;
-    for (auto n : m_nodePath) {
-        if ((n.nodeAddress == nodeAddress) && (n.gatewayName == gatewayName)) {
+    for (int i = 0; i < m_nodePath.size(); i++) {
+        if ((m_nodePath.at(i).nodeAddress == nodeAddress) && (m_nodePath.at(i).gatewayName == gatewayName)) {
             nodePathFound = true;
-            n.lastAdvertisement = lastAdvertisement;
-            n.healthIndicator = healthIndicator;
-            //std::cout << "DEBUG: updatePath()" << std::endl;
-            //std::cout << "DEBUG: m.healthIndicator=" << std::to_string(n.healthIndicator) << std::endl;
-            //std::cout << "DEBUG: healthIndicator=" << std::to_string(healthIndicator) << std::endl;
+            m_nodePath.at(i).lastAdvertisement = lastAdvertisement;
+            m_nodePath.at(i).healthIndicator = healthIndicator;
         }
     }
 
@@ -69,7 +64,6 @@ void CommandCallback::updatePath(
         n.lastAdvertisement = lastAdvertisement;
         n.healthIndicator = healthIndicator;
         m_nodePath.push_back(n);
-        //std::cout << "DEUBG: pushback=" << gatewayName << ", healthIndicator=" << std::to_string(healthIndicator) << std::endl;
     }
 }
 
@@ -77,6 +71,8 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
 {
     std::string topic_orig = message->get_topic();
     std::string payload = message->get_payload_str();
+
+    bool resentBirthCertificates = false;
 
     if (topic_orig.starts_with("radio-arduino/DBIRTH/")) {
         try {
@@ -99,7 +95,8 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
 
             nodepath_t n = getNodePath(nodeAddress);
             if (n.nodeAddress == 0) {
-                std::cout << "DEBUG: no path found" << std::endl;
+                std::cout << "DEBUG: no path found for " << nodeAddress << std::endl;
+                resentBirthCertificates = true;
             }
             else {
                 std::string topic_new = "radio-arduino/RCMD/" + n.gatewayName + "/" + std::to_string(n.nodeAddress);
@@ -110,6 +107,13 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         catch (std::exception const& e) {
             std::cout << "DEBUG: malformed birth certificate" << std::endl;
         }
+    }
+
+    if (resentBirthCertificates) {
+        std::string topic = "radio-arduino/RCMD";
+        std::string message = "{\"command\":\"resendBirthCertificate\"}";
+
+        publishMessage(topic, message);
     }
 }
 

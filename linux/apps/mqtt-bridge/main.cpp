@@ -15,7 +15,7 @@
 
 using namespace std::chrono_literals;
 
-void registerRadioNode(
+void registerNode(
     monitor& mon,
     mqtt::async_client& mqtt_client,
     uint32_t nodeAddress,
@@ -32,7 +32,7 @@ void registerRadioNode(
     }
 
     if (isNewNode) {
-        std::cout << "registerRadioNode:" << std::to_string(nodeAddress) << std::endl;
+        std::cout << "registerNode:" << std::to_string(nodeAddress) << std::endl;
 
         DeviceController controller(mon, mqtt_client, nodeAddress, gatewayAddress);
         std::shared_ptr<DeviceController> ctr = std::make_shared<DeviceController>(controller);
@@ -42,7 +42,9 @@ void registerRadioNode(
     }
     else {
         for (std::shared_ptr<DeviceController> deviceController : deviceControllerList) {
-            deviceController->discoveryReceived(nodeAddress);
+            if (deviceController->getNodeAddress() == nodeAddress) {
+                deviceController->discoveryReceived(nodeAddress);
+            }
         }
     }
 }
@@ -58,25 +60,21 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
     mqtt_client.set_callback(commandCallback);
     std::string commandTopic1 = "radio-arduino/RCMD/#";
     std::cout << "connected to gateway: " << std::to_string(gatewayAddress) << std::endl;
-    // std::cout << "subscribe to topic: " << commandTopic1 << std::endl;
     mqtt_client.subscribe(commandTopic1, QOS)->wait();
 
-    registerRadioNode(mon, mqtt_client, gatewayAddress, deviceControllerList, commandCallback, gatewayAddress);
-
-    mon.get<>(RaduinoCommandWakeup(true, 0)); // TODO: fix this hack that set gateway in listening mode
+    registerNode(mon, mqtt_client, gatewayAddress, deviceControllerList, commandCallback, gatewayAddress);
 
     while (true) {
         for (std::shared_ptr<DeviceController> deviceController : deviceControllerList) {
             deviceController->execute();
 
             uint32_t lastNode = deviceController->getLastDeviceIdSeen();
-            // std::cout << "DEBUG: lastNode=" << std::to_string(lastNode) << std::endl;
 
             if (lastNode != 0) {
-                registerRadioNode(mon, mqtt_client, lastNode, deviceControllerList, commandCallback, gatewayAddress);
+                registerNode(mon, mqtt_client, lastNode, deviceControllerList, commandCallback, gatewayAddress);
             }
 
-            std::this_thread::sleep_for(1000ms);
+            std::this_thread::sleep_for(10ms);
         }
     }
 }

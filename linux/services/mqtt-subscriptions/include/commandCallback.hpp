@@ -5,10 +5,10 @@
 #include <string>
 #include <vector>
 
-typedef struct nodeTwin {
+typedef struct nodeInfo {
     uint32_t nodeAddress;
     bool readyForCommand;
-} nodeTwin_t;
+} nodeInfo_t;
 
 typedef struct subscription {
     subscription(std::string cn, uint32_t iis, uint32_t na)
@@ -44,6 +44,6 @@ private:
 
     mqtt::async_client& m_mqttClient;
     std::vector<uint32_t> m_radioNodeIdList;
-    std::vector<nodeTwin_t> m_nodeTwins;
+    std::vector<nodeInfo_t> m_nodeInfoList;
     std::vector<subscription_t> m_subscriptions;
 };

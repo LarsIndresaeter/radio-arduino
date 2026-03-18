@@ -43,7 +43,6 @@ void DeviceController::execute()
     }
 
     m_lastDeviceIdSeen = m_monitor.get<>(RaduinoCommandGetLastDeviceIdSeen()).responseStruct().getId();
-    //std::cout << "DEBUG: lastDeviceIdSeen=" << std::to_string(m_lastDeviceIdSeen) << std::endl;
 }
 
 void DeviceController::publishState()
@@ -90,13 +89,8 @@ void DeviceController::executeJsonCommand()
             std::string jsonResponse = "";
 
             if (nodeAddress == m_gatewayAddress) {
-                // std::cout << "DEBUG: poll gateway. commandName='" << commandName << "'" << std::endl;
-
                 if (commandName == "get_version") {
                     jsonResponse = m_monitor.get<>(RaduinoCommandGetVersion()).getJson();
-                }
-                else if (commandName == "get_uniqueue_id") {
-                    jsonResponse = m_monitor.get<>(RaduinoCommandGetUniqueId()).getJson();
                 }
                 else if (commandName == "get_device_name") {
                     jsonResponse = m_monitor.get<>(RaduinoCommandGetDeviceName()).getJson();
@@ -105,10 +99,13 @@ void DeviceController::executeJsonCommand()
                     jsonResponse = m_monitor.get<>(RaduinoCommandGetStatistics()).getJson();
                 }
                 else if (commandName == "get_attached_devices_csv_string") {
-                    jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetAttachedDevicesCsvString()).getJson();
+                    jsonResponse = m_monitor.get<>(RaduinoCommandGetAttachedDevicesCsvString()).getJson();
+                }
+                else if (commandName == "ina219") {
+                    jsonResponse = m_monitor.get<>(RaduinoCommandIna219()).getJson();
                 }
                 else {
-                    std::cout << "DEBUG: command not recognized: " << commandName << std::endl;
+                    std::cout << "DEBUG: commandName '" << commandName << "' not recognized" << std::endl;
                 }
             }
             else {
@@ -159,17 +156,17 @@ void DeviceController::executeJsonCommand()
                         std::string displayText = jsonData["displayText"];
                         jsonResponse = m_monitor.getRadio<>(RaduinoCommandSsd1306(2, displayText)).getJson();
                     }
+                    else if (commandName == "ina219") {
+                        jsonResponse = m_monitor.get<>(RaduinoCommandIna219()).getJson();
+                    }
                     else {
-                        std::cout << "DEBUG: command not recognized: " << commandName << std::endl;
-                        std::this_thread::sleep_for(1000ms);
+                        std::cout << "DEBUG: commandName '" << commandName << "' not recognized" << std::endl;
                     }
                 }
                 else {
-                    std::cout << "DEBUG: not able to wake up node" << std::endl;
+                    std::cout << "DEBUG: not able to wake up node: " << std::to_string(nodeAddress) << std::endl;
                 }
             }
-
-            std::this_thread::sleep_for(500ms);
 
             if (jsonResponse != "") {
                 std::string topic = createMqttTopic(
@@ -183,16 +180,13 @@ void DeviceController::executeJsonCommand()
             updateQualityIndicator(m_monitor.lastCommandReturnedValidResponse());
         }
     }
-    catch (const mqtt::exception& exc) {
-        std::cerr << exc.what() << std::endl;
+    catch (std::exception const& e) {
+        std::cerr << e.what() << std::endl;
     }
 }
 
 void DeviceController::updateQualityIndicator(bool successfulResponse)
 {
-    // <0: number of consequitive errors
-    //  0: got discovery message but no response or error yet
-    // >0: number of consequitive responses
     if (successfulResponse) {
         if (healthIndicator < 1) {
             healthIndicator = 1;

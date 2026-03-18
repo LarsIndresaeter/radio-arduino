@@ -5,7 +5,10 @@ using nlohmann::json;
 
 CommandCallback::CommandCallback() {}
 
-void CommandCallback::addDeviceController(std::shared_ptr<DeviceController> dc) { m_deviceControllerList.push_back(dc); }
+void CommandCallback::addDeviceController(std::shared_ptr<DeviceController> dc)
+{
+    m_deviceControllerList.push_back(dc);
+}
 
 void CommandCallback::message_arrived(mqtt::const_message_ptr message)
 {

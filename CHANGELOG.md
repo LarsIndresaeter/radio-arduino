@@ -1,6 +1,6 @@
 # Changelog
 
-## notable changes on main branch after last release
+## version 2.0.1
 
 - new cli tool raduino-mqtt-bridge which receive commands in json formt and
   publish response from raduino nodes in json format

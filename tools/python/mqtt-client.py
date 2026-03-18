@@ -43,6 +43,7 @@ if (len(sys.argv) > 3):
     param_command = sys.argv[3]
     sendCommand(client, param_gw, param_node, param_command)
 else:
+    print("publish birth certificate")
     sendPublishBirth(client)
     # sendCommand(client, "gw4", 1765313195, "vcc")
 
