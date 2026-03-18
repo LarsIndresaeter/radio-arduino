@@ -27,7 +27,7 @@ void readMultipleRadioNodes(mqtt::async_client& mqtt_client)
 
 void print_usage()
 {
-    std::cout << "raduino-cluster-controller" << std::endl;
+    std::cout << "raduino-mqtt-subscriptions" << std::endl;
     std::cout << "                 -h : p rint this text" << std::endl;
 }
 

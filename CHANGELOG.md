@@ -6,7 +6,7 @@
   publish response from raduino nodes in json format
 - new service raduino-mqtt-proxy which act as a proxy for multiple gateways.
   This micro service is for use in a container environment.
-- new service raduino-cluster-controller that manage subscriptions to node data.
+- new service raduino-mqtt-subscriptions that manage subscriptions to node data.
 
 ## version 2.0.1
 

@@ -11,5 +11,5 @@ These apps are your main apps
 | app                                           | description                                                  |
 | --------------------------------------------- | ------------------------------------------------------------ |
 | [raduino-mqtt-proxy](./raduino-mqtt-proxy.md) | mqtt proxy for raduino gateways                              |
-| [raduino-cluster-controller](./raduino-cluster-controller.md) | controller for gateways and nodes in cluster |
+| [raduino-mqtt-subscriptions](./raduino-mqtt-subscriptions.md) | manage subscriptions to nodes advertised to a mqtt broker |
 

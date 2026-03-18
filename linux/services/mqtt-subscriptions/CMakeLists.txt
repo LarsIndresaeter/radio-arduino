@@ -10,7 +10,7 @@ find_package(PahoMqttCpp REQUIRED)
 find_package(nlohmann_json REQUIRED)
 add_definitions(-DUSE_FEATURE_MQTT=1)
 
-include_directories(cluster-controller include)
-add_executable(raduino-cluster-controller main.cpp commandCallback.cpp)
-target_link_libraries(raduino-cluster-controller ${CONAN_LIBS} pthread)
+include_directories(mqtt-subscriptions include)
+add_executable(raduino-mqtt-subscriptions main.cpp commandCallback.cpp)
+target_link_libraries(raduino-mqtt-subscriptions ${CONAN_LIBS} pthread)
 

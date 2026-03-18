@@ -1,4 +1,4 @@
-# raduino-cluster-controller
+# raduino-mqtt-subscription
 
 ## description
 
@@ -26,17 +26,17 @@ The following list of requirements were collected before developing this service
 
 #### gateways
 
-. id=1765235324, name=gw4
+- id=1765235324, name=gw4
 - id=1768692402, name=gw5
 
 #### nodes
 
 - id=1765313195, name=accelerometer
-- id=1769294329, name=lcd`
+- id=1769294329, name=lcd
 
 ### mqtt response to subscriptions
 
-Subscriptions are setup after birth certificate is received by `raduino-cluster-controller`.
+Subscriptions are setup after birth certificate is received by `raduino-mqtt-subscriptions`.
 In future version these subscriptions will be configurable.
 
 ```bash
