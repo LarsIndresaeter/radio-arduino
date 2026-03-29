@@ -35,10 +35,14 @@ void DeviceController::execute()
     if (m_publishBirth) {
         std::string topic
             = createMqttTopic(TOPIC_BROADCAST, std::to_string(m_gatewayAddress), std::to_string(m_radioAddress));
-        std::string message = "{\"nodeAddress\": " + std::to_string(m_radioAddress) + ", \"gateway\": \""
-            + std::to_string(m_gatewayAddress) + "\"" + ", \"healthIndicator\": " + std::to_string(healthIndicator)
-            + ", \"lastAdvertisement\": " + std::to_string(timestampLastDiscovery) + "}";
-        publishMessage(topic, message);
+
+        json birthCertificate = { { "nodeAddress", m_radioAddress },
+                         { "gateway", m_gatewayAddress },
+                         { "healthIndicator", healthIndicator },
+                         { "lastAdvertisement", healthIndicator },
+                         { "timestampLastAdvertisement", timestampLastDiscovery } };
+
+        publishMessage(topic, birthCertificate.dump());
         setPublishBirth(false);
     }
 

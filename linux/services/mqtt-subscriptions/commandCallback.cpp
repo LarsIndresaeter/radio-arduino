@@ -27,9 +27,10 @@ void CommandCallback::delivery_complete(mqtt::delivery_token_ptr token)
 void CommandCallback::resendBirthCertificate()
 {
     std::string topic = "radio-arduino/RCMD";
-    std::string message = "{\"command\":\"resendBirthCertificate\"}";
 
-    publishMessage(topic, message);
+    json command = { "command", "resendBirthCertificate" };
+
+    publishMessage(topic, command.dump());
 }
 
 void CommandCallback::publishMessage(std::string topic, std::string message)
@@ -69,10 +70,10 @@ std::vector<std::string> CommandCallback::splitString(std::string s, const std::
 void CommandCallback::pollNode(std::string commandName, uint32_t nodeAddress)
 {
     std::string topic = "radio-arduino/RCMD/proxy/" + std::to_string(nodeAddress);
-    std::string message = "{\"name\": \"" + commandName + "\", \"nodeAddress\": " + std::to_string(nodeAddress)
-        + ", \"expirationTime\": 0}";
 
-    publishMessage(topic, message);
+    json command = { { "name", commandName }, { "nodeAddress", nodeAddress }, { "expirationTime", 0 } };
+
+    publishMessage(topic, command.dump());
 }
 
 void CommandCallback::executeSubscriptions()
@@ -118,7 +119,7 @@ void CommandCallback::executeSubscriptions()
                       << std::to_string(m_nodeInfoList.at(i).nodeAddress) << std::endl;
             m_nodeInfoList.at(i).readyForCommand = true;
         }
-            std::this_thread::sleep_for(15000ms); // wait from response before switching to the next node
+        std::this_thread::sleep_for(15000ms); // wait from response before switching to the next node
     }
 }
 
@@ -206,10 +207,10 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                         std::string csvString = jsonData["payload"]["csvString"];
                         if (csvString.find("lsm303d") != std::string::npos) {
                             // TODO: make method that check if exist before adding
-                            m_subscriptions.push_back({ "get_lsm303d", 60*5, nodeAddress });
+                            m_subscriptions.push_back({ "get_lsm303d", 60 * 5, nodeAddress });
                         }
                         else if (csvString.find("quad") != std::string::npos) {
-                            m_subscriptions.push_back({ "quadrature_encoder", 60*5, nodeAddress });
+                            m_subscriptions.push_back({ "quadrature_encoder", 60 * 5, nodeAddress });
                         }
                         else if (csvString.find("ina219") != std::string::npos) {
                             m_subscriptions.push_back({ "ina219", 5, nodeAddress });

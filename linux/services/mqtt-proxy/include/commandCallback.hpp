@@ -7,7 +7,7 @@
 
 typedef struct nodepath
 {
-    std::string gatewayName;
+    uint32_t gatewayAddress;
     uint32_t nodeAddress;
     uint64_t lastAdvertisement;
     int healthIndicator;
@@ -25,7 +25,7 @@ public:
 private:
     void publishMessage(std::string topic, std::string message);
     mqtt::async_client& m_mqttClient;
-    void updatePath(std::string gatewayName, uint32_t nodeAddress, uint64_t lastAdvertisement, int healthIndicator);
+    void updatePath(uint32_t gatewayAddress, uint32_t nodeAddress, uint64_t lastAdvertisement, int healthIndicator);
     nodepath_t getNodePath(uint32_t nodeAddress);
     std::vector<nodepath_t> m_nodePath;
 };

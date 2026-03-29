@@ -76,15 +76,18 @@ void publishGatewayInfo(mqtt::async_client& mqtt_client)
     if (gethostname(hostname, HOST_NAME_MAX) == 0) {
         hostnameString = std::string(hostname);
     }
+    
+    json payload = {"version", std::string(ARDUINO_VERSION)};
 
     mqtt::topic deviceBirth(mqtt_client, createMqttTopic("NBIRTH", hostnameString, "raduino-mqtt-client"), 0, false);
-    deviceBirth.publish(std::move("{\"version: \"" + std::string(ARDUINO_VERSION) + "\"}"));
+    deviceBirth.publish(payload.dump());
 }
 
 void publishNbirth(mqtt::async_client& mqtt_client, std::string deviceName)
 {
     mqtt::topic deviceBirth(mqtt_client, createMqttTopic("NBIRTH", deviceName, ""), 0, false);
-    deviceBirth.publish(std::move("{\"dateString: \"" + getDateTimeString() + "\"}"));
+    json payload  = {"dateString", getDateTimeString()};
+    deviceBirth.publish(payload.dump());
 }
 
 std::string getNodeNameAndPublishBirth(monitor& mon, mqtt::async_client& mqtt_client)

@@ -1,4 +1,5 @@
 #include "currentMonitor.hpp"
+#include "mqtt-common.hpp"
 
 using nlohmann::json;
 
@@ -123,12 +124,17 @@ void readCurrentAndVoltage(monitor& mon, mqtt::async_client& mqtt_client, int sa
                                        "secondsSinceEpoch",
                                        std::to_string(secondsSinceEpoch()) } };
 
-                    std::string mqtt_payload = "{\"voltage\":" + std::to_string(V_avg) + ", \"current\":"
-                        + std::to_string(I_avg) + ", \"stddev\":" + std::to_string(I_std) + ", \"messageCounter\":"
-                        + std::to_string(json_message_id) + ", \"timestamp\": \"" + getDateTimeString() + "\""
-                        + ", \"secondsSinceEpoch\":" + std::to_string(secondsSinceEpoch()) + "}";
+                    json payload = {
+                        { "voltage", std::to_string(V_avg) },
+                        { "current", std::to_string(I_avg) },
+                        { "stddev", std::to_string(I_std) },
+                        { "messageCounter", std::to_string(json_message_id) },
+                        { "timestamp", getDateTimeString() },
+                        { "secondsSinceEpoch", secondsSinceEpoch() },
 
-                    json_topic.publish(std::move(mqtt_payload));
+                    };
+
+                    json_topic.publish(payload.dump());
                     timeLastMessage = secondsSinceEpoch();
                     timeoutExpired = false;
                 }

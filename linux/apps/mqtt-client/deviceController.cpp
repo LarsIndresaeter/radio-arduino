@@ -1,6 +1,8 @@
 #include "deviceController.hpp"
 #include "include/deviceController.hpp"
 
+using nlohmann::json;
+
 DeviceController::DeviceController(
     monitor& monitor, mqtt::async_client& mqtt_client, uint32_t radioAddress, std::string name)
     : m_radioAddress(radioAddress)
@@ -22,10 +24,10 @@ void DeviceController::reconsileState()
         m_actualState.setActualPollInterval(m_desiredState->getDesiredPollInterval());
 
         std::string topic = createMqttTopic("STATE", m_name, "actualState");
-        std::string message = "{\"dateString\": \"" + getDateTimeString()
-            + "\", \"pollInterval\":" + std::to_string(m_actualState.getActualPollInterval()) + "}";
 
-        publishMessage(topic, message);
+        json command = {{"dateString", getDateTimeString()}, {"pollInterval", std::to_string(m_actualState.getActualPollInterval())}};
+
+        publishMessage(topic, command.dump());
     }
 }
 
@@ -187,10 +189,10 @@ void DeviceController::updateDisplayText()
             = m_monitor.getRadio<>(RaduinoCommandSsd1306(2, lcd), static_cast<std::chrono::milliseconds>(500));
         if (m_monitor.lastCommandReturnedValidResponse()) {
             std::string topic = m_desiredState->getTopicString() + "/actualState";
-            std::string message
-                = "{\"dateString\": \"" + getDateTimeString() + "\", \"displayText\": \"" + displayText + "\"}";
 
-            publishMessage(topic, message);
+            json command = {{"dateString", getDateTimeString()}, {"displayText", displayText}};
+
+            publishMessage(topic, command.dump());
         }
     }
 }

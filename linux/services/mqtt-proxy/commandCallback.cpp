@@ -34,7 +34,7 @@ nodepath_t CommandCallback::getNodePath(uint32_t nodeAddress)
         if (m_nodePath.at(i).nodeAddress == nodeAddress) {
             if (m_nodePath.at(i).healthIndicator >= bestHealthIndicator) {
                 bestHealthIndicator = m_nodePath.at(i).healthIndicator;
-                nodePath.gatewayName = m_nodePath.at(i).gatewayName;
+                nodePath.gatewayAddress = m_nodePath.at(i).gatewayAddress;
                 nodePath.nodeAddress = m_nodePath.at(i).nodeAddress;
                 nodePath.lastAdvertisement = m_nodePath.at(i).lastAdvertisement;
                 nodePath.healthIndicator = m_nodePath.at(i).healthIndicator;
@@ -46,11 +46,11 @@ nodepath_t CommandCallback::getNodePath(uint32_t nodeAddress)
 }
 
 void CommandCallback::updatePath(
-    std::string gatewayName, uint32_t nodeAddress, uint64_t lastAdvertisement, int healthIndicator)
+    uint32_t gatewayAddress, uint32_t nodeAddress, uint64_t lastAdvertisement, int healthIndicator)
 {
     bool nodePathFound = false;
     for (int i = 0; i < m_nodePath.size(); i++) {
-        if ((m_nodePath.at(i).nodeAddress == nodeAddress) && (m_nodePath.at(i).gatewayName == gatewayName)) {
+        if ((m_nodePath.at(i).nodeAddress == nodeAddress) && (m_nodePath.at(i).gatewayAddress == gatewayAddress)) {
             nodePathFound = true;
             m_nodePath.at(i).lastAdvertisement = lastAdvertisement;
             m_nodePath.at(i).healthIndicator = healthIndicator;
@@ -59,7 +59,7 @@ void CommandCallback::updatePath(
 
     if (!nodePathFound) {
         nodepath_t n;
-        n.gatewayName = gatewayName;
+        n.gatewayAddress = gatewayAddress;
         n.nodeAddress = nodeAddress;
         n.lastAdvertisement = lastAdvertisement;
         n.healthIndicator = healthIndicator;
@@ -77,11 +77,11 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
     if (topic_orig.starts_with("radio-arduino/DBIRTH/")) {
         try {
             auto jsonData = json::parse(payload);
-            std::string gatewayName = jsonData["gateway"];
+            uint32_t gatewayAddress = jsonData["gateway"];
             int healthIndicator = jsonData["healthIndicator"].get<int>();
             uint64_t lastAdvertisement = jsonData["lastAdvertisement"];
             uint32_t nodeAddress = jsonData["nodeAddress"];
-            updatePath(gatewayName, nodeAddress, lastAdvertisement, healthIndicator);
+            updatePath(gatewayAddress, nodeAddress, lastAdvertisement, healthIndicator);
         }
         catch (std::exception const& e) {
             std::cout << "DEBUG: malformed birth certificate" << std::endl;
@@ -99,7 +99,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                 resentBirthCertificates = true;
             }
             else {
-                std::string topic_new = "radio-arduino/RCMD/" + n.gatewayName + "/" + std::to_string(n.nodeAddress);
+                std::string topic_new = "radio-arduino/RCMD/" + std::to_string(n.gatewayAddress) + "/" + std::to_string(n.nodeAddress);
 
                 publishMessage(topic_new, payload);
             }
@@ -111,9 +111,9 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
 
     if (resentBirthCertificates) {
         std::string topic = "radio-arduino/RCMD";
-        std::string message = "{\"command\":\"resendBirthCertificate\"}";
+        json command = {"command", "resendBirthCertificate"};
 
-        publishMessage(topic, message);
+        publishMessage(topic, command.dump());
     }
 }
 
