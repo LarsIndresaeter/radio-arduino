@@ -90,6 +90,7 @@ void initRadioLink()
     rx_tx_addr[4] = 0;
 
     NRF24L01_init(&rx_tx_addr[0], &rx_tx_addr[0], rx_mode_gateway);
+    setupBroadcastPipe();
 }
 
 void setDeviceId(uint32_t id) { id_for_communication_data_pipe = id; }
