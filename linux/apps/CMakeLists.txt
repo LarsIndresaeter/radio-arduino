@@ -1,5 +1,5 @@
 
-add_subdirectory(mqtt)
+add_subdirectory(mqtt-client)
 add_subdirectory(mqtt-bridge)
 add_subdirectory(power-monitor-mqtt)
 add_subdirectory(node)
