@@ -60,8 +60,11 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
         if (gatewayAddress > 0) {
             break;
         }
-        std::cout << "DEBUG: read gateway address again" << std::endl;
-            std::this_thread::sleep_for(i*100ms);
+        if(i>4)
+        {
+        std::cout << "DEBUG: read gateway address " << std::to_string(i) << " times" << std::endl;
+        }
+        std::this_thread::sleep_for(i * 100ms);
     }
 
     if (gatewayAddress == 0) {
