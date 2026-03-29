@@ -39,8 +39,8 @@ void DeviceController::execute()
         json birthCertificate = { { "nodeAddress", m_radioAddress },
                          { "gateway", m_gatewayAddress },
                          { "healthIndicator", healthIndicator },
-                         { "lastAdvertisement", healthIndicator },
-                         { "timestampLastAdvertisement", timestampLastDiscovery } };
+                         { "lastAdvertisement", timestampLastDiscovery },
+        };
 
         publishMessage(topic, birthCertificate.dump());
         setPublishBirth(false);
