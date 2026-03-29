@@ -113,14 +113,19 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
                 = std::chrono::duration_cast<std::chrono::milliseconds>(start.time_since_epoch()).count();
             std::vector<uint8_t> timestamp;
             timestamp.push_back(time_since_epoch_ms);
-            timestamp.push_back(time_since_epoch_ms>>8);
-            timestamp.push_back(time_since_epoch_ms>>16);
-            timestamp.push_back(time_since_epoch_ms>>24);
-            timestamp.push_back(time_since_epoch_ms>>32);
-            timestamp.push_back(time_since_epoch_ms>>40);
-            timestamp.push_back(time_since_epoch_ms>>48);
-            timestamp.push_back(time_since_epoch_ms>>56);
-            std::cout << mon.getRadio<>(RaduinoCommandGetActiveTimeCounter(timestamp)) << std::endl;
+            timestamp.push_back(time_since_epoch_ms >> 8);
+            timestamp.push_back(time_since_epoch_ms >> 16);
+            timestamp.push_back(time_since_epoch_ms >> 24);
+            timestamp.push_back(time_since_epoch_ms >> 32);
+            timestamp.push_back(time_since_epoch_ms >> 40);
+            timestamp.push_back(time_since_epoch_ms >> 48);
+            timestamp.push_back(time_since_epoch_ms >> 56);
+            auto response = mon.getRadio<>(RaduinoCommandGetActiveTimeCounter(timestamp)).responseStruct();
+            uint64_t active_time = response.getActive_time();
+            uint64_t sleep_time = response.getSleep_time();
+            std::cout << " * active_time=" << std::to_string(active_time);
+            std::cout << " sleep_time=" << std::to_string(sleep_time);
+            std::cout << " : " << std::to_string(1000*active_time / (sleep_time+active_time)) << "/1000" << std::endl;
         } break;
         case 'K': {
             std::string s(optarg);

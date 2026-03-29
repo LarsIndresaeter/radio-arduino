@@ -105,7 +105,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
             }
         }
         catch (std::exception const& e) {
-            std::cout << "DEBUG: malformed birth certificate" << std::endl;
+            std::cout << "DEBUG: malformed RCMD" << std::endl;
         }
     }
 
