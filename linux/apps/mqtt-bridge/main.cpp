@@ -53,7 +53,22 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
 {
     const int QOS = 0;
 
-    uint64_t gatewayAddress = mon.get<>(RaduinoCommandGetUniqueId()).responseStruct().getId();
+    uint64_t gatewayAddress = 0;
+
+    for (int i = 0; i < 10; i++) {
+        gatewayAddress = mon.get<>(RaduinoCommandGetUniqueId()).responseStruct().getId();
+        if (gatewayAddress > 0) {
+            break;
+        }
+        std::cout << "DEBUG: read gateway address again" << std::endl;
+            std::this_thread::sleep_for(i*100ms);
+    }
+
+    if (gatewayAddress == 0) {
+        std::cout << "ERROR: not able to read gateway address" << std::endl;
+        exit(1);
+    }
+
     std::vector<std::shared_ptr<DeviceController>> deviceControllerList;
     CommandCallback commandCallback;
 
