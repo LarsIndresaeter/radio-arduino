@@ -49,8 +49,6 @@ void CommandCallback::publishMessage(std::string topic, std::string message)
     }
 }
 
-std::vector<uint32_t> CommandCallback::getRadioNodeIdList() { return (m_radioNodeIdList); }
-
 std::vector<std::string> CommandCallback::splitString(std::string s, const std::string& delimiter)
 {
     std::vector<std::string> tokens;
@@ -67,59 +65,40 @@ std::vector<std::string> CommandCallback::splitString(std::string s, const std::
     return tokens;
 }
 
-void CommandCallback::pollNode(std::string commandName, uint32_t nodeAddress)
+void CommandCallback::pollNode(std::vector<std::string> commandList, uint32_t nodeAddress)
 {
     std::string topic = "radio-arduino/RCMD/proxy/" + std::to_string(nodeAddress);
 
-    json command = { { "name", commandName }, { "nodeAddress", nodeAddress }, { "expirationTime", 0 } };
+    json jsonCommandList;
+    for (std::string command : commandList) {
+        jsonCommandList.push_back(command);
+    }
+
+    json command = { { "commandList", jsonCommandList }, { "nodeAddress", nodeAddress }, { "expirationTime", 0 } };
 
     publishMessage(topic, command.dump());
 }
 
-void CommandCallback::executeSubscriptions()
+void CommandCallback::executeSubscriptionsForNode(uint32_t nodeId)
 {
-    std::vector<uint32_t> radioNodes = getRadioNodeIdList();
+    std::vector<std::string> commandList;
 
-    for (int i = 0; i < m_nodeInfoList.size(); i++) {
-        bool nodeAppearToBeStuck = false;
-        for (int j = 0; j < m_subscriptions.size(); j++) {
-            int loopCounter = 0;
-            while (false == m_nodeInfoList.at(i).readyForCommand) {
-                if (loopCounter++ > 1000) {
-                    nodeAppearToBeStuck = true;
-                    break;
-                }
-                std::this_thread::sleep_for(10ms);
-            }
+    for (int j = 0; j < m_subscriptions.size(); j++) {
+        if (m_subscriptions.at(j).nodeAddress == nodeId) {
+            using namespace std::chrono;
+            auto start = std::chrono::high_resolution_clock::now();
+            uint64_t time_since_epoch_ms
+                = std::chrono::duration_cast<std::chrono::milliseconds>(start.time_since_epoch()).count();
 
-            if (m_subscriptions.at(j).nodeAddress == m_nodeInfoList.at(i).nodeAddress) {
-                if (m_nodeInfoList.at(i).readyForCommand) {
-                    using namespace std::chrono;
-                    auto start = std::chrono::high_resolution_clock::now();
-                    uint64_t time_since_epoch_ms
-                        = std::chrono::duration_cast<std::chrono::milliseconds>(start.time_since_epoch()).count();
+            int diff = time_since_epoch_ms - m_subscriptions.at(j).timestampLastValidResponse;
 
-                    int diff = time_since_epoch_ms - m_subscriptions.at(j).timestampLastValidResponse;
-
-                    if ((diff > m_subscriptions.at(j).intervalInSeconds * 1000) || diff < 0) {
-                        pollNode(m_subscriptions.at(j).commandName, m_subscriptions.at(j).nodeAddress);
-                        m_nodeInfoList.at(i).readyForCommand = false;
-                    }
-                }
-                // else {
-                // std::cout << "WARNING: node '" << std::to_string(m_subscriptions.at(j).nodeAddress)
-                //<< "' not ready for command" << std::endl;
-                // break;
-                //}
+            if ((diff > m_subscriptions.at(j).intervalInSeconds * 1000) || diff < 0) {
+                commandList.push_back(m_subscriptions.at(j).commandName);
             }
         }
-        if (nodeAppearToBeStuck) {
-            std::this_thread::sleep_for(15000ms); // wait from response before switching to the next node
-            std::cout << "DEBUG: force readyForCommand=true, address="
-                      << std::to_string(m_nodeInfoList.at(i).nodeAddress) << std::endl;
-            m_nodeInfoList.at(i).readyForCommand = true;
-        }
-        std::this_thread::sleep_for(15000ms); // wait from response before switching to the next node
+    }
+    if (commandList.size() > 0) {
+        pollNode(commandList, nodeId);
     }
 }
 
@@ -144,7 +123,6 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                 m_radioNodeIdList.push_back(nodeAddress);
                 nodeInfo_t nodeInfo;
                 nodeInfo.nodeAddress = nodeAddress;
-                nodeInfo.readyForCommand = true;
                 m_nodeInfoList.push_back(nodeInfo);
                 // add subscriptions
                 if (topic_orig.starts_with(
@@ -171,20 +149,35 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         }
     }
 
+    if (topic_orig.starts_with("radio-arduino/ADVERTISEMENT/")) {
+        try {
+            auto jsonData = json::parse(payload);
+            std::string nodeAddressString = tokens.at(3);
+            uint32_t nodeAddress = stoul(tokens.at(3));
+
+            bool nodeExists = false;
+            for (int j = 0; j < m_nodeInfoList.size(); j++) {
+                if (m_nodeInfoList.at(j).nodeAddress == nodeAddress) {
+                    nodeExists = true;
+                }
+            }
+
+            if (nodeExists) {
+                executeSubscriptionsForNode(nodeAddress);
+            }
+            else {
+                resendBirthCertificate();
+            }
+        }
+        catch (std::exception const& e) {
+            std::cout << "DEBUG: malformed ADVERTISEMENT" << std::endl;
+            std::cout << "     : " << payload << std::endl;
+        }
+    }
+
     if (topic_orig.starts_with("radio-arduino/STATE/")) {
         std::string nodeAddressString = tokens.at(3);
         uint32_t nodeAddress = stoul(tokens.at(3));
-
-        for (int i = 0; i < m_nodeInfoList.size(); i++) {
-            if (m_nodeInfoList.at(i).nodeAddress == nodeAddress) {
-                if (payload.empty()) {
-                    m_nodeInfoList.at(i).readyForCommand = true;
-                }
-                else {
-                    m_nodeInfoList.at(i).readyForCommand = false;
-                }
-            }
-        }
     }
 
     if (topic_orig.starts_with("radio-arduino/DDATA/")) {
@@ -224,12 +217,6 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                         + std::to_string(m_subscriptions.at(i).nodeAddress) + "/" + commandName;
 
                     publishMessage(republish_topic, payload);
-                }
-            }
-
-            for (int i = 0; i < m_nodeInfoList.size(); i++) {
-                if (nodeAddressString == std::to_string(m_nodeInfoList.at(i).nodeAddress)) {
-                    m_nodeInfoList.at(i).readyForCommand = true; // got response from node
                 }
             }
         }

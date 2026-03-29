@@ -7,7 +7,7 @@
 
 typedef struct nodeInfo {
     uint32_t nodeAddress;
-    bool readyForCommand;
+    //bool readyForCommand;
 } nodeInfo_t;
 
 typedef struct subscription {
@@ -34,13 +34,14 @@ public:
     void delivery_complete(mqtt::delivery_token_ptr token) override;
 
     void resendBirthCertificate();
-    void executeSubscriptions();
+    //void executeSubscriptions();
+    void executeSubscriptionsForNode(uint32_t nodeId);
 
 private:
     std::vector<std::string> splitString(std::string s, const std::string& delimiter);
-    void pollNode(std::string commandName, uint32_t nodeAddress);
+    void pollNode(std::vector<std::string> commandList, uint32_t nodeAddress);
     void publishMessage(std::string topic, std::string message);
-    std::vector<uint32_t> getRadioNodeIdList();
+    //std::vector<uint32_t> getRadioNodeIdList();
 
     mqtt::async_client& m_mqttClient;
     std::vector<uint32_t> m_radioNodeIdList;

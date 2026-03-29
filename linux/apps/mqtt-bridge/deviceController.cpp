@@ -5,6 +5,7 @@
 using nlohmann::json;
 
 const char* TOPIC_BROADCAST = "DBIRTH";
+const char* TOPIC_ADVERTISEMENT = "ADVERTISEMENT";
 const char* TOPIC_COMMAND_PREFIX = "radio-arduino/RCMD/command/";
 const char* TOPIC_RESPONSE_PREFIX = "DDATA";
 
@@ -25,7 +26,7 @@ void DeviceController::execute()
 {
     if (m_commandReceived) {
         executeJsonCommand();
-        setPublishBirth(true);
+        //setPublishBirth(true);
 
         m_command = "";
         m_commandReceived = false;
@@ -36,14 +37,28 @@ void DeviceController::execute()
         std::string topic
             = createMqttTopic(TOPIC_BROADCAST, std::to_string(m_gatewayAddress), std::to_string(m_radioAddress));
 
-        json birthCertificate = { { "nodeAddress", m_radioAddress },
-                         { "gateway", m_gatewayAddress },
-                         { "healthIndicator", healthIndicator },
-                         { "lastAdvertisement", timestampLastDiscovery },
+        json birthCertificate = {
+            { "nodeAddress", m_radioAddress },
+            { "gateway", m_gatewayAddress },
+            { "healthIndicator", healthIndicator },
+            { "lastAdvertisement", timestampLastDiscovery },
         };
 
         publishMessage(topic, birthCertificate.dump());
         setPublishBirth(false);
+    }
+
+    if (m_publishAdvertisement) {
+        std::string topic
+            = createMqttTopic(TOPIC_ADVERTISEMENT, std::to_string(m_gatewayAddress), std::to_string(m_radioAddress));
+
+        json advertisement = {
+            { "nodeAddress", m_radioAddress },
+            { "lastAdvertisement", timestampLastDiscovery },
+        };
+
+        publishMessage(topic, advertisement.dump());
+        setPublishAdvertisement(false);
     }
 
     m_lastDeviceIdSeen = m_monitor.get<>(RaduinoCommandGetLastDeviceIdSeen()).responseStruct().getId();
@@ -62,9 +77,7 @@ void DeviceController::discoveryReceived(uint32_t nodeAddress)
     if (nodeAddress == m_radioAddress) {
         uint64_t timestamp = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count());
 
-        if ((timestamp - timestampLastDiscovery) > 60000) {
-            setPublishBirth(true);
-        }
+        setPublishAdvertisement(true);
 
         timestampLastDiscovery = timestamp;
 
@@ -86,34 +99,46 @@ void DeviceController::executeJsonCommand()
         auto jsonData = json::parse(m_command);
 
         uint32_t nodeAddress = jsonData.value("nodeAddress", 0);
+        bool radioNodeWakeupSucces = false;
 
-        if (nodeAddress == m_radioAddress) {
-            std::string commandName = jsonData["name"];
-
-            std::string jsonResponse = "";
-
-            if (nodeAddress == m_gatewayAddress) {
-                if (commandName == "get_version") {
-                    jsonResponse = m_monitor.get<>(RaduinoCommandGetVersion()).getJson();
-                }
-                else if (commandName == "get_device_name") {
-                    jsonResponse = m_monitor.get<>(RaduinoCommandGetDeviceName()).getJson();
-                }
-                else if (commandName == "get_statistics") {
-                    jsonResponse = m_monitor.get<>(RaduinoCommandGetStatistics()).getJson();
-                }
-                else if (commandName == "get_attached_devices_csv_string") {
-                    jsonResponse = m_monitor.get<>(RaduinoCommandGetAttachedDevicesCsvString()).getJson();
-                }
-                else if (commandName == "ina219") {
-                    jsonResponse = m_monitor.get<>(RaduinoCommandIna219()).getJson();
-                }
-                else {
-                    std::cout << "DEBUG: commandName '" << commandName << "' not recognized" << std::endl;
-                }
+        if (nodeAddress != m_gatewayAddress) {
+            if (m_radioSession.wakeupNotResponding()) {
+                radioNodeWakeupSucces = true;
             }
             else {
-                if (m_radioSession.wakeupNotResponding()) {
+                std::cout << "ERROR: not able to wake up node" << std::endl;
+            }
+        }
+
+        if (nodeAddress == m_radioAddress) {
+            json commandList = jsonData["commandList"];
+
+            for (std::string commandName : commandList) {
+                // std::cout << "DEBUG: command name = " << commandName << std::endl;
+                // todo: loop over list
+                std::string jsonResponse = "";
+
+                if (nodeAddress == m_gatewayAddress) {
+                    if (commandName == "get_version") {
+                        jsonResponse = m_monitor.get<>(RaduinoCommandGetVersion()).getJson();
+                    }
+                    else if (commandName == "get_device_name") {
+                        jsonResponse = m_monitor.get<>(RaduinoCommandGetDeviceName()).getJson();
+                    }
+                    else if (commandName == "get_statistics") {
+                        jsonResponse = m_monitor.get<>(RaduinoCommandGetStatistics()).getJson();
+                    }
+                    else if (commandName == "get_attached_devices_csv_string") {
+                        jsonResponse = m_monitor.get<>(RaduinoCommandGetAttachedDevicesCsvString()).getJson();
+                    }
+                    else if (commandName == "ina219") {
+                        jsonResponse = m_monitor.get<>(RaduinoCommandIna219()).getJson();
+                    }
+                    else {
+                        std::cout << "DEBUG: commandName '" << commandName << "' not recognized" << std::endl;
+                    }
+                }
+                else {
                     if (commandName == "vcc") {
                         jsonResponse = m_monitor.getRadio<>(RaduinoCommandVcc()).getJson();
                     }
@@ -167,21 +192,21 @@ void DeviceController::executeJsonCommand()
                         std::cout << "DEBUG: commandName '" << commandName << "' not recognized" << std::endl;
                     }
                 }
-                else {
-                    std::cout << "DEBUG: not able to wake up node: " << std::to_string(nodeAddress) << std::endl;
+
+                if (jsonResponse != "") {
+                    std::string topic = createMqttTopic(
+                        TOPIC_RESPONSE_PREFIX,
+                        std::to_string(m_gatewayAddress) + "/" + std::to_string(m_radioAddress),
+                        commandName);
+
+                    publishMessage(topic, jsonResponse);
                 }
+
+                updateQualityIndicator(m_monitor.lastCommandReturnedValidResponse());
             }
-
-            if (jsonResponse != "") {
-                std::string topic = createMqttTopic(
-                    TOPIC_RESPONSE_PREFIX,
-                    std::to_string(m_gatewayAddress) + "/" + std::to_string(m_radioAddress),
-                    commandName);
-
-                publishMessage(topic, jsonResponse);
-            }
-
-            updateQualityIndicator(m_monitor.lastCommandReturnedValidResponse());
+        }
+        if (radioNodeWakeupSucces) {
+            m_monitor.getRadio<>(RaduinoCommandKeepAlive(0)).getJson();
         }
     }
     catch (std::exception const& e) {
@@ -242,6 +267,9 @@ void DeviceController::parseMessage(std::string topic, std::string command)
                 m_commandReceived = true;
                 publishState();
             }
+            else{
+                std::cout << "WARNING: Ignore command, reason: busy parsing previous command. nodeAddress=" << std::to_string(m_radioAddress) << std::endl;
+            }
         }
     }
     catch (const mqtt::exception& exc) {
@@ -250,6 +278,8 @@ void DeviceController::parseMessage(std::string topic, std::string command)
 }
 
 void DeviceController::setPublishBirth(bool value) { m_publishBirth = value; }
+
+void DeviceController::setPublishAdvertisement(bool value) { m_publishAdvertisement = value; }
 
 std::string DeviceController::getTopicString() { return (m_topic); }
 

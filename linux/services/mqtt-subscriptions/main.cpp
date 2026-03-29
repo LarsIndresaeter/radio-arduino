@@ -16,12 +16,13 @@ void readMultipleRadioNodes(mqtt::async_client& mqtt_client)
     mqtt_client.set_callback(commandCallback);
     mqtt_client.subscribe("radio-arduino/DDATA/#", QOS)->wait();
     mqtt_client.subscribe("radio-arduino/DBIRTH/#", QOS)->wait();
+    mqtt_client.subscribe("radio-arduino/ADVERTISEMENT/#", QOS)->wait();
     mqtt_client.subscribe("radio-arduino/STATE/#", QOS)->wait();
 
     commandCallback.resendBirthCertificate();
 
     while (true) { // loop forever
-        commandCallback.executeSubscriptions();
+        //commandCallback.executeSubscriptions();
     }
 }
 

@@ -14,6 +14,7 @@
 #include <uart.hpp>
 
 using namespace std::chrono_literals;
+using namespace std::chrono;
 
 void registerNode(
     monitor& mon,
@@ -82,6 +83,8 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
 
     registerNode(mon, mqtt_client, gatewayAddress, deviceControllerList, commandCallback, gatewayAddress);
 
+    uint64_t timestampLastGatewayAdvertisement = 0;
+
     while (true) {
         for (std::shared_ptr<DeviceController> deviceController : deviceControllerList) {
             deviceController->execute();
@@ -93,6 +96,17 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
             }
 
             std::this_thread::sleep_for(500ms);
+        }
+
+        uint64_t timestampMsSinceEpoch = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count());
+        if ((timestampMsSinceEpoch - timestampLastGatewayAdvertisement) > 5000) {
+            timestampLastGatewayAdvertisement = timestampMsSinceEpoch;
+
+            for (std::shared_ptr<DeviceController> deviceController : deviceControllerList) {
+                if (deviceController->getNodeAddress() == gatewayAddress) {
+                    deviceController->discoveryReceived(gatewayAddress);
+                }
+            }
         }
     }
 }
