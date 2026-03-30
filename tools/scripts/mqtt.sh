@@ -10,6 +10,7 @@ print_help()
     echo "      subscribe  : subscribe to radio-arduino topic"
     echo "          start  : start mosquitto broker"
     echo "           stop  : stop mosquitto broker"
+    echo "            get  : get status from mqtt-bridge"
 }
  
 if [ "${PARAM}" == "" ]
@@ -21,23 +22,20 @@ then
 elif [ "${PARAM}" == "text" ]
 then
     mosquitto_pub -t "radio-arduino/RCMD/lcd" -m "{\"command\": \"lcd\", \"displayText\": \"$2\"}"
+elif [ "${PARAM}" == "subscribe" ]
+then
+    mosquitto_sub -t 'radio-arduino/#' -v
+elif [ "${PARAM}" == "start" ]
+then
+    docker run --rm -d --name mosquitto_broker -v "./tools/mosquitto/config/:/mosquitto/config" -p 1883:1883 eclipse-mosquitto
+elif [ "${PARAM}" == "stop" ]
+then
+    docker stop mosquitto_broker
+elif [ "${PARAM}" == "get" ]
+then
+    ./tools/scripts/mqtt-get.sh
 else
     echo "invalid parameter: ${PARAM}"
     print_help
-fi
-
-if [ "${PARAM}" == "subscribe" ]
-then
-    mosquitto_sub -t 'radio-arduino/#' -v
-fi
-
-if [ "${PARAM}" == "start" ]
-then
-    docker run --rm -d --name mosquitto_broker -v "./tools/mosquitto/config/:/mosquitto/config" -p 1883:1883 eclipse-mosquitto
-fi
-
-if [ "${PARAM}" == "stop" ]
-then
-    docker stop mosquitto_broker
 fi
 

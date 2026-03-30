@@ -4,6 +4,7 @@
 
 - publish discovery messages on new topic branch
 - refactor subscritions to be event based
+- bash script that summarize status from mqtt-bridges
 
 ## version 2.1.0
 
