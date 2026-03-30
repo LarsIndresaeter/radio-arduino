@@ -26,7 +26,7 @@ void DeviceController::execute()
 {
     if (m_commandReceived) {
         executeJsonCommand();
-        //setPublishBirth(true);
+        // setPublishBirth(true);
 
         m_command = "";
         m_commandReceived = false;
@@ -106,7 +106,9 @@ void DeviceController::executeJsonCommand()
                 radioNodeWakeupSucces = true;
             }
             else {
-                std::cout << "ERROR: not able to wake up node" << std::endl;
+                std::cout << "ERROR: not able to wake up node:" << std::to_string(m_radioAddress) << std::endl;
+                healthIndicator = 0;
+                m_publishBirth =true;
             }
         }
 
@@ -206,7 +208,7 @@ void DeviceController::executeJsonCommand()
             }
         }
         if (radioNodeWakeupSucces) {
-            m_monitor.getRadio<>(RaduinoCommandKeepAlive(0)).getJson();
+            m_monitor.getRadio<>(RaduinoCommandKeepAlive(50)).getJson();
         }
     }
     catch (std::exception const& e) {
@@ -267,8 +269,11 @@ void DeviceController::parseMessage(std::string topic, std::string command)
                 m_commandReceived = true;
                 publishState();
             }
-            else{
-                std::cout << "WARNING: Ignore command, reason: busy parsing previous command. nodeAddress=" << std::to_string(m_radioAddress) << std::endl;
+            else {
+                std::cout << "WARNING: Ignore command, reason: busy parsing previous command. nodeAddress="
+                          << std::to_string(m_radioAddress) << std::endl;
+                healthIndicator = 0;
+                setPublishBirth(true);
             }
         }
     }

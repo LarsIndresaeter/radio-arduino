@@ -33,7 +33,7 @@ void registerNode(
     }
 
     if (isNewNode) {
-        std::cout << "registerNode:" << std::to_string(nodeAddress) << std::endl;
+        std::cout << "register raduino node:" << std::to_string(nodeAddress) << std::endl;
 
         DeviceController controller(mon, mqtt_client, nodeAddress, gatewayAddress);
         std::shared_ptr<DeviceController> ctr = std::make_shared<DeviceController>(controller);
@@ -101,6 +101,7 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
         uint64_t timestampMsSinceEpoch = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count());
         if ((timestampMsSinceEpoch - timestampLastGatewayAdvertisement) > 5000) {
             timestampLastGatewayAdvertisement = timestampMsSinceEpoch;
+            //std::cout << "DEBUG: publish discovery for gateway:" << std::to_string(gatewayAddress) << ", timestamp:" << std::to_string(timestampLastGatewayAdvertisement) << std::endl;
 
             for (std::shared_ptr<DeviceController> deviceController : deviceControllerList) {
                 if (deviceController->getNodeAddress() == gatewayAddress) {

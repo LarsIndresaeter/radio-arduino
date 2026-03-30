@@ -4,6 +4,7 @@
 #include <thread>
 
 using namespace std::chrono_literals;
+using namespace std::chrono;
 
 using nlohmann::json;
 
@@ -67,6 +68,8 @@ std::vector<std::string> CommandCallback::splitString(std::string s, const std::
 
 void CommandCallback::pollNode(std::vector<std::string> commandList, uint32_t nodeAddress)
 {
+    //TODO: keep timestamp of last poll. do not send a new command before 10 seconds have passed
+   
     std::string topic = "radio-arduino/RCMD/proxy/" + std::to_string(nodeAddress);
 
     json jsonCommandList;
@@ -74,7 +77,9 @@ void CommandCallback::pollNode(std::vector<std::string> commandList, uint32_t no
         jsonCommandList.push_back(command);
     }
 
-    json command = { { "commandList", jsonCommandList }, { "nodeAddress", nodeAddress }, { "expirationTime", 0 } };
+    uint64_t timestamp = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count());
+
+    json command = { { "commandList", jsonCommandList }, { "nodeAddress", nodeAddress }, { "timestamp", timestamp } };
 
     publishMessage(topic, command.dump());
 }
@@ -119,7 +124,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                 = std::find(m_radioNodeIdList.begin(), m_radioNodeIdList.end(), nodeAddress) != m_radioNodeIdList.end();
 
             if (!nodeExists) {
-                std::cout << "Added radio node: " << std::to_string(nodeAddress) << std::endl;
+                std::cout << "Added raduino node: " << std::to_string(nodeAddress) << std::endl;
                 m_radioNodeIdList.push_back(nodeAddress);
                 nodeInfo_t nodeInfo;
                 nodeInfo.nodeAddress = nodeAddress;
