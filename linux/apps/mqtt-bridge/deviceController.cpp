@@ -22,6 +22,21 @@ DeviceController::DeviceController(
 
 uint32_t DeviceController::getNodeAddress() { return (m_radioAddress); }
 
+void DeviceController::publishBirth()
+{
+    std::string topic
+        = createMqttTopic(TOPIC_BROADCAST, std::to_string(m_gatewayAddress), std::to_string(m_radioAddress));
+
+    json birthCertificate = { { "nodeAddress", m_radioAddress },
+                              { "gateway", m_gatewayAddress },
+                              { "healthIndicator", healthIndicator },
+                              { "lastAdvertisement", timestampLastDiscovery },
+                              { "validResponses", m_validJsonResponses } };
+
+    publishMessage(topic, birthCertificate.dump());
+    setPublishBirth(false);
+}
+
 void DeviceController::execute()
 {
     if (m_commandReceived) {
@@ -34,18 +49,7 @@ void DeviceController::execute()
     }
 
     if (m_publishBirth) {
-        std::string topic
-            = createMqttTopic(TOPIC_BROADCAST, std::to_string(m_gatewayAddress), std::to_string(m_radioAddress));
-
-        json birthCertificate = {
-            { "nodeAddress", m_radioAddress },
-            { "gateway", m_gatewayAddress },
-            { "healthIndicator", healthIndicator },
-            { "lastAdvertisement", timestampLastDiscovery },
-        };
-
-        publishMessage(topic, birthCertificate.dump());
-        setPublishBirth(false);
+        publishBirth();
     }
 
     if (m_publishAdvertisement) {
@@ -108,7 +112,7 @@ void DeviceController::executeJsonCommand()
             else {
                 std::cout << "ERROR: not able to wake up node:" << std::to_string(m_radioAddress) << std::endl;
                 healthIndicator = 0;
-                m_publishBirth =true;
+                m_publishBirth = true;
             }
         }
 
@@ -201,6 +205,10 @@ void DeviceController::executeJsonCommand()
                         std::to_string(m_gatewayAddress) + "/" + std::to_string(m_radioAddress),
                         commandName);
 
+                    if (m_monitor.lastCommandReturnedValidResponse()) {
+                        storeValidResponse(jsonResponse);
+                    }
+
                     publishMessage(topic, jsonResponse);
                 }
 
@@ -209,6 +217,21 @@ void DeviceController::executeJsonCommand()
         }
         if (radioNodeWakeupSucces) {
             m_monitor.getRadio<>(RaduinoCommandKeepAlive(50)).getJson();
+        }
+    }
+    catch (std::exception const& e) {
+        std::cerr << e.what() << std::endl;
+    }
+}
+
+void DeviceController::storeValidResponse(std::string jsonResponse)
+{
+    try {
+        auto parsedJsonResponse = json::parse(jsonResponse);
+        std::string responseCode = parsedJsonResponse["responseCode"];
+        std::string name = parsedJsonResponse["name"];
+        if (responseCode == "success") {
+            m_validJsonResponses[name] = parsedJsonResponse;
         }
     }
     catch (std::exception const& e) {
