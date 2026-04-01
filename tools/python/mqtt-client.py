@@ -27,10 +27,10 @@ def sendCommand(client, gatewayName, nodeAddress, command):
     }
 
     cmd = json.dumps(data)
-    client.publish("radio-arduino/RCMD/" + gatewayName + "/" + str(nodeAddress), cmd, 1)
+    client.publish("raduino-bridge/RCMD/" + gatewayName + "/" + str(nodeAddress), cmd, 1)
 
 def sendPublishBirth(client):
-    client.publish("radio-arduino/RCMD", "{\"command\":\"resendBirthCertificate\"}", 1)
+    client.publish("raduino-bridge/RCMD", "{\"command\":\"resendBirthCertificate\"}", 1)
 
 def controlLoop(client):
     # todo: watch for new nodes discovered

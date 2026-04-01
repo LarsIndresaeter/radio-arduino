@@ -2,14 +2,14 @@
 
 sendGetStatus()
 {
-    `sleep 1; mqttui publish raduino-subscriptions/RCMD '{"command":"getSubscriptionStatus"}'` &
+    `sleep 1; mqttui publish raduino-subscription/RCMD '{"command":"getSubscriptionStatus"}'` &
 }
 
 getSubscriptionStatus()
 {
     sendGetStatus
 
-    SUBSCRIPTION_STATUS=$(timeout 3 mqttui read-one raduino-subscriptions/status 2>/dev/null)
+    SUBSCRIPTION_STATUS=$(timeout 3 mqttui read-one raduino-subscription/status 2>/dev/null)
 
     if [ "${SUBSCRIPTION_STATUS}" == "" ]
     then

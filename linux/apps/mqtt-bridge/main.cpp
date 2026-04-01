@@ -77,7 +77,7 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
     CommandCallback commandCallback;
 
     mqtt_client.set_callback(commandCallback);
-    std::string commandTopic1 = "radio-arduino/RCMD/#";
+    std::string commandTopic1 = "raduino-bridge/RCMD/#";
     std::cout << "connected to gateway: " << std::to_string(gatewayAddress) << std::endl;
     mqtt_client.subscribe(commandTopic1, QOS)->wait();
 

@@ -27,7 +27,7 @@ void CommandCallback::delivery_complete(mqtt::delivery_token_ptr token)
 
 void CommandCallback::resendBirthCertificate()
 {
-    std::string topic = "radio-arduino/RCMD";
+    std::string topic = "raduino-bridge/RCMD";
 
     json command = { "command", "resendBirthCertificate" };
 
@@ -70,7 +70,7 @@ void CommandCallback::pollNode(std::vector<std::string> commandList, uint32_t no
 {
     // TODO: keep timestamp of last poll. do not send a new command before 10 seconds have passed
 
-    std::string topic = "radio-arduino/RCMD/proxy/" + std::to_string(nodeAddress);
+    std::string topic = "raduino-bridge/RCMD/proxy/" + std::to_string(nodeAddress);
 
     json jsonCommandList;
     for (std::string command : commandList) {
@@ -143,14 +143,14 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
     std::string topic_orig = message->get_topic();
     std::string payload = message->get_payload_str();
 
-    if (topic_orig.starts_with("raduino-subscriptions/RCMD")) {
-        std::string topic = "raduino-subscriptions/status";
+    if (topic_orig.starts_with("raduino-subscription/RCMD")) {
+        std::string topic = "raduino-subscription/status";
         publishMessage(topic, subscriptionStatus.dump());
     }
 
     auto tokens = splitString(topic_orig, "/");
 
-    if (topic_orig.starts_with("radio-arduino/DBIRTH/")) {
+    if (topic_orig.starts_with("raduino-bridge/DBIRTH/")) {
         uint32_t gatewayAddress = std::stoul(tokens.at(2));
 
         try {
@@ -168,7 +168,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                 m_nodeInfoList.push_back(nodeInfo);
                 // add subscriptions
                 if (topic_orig.starts_with(
-                        "radio-arduino/DBIRTH/" + std::to_string(gatewayAddress) + "/"
+                        "raduino-bridge/DBIRTH/" + std::to_string(gatewayAddress) + "/"
                         + std::to_string(gatewayAddress))) {
                     registerSubscription("get_device_name", 60 * 120, nodeAddress);
                     registerSubscription("get_statistics", 60 * 120, nodeAddress);
@@ -193,7 +193,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         updateJsonNodeInfoList();
     }
 
-    if (topic_orig.starts_with("radio-arduino/ADVERTISEMENT/")) {
+    if (topic_orig.starts_with("raduino-bridge/ADVERTISEMENT/")) {
         try {
             auto jsonData = json::parse(payload);
             std::string nodeAddressString = tokens.at(3);
@@ -219,12 +219,12 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         }
     }
 
-    if (topic_orig.starts_with("radio-arduino/STATE/")) {
+    if (topic_orig.starts_with("raduino-bridge/STATE/")) {
         std::string nodeAddressString = tokens.at(3);
         uint32_t nodeAddress = stoul(tokens.at(3));
     }
 
-    if (topic_orig.starts_with("radio-arduino/DDATA/")) {
+    if (topic_orig.starts_with("raduino-bridge/DDATA/")) {
         try {
             auto jsonData = json::parse(payload);
 
@@ -270,7 +270,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                     m_subscriptions.at(i).lastValidResponse = payload;
                     m_subscriptions.at(i).timestampLastValidResponse = timestamp;
 
-                    std::string republish_topic = "raduino-subscriptions/DDATA/"
+                    std::string republish_topic = "raduino-subscription/DDATA/"
                         + std::to_string(m_subscriptions.at(i).nodeAddress) + "/" + commandName;
 
                     publishMessage(republish_topic, payload);

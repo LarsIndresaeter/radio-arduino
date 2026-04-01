@@ -72,9 +72,9 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
     std::string topic_orig = message->get_topic();
     std::string payload = message->get_payload_str();
 
-    bool resentBirthCertificates = false;
+    bool resendBirthCertificate = false;
 
-    if (topic_orig.starts_with("radio-arduino/DBIRTH/")) {
+    if (topic_orig.starts_with("raduino-bridge/DBIRTH/")) {
         try {
             auto jsonData = json::parse(payload);
             uint32_t gatewayAddress = jsonData["gateway"];
@@ -88,7 +88,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         }
     }
 
-    if (topic_orig.starts_with("radio-arduino/RCMD/proxy/")) {
+    if (topic_orig.starts_with("raduino-bridge/RCMD/proxy/")) {
         try {
             auto jsonData = json::parse(payload);
             uint32_t nodeAddress = jsonData["nodeAddress"];
@@ -96,10 +96,10 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
             nodepath_t n = getNodePath(nodeAddress);
             if (n.nodeAddress == 0) {
                 std::cout << "DEBUG: no path found for " << nodeAddress << std::endl;
-                resentBirthCertificates = true;
+                resendBirthCertificate = true;
             }
             else {
-                std::string topic_new = "radio-arduino/RCMD/" + std::to_string(n.gatewayAddress) + "/" + std::to_string(n.nodeAddress);
+                std::string topic_new = "raduino-bridge/RCMD/" + std::to_string(n.gatewayAddress) + "/" + std::to_string(n.nodeAddress);
 
                 publishMessage(topic_new, payload);
             }
@@ -109,8 +109,8 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         }
     }
 
-    if (resentBirthCertificates) {
-        std::string topic = "radio-arduino/RCMD";
+    if (resendBirthCertificate) {
+        std::string topic = "raduino-bridge/RCMD";
         json command = {"command", "resendBirthCertificate"};
 
         publishMessage(topic, command.dump());
