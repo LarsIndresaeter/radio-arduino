@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+using nlohmann::json;
+
 typedef struct nodeInfo {
     uint32_t nodeAddress;
     //bool readyForCommand;
@@ -17,6 +19,9 @@ typedef struct subscription {
         , nodeAddress(na)
         , lastValidResponse("")
     {
+        timestampLastValidResponse=0;
+        consequtiveErrorResponses=0;
+        active=true;
     }
 
     std::string commandName;
@@ -24,6 +29,8 @@ typedef struct subscription {
     uint32_t nodeAddress;
     std::string lastValidResponse;
     uint64_t timestampLastValidResponse;
+    uint32_t consequtiveErrorResponses;
+    bool active;
 } subscription_t;
 
 class CommandCallback : public virtual mqtt::callback {
@@ -34,14 +41,15 @@ public:
     void delivery_complete(mqtt::delivery_token_ptr token) override;
 
     void resendBirthCertificate();
-    //void executeSubscriptions();
     void executeSubscriptionsForNode(uint32_t nodeId);
 
 private:
     std::vector<std::string> splitString(std::string s, const std::string& delimiter);
     void pollNode(std::vector<std::string> commandList, uint32_t nodeAddress);
     void publishMessage(std::string topic, std::string message);
-    //std::vector<uint32_t> getRadioNodeIdList();
+    json subscriptionStatus;
+    void registerSubscription(std::string commandName, uint32_t interval, uint32_t nodeAddress);
+    void updateJsonNodeInfoList();
 
     mqtt::async_client& m_mqttClient;
     std::vector<uint32_t> m_radioNodeIdList;

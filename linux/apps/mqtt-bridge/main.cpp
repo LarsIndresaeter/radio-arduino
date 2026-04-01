@@ -98,6 +98,7 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
             std::this_thread::sleep_for(500ms);
         }
 
+        //TODO: extract this to a function
         uint64_t timestampMsSinceEpoch = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count());
         if ((timestampMsSinceEpoch - timestampLastGatewayAdvertisement) > 5000) {
             timestampLastGatewayAdvertisement = timestampMsSinceEpoch;

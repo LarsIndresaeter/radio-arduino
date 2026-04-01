@@ -33,7 +33,7 @@ then
     docker stop mosquitto_broker
 elif [ "${PARAM}" == "get" ]
 then
-    ./tools/scripts/mqtt-get.sh
+    ./tools/scripts/mqtt-get.sh "$2"
 else
     echo "invalid parameter: ${PARAM}"
     print_help
