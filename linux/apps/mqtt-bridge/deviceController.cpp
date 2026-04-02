@@ -193,7 +193,7 @@ void DeviceController::executeJsonCommand()
                         jsonResponse = m_monitor.getRadio<>(RaduinoCommandSsd1306(2, displayText)).getJson();
                     }
                     else if (commandName == "ina219") {
-                        jsonResponse = m_monitor.get<>(RaduinoCommandIna219()).getJson();
+                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandIna219()).getJson();
                     }
                     else {
                         std::cout << "DEBUG: commandName '" << commandName << "' not recognized for radio node"

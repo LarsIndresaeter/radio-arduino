@@ -13,52 +13,52 @@ fi
 
 if [ "${PARAM}" == "analyze" ]
 then
-    ${RADUINO_SCRIPTS_DIR}/analyze-avr.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
+    ${RADUINO_SCRIPTS_DIR}/analyze-avr.sh "${2}" "${3}" "${4}" "${5}" "${6}" "${7}" "${8}" "${9}"
 fi
 
 if [ "${PARAM}" == "generate" ]
 then
-    ${RADUINO_SCRIPTS_DIR}/generate.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
+    ${RADUINO_SCRIPTS_DIR}/generate.sh "${2}" "${3}" "${4}" "${5}" "${6}" "${7}" "${8}" "${9}"
 fi
 
 if [ "${PARAM}" == "docker-app" ]
 then
-    ${RADUINO_SCRIPTS_DIR}/docker-app.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
+    ${RADUINO_SCRIPTS_DIR}/docker-app.sh "${2}" "${3}" "${4}" "${5}" "${6}" "${7}" "${8}" "${9}"
 fi
 
 if [ "${PARAM}" == "podman-app" ]
 then
-    ./tools/scripts/podman-app.sh $2 $3 $4 $5 $6 $7
+    ${RADUINO_SCRIPTS_DIR}/podman-app.sh "${2}" "${3}" "${4}" "${5}" "${6}" "${7}" "${8}" "${9}"
 fi
 
 if [ "${PARAM}" == "docker-devbox" ]
 then
-    ${RADINO_TOOLS_DIR}/scripts/docker-devbox.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
+    ${RADINO_TOOLS_DIR}/scripts/docker-devbox.sh "${2}" "${3}" "${4}" "${5}" "${6}" "${7}" "${8}" "${9}"
 fi
 
 if [ "${PARAM}" == "lint" ]
 then
-    ${RADUINO_SCRIPTS_DIR}/lint.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
+    ${RADUINO_SCRIPTS_DIR}/lint.sh "${2}" "${3}" "${4}" "${5}" "${6}" "${7}" "${8}" "${9}"
 fi
 
 if [ "${PARAM}" == "format" ]
 then
-    ${RADUINO_SCRIPTS_DIR}/format.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
+    ${RADUINO_SCRIPTS_DIR}/format.sh "${2}" "${3}" "${4}" "${5}" "${6}" "${7}" "${8}" "${9}"
 fi
 
 if [ "${PARAM}" == "release" ]
 then
-    ${RADUINO_SCRIPTS_DIR}/release.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
+    ${RADUINO_SCRIPTS_DIR}/release.sh "${2}" "${3}" "${4}" "${5}" "${6}" "${7}" "${8}" "${9}"
 fi
 
 if [ "${PARAM}" == "tool" ]
 then
-    ${RADUINO_SCRIPTS_DIR}/tool.sh "${2}" "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
+    ${RADUINO_SCRIPTS_DIR}/tool.sh "${2}" "${3}" "${4}" "${5}" "${6}" "${7}" "${8}" "${9}"
 fi
 
 if [ "${PARAM}" == "mqtt" ]
 then
-    ${RADUINO_SCRIPTS_DIR}/mqtt.sh $2 "${3}" "${4}" ${5}" "${6}" "${7}" ${8}" "${9}"
+    ${RADUINO_SCRIPTS_DIR}/mqtt.sh "${2}" "${3}" "${4}" "${5}" "${6}" "${7}" "${8}" "${9}"
 fi
 
 if [ "${PARAM}" == "setup" ]

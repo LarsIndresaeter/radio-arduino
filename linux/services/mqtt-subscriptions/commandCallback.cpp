@@ -144,8 +144,43 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
     std::string payload = message->get_payload_str();
 
     if (topic_orig.starts_with("raduino-subscription/RCMD")) {
-        std::string topic = "raduino-subscription/status";
-        publishMessage(topic, subscriptionStatus.dump());
+        try {
+            auto jsonData = json::parse(payload);
+            std::string command = jsonData["command"];
+
+            if (command == "getSubscriptionStatus") {
+                std::string topic = "raduino-subscription/status";
+                updateJsonNodeInfoList();
+                publishMessage(topic, subscriptionStatus.dump());
+            }
+            else if (command == "enableSubscription") {
+                std::string commandName = jsonData["name"];
+                uint32_t nodeAddress = jsonData["nodeAddress"];
+
+                for (int i = 0; i < m_subscriptions.size(); i++) {
+                    if ((m_subscriptions.at(i).nodeAddress == nodeAddress)
+                        && (commandName == m_subscriptions.at(i).commandName)) {
+                        m_subscriptions.at(i).active = true;
+                    }
+                }
+            }
+            else if (command == "setInterval") {
+                std::string commandName = jsonData["name"];
+                uint32_t nodeAddress = jsonData["nodeAddress"];
+                uint32_t intervalInSeconds = jsonData["interval"];
+
+                for (int i = 0; i < m_subscriptions.size(); i++) {
+                    if ((m_subscriptions.at(i).nodeAddress == nodeAddress)
+                        && (commandName == m_subscriptions.at(i).commandName)) {
+                        m_subscriptions.at(i).intervalInSeconds = intervalInSeconds;
+                    }
+                }
+            }
+        }
+        catch (std::exception const& e) {
+            std::cout << "DEBUG: malformed command" << std::endl;
+            std::cout << "     : " << payload << std::endl;
+        }
     }
 
     auto tokens = splitString(topic_orig, "/");
@@ -258,7 +293,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                             registerSubscription("get_lsm303d", 60 * 5, nodeAddress);
                         }
                         else if (csvString.find("quad") != std::string::npos) {
-                            registerSubscription("quadrature_encoder", 60*5, nodeAddress);
+                            registerSubscription("quadrature_encoder", 60 * 5, nodeAddress);
                         }
                         else if (csvString.find("ina219") != std::string::npos) {
                             registerSubscription("ina219", 60 * 5, nodeAddress);

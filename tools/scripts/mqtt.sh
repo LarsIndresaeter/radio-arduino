@@ -31,9 +31,9 @@ then
 elif [ "${PARAM}" == "stop" ]
 then
     docker stop mosquitto_broker
-elif [ "${PARAM}" == "get" ]
+elif [ "${PARAM}" == "subscription" ]
 then
-    ./tools/scripts/mqtt-get.sh "$2"
+    ./tools/scripts/mqtt-subscription.sh "$2" "$3" "$4" "$5" "$6" "$7" "$8"
 else
     echo "invalid parameter: ${PARAM}"
     print_help
