@@ -6,6 +6,8 @@
 - refactor subscritions to be event based
 - bash script that summarize status from mqtt-bridges
 - changed topic for messages sent by mqtt-bridge and mqtt-subscription
+- rename raduino-mqtt-bridge to raduino-mqtt-adapter
+- rename raduino-mqtt-proxy to raduino-mqtt-router
 
 ## version 2.1.0
 
