@@ -123,6 +123,6 @@ then
 elif [ "$1" == "text" ]
 then
     DISPLAY_TEXT=$2
-    mqttui publish raduino-adapter/RCMD/proxy/1775080601 "{\"commandList\":[\"ssd1306\"], \"nodeAddress\":1775080601, \"displayText\": \"${DISPLAY_TEXT}\"}"
+    mqttui publish raduino-adapter/RCMD/router/1775080601 "{\"commandList\":[\"ssd1306\"], \"nodeAddress\":1775080601, \"displayText\": \"${DISPLAY_TEXT}\"}"
 fi
 

@@ -3,7 +3,7 @@
 ## description
 
 This service communicate with [raduino-mqtt-bridge](../apps/raduino-mqtt-bridge.md)
-through [raduino-mqtt-proxy](./raduino-mqtt-proxy.md).
+through [raduino-mqtt-router](./raduino-mqtt-router.md).
 This service will set up subscriptions that poll status from nodes advertised on
 the topic `raduino-adapter/ADVERTISEMENT/id`.
 Communication with the bridge is done in the name space `raduino-adapter`
@@ -28,5 +28,5 @@ The following list of requirements were collected before developing this service
 - Only the last valid result is stored
 - All subscriptions for one node is executed before moving to the next node.
 - If one command fails on one node then the polling moves on to the next node to avoid blocking.
-- the raduino-mqtt-proxy is used to select the best gateway for each node.
+- the raduino-mqtt-router is used to select the best gateway for each node.
 

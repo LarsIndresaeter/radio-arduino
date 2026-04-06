@@ -8,8 +8,8 @@ These services communicate using mqtt and possibly in the future other protocols
 
 These apps are your main apps
 
-| app                                           | description                                                  |
-| --------------------------------------------- | ------------------------------------------------------------ |
-| [raduino-mqtt-proxy](./raduino-mqtt-proxy.md) | mqtt proxy for raduino gateways                              |
+| app                                                           | description                                               |
+| ------------------------------------------------------------- | --------------------------------------------------------- |
+| [raduino-mqtt-router](./raduino-mqtt-router.md)               | mqtt router for raduino gateways                          |
 | [raduino-mqtt-subscriptions](./raduino-mqtt-subscriptions.md) | manage subscriptions to nodes advertised to a mqtt broker |
 
