@@ -70,7 +70,7 @@ void CommandCallback::pollNode(std::vector<std::string> commandList, uint32_t no
 {
     // TODO: keep timestamp of last poll. do not send a new command before 10 seconds have passed
 
-    std::string topic = "raduino-adapter/RCMD/adapter/" + std::to_string(nodeAddress);
+    std::string topic = "raduino-router/RCMD/" + std::to_string(nodeAddress);
 
     json jsonCommandList;
     for (std::string command : commandList) {

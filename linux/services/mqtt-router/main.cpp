@@ -14,7 +14,7 @@ void readMultipleRadioNodes(mqtt::async_client& mqtt_client)
     CommandCallback commandCallback(mqtt_client);
 
     mqtt_client.set_callback(commandCallback);
-    mqtt_client.subscribe("raduino-adapter/RCMD/router/#", QOS)->wait();
+    mqtt_client.subscribe("raduino-router/RCMD/#", QOS)->wait();
     mqtt_client.subscribe("raduino-adapter/DBIRTH/#", QOS)->wait();
 
     while (true) {

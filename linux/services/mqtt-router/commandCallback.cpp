@@ -88,7 +88,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         }
     }
 
-    if (topic_orig.starts_with("raduino-adapter/RCMD/router/")) {
+    if (topic_orig.starts_with("raduino-router/RCMD/")) {
         try {
             auto jsonData = json::parse(payload);
             uint32_t nodeAddress = jsonData["nodeAddress"];
