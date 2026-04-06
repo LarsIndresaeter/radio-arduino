@@ -24,6 +24,7 @@ These apps are useful for experimenting, and fixing problems.
 | [raduino-device-ws2812b](./raduino-device-ws2812b.md)         | rgb led                                                           |
 | [raduino-gateway](./raduino-gateway.md)                       | commands for arduino board configured as gateway                  |
 | [raduino-i2c-bridge](./raduino-i2c-bridge.md)                 | generic i2c commands                                              |
+| [raduino-mqtt-bridge](./raduino-mqtt-bridge.md)               | bridge between json commands and binary commands                  |
 | [raduino-node](./raduino-node.md)                             | commands for arduino board configured as a node                   |
 | [raduino-spi-bridge](./raduino-spi-bridge.md)                 | generic spi commands                                              |
 | [raduino-system-commands](./raduino-system-commands.md)       | system commands for gateway and node                              |

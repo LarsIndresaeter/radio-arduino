@@ -12,13 +12,13 @@
 - Binary message protocol interface for serial and radio communication.
 - [code generator](./doc/explanation/interface/protocol-command-generator.md)
     for C++ command classes.
-- Same binary for gateway and node.
-- Role is configured in eeprom via command line.
+- Same binary for gateway and node. Role is configured in eeprom via command line.
 - [Command line tools](./doc/reference-guides/apps/README.md) for interacting
   with gateway and node, including mqtt client.
 - Use Docker for building the application.
 - After flashing the rf-nano the [docker-compose-radio-arduino](https://github.com/LarsIndresaeter/docker-compose-radio-arduino)
 docker-compose file can be used to subscribe to data and store it in influxdb.
+- support for setups with multiple gateways
 
 ## Try it on a rf-nano board
 
@@ -31,9 +31,11 @@ docker-compose file can be used to subscribe to data and store it in influxdb.
 4. If you have two rf-arduino boards
    1. Configure one board as gateway: `./bin/raduino-personalize -n <name> -r gateway`
    2. Configure one board as node: `./bin/raduino-personalize -n <name> -r node`
-   3. Blink the led on the node: `./bin/raduino-device-atmega328 -B`
+   3. Blink the led on the node via the gateway: `./bin/raduino-device-atmega328 -B`
 5. If you have a mqtt broker on localhost
    1. publish periodic stats like battery voltage with the command `./bin/raduino-mqtt-client`
+6. If you have multiple gateways you can poll status from gateways and nodes
+   with the service [raduino-mqtt-subscriptions](./doc/reference-guides/services/raduino-mqtt-subscriptions.md).
 
 ## Documentation index
 
