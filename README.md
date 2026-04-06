@@ -16,9 +16,10 @@
 - [Command line tools](./doc/reference-guides/apps/README.md) for interacting
   with gateway and node, including mqtt client.
 - Use Docker for building the application.
-- After flashing the rf-nano the [docker-compose-radio-arduino](https://github.com/LarsIndresaeter/docker-compose-radio-arduino)
-docker-compose file can be used to subscribe to data and store it in influxdb.
-- support for setups with multiple gateways
+- Reeceipies for using docker to set up a system in a separate repository
+  [docker-compose-radio-arduino](https://github.com/LarsIndresaeter/docker-compose-radio-arduino)
+- Services for multi gateway setup
+- Reeceipies for using docker to setup a system in a separate repository
 
 ## Try it on a rf-nano board
 
