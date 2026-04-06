@@ -27,7 +27,7 @@ void CommandCallback::delivery_complete(mqtt::delivery_token_ptr token)
 
 void CommandCallback::resendBirthCertificate()
 {
-    std::string topic = "raduino-bridge/RCMD";
+    std::string topic = "raduino-adapter/RCMD";
 
     json command = { "command", "resendBirthCertificate" };
 
@@ -70,7 +70,7 @@ void CommandCallback::pollNode(std::vector<std::string> commandList, uint32_t no
 {
     // TODO: keep timestamp of last poll. do not send a new command before 10 seconds have passed
 
-    std::string topic = "raduino-bridge/RCMD/proxy/" + std::to_string(nodeAddress);
+    std::string topic = "raduino-adapter/RCMD/proxy/" + std::to_string(nodeAddress);
 
     json jsonCommandList;
     for (std::string command : commandList) {
@@ -185,7 +185,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
 
     auto tokens = splitString(topic_orig, "/");
 
-    if (topic_orig.starts_with("raduino-bridge/DBIRTH/")) {
+    if (topic_orig.starts_with("raduino-adapter/DBIRTH/")) {
         uint32_t gatewayAddress = std::stoul(tokens.at(2));
 
         try {
@@ -203,7 +203,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                 m_nodeInfoList.push_back(nodeInfo);
                 // add subscriptions
                 if (topic_orig.starts_with(
-                        "raduino-bridge/DBIRTH/" + std::to_string(gatewayAddress) + "/"
+                        "raduino-adapter/DBIRTH/" + std::to_string(gatewayAddress) + "/"
                         + std::to_string(gatewayAddress))) {
                     registerSubscription("get_device_name", 60 * 120, nodeAddress);
                     registerSubscription("get_statistics", 60 * 120, nodeAddress);
@@ -228,7 +228,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         updateJsonNodeInfoList();
     }
 
-    if (topic_orig.starts_with("raduino-bridge/ADVERTISEMENT/")) {
+    if (topic_orig.starts_with("raduino-adapter/ADVERTISEMENT/")) {
         try {
             auto jsonData = json::parse(payload);
             std::string nodeAddressString = tokens.at(3);
@@ -254,12 +254,12 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         }
     }
 
-    if (topic_orig.starts_with("raduino-bridge/STATE/")) {
+    if (topic_orig.starts_with("raduino-adapter/STATE/")) {
         std::string nodeAddressString = tokens.at(3);
         uint32_t nodeAddress = stoul(tokens.at(3));
     }
 
-    if (topic_orig.starts_with("raduino-bridge/DDATA/")) {
+    if (topic_orig.starts_with("raduino-adapter/DDATA/")) {
         try {
             auto jsonData = json::parse(payload);
 

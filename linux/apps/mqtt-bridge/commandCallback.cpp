@@ -12,7 +12,7 @@ void CommandCallback::addDeviceController(std::shared_ptr<DeviceController> dc)
 
 void CommandCallback::message_arrived(mqtt::const_message_ptr message)
 {
-    if (message->get_topic() == "raduino-bridge/RCMD") {
+    if (message->get_topic() == "raduino-adapter/RCMD") {
         for (int i = 0; i < m_deviceControllerList.size(); i++) {
             m_deviceControllerList.at(i)->setPublishBirth(true);
         }

@@ -14,10 +14,10 @@ void readMultipleRadioNodes(mqtt::async_client& mqtt_client)
     CommandCallback commandCallback(mqtt_client);
 
     mqtt_client.set_callback(commandCallback);
-    mqtt_client.subscribe("raduino-bridge/DDATA/#", QOS)->wait();
-    mqtt_client.subscribe("raduino-bridge/DBIRTH/#", QOS)->wait();
-    mqtt_client.subscribe("raduino-bridge/ADVERTISEMENT/#", QOS)->wait();
-    mqtt_client.subscribe("raduino-bridge/STATE/#", QOS)->wait();
+    mqtt_client.subscribe("raduino-adapter/DDATA/#", QOS)->wait();
+    mqtt_client.subscribe("raduino-adapter/DBIRTH/#", QOS)->wait();
+    mqtt_client.subscribe("raduino-adapter/ADVERTISEMENT/#", QOS)->wait();
+    mqtt_client.subscribe("raduino-adapter/STATE/#", QOS)->wait();
     mqtt_client.subscribe("raduino-subscription/RCMD/#", QOS)->wait();
 
     commandCallback.resendBirthCertificate();

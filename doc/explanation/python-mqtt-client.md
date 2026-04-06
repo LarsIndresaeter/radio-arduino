@@ -4,7 +4,7 @@
 > This is an experimental feature and this doc can be seen like a design brief
 > more than documentation of implemented features.
 
-The python mqtt client interacts with the raduino-mqtt-bridge through a mqtt broker
+The python mqtt client interacts with the raduino-mqtt-adapter through a mqtt broker
 
 ## command response
 
@@ -30,14 +30,14 @@ Supported commands are currently vcc, gpio, get_version, get_statistics.
 This demo show usage of multiple gateways and nodes.
 
 - connect two gatways (gw4 and gw5) to the usb ports.
-- Start two instances of `raduino-mqtt-bridge`.
+- Start two instances of `raduino-mqtt-adapter`.
 - Run the script `tools/python/mqtt.py`
 - Program three radio nodes with address 1765313195, 1765835992 and 1769294329.
 
-### start two mqtt bridges
+### start two mqtt adapters
 
 ```console
-./bin/raduino-mqtt-bridge --device /dev/ttyUSB1
+./bin/raduino-mqtt-adapter --device /dev/ttyUSB1
 connected to gateway: gw4
 subscribe to topic: radio-arduino/RCMD/#
 registerRadioNode:1765835992
@@ -45,7 +45,7 @@ registerRadioNode:1769294329
 ```
 
 ```console
-./bin/raduino-mqtt-bridge --device /dev/ttyUSB0
+./bin/raduino-mqtt-adapter --device /dev/ttyUSB0
 connected to gateway: gw5
 subscribe to topic: radio-arduino/RCMD/#
 registerRadioNode:1769294329

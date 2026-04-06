@@ -6,7 +6,7 @@ using nlohmann::json;
 
 const char* TOPIC_BROADCAST = "DBIRTH";
 const char* TOPIC_ADVERTISEMENT = "ADVERTISEMENT";
-const char* TOPIC_COMMAND_PREFIX = "raduino-bridge/RCMD/command/";
+const char* TOPIC_COMMAND_PREFIX = "raduino-adapter/RCMD/command/";
 const char* TOPIC_RESPONSE_PREFIX = "DDATA";
 
 DeviceController::DeviceController(
@@ -280,7 +280,7 @@ void DeviceController::publishMessage(std::string topic, std::string message)
 
 std::string DeviceController::createMqttTopic(std::string type, std::string eon, std::string device)
 {
-    std::string retval("raduino-bridge/" + type + "/" + eon);
+    std::string retval("raduino-adapter/" + type + "/" + eon);
     if (!device.empty()) {
         retval.append("/" + device);
     }

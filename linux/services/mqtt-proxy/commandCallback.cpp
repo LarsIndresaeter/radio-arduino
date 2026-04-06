@@ -74,7 +74,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
 
     bool resendBirthCertificate = false;
 
-    if (topic_orig.starts_with("raduino-bridge/DBIRTH/")) {
+    if (topic_orig.starts_with("raduino-adapter/DBIRTH/")) {
         try {
             auto jsonData = json::parse(payload);
             uint32_t gatewayAddress = jsonData["gateway"];
@@ -88,7 +88,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         }
     }
 
-    if (topic_orig.starts_with("raduino-bridge/RCMD/proxy/")) {
+    if (topic_orig.starts_with("raduino-adapter/RCMD/proxy/")) {
         try {
             auto jsonData = json::parse(payload);
             uint32_t nodeAddress = jsonData["nodeAddress"];
@@ -99,7 +99,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                 resendBirthCertificate = true;
             }
             else {
-                std::string topic_new = "raduino-bridge/RCMD/" + std::to_string(n.gatewayAddress) + "/" + std::to_string(n.nodeAddress);
+                std::string topic_new = "raduino-adapter/RCMD/" + std::to_string(n.gatewayAddress) + "/" + std::to_string(n.nodeAddress);
 
                 publishMessage(topic_new, payload);
             }
@@ -110,7 +110,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
     }
 
     if (resendBirthCertificate) {
-        std::string topic = "raduino-bridge/RCMD";
+        std::string topic = "raduino-adapter/RCMD";
         json command = {"command", "resendBirthCertificate"};
 
         publishMessage(topic, command.dump());

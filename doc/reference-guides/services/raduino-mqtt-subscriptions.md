@@ -5,8 +5,8 @@
 This service communicate with [raduino-mqtt-bridge](../apps/raduino-mqtt-bridge.md)
 through [raduino-mqtt-proxy](./raduino-mqtt-proxy.md).
 This service will set up subscriptions that poll status from nodes advertised on
-the topic `raduino-bridge/ADVERTISEMENT/id`.
-Communication with the bridge is done in the name space `raduino-bridge`
+the topic `raduino-adapter/ADVERTISEMENT/id`.
+Communication with the bridge is done in the name space `raduino-adapter`
 while the results are published in the namespace `raduino-subscriptions`.
 The service can be polled for status and latest received response from
 nodes by sending commands to `raduino-subscription/RCMD`.
