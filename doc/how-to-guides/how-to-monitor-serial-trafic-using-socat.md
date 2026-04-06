@@ -1,6 +1,6 @@
 # monitor serial traffic
 
-install socat and set up a bride
+install socat and set up a bridge
 
 ```console
 socat -x -v /dev/ttyUSB0,rawer,b1000000,crnl PTY,link=$HOME/myserial,rawer,crnl

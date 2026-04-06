@@ -13,7 +13,7 @@
     │           │                 │            │
     └───────────┘                 └────────────┘
 
-## description 
+## description
 
 the linux cli tool `raduino-mqtt-client` is a `mqtt client` that connects to a
 `mqtt broker`. The client will read data from a `gateway` and `node` and publish
@@ -34,7 +34,7 @@ commands:
 The topic names are inspired by the sparkplugB standard but the payload is json
 (and not protobuf).
 
-## messages published by radiuino-mqtt
+## messages published by raduino-mqtt
 
 ```console
 radio-arduino/NBIRTH/gateway {"dateString: "2025-11-08 11:36:03"}
