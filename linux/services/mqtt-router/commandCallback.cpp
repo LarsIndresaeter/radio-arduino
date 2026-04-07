@@ -8,6 +8,7 @@ CommandCallback::CommandCallback(
     mqtt::async_client& mqtt_client)
     : m_mqttClient(mqtt_client)
 {
+    resendBirthCertificate();
 }
 
 void CommandCallback::publishMessage(std::string topic, std::string message)
@@ -23,6 +24,22 @@ void CommandCallback::publishMessage(std::string topic, std::string message)
         std::cerr << "topic: " << topic << std::endl;
         std::cerr << "message: " << message << std::endl;
     }
+}
+
+std::vector<std::string> CommandCallback::splitString(std::string s, const std::string& delimiter)
+{
+    std::vector<std::string> tokens;
+    size_t pos = 0;
+    std::string token;
+
+    while ((pos = s.find(delimiter)) != std::string::npos) {
+        token = s.substr(0, pos);
+        tokens.push_back(token);
+        s.erase(0, pos + delimiter.length());
+    }
+
+    tokens.push_back(s);
+    return tokens;
 }
 
 nodepath_t CommandCallback::getNodePath(uint32_t nodeAddress)
@@ -72,7 +89,21 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
     std::string topic_orig = message->get_topic();
     std::string payload = message->get_payload_str();
 
-    bool resendBirthCertificate = false;
+    if (topic_orig.starts_with("raduino-adapter/DBIRTH/") || topic_orig.starts_with("raduino-adapter/DDATA/")
+        || topic_orig.starts_with("raduino-adapter/ADVERTISEMENT/")) {
+        // resend response from adapter
+        try {
+            auto tokens = splitString(topic_orig, "/");
+            std::string messageType = tokens.at(1);
+            std::string nodeAddressString = tokens.at(3);
+            std::string topic_new = "raduino-router/" + messageType + "/" + nodeAddressString;
+
+            publishMessage(topic_new, payload);
+        }
+        catch (std::exception const& e) {
+            std::cout << "ERROR: malformed RCMD" << std::endl;
+        }
+    }
 
     if (topic_orig.starts_with("raduino-adapter/DBIRTH/")) {
         try {
@@ -84,11 +115,29 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
             updatePath(gatewayAddress, nodeAddress, lastAdvertisement, healthIndicator);
         }
         catch (std::exception const& e) {
-            std::cout << "DEBUG: malformed birth certificate" << std::endl;
+            std::cout << "ERROR: malformed birth certificate" << std::endl;
+        }
+    }
+
+    if (topic_orig == "raduino-router/RCMD") {
+        // command to the router
+        try {
+            auto jsonData = json::parse(payload);
+            // std::string command = jsonData["command"];
+            // seher
+
+            // if (command == "resendBirthCertificate") {
+            resendBirthCertificate();
+
+            //}
+        }
+        catch (std::exception const& e) {
+            std::cout << "ERROR: malformed RCMD: " << payload << std::endl;
         }
     }
 
     if (topic_orig.starts_with("raduino-router/RCMD/")) {
+        // command to a specific node
         try {
             auto jsonData = json::parse(payload);
             uint32_t nodeAddress = jsonData["nodeAddress"];
@@ -96,25 +145,28 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
             nodepath_t n = getNodePath(nodeAddress);
             if (n.nodeAddress == 0) {
                 std::cout << "DEBUG: no path found for " << nodeAddress << std::endl;
-                resendBirthCertificate = true;
+                resendBirthCertificate();
             }
             else {
-                std::string topic_new = "raduino-adapter/RCMD/" + std::to_string(n.gatewayAddress) + "/" + std::to_string(n.nodeAddress);
+                std::string topic_new
+                    = "raduino-adapter/RCMD/" + std::to_string(n.gatewayAddress) + "/" + std::to_string(n.nodeAddress);
 
                 publishMessage(topic_new, payload);
             }
         }
         catch (std::exception const& e) {
-            std::cout << "DEBUG: malformed RCMD" << std::endl;
+            std::cout << "ERROR: malformed RCMD" << std::endl;
         }
     }
+}
 
-    if (resendBirthCertificate) {
-        std::string topic = "raduino-adapter/RCMD";
-        json command = {"command", "resendBirthCertificate"};
+void CommandCallback::resendBirthCertificate()
+{
+    std::string topic = "raduino-adapter/RCMD";
+    json command;
+    command["command"] = "resendBirthCertificate";
 
-        publishMessage(topic, command.dump());
-    }
+    publishMessage(topic, command.dump());
 }
 
 void CommandCallback::connection_lost(const std::string& cause)

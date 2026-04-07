@@ -5,8 +5,7 @@
 #include <string>
 #include <vector>
 
-typedef struct nodepath
-{
+typedef struct nodepath {
     uint32_t gatewayAddress;
     uint32_t nodeAddress;
     uint64_t lastAdvertisement;
@@ -21,8 +20,10 @@ public:
     void connection_lost(const std::string& cause) override;
     void message_arrived(mqtt::const_message_ptr message) override;
     void delivery_complete(mqtt::delivery_token_ptr token) override;
+    void resendBirthCertificate();
 
 private:
+    std::vector<std::string> splitString(std::string s, const std::string& delimiter);
     void publishMessage(std::string topic, std::string message);
     mqtt::async_client& m_mqttClient;
     void updatePath(uint32_t gatewayAddress, uint32_t nodeAddress, uint64_t lastAdvertisement, int healthIndicator);

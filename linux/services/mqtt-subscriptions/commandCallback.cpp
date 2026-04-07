@@ -27,9 +27,10 @@ void CommandCallback::delivery_complete(mqtt::delivery_token_ptr token)
 
 void CommandCallback::resendBirthCertificate()
 {
-    std::string topic = "raduino-adapter/RCMD";
+    std::string topic = "raduino-router/RCMD";
 
-    json command = { "command", "resendBirthCertificate" };
+    json command;
+    command["command"] = "resendBirthCertificate";
 
     publishMessage(topic, command.dump());
 }
@@ -185,12 +186,11 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
 
     auto tokens = splitString(topic_orig, "/");
 
-    if (topic_orig.starts_with("raduino-adapter/DBIRTH/")) {
-        uint32_t gatewayAddress = std::stoul(tokens.at(2));
-
+    if (topic_orig.starts_with("raduino-router/DBIRTH/")) {
         try {
             auto jsonData = json::parse(payload);
             uint32_t nodeAddress = jsonData["nodeAddress"];
+            uint32_t gatewayAddress = jsonData["gateway"];
 
             bool nodeExists
                 = std::find(m_radioNodeIdList.begin(), m_radioNodeIdList.end(), nodeAddress) != m_radioNodeIdList.end();
@@ -202,9 +202,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                 nodeInfo.nodeAddress = nodeAddress;
                 m_nodeInfoList.push_back(nodeInfo);
                 // add subscriptions
-                if (topic_orig.starts_with(
-                        "raduino-adapter/DBIRTH/" + std::to_string(gatewayAddress) + "/"
-                        + std::to_string(gatewayAddress))) {
+                if (nodeAddress == gatewayAddress) {
                     registerSubscription("get_device_name", 60 * 120, nodeAddress);
                     registerSubscription("get_statistics", 60 * 120, nodeAddress);
                     registerSubscription("get_version", 60 * 120, nodeAddress);
@@ -228,11 +226,11 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         updateJsonNodeInfoList();
     }
 
-    if (topic_orig.starts_with("raduino-adapter/ADVERTISEMENT/")) {
+    if (topic_orig.starts_with("raduino-router/ADVERTISEMENT/")) {
         try {
             auto jsonData = json::parse(payload);
-            std::string nodeAddressString = tokens.at(3);
-            uint32_t nodeAddress = stoul(tokens.at(3));
+            std::string nodeAddressString = tokens.at(2);
+            uint32_t nodeAddress = stoul(tokens.at(2));
 
             bool nodeExists = false;
             for (int j = 0; j < m_nodeInfoList.size(); j++) {
@@ -254,16 +252,17 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         }
     }
 
-    if (topic_orig.starts_with("raduino-adapter/STATE/")) {
+    if (topic_orig.starts_with("raduino-router/STATE/")) {
+        // TODO: state is not used, perhaps remove it?
         std::string nodeAddressString = tokens.at(3);
         uint32_t nodeAddress = stoul(tokens.at(3));
     }
 
-    if (topic_orig.starts_with("raduino-adapter/DDATA/")) {
+    if (topic_orig.starts_with("raduino-router/DDATA/")) {
         try {
             auto jsonData = json::parse(payload);
 
-            uint32_t nodeAddress = std::stoul(tokens.at(3));
+            uint32_t nodeAddress = std::stoul(tokens.at(2));
             std::string responseCode = jsonData["responseCode"];
             std::string commandName = jsonData["name"];
             uint64_t timestamp = jsonData["timestamp"].get<uint64_t>();
