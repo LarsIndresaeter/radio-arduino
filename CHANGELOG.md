@@ -8,6 +8,7 @@
 - changed topic for messages sent by mqtt-adapter and mqtt-subscription
 - rename raduino-mqtt-bridge to raduino-mqtt-adapter
 - rename raduino-mqtt-proxy to raduino-mqtt-router
+- add service raduino-virtual-device
 
 ## version 2.1.0
 
