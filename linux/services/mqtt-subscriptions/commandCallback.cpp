@@ -87,6 +87,7 @@ void CommandCallback::pollNode(std::vector<std::string> commandList, uint32_t no
 
 void CommandCallback::executeSubscriptionsForNode(uint32_t nodeId)
 {
+    // called after heartbeat (advertisement) or after a successful response
     std::vector<std::string> commandList;
 
     for (int j = 0; j < m_subscriptions.size(); j++) {
@@ -310,6 +311,8 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                     publishMessage(republish_topic, payload);
                 }
             }
+
+            executeSubscriptionsForNode(nodeAddress);
         }
         catch (std::exception const& e) {
             std::cout << "DEBUG: malformed DDATA. " << e.what() << std::endl;
