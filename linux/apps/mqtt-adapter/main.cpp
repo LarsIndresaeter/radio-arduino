@@ -95,7 +95,7 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
                 registerNode(mon, mqtt_client, lastNode, deviceControllerList, commandCallback, gatewayAddress);
             }
 
-            std::this_thread::sleep_for(500ms);
+            std::this_thread::sleep_for(50ms);
         }
 
         //TODO: extract this to a function
