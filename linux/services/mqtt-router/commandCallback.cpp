@@ -116,7 +116,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
             uint32_t gatewayAddress = jsonData["gateway"];
             int healthIndicator = jsonData["healthIndicator"].get<int>();
             uint64_t lastAdvertisement = jsonData["lastAdvertisement"];
-            uint32_t nodeAddress = jsonData["nodeAddress"];
+            uint32_t nodeAddress = jsonData["nodeAddress"].get<uint32_t>();
             updatePath(gatewayAddress, nodeAddress, lastAdvertisement, healthIndicator);
         }
         catch (std::exception const& e) {
@@ -145,7 +145,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         // command to a specific node
         try {
             auto jsonData = json::parse(payload);
-            uint32_t nodeAddress = jsonData["nodeAddress"];
+            uint32_t nodeAddress = jsonData["nodeAddress"].get<uint32_t>();
 
             nodepath_t n = getNodePath(nodeAddress);
             if (n.nodeAddress == 0) {
