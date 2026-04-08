@@ -82,6 +82,11 @@ void CommandCallback::updatePath(
         n.healthIndicator = healthIndicator;
         m_nodePath.push_back(n);
     }
+
+    nodepath_t n = getNodePath(nodeAddress);
+    std::string topic = "raduino-log/router/" + std::to_string(n.nodeAddress) + "/node-path";
+    json message = { "gatewayAddress", n.gatewayAddress };
+    publishMessage(topic, message.dump());
 }
 
 void CommandCallback::message_arrived(mqtt::const_message_ptr message)
