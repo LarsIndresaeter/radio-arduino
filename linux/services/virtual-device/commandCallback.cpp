@@ -58,6 +58,29 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
 
             devices[nodeAddressString]["timestamp"] = timestamp;
 
+            if (commandName == "ina219") {
+                int16_t voltage = jsonData["payload"]["voltage"].get<uint16_t>();
+                int16_t current = jsonData["payload"]["current"].get<uint16_t>();
+                devices[nodeAddressString]["ina219"]["voltage"] = voltage*0.001;
+                devices[nodeAddressString]["ina219"]["current"] = current*0.004;
+            }
+
+            if (commandName == "gpio") {
+                devices[nodeAddressString]["gpio"]["portB"] = jsonData["payload"]["portB"];
+                devices[nodeAddressString]["gpio"]["portC"] = jsonData["payload"]["portC"];
+                devices[nodeAddressString]["gpio"]["portD"] = jsonData["payload"]["portD"];
+            }
+
+            if (commandName == "vcc") {
+                uint16_t vcc = jsonData["payload"]["vcc"];
+                devices[nodeAddressString]["batteryVoltage"] = (vcc*1.0)/1000;
+            }
+
+            if (commandName == "ds18b20") {
+                uint16_t temperature = jsonData["payload"]["temperature"];
+                devices[nodeAddressString]["temperature"] = (temperature*1.0)/16;
+            }
+
             if (commandName == "get_device_name") {
                 devices[nodeAddressString]["deviceName"] = jsonData["payload"]["nameString"];
             }
