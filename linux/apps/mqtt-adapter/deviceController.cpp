@@ -110,7 +110,10 @@ void DeviceController::executeJsonCommand()
                     radioNodeWakeupSucces = true;
                 }
                 else {
-                    std::cout << "ERROR: not able to wake up node:" << std::to_string(m_radioAddress) << std::endl;
+                    std::string topic = "raduino-log/adapter/" + std::to_string(m_radioAddress) + "/command";
+                    json message = { "error", "not able to wake up node" };
+                    publishMessage(topic, message.dump());
+
                     healthIndicator = 0;
                     m_publishBirth = true;
                 }
