@@ -205,7 +205,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                 // add subscriptions
                 if (nodeAddress == gatewayAddress) {
                     registerSubscription("get_device_name", 60 * 120, nodeAddress);
-                    registerSubscription("get_statistics", 60 * 120, nodeAddress);
+                    registerSubscription("get_statistics", 60 * 1, nodeAddress);
                     registerSubscription("get_version", 60 * 120, nodeAddress);
                     registerSubscription("get_attached_devices_csv_string", 60 * 120, nodeAddress);
                 }

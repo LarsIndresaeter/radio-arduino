@@ -61,8 +61,8 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
             if (commandName == "ina219") {
                 int16_t voltage = jsonData["payload"]["voltage"].get<uint16_t>();
                 int16_t current = jsonData["payload"]["current"].get<uint16_t>();
-                devices[nodeAddressString]["ina219"]["voltage"] = voltage*0.001;
-                devices[nodeAddressString]["ina219"]["current"] = current*0.004;
+                devices[nodeAddressString]["ina219"]["voltage"] = voltage * 0.001;
+                devices[nodeAddressString]["ina219"]["current"] = current * 0.004;
             }
 
             if (commandName == "gpio") {
@@ -71,14 +71,23 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                 devices[nodeAddressString]["gpio"]["portD"] = jsonData["payload"]["portD"];
             }
 
+            if (commandName == "get_statistics") {
+                devices[nodeAddressString]["stats"]["commandsParsed"] = jsonData["payload"]["commandsParsed"];
+                devices[nodeAddressString]["stats"]["radioRx"] = jsonData["payload"]["radioRx"];
+                devices[nodeAddressString]["stats"]["radioTx"] = jsonData["payload"]["radioTx"];
+                devices[nodeAddressString]["stats"]["uartRx"] = jsonData["payload"]["uartRx"];
+                devices[nodeAddressString]["stats"]["uartTx"] = jsonData["payload"]["uartTx"];
+                devices[nodeAddressString]["stats"]["restarts"] = jsonData["payload"]["restarts"];
+            }
+
             if (commandName == "vcc") {
                 uint16_t vcc = jsonData["payload"]["vcc"];
-                devices[nodeAddressString]["batteryVoltage"] = (vcc*1.0)/1000;
+                devices[nodeAddressString]["batteryVoltage"] = (vcc * 1.0) / 1000;
             }
 
             if (commandName == "ds18b20") {
                 uint16_t temperature = jsonData["payload"]["temperature"];
-                devices[nodeAddressString]["temperature"] = (temperature*1.0)/16;
+                devices[nodeAddressString]["temperature"] = (temperature * 1.0) / 16;
             }
 
             if (commandName == "get_device_name") {
@@ -99,9 +108,9 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                 int x = jsonData["payload"]["accelerometerX"].get<uint16_t>();
                 int y = jsonData["payload"]["accelerometerY"].get<uint16_t>();
                 int z = jsonData["payload"]["accelerometerZ"].get<uint16_t>();
-                devices[nodeAddressString]["accelerometer"]["x"] = (180*(x - 32768))/32768;
-                devices[nodeAddressString]["accelerometer"]["y"] = (180*(y - 32768))/32768;
-                devices[nodeAddressString]["accelerometer"]["z"] = (180*(z - 32768))/32768;
+                devices[nodeAddressString]["accelerometer"]["x"] = (180 * (x - 32768)) / 32768;
+                devices[nodeAddressString]["accelerometer"]["y"] = (180 * (y - 32768)) / 32768;
+                devices[nodeAddressString]["accelerometer"]["z"] = (180 * (z - 32768)) / 32768;
             }
 
             std::string topic = "raduino-device/status";
