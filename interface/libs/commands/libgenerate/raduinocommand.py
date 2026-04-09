@@ -1,4 +1,4 @@
-#!/usre/bin/env python3
+#!/usr/bin/env python3
 
 from libgenerate.generate_command import *
 from libgenerate.generate_payload import *

@@ -1,4 +1,4 @@
-#!/use/bin/env python3
+#!/usr/bin/env python3
 
 def snakecaseToCamelCase(variableName):
     result = variableName.capitalize()

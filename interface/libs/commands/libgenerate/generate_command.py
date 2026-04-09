@@ -1,4 +1,4 @@
-#!/usre/bin/env python3
+#!/usr/bin/env python3
 
 import os
 from libgenerate.common import *
