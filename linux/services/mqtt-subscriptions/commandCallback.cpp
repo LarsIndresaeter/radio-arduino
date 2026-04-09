@@ -290,13 +290,13 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                         auto jsonData = json::parse(payload);
                         std::string csvString = jsonData["payload"]["csvString"];
                         if (csvString.find("lsm303d") != std::string::npos) {
-                            registerSubscription("get_lsm303d", 60 * 5, nodeAddress);
+                            registerSubscription("get_lsm303d", 60 * 1, nodeAddress);
                         }
                         else if (csvString.find("quad") != std::string::npos) {
-                            registerSubscription("quadrature_encoder", 60 * 5, nodeAddress);
+                            registerSubscription("quadrature_encoder", 60 * 1, nodeAddress);
                         }
                         else if (csvString.find("ina219") != std::string::npos) {
-                            registerSubscription("ina219", 60 * 5, nodeAddress);
+                            registerSubscription("ina219", 60 * 1, nodeAddress);
                         }
                     }
 
