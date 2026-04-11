@@ -312,7 +312,9 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                 }
             }
 
-            executeSubscriptionsForNode(nodeAddress);
+            if (responseCode == "success") {
+                executeSubscriptionsForNode(nodeAddress);
+            }
         }
         catch (std::exception const& e) {
             std::cout << "DEBUG: malformed DDATA. " << e.what() << std::endl;
