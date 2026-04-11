@@ -52,6 +52,126 @@ void testEncryptOnAvr(monitor& mon)
     std::cout << "ct response   : " << plaintext.getDataAsString() << std::endl;
 }
 
+void testConnectionToRadioNode(monitor& mon, uint32_t nodeAddress)
+{
+    int countResponseError = 0;
+    int countResponseSuccess = 0;
+    int abortAfterFailedAttempts = 3;
+    std::cout << std::format("| {:>16} |", std::to_string(nodeAddress));
+
+    RadioSession radioSession(mon, nodeAddress);
+    radioSession.wakeupNotResponding();
+
+    countResponseError = 0;
+    for (int i = 0; i < 10; i++) {
+        auto response = mon.getRadio<>(RaduinoCommandGetDeviceName());
+        if (mon.lastCommandReturnedValidResponse()) {
+            std::string deviceName = response.getNamestring();
+            std::cout << std::format("{:>16} |", deviceName);
+            break;
+        }
+        else {
+            countResponseError++;
+        }
+
+        if (countResponseError >= abortAfterFailedAttempts) {
+            std::cout << std::format("{:>16} |", "-");
+            break;
+        }
+    }
+
+    countResponseSuccess = 0;
+    countResponseError = 0;
+    for (int i = 0; i < 10; i++) {
+        mon.getRadio<>(RaduinoCommandPing());
+        if (mon.lastCommandReturnedValidResponse()) {
+            countResponseSuccess++;
+        }
+        else {
+            countResponseError++;
+        }
+        if (countResponseError >= abortAfterFailedAttempts) {
+            break;
+        }
+    }
+    std::cout << std::format("{:>8} |", std::to_string(countResponseSuccess));
+
+    countResponseSuccess = 0;
+    countResponseError = 0;
+    for (int i = 0; i < 10; i++) {
+        mon.getRadio<>(RaduinoCommandGetVersion());
+        if (mon.lastCommandReturnedValidResponse()) {
+            countResponseSuccess++;
+        }
+        else {
+            countResponseError++;
+        }
+        if (countResponseError >= abortAfterFailedAttempts) {
+            break;
+        }
+    }
+    std::cout << std::format("{:>8} |", std::to_string(countResponseSuccess));
+
+    countResponseSuccess = 0;
+    countResponseError = 0;
+    for (int i = 0; i < 10; i++) {
+        mon.getRadio<>(RaduinoCommandGetAttachedDevicesCsvString());
+        if (mon.lastCommandReturnedValidResponse()) {
+            countResponseSuccess++;
+        }
+        else {
+            countResponseError++;
+        }
+        if (countResponseError >= abortAfterFailedAttempts) {
+            break;
+        }
+    }
+    std::cout << std::format("{:>12} |", std::to_string(countResponseSuccess));
+
+    std::cout << std::endl;
+}
+
+void detectRadioNodesAndTestConnection(monitor& mon)
+{
+    std::vector<uint32_t> nodeList;
+
+    uint32_t gatewayAddress = mon.get<>(RaduinoCommandGetUniqueId()).responseStruct().getId();
+    if (gatewayAddress == 0) {
+        std::cout << "no gateway detected. abort!" << std::endl;
+        return;
+    }
+
+    std::string gatewayName = mon.get<>(RaduinoCommandGetDeviceName()).getNamestring();
+
+    std::cout << "Test gw:" << std::to_string(gatewayAddress) << " (" << gatewayName << "), nodes: ";
+
+    for (int i = 0; i < 1000; i++) {
+        uint32_t a = mon.get<>(RaduinoCommandGetLastDeviceIdSeen()).responseStruct().getId();
+        if (a != 0) {
+            if (std::find(nodeList.begin(), nodeList.end(), a) == nodeList.end()) {
+                std::cout << std::to_string(a) << " ";
+                nodeList.push_back(a);
+            }
+        }
+        std::this_thread::sleep_for(10ms);
+    }
+
+    std::cout << std::endl;
+
+    if (nodeList.size() == 0) {
+        std::cout << "No devices found" << std::endl;
+    }
+    else {
+        std::cout << std::endl;
+        std::cout << "|      nodeAddress |      deviceName |    ping | version | devicesList |" << std::endl;
+        std::cout << "| ---------------- | --------------- | ------- | ------- | ----------- |" << std::endl;
+
+        for (auto nodeAddress : nodeList) {
+            testConnectionToRadioNode(mon, nodeAddress);
+        }
+    }
+}
+
 void testAes(monitor& mon)
 {
     testDecryptOnAvr(mon);
@@ -63,6 +183,7 @@ void print_usage()
     std::cout << "raduino-test" << std::endl;
     std::cout << "           -K <key> : encrypt command with transport key" << std::endl;
     std::cout << "       -N <address> : wakeup node address" << std::endl;
+    std::cout << "                 -D : detect radio nodes and test connection" << std::endl;
     std::cout << "                 -A : test AES" << std::endl;
     std::cout << "                 -C : print counter values" << std::endl;
     std::cout << "                 -e : EEPROM command" << std::endl;
@@ -96,7 +217,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint32_t radioAddress = 0;
     bool verbose = false;
 
-    while ((option = getopt(argc, argv, "K:N:vVACeI:gbSshT:t")) != -1) {
+    while ((option = getopt(argc, argv, "K:N:vVACeI:gbSshT:tD")) != -1) {
         switch (option) {
         case 'K': {
             std::string s(optarg);
@@ -177,6 +298,9 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             }
 
         } break;
+        case 'D':
+            detectRadioNodesAndTestConnection(mon);
+            break;
         case 'A':
             testAes(mon);
             break;
