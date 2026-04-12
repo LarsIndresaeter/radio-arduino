@@ -85,13 +85,13 @@ void CommandCallback::pollNode(std::vector<std::string> commandList, uint32_t no
     publishMessage(topic, command.dump());
 }
 
-void CommandCallback::executeSubscriptionsForNode(uint32_t nodeId)
+void CommandCallback::executeSubscriptionsForNode(uint32_t nodeAddress)
 {
     // called after heartbeat (advertisement) or after a successful response
     std::vector<std::string> commandList;
 
     for (int j = 0; j < m_subscriptions.size(); j++) {
-        if (m_subscriptions.at(j).nodeAddress == nodeId) {
+        if (m_subscriptions.at(j).nodeAddress == nodeAddress) {
             using namespace std::chrono;
             auto start = std::chrono::high_resolution_clock::now();
             uint64_t time_since_epoch_ms
@@ -105,7 +105,7 @@ void CommandCallback::executeSubscriptionsForNode(uint32_t nodeId)
         }
     }
     if (commandList.size() > 0) {
-        pollNode(commandList, nodeId);
+        pollNode(commandList, nodeAddress);
     }
 }
 

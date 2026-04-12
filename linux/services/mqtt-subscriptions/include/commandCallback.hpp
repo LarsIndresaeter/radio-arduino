@@ -41,7 +41,7 @@ public:
     void delivery_complete(mqtt::delivery_token_ptr token) override;
 
     void resendBirthCertificate();
-    void executeSubscriptionsForNode(uint32_t nodeId);
+    void executeSubscriptionsForNode(uint32_t nodeAddress);
 
 private:
     std::vector<std::string> splitString(std::string s, const std::string& delimiter);
