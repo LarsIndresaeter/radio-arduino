@@ -273,8 +273,8 @@ void DeviceController::publishMessage(std::string topic, std::string message)
     try {
         mqttTopic.publish(std::move(message));
     }
-    catch (const mqtt::exception& exc) {
-        std::cerr << exc.what() << std::endl;
+    catch (std::exception const& e) {
+        std::cerr << e.what() << std::endl;
         std::cerr << "topic: " << topic << std::endl;
         std::cerr << "message: " << message << std::endl;
     }
@@ -306,8 +306,8 @@ void DeviceController::parseMessage(std::string topic, std::string command)
             }
         }
     }
-    catch (const mqtt::exception& exc) {
-        std::cerr << exc.what() << std::endl;
+    catch (std::exception const& e) {
+        std::cerr << e.what() << std::endl;
     }
 }
 
