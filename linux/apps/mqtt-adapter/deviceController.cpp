@@ -217,12 +217,11 @@ void DeviceController::executeJsonCommand()
                     publishMessage(topic, jsonResponse);
                 }
 
-                // TODO: power down radio node
-                // if (radioNodeWakeupSucces) {
-                // m_monitor.getRadio<>(RaduinoCommandKeepAlive(0));
-                //}
-
                 updateQualityIndicator(m_monitor.lastCommandReturnedValidResponse());
+            }
+
+            if (radioNodeWakeupSucces) {
+                m_monitor.getRadio<>(RaduinoCommandKeepAlive(0)); // put radio node in sleep
             }
         }
     }
