@@ -13,7 +13,7 @@ uint8_t sendWakeupCommandToNode(uint32_t id, uint8_t checkAttentionFlag);
 uint8_t isAdvertisementPackage(uint8_t response_length, uint8_t* _packet);
 void initRadioLink();
 
-void setupBroadcastPipe();
+void closeCommunicationPipe();
 void broadcast_tx(uint8_t* rx_buffer);
 
 } // namespace

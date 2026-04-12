@@ -1,3 +1,4 @@
+#include "include/radio-link.hpp"
 #include <radio-link.hpp>
 
 extern bool rx_mode_gateway;
@@ -12,7 +13,7 @@ uint32_t getLastDeviceIdSeen()
 {
     uint32_t tmp = id_from_last_advertisement_message;
     id_from_last_advertisement_message = 0;
-    setupBroadcastPipe(); // terminates unclosed communication channel
+    closeCommunicationPipe();
     return (tmp);
 }
 
@@ -59,6 +60,22 @@ void setupCommunicationPipe()
     rx_tx_addr[2] = id_for_communication_data_pipe >> 16;
     rx_tx_addr[3] = id_for_communication_data_pipe >> 8;
     rx_tx_addr[4] = id_for_communication_data_pipe;
+
+    NRF24L01_write_register(NRF24L01_REGISTER_RX_ADDR_P0, &rx_tx_addr[0], NRF24L01_ADDR_SIZE);
+    NRF24L01_write_register(NRF24L01_REGISTER_TX_ADDR, &rx_tx_addr[0], NRF24L01_ADDR_SIZE);
+}
+
+void closeCommunicationPipe()
+{
+    rx_tx_addr[0] = 0xF0;
+    rx_tx_addr[1] = 0xF0;
+    rx_tx_addr[2] = 0xF0;
+    rx_tx_addr[3] = 0xF0;
+    rx_tx_addr[4] = 0;
+
+    if (rx_mode_gateway) {
+        NRF24L01_write_register(NRF24L01_REGISTER_RX_ADDR_P1, &rx_tx_addr[0], NRF24L01_ADDR_SIZE);
+    }
 
     NRF24L01_write_register(NRF24L01_REGISTER_RX_ADDR_P0, &rx_tx_addr[0], NRF24L01_ADDR_SIZE);
     NRF24L01_write_register(NRF24L01_REGISTER_TX_ADDR, &rx_tx_addr[0], NRF24L01_ADDR_SIZE);
