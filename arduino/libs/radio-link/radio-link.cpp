@@ -168,7 +168,7 @@ uint8_t sendWakeupCommandToNode(uint32_t id, uint8_t checkAttentionFlag)
             uint8_t length = NRF24L01_read_rx_payload(&read_advertisement_package[0]);
             discovered = isAdvertisementPackage(length, read_advertisement_package);
 
-            if (discovered == 1) {
+            if ((discovered == 1) && (id_from_last_advertisement_message == id)) {
                 if ((0 != checkAttentionFlag) && (0 == read_advertisement_package[offset_attention_flag])) {
                     // received advertisement package but abort wakeup since data available flag was not set
                 }

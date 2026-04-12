@@ -4,6 +4,7 @@
 
 - option for testing communication stability in raduino-test
 - close communication pipe when polling or advertisements. This improves stability
+- fix bug in wakeup mechanism
 
 ## version 2.2.0
 
