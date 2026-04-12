@@ -12,6 +12,7 @@ uint32_t getLastDeviceIdSeen()
 {
     uint32_t tmp = id_from_last_advertisement_message;
     id_from_last_advertisement_message = 0;
+    setupBroadcastPipe(); // terminates unclosed communication channel
     return (tmp);
 }
 
