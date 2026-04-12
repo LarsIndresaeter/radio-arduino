@@ -101,7 +101,7 @@ void DeviceController::executeJsonCommand()
     try {
         auto jsonData = json::parse(m_command);
 
-        uint32_t nodeAddress = jsonData.value("nodeAddress", 0);
+        uint32_t nodeAddress = jsonData["nodeAddress"].get<uint32_t>();
         bool radioNodeWakeupSucces = false;
 
         if (nodeAddress == m_radioAddress) {

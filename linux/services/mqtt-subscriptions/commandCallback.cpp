@@ -157,7 +157,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
             }
             else if (command == "enableSubscription") {
                 std::string commandName = jsonData["name"];
-                uint32_t nodeAddress = jsonData["nodeAddress"];
+                uint32_t nodeAddress = jsonData["nodeAddress"].get<uint32_t>();
 
                 for (int i = 0; i < m_subscriptions.size(); i++) {
                     if ((m_subscriptions.at(i).nodeAddress == nodeAddress)
@@ -168,7 +168,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
             }
             else if (command == "setInterval") {
                 std::string commandName = jsonData["name"];
-                uint32_t nodeAddress = jsonData["nodeAddress"];
+                uint32_t nodeAddress = jsonData["nodeAddress"].get<uint32_t>();
                 uint32_t intervalInSeconds = jsonData["interval"];
 
                 for (int i = 0; i < m_subscriptions.size(); i++) {
@@ -190,7 +190,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
     if (topic_orig.starts_with("raduino-router/DBIRTH/")) {
         try {
             auto jsonData = json::parse(payload);
-            uint32_t nodeAddress = jsonData["nodeAddress"];
+            uint32_t nodeAddress = jsonData["nodeAddress"].get<uint32_t>();
             uint32_t gatewayAddress = jsonData["gateway"];
 
             bool nodeExists
