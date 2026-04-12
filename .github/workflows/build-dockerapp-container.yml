@@ -20,14 +20,14 @@ jobs:
           fetch-depth: 0
 
       - name: Log in to the Container registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }} # GITHUB_TOKEN has necessary permissions
 
       - name: compile arduino and linux apps
-        uses: addnab/docker-run-action@v3
+        uses: addnab/docker-run-action@v4
         with:
           image: ghcr.io/larsindresaeter/radio-arduino-devbox:1.0.0
           options: --user 1001:1001 -v ${{ github.workspace }}:/home/raduino
