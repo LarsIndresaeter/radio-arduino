@@ -141,35 +141,26 @@ void detectRadioNodesAndTestConnection(monitor& mon)
         return;
     }
 
-    std::string gatewayName = mon.get<>(RaduinoCommandGetDeviceName()).getNamestring();
+    //std::string gatewayName = mon.get<>(RaduinoCommandGetDeviceName()).getNamestring();
+    // std::cout << "DEBUG: gw:" << std::to_string(gatewayAddress) << "/" << gatewayName << std::endl;
 
-    std::cout << "Test gw:" << std::to_string(gatewayAddress) << " (" << gatewayName << "), nodes: ";
+    std::cout << "| -------------------------------------------------------------------- |" << std::endl;
+    std::cout << "|      nodeAddress |      deviceName |    ping | version | devicesList |" << std::endl;
+    std::cout << "| ---------------- | --------------- | ------- | ------- | ----------- |" << std::endl;
 
     for (int i = 0; i < 1000; i++) {
-        uint32_t a = mon.get<>(RaduinoCommandGetLastDeviceIdSeen()).responseStruct().getId();
-        if (a != 0) {
-            if (std::find(nodeList.begin(), nodeList.end(), a) == nodeList.end()) {
-                std::cout << std::to_string(a) << " ";
-                nodeList.push_back(a);
+        uint32_t nodeAddress = mon.get<>(RaduinoCommandGetLastDeviceIdSeen()).responseStruct().getId();
+        if (nodeAddress != 0) {
+            if (std::find(nodeList.begin(), nodeList.end(), nodeAddress) == nodeList.end()) {
+                nodeList.push_back(nodeAddress);
+                testConnectionToRadioNode(mon, nodeAddress);
             }
         }
         std::this_thread::sleep_for(10ms);
     }
+    std::cout << "| -------------------------------------------------------------------- |" << std::endl;
 
     std::cout << std::endl;
-
-    if (nodeList.size() == 0) {
-        std::cout << "No devices found" << std::endl;
-    }
-    else {
-        std::cout << std::endl;
-        std::cout << "|      nodeAddress |      deviceName |    ping | version | devicesList |" << std::endl;
-        std::cout << "| ---------------- | --------------- | ------- | ------- | ----------- |" << std::endl;
-
-        for (auto nodeAddress : nodeList) {
-            testConnectionToRadioNode(mon, nodeAddress);
-        }
-    }
 }
 
 void testAes(monitor& mon)
