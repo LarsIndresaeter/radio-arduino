@@ -57,7 +57,7 @@ void testConnectionToRadioNode(monitor& mon, uint32_t nodeAddress)
     int countResponseError = 0;
     int countResponseSuccess = 0;
     int abortAfterFailedAttempts = 3;
-    std::cout << std::format("| {:>16} |", std::to_string(nodeAddress));
+    std::cout << std::right << std::setw(16) << std::to_string(nodeAddress) << " |";
 
     RadioSession radioSession(mon, nodeAddress);
     radioSession.wakeupNotResponding();
@@ -67,7 +67,7 @@ void testConnectionToRadioNode(monitor& mon, uint32_t nodeAddress)
         auto response = mon.getRadio<>(RaduinoCommandGetDeviceName());
         if (mon.lastCommandReturnedValidResponse()) {
             std::string deviceName = response.getNamestring();
-            std::cout << std::format("{:>16} |", deviceName);
+    std::cout << std::right << std::setw(16) << deviceName << " |";
             break;
         }
         else {
@@ -75,7 +75,7 @@ void testConnectionToRadioNode(monitor& mon, uint32_t nodeAddress)
         }
 
         if (countResponseError >= abortAfterFailedAttempts) {
-            std::cout << std::format("{:>16} |", "-");
+    std::cout << std::right << std::setw(16) << "-" << " |";
             break;
         }
     }
@@ -94,7 +94,7 @@ void testConnectionToRadioNode(monitor& mon, uint32_t nodeAddress)
             break;
         }
     }
-    std::cout << std::format("{:>8} |", std::to_string(countResponseSuccess));
+    std::cout << std::right << std::setw(8) << std::to_string(countResponseSuccess) << " |";
 
     countResponseSuccess = 0;
     countResponseError = 0;
@@ -110,7 +110,7 @@ void testConnectionToRadioNode(monitor& mon, uint32_t nodeAddress)
             break;
         }
     }
-    std::cout << std::format("{:>8} |", std::to_string(countResponseSuccess));
+    std::cout << std::right << std::setw(8) << std::to_string(countResponseSuccess) << " |";
 
     countResponseSuccess = 0;
     countResponseError = 0;
@@ -126,7 +126,7 @@ void testConnectionToRadioNode(monitor& mon, uint32_t nodeAddress)
             break;
         }
     }
-    std::cout << std::format("{:>12} |", std::to_string(countResponseSuccess));
+    std::cout << std::right << std::setw(12) << std::to_string(countResponseSuccess) << " |";
 
     std::cout << std::endl;
 }
