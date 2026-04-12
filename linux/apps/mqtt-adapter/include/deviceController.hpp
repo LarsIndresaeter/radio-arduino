@@ -24,6 +24,10 @@ public:
     uint32_t getLastDeviceIdSeen();
 
 private:
+    void log(std::string type, std::string message);
+    void logError(std::string message);
+    void logWarning(std::string message);
+    void logDebug(std::string message);
     std::string createMqttTopicResponse(std::string commandName);
     std::string createMqttTopic(std::string type, std::string eon, std::string device);
     void storeValidResponse(std::string jsonResponse);

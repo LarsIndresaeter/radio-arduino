@@ -96,6 +96,17 @@ void DeviceController::discoveryReceived(uint32_t nodeAddress)
 
 uint32_t DeviceController::getLastDeviceIdSeen() { return (m_lastDeviceIdSeen); }
 
+void DeviceController::log(std::string type, std::string message)
+{
+    std::string topic = "raduino-log/adapter/" + std::to_string(m_radioAddress) + "/" + type;
+    json jsonMessage = { "message", message };
+    publishMessage(topic, jsonMessage.dump());
+}
+
+void DeviceController::logError(std::string message) { log("error", message); }
+void DeviceController::logWarning(std::string message) { log("warning", message); }
+void DeviceController::logDebug(std::string message) { log("debug", message); }
+
 void DeviceController::executeJsonCommand()
 {
     try {
@@ -110,9 +121,7 @@ void DeviceController::executeJsonCommand()
                     radioNodeWakeupSucces = true;
                 }
                 else {
-                    std::string topic = "raduino-log/adapter/" + std::to_string(m_radioAddress) + "/command";
-                    json message = { "error", "not able to wake up node" };
-                    publishMessage(topic, message.dump());
+                    logError("not able to wake up node");
 
                     healthIndicator = 0;
                     m_publishBirth = true;
@@ -122,8 +131,6 @@ void DeviceController::executeJsonCommand()
             json commandList = jsonData["commandList"];
 
             for (std::string commandName : commandList) {
-                // std::cout << "DEBUG: command name = " << commandName << std::endl;
-                // todo: loop over list
                 std::string jsonResponse = "";
 
                 if (nodeAddress == m_gatewayAddress) {
@@ -143,8 +150,7 @@ void DeviceController::executeJsonCommand()
                         jsonResponse = m_monitor.get<>(RaduinoCommandIna219()).getJson();
                     }
                     else {
-                        std::cout << "DEBUG: commandName '" << commandName << "' not recognized for gateway"
-                                  << std::endl;
+                        logDebug(commandName = " not recognized for gateway");
                     }
                 }
                 else {
@@ -199,8 +205,7 @@ void DeviceController::executeJsonCommand()
                         jsonResponse = m_monitor.getRadio<>(RaduinoCommandIna219()).getJson();
                     }
                     else {
-                        std::cout << "DEBUG: commandName '" << commandName << "' not recognized for radio node"
-                                  << std::endl;
+                        logDebug(commandName + " not recognized for radio node");
                     }
                 }
 
