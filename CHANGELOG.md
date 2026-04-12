@@ -1,6 +1,6 @@
 # Changelog
 
-## changes since version 2.2.0
+## version 2.2.1
 
 - option for testing communication stability in raduino-test
 - close communication pipe when polling or advertisements. This improves stability
