@@ -1,6 +1,11 @@
 # Changelog
 
-## changes since version 2.1.0
+## changes since version 2.2.0
+
+- option for testing communication stability in raduino-test
+- close communication pipe when polling or advertisements. This improves stability
+
+## version 2.2.0
 
 - publish discovery messages on new topic branch
 - refactor subscritions to be event based
