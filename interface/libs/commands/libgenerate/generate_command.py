@@ -234,7 +234,7 @@ def generateCommandFile(codePath,
                     outfile.write("\n")
                     # outfile.write("        retval.append(\"\\\"\");\n")
                     outfile.write("        for (uint8_t i = 0; i < " + str(arraySizeFromVariableName(item)) + "; i++) {\n")
-                    outfile.write("            if (response." + arrayBasenameFromVariableName(item) + "[i])\n")
+                    outfile.write("            if (std::isprint(response." + arrayBasenameFromVariableName(item) + "[i]))\n")
                     outfile.write("            {\n")
                     outfile.write("                retval.push_back(static_cast<char>(response." + arrayBasenameFromVariableName(item) + "[i]));\n")
                     outfile.write("            }\n")
