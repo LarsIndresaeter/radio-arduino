@@ -16,10 +16,9 @@
 - [Command line tools](./doc/reference-guides/apps/README.md) for interacting
   with gateway and node, including mqtt client.
 - Use Docker for building the application.
-- Reeceipies for using docker to set up a system in a separate repository
+- Receipies for using docker to set up a system in a separate repository
   [docker-compose-radio-arduino](https://github.com/LarsIndresaeter/docker-compose-radio-arduino)
 - Services for [multi gateway setup](doc/reference-guides/services/README.md)
-- Reeceipies for using docker to setup a system in a separate repository
 
 ## Try it on a rf-nano board
 
