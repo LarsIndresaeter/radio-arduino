@@ -1,5 +1,9 @@
 # Changelog
 
+## changes since version 2.2.1
+
+- minor bugfixes
+
 ## version 2.2.1
 
 - option for testing communication stability in raduino-test
