@@ -57,7 +57,7 @@ void testConnectionToRadioNode(monitor& mon, uint32_t nodeAddress)
     int countResponseError = 0;
     int countResponseSuccess = 0;
     int abortAfterFailedAttempts = 3;
-    std::cout << std::right << std::setw(16) << std::to_string(nodeAddress) << " |";
+    std::cout << "| " << std::right << std::setw(16) << std::to_string(nodeAddress) << " |";
 
     RadioSession radioSession(mon, nodeAddress);
     radioSession.wakeupNotResponding();
