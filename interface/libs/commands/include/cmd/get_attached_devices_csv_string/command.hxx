@@ -32,7 +32,7 @@ public:
         COMMANDS::GET_ATTACHED_DEVICES_CSV_STRING::response_t response = responseStruct();
 
         for (uint8_t i = 0; i < 64; i++) {
-            if (response.csvString[i])
+            if (std::isprint(response.csvString[i]))
             {
                 retval.push_back(static_cast<char>(response.csvString[i]));
             }

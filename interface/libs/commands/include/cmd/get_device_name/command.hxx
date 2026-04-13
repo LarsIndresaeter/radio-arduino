@@ -32,7 +32,7 @@ public:
         COMMANDS::GET_DEVICE_NAME::response_t response = responseStruct();
 
         for (uint8_t i = 0; i < 16; i++) {
-            if (response.nameString[i])
+            if (std::isprint(response.nameString[i]))
             {
                 retval.push_back(static_cast<char>(response.nameString[i]));
             }

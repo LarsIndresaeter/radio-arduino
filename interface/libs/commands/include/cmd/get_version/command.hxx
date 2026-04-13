@@ -32,7 +32,7 @@ public:
         COMMANDS::GET_VERSION::response_t response = responseStruct();
 
         for (uint8_t i = 0; i < 32; i++) {
-            if (response.versionString[i])
+            if (std::isprint(response.versionString[i]))
             {
                 retval.push_back(static_cast<char>(response.versionString[i]));
             }
