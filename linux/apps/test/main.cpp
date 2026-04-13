@@ -67,7 +67,7 @@ void testConnectionToRadioNode(monitor& mon, uint32_t nodeAddress)
         auto response = mon.getRadio<>(RaduinoCommandGetDeviceName());
         if (mon.lastCommandReturnedValidResponse()) {
             std::string deviceName = response.getNamestring();
-    std::cout << std::right << std::setw(16) << deviceName << " |";
+            std::cout << std::right << std::setw(16) << deviceName << " |";
             break;
         }
         else {
@@ -75,7 +75,7 @@ void testConnectionToRadioNode(monitor& mon, uint32_t nodeAddress)
         }
 
         if (countResponseError >= abortAfterFailedAttempts) {
-    std::cout << std::right << std::setw(16) << "-" << " |";
+            std::cout << std::right << std::setw(16) << "-" << " |";
             break;
         }
     }
@@ -142,22 +142,28 @@ void detectRadioNodesAndTestConnection(monitor& mon)
     }
 
     //std::string gatewayName = mon.get<>(RaduinoCommandGetDeviceName()).getNamestring();
-    // std::cout << "DEBUG: gw:" << std::to_string(gatewayAddress) << "/" << gatewayName << std::endl;
-
-    std::cout << "| -------------------------------------------------------------------- |" << std::endl;
-    std::cout << "|      nodeAddress |      deviceName |    ping | version | devicesList |" << std::endl;
-    std::cout << "| ---------------- | --------------- | ------- | ------- | ----------- |" << std::endl;
+    //std::cout << "DEBUG: gw:" << std::to_string(gatewayAddress) << "/" << gatewayName << " nodes:";
 
     for (int i = 0; i < 1000; i++) {
         uint32_t nodeAddress = mon.get<>(RaduinoCommandGetLastDeviceIdSeen()).responseStruct().getId();
         if (nodeAddress != 0) {
             if (std::find(nodeList.begin(), nodeList.end(), nodeAddress) == nodeList.end()) {
                 nodeList.push_back(nodeAddress);
-                testConnectionToRadioNode(mon, nodeAddress);
+                //std::cout << " " << std::to_string(nodeAddress);
             }
         }
         std::this_thread::sleep_for(10ms);
     }
+    //std::cout << std::endl;
+
+    std::cout << "| -------------------------------------------------------------------- |" << std::endl;
+    std::cout << "|      nodeAddress |      deviceName |    ping | version | devicesList |" << std::endl;
+    std::cout << "| ---------------- | --------------- | ------- | ------- | ----------- |" << std::endl;
+
+    for (uint32_t nodeAddress : nodeList) {
+        testConnectionToRadioNode(mon, nodeAddress);
+    }
+
     std::cout << "| -------------------------------------------------------------------- |" << std::endl;
 
     std::cout << std::endl;
