@@ -89,16 +89,15 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
         for (std::shared_ptr<DeviceController> deviceController : deviceControllerList) {
             deviceController->execute();
 
-            uint32_t lastNode = deviceController->getLastDeviceIdSeen();
-
-            if (lastNode != 0) {
-                registerNode(mon, mqtt_client, lastNode, deviceControllerList, commandCallback, gatewayAddress);
-            }
-
             std::this_thread::sleep_for(50ms);
         }
 
-        //TODO: extract this to a function
+        uint32_t lastNode = mon.get<>(RaduinoCommandGetLastDeviceIdSeen()).responseStruct().getId();
+        if (lastNode != 0) {
+            registerNode(mon, mqtt_client, lastNode, deviceControllerList, commandCallback, gatewayAddress);
+        }
+
+        // TODO: extract this to a function
         uint64_t timestampMsSinceEpoch = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count());
         if ((timestampMsSinceEpoch - timestampLastGatewayAdvertisement) > 5000) {
             timestampLastGatewayAdvertisement = timestampMsSinceEpoch;
