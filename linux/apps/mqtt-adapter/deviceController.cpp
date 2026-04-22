@@ -18,6 +18,13 @@ DeviceController::DeviceController(
     , m_gatewayAddress(gatewayAddress)
 {
     m_topic = createMqttTopic("RCMD", std::to_string(m_gatewayAddress), std::to_string(m_radioAddress));
+
+    if (radioAddress == gatewayAddress) {
+        m_nodeType = "gateway";
+    }
+    else {
+        m_nodeType = "node";
+    }
 }
 
 uint32_t DeviceController::getNodeAddress() { return (m_radioAddress); }
@@ -55,10 +62,9 @@ void DeviceController::execute()
         std::string topic
             = createMqttTopic(TOPIC_ADVERTISEMENT, std::to_string(m_gatewayAddress), std::to_string(m_radioAddress));
 
-        json advertisement = {
-            { "nodeAddress", m_radioAddress },
-            { "lastAdvertisement", timestampLastDiscovery },
-        };
+        json advertisement = { { "nodeAddress", m_radioAddress },
+                               { "lastAdvertisement", timestampLastDiscovery },
+                               { "nodeType", m_nodeType } };
 
         publishMessage(topic, advertisement.dump());
         setPublishAdvertisement(false);

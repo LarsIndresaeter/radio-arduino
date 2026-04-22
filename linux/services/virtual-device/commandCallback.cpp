@@ -44,6 +44,24 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
 {
     std::string topic_orig = message->get_topic();
     std::string payload = message->get_payload_str();
+
+    if (topic_orig.starts_with("raduino-router/ADVERTISEMENT/")) {
+        try {
+            auto jsonData = json::parse(payload);
+            uint64_t nodeAddress = jsonData["nodeAddress"].get<uint64_t>();
+            std::string nodeType = jsonData["nodeType"];
+
+            devices[std::to_string(nodeAddress)]["nodeType"] = nodeType;
+
+            std::string topic = "raduino-device/status";
+
+            publishMessage(topic, devices.dump());
+        }
+        catch (std::exception const& e) {
+            std::cout << "ERROR: malformed ADVERTISEMENT" << std::endl;
+        }
+    }
+
     if (topic_orig.starts_with("raduino-subscription/DDATA/")) {
         try {
             // std::cout << "DEBUG: payload:" << payload << std::endl;

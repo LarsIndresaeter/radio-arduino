@@ -42,6 +42,7 @@ private:
     RadioSession m_radioSession;
     std::string m_topic;
     std::string m_command;
+    std::string m_nodeType;
     monitor& m_monitor;
     mqtt::async_client& m_mqttClient;
     int healthIndicator = 0;
