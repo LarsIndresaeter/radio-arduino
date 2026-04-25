@@ -6,7 +6,7 @@ extern bool rx_mode_gateway;
 namespace RADIOLINK {
 
 uint8_t rx_tx_addr[5] = { 0xF0, 0xF0, 0xF0, 0xF0, 0 };
-uint32_t id_for_communication_data_pipe = 0;
+uint32_t destination_address = 0;
 uint32_t id_from_last_advertisement_message = 0;
 
 uint32_t getLastDeviceIdSeen()
@@ -17,28 +17,20 @@ uint32_t getLastDeviceIdSeen()
     return (tmp);
 }
 
-// link level package
-constexpr uint8_t advertisement_package_prototye[32]
-    = { 'r', 'a', 'd', 'u', 'i', 'n', 'o', ' ', 'd', 'i', 's', 'c', 'o', 'v', 'e', 'r',
-        'y', 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 };
-constexpr uint8_t offset_attention_flag = 18;
-
-// link level package
-constexpr uint8_t wakeup_package_prototype[32]
-    = { 'r', 'a', 'd', 'i', 'o', '-', 'a', 'r', 'd', 'u', 'i', 'n', 'o', ' ', 'w', 'a',
-        'k', 'e', 'u', 'p', 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 };
+uint8_t advertisement_sequence_counter = 0;
 
 void populateAdvertisementPackage(uint8_t* buffer, uint8_t attentionFlag)
 {
     for (uint8_t i = 0; i < 27; i++) {
-        buffer[i] = advertisement_package_prototye[i];
+        buffer[i] = advertisement_package_prototype[i];
     }
 
-    buffer[offset_attention_flag] = attentionFlag;
-    buffer[28] = id_for_communication_data_pipe >> 24;
-    buffer[29] = id_for_communication_data_pipe >> 16;
-    buffer[30] = id_for_communication_data_pipe >> 8;
-    buffer[31] = id_for_communication_data_pipe;
+    buffer[offset_advertisement_flags] = attentionFlag;
+    buffer[offset_advertisement_sequence_counter] = advertisement_sequence_counter++;
+    buffer[offset_advertisement_id] = destination_address >> 24;
+    buffer[offset_advertisement_id + 1] = destination_address >> 16;
+    buffer[offset_advertisement_id + 2] = destination_address >> 8;
+    buffer[offset_advertisement_id + 3] = destination_address;
 }
 
 void populateWakeupPackage(uint8_t* buffer, uint32_t id)
@@ -56,10 +48,10 @@ void populateWakeupPackage(uint8_t* buffer, uint32_t id)
 void setupCommunicationPipe()
 {
     rx_tx_addr[0] = 0xF1;
-    rx_tx_addr[1] = id_for_communication_data_pipe >> 24;
-    rx_tx_addr[2] = id_for_communication_data_pipe >> 16;
-    rx_tx_addr[3] = id_for_communication_data_pipe >> 8;
-    rx_tx_addr[4] = id_for_communication_data_pipe;
+    rx_tx_addr[1] = destination_address >> 24;
+    rx_tx_addr[2] = destination_address >> 16;
+    rx_tx_addr[3] = destination_address >> 8;
+    rx_tx_addr[4] = destination_address;
 
     NRF24L01_write_register(NRF24L01_REGISTER_RX_ADDR_P0, &rx_tx_addr[0], NRF24L01_ADDR_SIZE);
     NRF24L01_write_register(NRF24L01_REGISTER_TX_ADDR, &rx_tx_addr[0], NRF24L01_ADDR_SIZE);
@@ -111,7 +103,7 @@ void initRadioLink()
     setupBroadcastPipe();
 }
 
-void setDeviceId(uint32_t id) { id_for_communication_data_pipe = id; }
+void setDestinationAddress(uint32_t id) { destination_address = id; }
 
 void broadcast_tx(uint8_t* buffer)
 {
@@ -129,7 +121,7 @@ uint8_t sendAdvertisementToGateway()
     populateAdvertisementPackage(rf_link_advertisement_package, QUADENCODER::pollChangedFlag());
 
     uint8_t rf_link_wakeup_command[32];
-    populateWakeupPackage(rf_link_wakeup_command, id_for_communication_data_pipe);
+    populateWakeupPackage(rf_link_wakeup_command, destination_address);
 
     broadcast_tx(&rf_link_advertisement_package[0]);
 
@@ -158,7 +150,7 @@ uint8_t sendWakeupCommandToNode(uint32_t id, uint8_t checkAttentionFlag)
 {
     uint8_t discovered = 0;
 
-    setDeviceId(id);
+    setDestinationAddress(id);
 
     setupBroadcastPipe();
 
@@ -169,7 +161,7 @@ uint8_t sendWakeupCommandToNode(uint32_t id, uint8_t checkAttentionFlag)
             discovered = isAdvertisementPackage(length, read_advertisement_package);
 
             if ((discovered == 1) && (id_from_last_advertisement_message == id)) {
-                if ((0 != checkAttentionFlag) && (0 == read_advertisement_package[offset_attention_flag])) {
+                if ((0 != checkAttentionFlag) && (0 == read_advertisement_package[offset_advertisement_flags])) {
                     // received advertisement package but abort wakeup since data available flag was not set
                 }
                 else {
@@ -198,7 +190,7 @@ uint8_t isAdvertisementPackage(uint8_t response_length, uint8_t* packet)
 
     if (response_length == 32) {
         is_wakeup_ack = 1;
-        for (uint8_t j = 0; j < 24; j++) {
+        for (uint8_t j = 0; j < offset_advertisement_pdu; j++) {
             if (packet[j] != rf_link_advertisement_package[j]) {
                 is_wakeup_ack = 0;
             }
@@ -206,10 +198,10 @@ uint8_t isAdvertisementPackage(uint8_t response_length, uint8_t* packet)
     }
 
     if (is_wakeup_ack == 1) {
-        id_from_last_advertisement_message = packet[31];
-        id_from_last_advertisement_message += ((uint32_t)packet[30]) << 8;
-        id_from_last_advertisement_message += ((uint32_t)packet[29]) << 16;
-        id_from_last_advertisement_message += ((uint32_t)packet[28]) << 24;
+        id_from_last_advertisement_message = ((uint32_t)packet[offset_advertisement_id]) << 24;
+        id_from_last_advertisement_message += ((uint32_t)packet[offset_advertisement_id + 1]) << 16;
+        id_from_last_advertisement_message += ((uint32_t)packet[offset_advertisement_id + 2]) << 8;
+        id_from_last_advertisement_message += ((uint32_t)packet[offset_advertisement_id + 3]);
     }
 
     return is_wakeup_ack;

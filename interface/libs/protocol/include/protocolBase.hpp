@@ -31,6 +31,8 @@ namespace HEADER {
     constexpr uint8_t VERSION_FLAG_RADUINO_PAYLOAD = 0x01;
     constexpr uint8_t VERSION_FLAG_ENCRYPTED = 0x02;
     constexpr uint8_t VERSION_FLAG_DESTINATION_NODE = 0x04;
+    constexpr uint8_t VERSION_FLAG_LINK = 0x80;
+    constexpr uint8_t VERSION_FLAG_LINK_WAKEUP = 0x40;
 
     enum class VERSION
     {
@@ -39,6 +41,8 @@ namespace HEADER {
         GATEWAY_ENCRYPTED = VERSION_FLAG_RADUINO_PAYLOAD | VERSION_FLAG_ENCRYPTED,                              // 3
         NODE = VERSION_FLAG_RADUINO_PAYLOAD | VERSION_FLAG_DESTINATION_NODE,                                    // 5
         NODE_ENCRYPTED = VERSION_FLAG_RADUINO_PAYLOAD | VERSION_FLAG_ENCRYPTED | VERSION_FLAG_DESTINATION_NODE, // 7
+        LINK_ADVERTISEMENT = VERSION_FLAG_LINK,                                                                 // 128
+        LINK_WAKEUP = VERSION_FLAG_LINK | VERSION_FLAG_LINK_WAKEUP,                                             // 129
     };
 }
 

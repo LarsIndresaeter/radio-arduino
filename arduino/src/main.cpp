@@ -189,7 +189,7 @@ int main()
 
     EEPROM_DATA_STORE::incrementRestarts();
 
-    RADIOLINK::setDeviceId(EEPROM_DATA_STORE::getUniqueId());
+    RADIOLINK::setDestinationAddress(EEPROM_DATA_STORE::getUniqueId());
 
     if (rx_mode_gateway) {
         Uart uart;
