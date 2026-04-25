@@ -9,6 +9,27 @@ uint8_t rx_tx_addr[5] = { 0xF0, 0xF0, 0xF0, 0xF0, 0 };
 uint32_t destination_address = 0;
 uint32_t id_from_last_advertisement_message = 0;
 
+#define CRC32_POLY 0x04C11DB7 /* AUTODIN II, Ethernet, & FDDI */
+
+void CRC32_calculate(uint8_t* buf, uint16_t length, uint32_t* pCrc)
+{
+    uint8_t* p;
+    uint32_t tmp;
+
+    tmp = *pCrc;
+
+    for (p = &buf[0]; length > 0; ++p, --length) {
+        uint32_t crcTableVal;
+        uint8_t crcTableIndex = (uint8_t)(tmp >> 24) ^ *p;
+        uint8_t j;
+        for (crcTableVal = (uint32_t)crcTableIndex << 24, j = 8; j > 0; --j) {
+            crcTableVal = (crcTableVal & 0x80000000) ? ((crcTableVal << 1) ^ CRC32_POLY) : (crcTableVal << 1);
+        }
+        tmp = (tmp << 8) ^ crcTableVal;
+    }
+    *pCrc = tmp;
+}
+
 uint32_t getLastDeviceIdSeen()
 {
     uint32_t tmp = id_from_last_advertisement_message;
@@ -17,20 +38,76 @@ uint32_t getLastDeviceIdSeen()
     return (tmp);
 }
 
-uint8_t advertisement_sequence_counter = 0;
+advertisement_payload_t scanForAdvertisement(uint32_t id, uint16_t timeout)
+{
+    advertisement_payload_t result = { 0 };
+    id_from_last_advertisement_message = 0; // clear this value to avoid confusion
+
+    if (rx_mode_gateway) {
+        for (uint16_t i = 0; i < timeout; i++) {
+            uint8_t read_advertisement_package[32] = { 0 };
+            uint8_t length = NRF24L01_read_rx_payload(&read_advertisement_package[0]);
+            uint8_t discovered = isAdvertisementPackage(length, read_advertisement_package);
+
+            if (discovered == 1) {
+                if ((id == 0) || (id_from_last_advertisement_message == id)) {
+                    result.id = id_from_last_advertisement_message;
+                    result.flags = read_advertisement_package[offset_advertisement_pdu];
+                    result.sequence_number
+                        = static_cast<uint32_t>(read_advertisement_package[offset_advertisement_sequence_number]) << 24;
+                    result.sequence_number
+                        += static_cast<uint32_t>(read_advertisement_package[offset_advertisement_sequence_number + 1])
+                        << 16;
+                    result.sequence_number
+                        += static_cast<uint32_t>(read_advertisement_package[offset_advertisement_sequence_number + 2])
+                        << 8;
+                    result.sequence_number
+                        += static_cast<uint32_t>(read_advertisement_package[offset_advertisement_sequence_number + 3]);
+
+                    for (uint8_t i = 0; i < advertisement_payload_data_size; i++) {
+                        result.data[i] = read_advertisement_package[offset_advertisement_data + i];
+                    }
+
+                    break;
+                }
+            }
+            _delay_ms(5);
+            i += 5;
+        }
+    }
+
+    return (result);
+}
+
+uint32_t advertisement_sequence_number = 0;
 
 void populateAdvertisementPackage(uint8_t* buffer, uint8_t attentionFlag)
 {
-    for (uint8_t i = 0; i < 27; i++) {
+    for (uint8_t i = 0; i < 32; i++) {
         buffer[i] = advertisement_package_prototype[i];
     }
 
     buffer[offset_advertisement_flags] = attentionFlag;
-    buffer[offset_advertisement_sequence_counter] = advertisement_sequence_counter++;
+    buffer[offset_advertisement_flags] = attentionFlag;
+    buffer[offset_advertisement_sequence_number] = advertisement_sequence_number >> 24;
+    buffer[offset_advertisement_sequence_number + 1] = advertisement_sequence_number >> 16;
+    buffer[offset_advertisement_sequence_number + 2] = advertisement_sequence_number >> 8;
+    buffer[offset_advertisement_sequence_number + 3] = advertisement_sequence_number;
     buffer[offset_advertisement_id] = destination_address >> 24;
     buffer[offset_advertisement_id + 1] = destination_address >> 16;
     buffer[offset_advertisement_id + 2] = destination_address >> 8;
     buffer[offset_advertisement_id + 3] = destination_address;
+
+    uint32_t crc=0;
+    CRC32_calculate(&buffer[offset_advertisement_pdu], 26, &crc);
+
+    uint8_t crc_h = crc >> 8;
+    uint8_t crc_l = crc;
+
+    buffer[offset_advertisement_crc] = crc_h; // use lower 16 bits as crc value for block
+    buffer[offset_advertisement_crc + 1] = crc_l;
+
+    advertisement_sequence_number++;
 }
 
 void populateWakeupPackage(uint8_t* buffer, uint32_t id)
@@ -194,6 +271,23 @@ uint8_t isAdvertisementPackage(uint8_t response_length, uint8_t* packet)
             if (packet[j] != rf_link_advertisement_package[j]) {
                 is_wakeup_ack = 0;
             }
+        }
+    }
+
+    // not working yet
+    if (is_wakeup_ack == 1) {
+        uint32_t crc=0;
+        CRC32_calculate(&packet[offset_advertisement_pdu], 26, &crc);
+
+        uint8_t crc_h = crc >> 8;
+        uint8_t crc_l = crc;
+
+        if (crc_h != packet[offset_advertisement_crc]) {
+            is_wakeup_ack = 0;
+        }
+
+        if (crc_l != packet[offset_advertisement_crc + 1]) {
+            is_wakeup_ack = 0;
         }
     }
 

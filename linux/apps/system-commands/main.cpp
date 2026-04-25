@@ -26,6 +26,8 @@ void print_usage()
     std::cout << "                 -C : SHA1 command on node" << std::endl;
     std::cout << "                 -d : debug command on gateway" << std::endl;
     std::cout << "                 -D : debug command on node" << std::endl;
+    std::cout << "                 -e : scan for advertisement" << std::endl;
+    std::cout << "            -E <id> : scan for advertisement from <id>" << std::endl;
     std::cout << "                 -p : ping gateway" << std::endl;
     std::cout << "                 -P : ping node" << std::endl;
     std::cout << "           -f <key> : set data encryption key on gateway" << std::endl;
@@ -82,7 +84,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint32_t radioAddress = 0;
     bool verbose = false;
 
-    while ((option = getopt(argc, argv, "aAbBK:N:c:C:f:F:g:G:lLiImMxXrRdDpPt:T:usSUvVzZk:h")) != -1) {
+    while ((option = getopt(argc, argv, "aAbBK:N:c:C:f:F:g:G:lLiImMxXrRdeE:DpPt:T:usSUvVzZk:h")) != -1) {
         switch (option) {
         case 'a':
             versionCheck(mon, mon.get<>(RaduinoCommandGetVersion()).getVersionstring());
@@ -207,6 +209,12 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             break;
         case 'd':
             std::cout << mon.get<>(RaduinoCommandDebug()) << std::endl;
+            break;
+        case 'e':
+            std::cout << mon.get<>(RaduinoCommandScanForAdvertisement(0, 10000), 12000ms) << std::endl;
+            break;
+        case 'E':
+            std::cout << mon.get<>(RaduinoCommandScanForAdvertisement(atoi(optarg), 10000), 12000ms) << std::endl;
             break;
         case 'D':
             std::cout << mon.getRadio<>(RaduinoCommandDebug()) << std::endl;

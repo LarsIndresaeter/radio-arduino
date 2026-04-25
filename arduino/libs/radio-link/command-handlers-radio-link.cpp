@@ -38,4 +38,21 @@ void commandGetLastDeviceIdSeen(uint8_t* commandPayload, uint8_t* responsePayloa
     response.serialize(responsePayload);
 }
 
+void commandScanForAdvertisement(uint8_t* commandPayload, uint8_t* responsePayload)
+{
+    COMMANDS::SCAN_FOR_ADVERTISEMENT::command_t command(commandPayload);
+    COMMANDS::SCAN_FOR_ADVERTISEMENT::response_t response;
+
+    advertisement_payload_t pdu = scanForAdvertisement(command.getId(), command.getTimeout());
+
+    response.setFlags(pdu.flags);
+    response.setId(pdu.id);
+    response.setSequence_number(pdu.sequence_number);
+    for (uint8_t i = 0; i < advertisement_payload_data_size; i++) {
+        response.data[i] = pdu.data[i];
+    }
+
+    response.serialize(responsePayload);
+}
+
 } // namespace RADIOLINK

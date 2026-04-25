@@ -50,3 +50,4 @@
 #include <cmd/get_attached_devices_csv_string/command.hxx>
 #include <cmd/get_last_device_id_seen/command.hxx>
 #include <cmd/get_active_time_counter/command.hxx>
+#include <cmd/scan_for_advertisement/command.hxx>
