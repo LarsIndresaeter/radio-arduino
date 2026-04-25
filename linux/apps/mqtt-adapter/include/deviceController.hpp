@@ -15,13 +15,12 @@ public:
         uint32_t gatewayAddress);
 
     void execute();
-    void discoveryReceived(uint32_t nodeAddress);
+    void advertisementReceived(uint32_t nodeAddress, uint32_t sequenceNumber);
     void setPublishBirth(bool value);
     void setPublishAdvertisement(bool value);
     void parseMessage(std::string topic, std::string message);
     uint32_t getNodeAddress();
     std::string getTopicString();
-    uint32_t getLastDeviceIdSeen();
 
 private:
     void log(std::string type, std::string message);
@@ -47,9 +46,9 @@ private:
     mqtt::async_client& m_mqttClient;
     int healthIndicator = 0;
     uint64_t timestampLastDiscovery = 0;
+    uint32_t m_sequenceNumber = 0;
     uint32_t m_radioAddress = 0;
     uint32_t m_gatewayAddress = 0;
-    uint32_t m_lastDeviceIdSeen = 0;
     bool m_publishBirth = false;
     bool m_publishAdvertisement = false;
     bool m_commandReceived = false;

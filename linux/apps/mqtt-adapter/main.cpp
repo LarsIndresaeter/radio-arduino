@@ -22,9 +22,15 @@ void registerNode(
     uint32_t nodeAddress,
     std::vector<std::shared_ptr<DeviceController>>& deviceControllerList,
     CommandCallback& commandCallback,
-    uint32_t gatewayAddress)
+    uint32_t gatewayAddress,
+    uint32_t sequenceNumber)
 {
     bool isNewNode = true;
+
+    if(nodeAddress == 0)
+    {
+        isNewNode = false;
+    }
 
     for (auto it = deviceControllerList.begin(); it != deviceControllerList.end(); ++it) {
         if ((*it)->getNodeAddress() == nodeAddress) {
@@ -44,7 +50,7 @@ void registerNode(
     else {
         for (std::shared_ptr<DeviceController> deviceController : deviceControllerList) {
             if (deviceController->getNodeAddress() == nodeAddress) {
-                deviceController->discoveryReceived(nodeAddress);
+                deviceController->advertisementReceived(nodeAddress, sequenceNumber);
             }
         }
     }
@@ -61,9 +67,8 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
         if (gatewayAddress > 0) {
             break;
         }
-        if(i>4)
-        {
-        std::cout << "DEBUG: read gateway address " << std::to_string(i) << " times" << std::endl;
+        if (i > 4) {
+            std::cout << "DEBUG: read gateway address " << std::to_string(i) << " times" << std::endl;
         }
         std::this_thread::sleep_for(i * 100ms);
     }
@@ -81,31 +86,37 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
     std::cout << "connected to gateway: " << std::to_string(gatewayAddress) << std::endl;
     mqtt_client.subscribe(commandTopic1, QOS)->wait();
 
-    registerNode(mon, mqtt_client, gatewayAddress, deviceControllerList, commandCallback, gatewayAddress);
+    registerNode(mon, mqtt_client, gatewayAddress, deviceControllerList, commandCallback, gatewayAddress, 0);
 
     uint64_t timestampLastGatewayAdvertisement = 0;
+    uint32_t gatewaySequenceNumber = 0;
 
     while (true) {
         for (std::shared_ptr<DeviceController> deviceController : deviceControllerList) {
             deviceController->execute();
 
-            std::this_thread::sleep_for(50ms);
+            // std::this_thread::sleep_for(50ms);
         }
 
-        uint32_t lastNode = mon.get<>(RaduinoCommandGetLastDeviceIdSeen()).responseStruct().getId();
-        if (lastNode != 0) {
-            registerNode(mon, mqtt_client, lastNode, deviceControllerList, commandCallback, gatewayAddress);
+        // scan for new advertisement with timeout
+        auto responseStruct = mon.get<>(RaduinoCommandScanForAdvertisement(0, 50)).responseStruct();
+        uint32_t nodeAddress = responseStruct.getId();
+
+        if (nodeAddress != 0) {
+            registerNode(
+                mon, mqtt_client, nodeAddress, deviceControllerList, commandCallback, gatewayAddress, responseStruct.getSequence_number());
         }
 
         // TODO: extract this to a function
         uint64_t timestampMsSinceEpoch = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count());
         if ((timestampMsSinceEpoch - timestampLastGatewayAdvertisement) > 5000) {
             timestampLastGatewayAdvertisement = timestampMsSinceEpoch;
-            //std::cout << "DEBUG: publish discovery for gateway:" << std::to_string(gatewayAddress) << ", timestamp:" << std::to_string(timestampLastGatewayAdvertisement) << std::endl;
+            // std::cout << "DEBUG: publish discovery for gateway:" << std::to_string(gatewayAddress) << ", timestamp:"
+            // << std::to_string(timestampLastGatewayAdvertisement) << std::endl;
 
             for (std::shared_ptr<DeviceController> deviceController : deviceControllerList) {
                 if (deviceController->getNodeAddress() == gatewayAddress) {
-                    deviceController->discoveryReceived(gatewayAddress);
+                    deviceController->advertisementReceived(gatewayAddress, gatewaySequenceNumber++);
                 }
             }
         }

@@ -64,13 +64,12 @@ void DeviceController::execute()
 
         json advertisement = { { "nodeAddress", m_radioAddress },
                                { "lastAdvertisement", timestampLastDiscovery },
-                               { "nodeType", m_nodeType } };
+                               { "nodeType", m_nodeType },
+                               {"sequenceNumber", m_sequenceNumber}};
 
         publishMessage(topic, advertisement.dump());
         setPublishAdvertisement(false);
     }
-
-    m_lastDeviceIdSeen = m_monitor.get<>(RaduinoCommandGetLastDeviceIdSeen()).responseStruct().getId();
 }
 
 void DeviceController::publishState()
@@ -80,7 +79,7 @@ void DeviceController::publishState()
     publishMessage(topic, m_command);
 }
 
-void DeviceController::discoveryReceived(uint32_t nodeAddress)
+void DeviceController::advertisementReceived(uint32_t nodeAddress, uint32_t sequenceNumber)
 {
     using namespace std::chrono;
     if (nodeAddress == m_radioAddress) {
@@ -89,6 +88,7 @@ void DeviceController::discoveryReceived(uint32_t nodeAddress)
         setPublishAdvertisement(true);
 
         timestampLastDiscovery = timestamp;
+        m_sequenceNumber = sequenceNumber;
 
         if (healthIndicator < 0) {
             healthIndicator = 0; // discovery received but no response yet
@@ -99,8 +99,6 @@ void DeviceController::discoveryReceived(uint32_t nodeAddress)
         }
     }
 }
-
-uint32_t DeviceController::getLastDeviceIdSeen() { return (m_lastDeviceIdSeen); }
 
 void DeviceController::log(std::string type, std::string message)
 {

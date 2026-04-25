@@ -141,20 +141,32 @@ void detectRadioNodesAndTestConnection(monitor& mon)
         return;
     }
 
-    //std::string gatewayName = mon.get<>(RaduinoCommandGetDeviceName()).getNamestring();
-    //std::cout << "DEBUG: gw:" << std::to_string(gatewayAddress) << "/" << gatewayName << " nodes:";
+    // std::string gatewayName = mon.get<>(RaduinoCommandGetDeviceName()).getNamestring();
+    // std::cout << "DEBUG: gw:" << std::to_string(gatewayAddress) << "/" << gatewayName << " nodes:";
 
-    for (int i = 0; i < 1000; i++) {
+    using namespace std::chrono;
+    int start_ms = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+    int time_ms = start_ms;
+
+    while (time_ms - start_ms < 6000) {
+        // ask for observed nodeAddress (id)
         uint32_t nodeAddress = mon.get<>(RaduinoCommandGetLastDeviceIdSeen()).responseStruct().getId();
+
+        // scan with timeout
+        if (nodeAddress == 0) {
+            nodeAddress = mon.get<>(RaduinoCommandScanForAdvertisement(0, 10000)).responseStruct().getId();
+        }
+
         if (nodeAddress != 0) {
             if (std::find(nodeList.begin(), nodeList.end(), nodeAddress) == nodeList.end()) {
                 nodeList.push_back(nodeAddress);
-                //std::cout << " " << std::to_string(nodeAddress);
+                // std::cout << " " << std::to_string(nodeAddress);
             }
         }
-        std::this_thread::sleep_for(10ms);
+
+        time_ms = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
     }
-    //std::cout << std::endl;
+    // std::cout << std::endl;
 
     std::cout << "| -------------------------------------------------------------------- |" << std::endl;
     std::cout << "|      nodeAddress |      deviceName |    ping | version | devicesList |" << std::endl;
