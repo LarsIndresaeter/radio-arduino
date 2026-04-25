@@ -11,10 +11,16 @@ with any chip.
 raduino-system-commands
            -K <key> : encrypt command with transport key
        -N <address> : wakeup node address
+                 -a : check if arduino version is correct on node
+                 -A : check if arduino version is correct on gateway
+                 -b : return avtive and sleep time from gateway
+                 -B : return avtive and sleep time from node
                  -c : SHA1 command on gateway
                  -C : SHA1 command on node
                  -d : debug command on gateway
                  -D : debug command on node
+                 -e : scan for advertisement
+            -E <id> : scan for advertisement from <id>
                  -p : ping gateway
                  -P : ping node
            -f <key> : set data encryption key on gateway
@@ -25,6 +31,8 @@ raduino-system-commands
                  -I : get unique id from node
                  -r : get random bytes command on gateway
                  -R : get random bytes command on node
+                 -l : get attached devices csv string from gateway
+                 -L : get attached devices csv string from node
                  -s : get statistics from gateway
                  -S : get statistics from node
                  -m : get device name from gateway
@@ -36,6 +44,9 @@ raduino-system-commands
                  -V : get device version from node
                  -x : HOTP command on gateway
                  -X : HOTP command on node
+                 -Z : Verbose on
+                 -z : Verbose off
+                 -k : set keep alive time in milliseconds
                  -h : print this text
 ```
 

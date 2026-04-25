@@ -6,7 +6,7 @@ sleep mode as much as possible. This has lead to the following design decisions.
 - After a set time of no communication with the radio node it goes to sleep.
 During this time the atmega328 draws 1mA of current unless you use a low power
 RTC to wake it up.
-- Every 5 seconds the node wakes up and sends a `discover` message. It waits
+- Every 5 seconds the node wakes up and sends a `advertisement` message. It waits
   10ms for a `wakeup` command before it sleeps another 5 seconds. This increase
   the average power consumption to 1.1mA for a board that draws no power for
   other things than the atmega328

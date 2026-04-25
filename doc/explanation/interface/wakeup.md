@@ -5,7 +5,7 @@
 The diagram below shows how the [radioSession](../../../linux/libs/radiosession/radioSession.cpp)
 class wake up a sleeping node.
 
-> Note that the node sends a discover message every 5 seconds so it is really
+> Note that the node sends a advertisement message every 5 seconds so it is really
 waking itself up.
 
 ```mermaid
@@ -20,7 +20,7 @@ sequenceDiagram
     alt node is sleeping
         a->>g: wakeup command
         loop 5 seconds
-            n->>g: discover
+            n->>g: advertisement
         end
         g-->>a: wakeup response
     end

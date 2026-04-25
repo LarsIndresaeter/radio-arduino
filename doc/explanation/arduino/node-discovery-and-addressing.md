@@ -8,7 +8,6 @@ to communicating with multiple nodes.
 - Each node had to receive a command changing the address for a gateway to talk
 to multiple nodes to.
 - Resetting a node requires reprogramming of the node.
-- The discovery message sent from the node acts more like an advertisement than discovery.
 
 Fixing this requires breaking changes and the major version number will increase
 after fixing it.
@@ -42,4 +41,10 @@ after fixing it.
 
 - P0 alternate between broadcast address and node address
 - tx_addr is set to same address as P0
+
+## changes in version 3
+
+- discovery messages were renamed to advertisement and the format changed
+  - add sequence counter
+  - increase size of data in payload. The format will be defined later
 

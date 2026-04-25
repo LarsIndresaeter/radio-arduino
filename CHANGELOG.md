@@ -1,14 +1,18 @@
 # Changelog
 
-## changes since version 2.2.1
+## version 3.0.0
 
 - minor bugfixes
+- new link level packages for advertisement and wakeup
+- new command for scanning for radio nodes
 
 ## version 2.2.1
 
 - option for testing communication stability in raduino-test
 - close communication pipe when polling or advertisements. This improves stability
 - fix bug in wakeup mechanism
+- BREAKING CHANGE: change format of link level messages like advertisement and wakeup
+- add command that scans for and read advertisement package
 
 ## version 2.2.0
 
