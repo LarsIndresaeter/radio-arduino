@@ -1,5 +1,7 @@
 # command SetRadioRole
 
+commandId = 38
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/set_radio_role/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/set_radio_role/payload.hxx)
 

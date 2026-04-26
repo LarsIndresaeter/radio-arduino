@@ -1,5 +1,7 @@
 # command Nrf24l01Write
 
+commandId = 26
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/nrf24l01_write/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/nrf24l01_write/payload.hxx)
 

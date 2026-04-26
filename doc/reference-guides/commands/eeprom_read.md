@@ -1,5 +1,7 @@
 # command EepromRead
 
+commandId = 6
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/eeprom_read/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/eeprom_read/payload.hxx)
 

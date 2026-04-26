@@ -1,5 +1,7 @@
 # command SetUniqueId
 
+commandId = 41
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/set_unique_id/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/set_unique_id/payload.hxx)
 

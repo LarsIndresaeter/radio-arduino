@@ -1,5 +1,7 @@
 # command Aes
 
+commandId = 7
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/aes/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/aes/payload.hxx)
 

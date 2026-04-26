@@ -1,5 +1,7 @@
 # command SetKey
 
+commandId = 16
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/set_key/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/set_key/payload.hxx)
 

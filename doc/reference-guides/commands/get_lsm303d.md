@@ -1,5 +1,7 @@
 # command GetLsm303d
 
+commandId = 43
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/get_lsm303d/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/get_lsm303d/payload.hxx)
 

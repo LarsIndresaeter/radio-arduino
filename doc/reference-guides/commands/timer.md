@@ -1,5 +1,7 @@
 # command Timer
 
+commandId = 21
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/timer/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/timer/payload.hxx)
 

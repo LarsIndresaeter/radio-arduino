@@ -1,5 +1,7 @@
 # command GetStatistics
 
+commandId = 36
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/get_statistics/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/get_statistics/payload.hxx)
 

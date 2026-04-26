@@ -1,5 +1,7 @@
 # command RadioUart
 
+commandId = 27
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/radio_uart/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/radio_uart/payload.hxx)
 

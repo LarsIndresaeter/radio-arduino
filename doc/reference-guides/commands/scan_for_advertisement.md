@@ -1,5 +1,7 @@
 # command ScanForAdvertisement
 
+commandId = 48
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/scan_for_advertisement/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/scan_for_advertisement/payload.hxx)
 

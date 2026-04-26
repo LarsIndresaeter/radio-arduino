@@ -3,6 +3,14 @@
 import os
 from libgenerate.common import *
 
+def calculateStructSizeFromNames(commandPayloadFields):
+    length = 0
+
+    for item in commandPayloadFields:
+        length = length + arraySizeFromVariableName(item)
+
+    return length 
+
 def generateDocumentationReadme(commandDocumentationDirectory):
 
     os.makedirs(commandDocumentationDirectory, exist_ok=True)
@@ -11,27 +19,38 @@ def generateDocumentationReadme(commandDocumentationDirectory):
     with open(readmeFile, 'w') as outfile:
         outfile.write("# commands\n")
         outfile.write("\n")
+        outfile.write("- id: command id\n")
+        outfile.write("- cmd: total bytes in command\n")
+        outfile.write("- res: total bytes in response\n")
+        outfile.write("\n")
+        outfile.write("|  id | cmd | res | command                                                                |\n")
 
-def appendDocumentationReadme(commandDocumentationDirectory, commandName):
+def appendDocumentationReadme(commandDocumentationDirectory, commandName, commandId, commandPayloadFields, responsePayloadFields):
     os.makedirs(commandDocumentationDirectory, exist_ok=True)
     readmeFile = commandDocumentationDirectory + "README.md"
 
     with open(readmeFile, 'a') as outfile:
-        outfile.write("- [" + snakecaseToCamelCase(commandName) + "](./" +commandName + ".md)\n")
+        commandLength = 8 + calculateStructSizeFromNames(commandPayloadFields)
+        responseLength = 8 + calculateStructSizeFromNames(responsePayloadFields)
+        commandLink=f"[{snakecaseToCamelCase(commandName)}](./{commandName}.md)"
+        outfile.write(f"| {commandId:3} | {commandLength:3} | {responseLength:3} | {commandLink:70} |\n")
 
 def generateDocumentationFile(commandDocumentationDirectory,
                               commandName,
                               commandPayloadFields,
-                              responsePayloadFields):
+                              responsePayloadFields,
+                              commandId):
 
     os.makedirs(commandDocumentationDirectory, exist_ok=True)
     commandDocumentationFile = commandDocumentationDirectory + commandName + ".md"
 
-    appendDocumentationReadme(commandDocumentationDirectory, commandName)
+    appendDocumentationReadme(commandDocumentationDirectory, commandName, commandId, commandPayloadFields, responsePayloadFields)
 
     ## class
     with open(commandDocumentationFile, 'w') as outfile:
         outfile.write("# command " + snakecaseToCamelCase(commandName) + "\n")
+        outfile.write("\n")
+        outfile.write(f"commandId = {commandId}\n")
         outfile.write("\n")
         outfile.write("- [command.hxx](../../../interface/libs/commands/include/cmd/" + commandName + "/command.hxx)\n")
         outfile.write("- [payload.hxx](../../../interface/libs/commands/include/cmd/" + commandName + "/payload.hxx)\n")

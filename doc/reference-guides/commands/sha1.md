@@ -1,5 +1,7 @@
 # command Sha1
 
+commandId = 3
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/sha1/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/sha1/payload.hxx)
 

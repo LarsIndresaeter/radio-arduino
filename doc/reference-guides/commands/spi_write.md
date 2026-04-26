@@ -1,5 +1,7 @@
 # command SpiWrite
 
+commandId = 23
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/spi_write/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/spi_write/payload.hxx)
 

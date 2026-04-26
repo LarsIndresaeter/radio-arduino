@@ -1,5 +1,7 @@
 # command EepromWrite
 
+commandId = 5
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/eeprom_write/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/eeprom_write/payload.hxx)
 

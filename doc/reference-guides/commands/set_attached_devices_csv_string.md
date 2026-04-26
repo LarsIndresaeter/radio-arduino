@@ -1,5 +1,7 @@
 # command SetAttachedDevicesCsvString
 
+commandId = 44
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/set_attached_devices_csv_string/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/set_attached_devices_csv_string/payload.hxx)
 

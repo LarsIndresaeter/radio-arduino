@@ -1,5 +1,7 @@
 # command GetVersion
 
+commandId = 35
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/get_version/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/get_version/payload.hxx)
 

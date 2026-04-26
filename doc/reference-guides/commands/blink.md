@@ -1,5 +1,7 @@
 # command Blink
 
+commandId = 2
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/blink/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/blink/payload.hxx)
 

@@ -1,5 +1,7 @@
 # command Nrf24l01Init
 
+commandId = 24
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/nrf24l01_init/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/nrf24l01_init/payload.hxx)
 

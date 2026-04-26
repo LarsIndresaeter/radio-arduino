@@ -1,5 +1,7 @@
 # command SpiRead
 
+commandId = 22
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/spi_read/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/spi_read/payload.hxx)
 

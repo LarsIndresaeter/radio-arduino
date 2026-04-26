@@ -1,5 +1,7 @@
 # command RequireTransportEncryption
 
+commandId = 37
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/require_transport_encryption/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/require_transport_encryption/payload.hxx)
 

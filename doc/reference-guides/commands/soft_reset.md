@@ -1,5 +1,7 @@
 # command SoftReset
 
+commandId = 39
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/soft_reset/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/soft_reset/payload.hxx)
 

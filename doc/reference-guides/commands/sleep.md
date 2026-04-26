@@ -1,5 +1,7 @@
 # command Sleep
 
+commandId = 29
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/sleep/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/sleep/payload.hxx)
 

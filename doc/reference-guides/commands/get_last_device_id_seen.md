@@ -1,5 +1,7 @@
 # command GetLastDeviceIdSeen
 
+commandId = 46
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/get_last_device_id_seen/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/get_last_device_id_seen/payload.hxx)
 

@@ -1,5 +1,7 @@
 # command Pwm
 
+commandId = 8
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/pwm/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/pwm/payload.hxx)
 

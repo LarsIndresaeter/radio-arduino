@@ -1,5 +1,7 @@
 # command KeepAlive
 
+commandId = 32
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/keep_alive/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/keep_alive/payload.hxx)
 

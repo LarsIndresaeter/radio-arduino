@@ -1,5 +1,7 @@
 # command SetDeviceName
 
+commandId = 17
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/set_device_name/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/set_device_name/payload.hxx)
 

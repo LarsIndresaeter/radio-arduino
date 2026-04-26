@@ -1,5 +1,7 @@
 # command I2cRead
 
+commandId = 13
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/i2c_read/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/i2c_read/payload.hxx)
 

@@ -1,5 +1,7 @@
 # command Nrf24l01Read
 
+commandId = 25
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/nrf24l01_read/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/nrf24l01_read/payload.hxx)
 

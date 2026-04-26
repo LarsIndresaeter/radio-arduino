@@ -1,5 +1,7 @@
 # command QuadratureEncoder
 
+commandId = 34
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/quadrature_encoder/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/quadrature_encoder/payload.hxx)
 

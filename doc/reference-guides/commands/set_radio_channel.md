@@ -1,5 +1,7 @@
 # command SetRadioChannel
 
+commandId = 31
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/set_radio_channel/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/set_radio_channel/payload.hxx)
 

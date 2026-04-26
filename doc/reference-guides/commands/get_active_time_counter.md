@@ -1,5 +1,7 @@
 # command GetActiveTimeCounter
 
+commandId = 47
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/get_active_time_counter/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/get_active_time_counter/payload.hxx)
 

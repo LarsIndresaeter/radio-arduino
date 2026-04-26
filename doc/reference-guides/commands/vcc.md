@@ -1,5 +1,7 @@
 # command Vcc
 
+commandId = 28
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/vcc/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/vcc/payload.hxx)
 

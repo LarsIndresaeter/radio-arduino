@@ -1,5 +1,7 @@
 # command Ping
 
+commandId = 33
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/ping/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/ping/payload.hxx)
 

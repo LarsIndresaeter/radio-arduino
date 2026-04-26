@@ -1,5 +1,7 @@
 # command Wakeup
 
+commandId = 30
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/wakeup/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/wakeup/payload.hxx)
 

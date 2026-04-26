@@ -1,5 +1,7 @@
 # command Random
 
+commandId = 9
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/random/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/random/payload.hxx)
 

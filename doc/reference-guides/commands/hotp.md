@@ -1,5 +1,7 @@
 # command Hotp
 
+commandId = 4
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/hotp/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/hotp/payload.hxx)
 

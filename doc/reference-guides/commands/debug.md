@@ -1,5 +1,7 @@
 # command Debug
 
+commandId = 10
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/debug/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/debug/payload.hxx)
 

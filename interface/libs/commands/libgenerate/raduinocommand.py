@@ -25,5 +25,5 @@ class raduinoCommandGenerator:
 
         generateCommandFile(self.codePath, commandId, commandName, commandPayloadFields, responsePayloadFields)
         generatePayloadFile(self.codePath, commandName, commandPayloadFields, responsePayloadFields)
-        generateDocumentationFile(self.docPath, commandName, commandPayloadFields, responsePayloadFields)
+        generateDocumentationFile(self.docPath, commandName, commandPayloadFields, responsePayloadFields, commandId)
 

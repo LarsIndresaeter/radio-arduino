@@ -1,5 +1,7 @@
 # command UnlockSession
 
+commandId = 40
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/unlock_session/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/unlock_session/payload.hxx)
 

@@ -1,5 +1,7 @@
 # command I2cWrite
 
+commandId = 12
+
 - [command.hxx](../../../interface/libs/commands/include/cmd/i2c_write/command.hxx)
 - [payload.hxx](../../../interface/libs/commands/include/cmd/i2c_write/payload.hxx)
 
