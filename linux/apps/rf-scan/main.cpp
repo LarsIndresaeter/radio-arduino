@@ -98,7 +98,7 @@ bool decodeAndPrint(COMMANDS::SCAN_FOR_ADVERTISEMENT::response_t responseStruct)
 
 void scan(
     monitor& mon,
-    uint8_t radioAddress,
+    uint32_t radioAddress,
     bool printJson,
     bool printStd,
     bool printTimestamp,
@@ -122,6 +122,11 @@ void scan(
         std::cout << "raw data";
     }
     std::cout << std::endl;
+
+    // flush buffered responses
+    mon.get<>(RaduinoCommandPing());
+    mon.get<>(RaduinoCommandPing());
+    auto result = mon.get<>(RaduinoCommandScanForAdvertisement(radioAddress, 10000), 200ms);
 
     while (true) {
         auto result = mon.get<>(RaduinoCommandScanForAdvertisement(radioAddress, 10000), 12000ms);
