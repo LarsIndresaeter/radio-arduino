@@ -1,8 +1,14 @@
 # Changelog
 
+## changes since version 3.0.0
+
+- new set_subscription command which will broadcast data in advertisement packages
+- new tool raduino-fr-scan that will print advertisement packages in several formats
+
 ## version 3.0.0
 
 - minor bugfixes
+- BREAKING CHANGE: change format of link level messages like advertisement and wakeup
 - new link level packages for advertisement and wakeup
 - new command for scanning for radio nodes
 
@@ -11,7 +17,6 @@
 - option for testing communication stability in raduino-test
 - close communication pipe when polling or advertisements. This improves stability
 - fix bug in wakeup mechanism
-- BREAKING CHANGE: change format of link level messages like advertisement and wakeup
 - add command that scans for and read advertisement package
 
 ## version 2.2.0
