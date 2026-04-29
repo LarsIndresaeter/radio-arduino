@@ -53,6 +53,8 @@ uint8_t clearChangedFlag()
     uint8_t retval = quadencoder_updated;
     quadencoder_updated = 0;
 
+        EIFR = (1 << INTF1); // clear INT1 flag
+                             
     return retval;
 }
 
@@ -69,6 +71,8 @@ void initialize()
         PCMSK1 = 0x05;       // enable pin PCINT8 (PC0) and PCINT10 (PC2)
 
         PORTC |= 0x07; // enable pull-up resistor
+
+        EIFR = (1 << INTF1); // clear INT1 flag
 
         sei();
     }
