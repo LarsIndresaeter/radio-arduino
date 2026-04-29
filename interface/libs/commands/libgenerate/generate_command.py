@@ -9,6 +9,8 @@ def generateCommandIdOpen(codePath):
         outfile.write("#pragma once\n") 
         outfile.write("// This file is generated with the script: `interface/libs/commands/generate.py`\n")
         outfile.write("\n") 
+        outfile.write("#include <stdint.h>\n") 
+        outfile.write("\n") 
         outfile.write("namespace COMMANDS {\n") 
         outfile.write("\n") 
         outfile.write("constexpr uint8_t MAX_PAYLOAD_LENGTH = 66;\n")

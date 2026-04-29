@@ -1,6 +1,8 @@
 #pragma once
 // This file is generated with the script: `interface/libs/commands/generate.py`
 
+#include <stdint.h>
+
 namespace COMMANDS {
 
 constexpr uint8_t MAX_PAYLOAD_LENGTH = 66;
