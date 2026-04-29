@@ -51,3 +51,4 @@
 #include <cmd/get_last_device_id_seen/command.hxx>
 #include <cmd/get_active_time_counter/command.hxx>
 #include <cmd/scan_for_advertisement/command.hxx>
+#include <cmd/set_subscription/command.hxx>
