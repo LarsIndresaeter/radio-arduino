@@ -2,6 +2,7 @@
 #include "mqtt/async_client.h"
 #include <cmath>
 #include <cmd/commands.hxx>
+#include <cmd/quadrature_encoder/command.hxx>
 #include <commandCallback.hpp>
 #include <deviceController.hpp>
 #include <eventprocess.hpp>
@@ -23,12 +24,12 @@ void registerNode(
     std::vector<std::shared_ptr<DeviceController>>& deviceControllerList,
     CommandCallback& commandCallback,
     uint32_t gatewayAddress,
-    uint32_t sequenceNumber)
+    uint32_t sequenceNumber,
+    uint8_t subscriptionId)
 {
     bool isNewNode = true;
 
-    if(nodeAddress == 0)
-    {
+    if (nodeAddress == 0) {
         isNewNode = false;
     }
 
@@ -50,9 +51,24 @@ void registerNode(
     else {
         for (std::shared_ptr<DeviceController> deviceController : deviceControllerList) {
             if (deviceController->getNodeAddress() == nodeAddress) {
-                deviceController->advertisementReceived(nodeAddress, sequenceNumber);
+                deviceController->advertisementReceived(nodeAddress, sequenceNumber, subscriptionId);
             }
         }
+    }
+}
+
+void publishMessage(mqtt::async_client& mqtt_client, std::string topic, std::string message)
+{
+    const int QOS = 0;
+    mqtt::topic mqttTopic(mqtt_client, topic, QOS, false);
+
+    try {
+        mqttTopic.publish(std::move(message));
+    }
+    catch (std::exception const& e) {
+        std::cerr << e.what() << std::endl;
+        std::cerr << "topic: " << topic << std::endl;
+        std::cerr << "message: " << message << std::endl;
     }
 }
 
@@ -86,7 +102,7 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
     std::cout << "connected to gateway: " << std::to_string(gatewayAddress) << std::endl;
     mqtt_client.subscribe(commandTopic1, QOS)->wait();
 
-    registerNode(mon, mqtt_client, gatewayAddress, deviceControllerList, commandCallback, gatewayAddress, 0);
+    registerNode(mon, mqtt_client, gatewayAddress, deviceControllerList, commandCallback, gatewayAddress, 0, 0);
 
     uint64_t timestampLastGatewayAdvertisement = 0;
     uint32_t gatewaySequenceNumber = 0;
@@ -94,8 +110,6 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
     while (true) {
         for (std::shared_ptr<DeviceController> deviceController : deviceControllerList) {
             deviceController->execute();
-
-            // std::this_thread::sleep_for(50ms);
         }
 
         // scan for new advertisement with timeout
@@ -103,20 +117,64 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
         uint32_t nodeAddress = responseStruct.getId();
 
         if (nodeAddress != 0) {
+            uint8_t OI = responseStruct.data[0];
+            uint8_t OL = responseStruct.data[1];
+            if (OI != 0) {
+                std::vector<uint8_t> advertisementDataVector;
+                advertisementDataVector.push_back(0xFE);
+                advertisementDataVector.push_back(0xED);
+                advertisementDataVector.push_back(0x00);
+                advertisementDataVector.push_back(OI + 4);
+
+                for (uint8_t i = 0; i < OL + 2; i++) {
+                    advertisementDataVector.push_back(responseStruct.data[i]);
+                }
+
+                std::string topicString = "raduino-adapter/SUBSCRIPTION/" + std::to_string(gatewayAddress) + "/"
+                    + std::to_string(nodeAddress);
+
+                if (static_cast<COMMANDS::OI>(OI) == COMMANDS::OI::QUADRATURE_ENCODER) {
+                    RaduinoCommandQuadratureEncoder subscriptionObject;
+                    subscriptionObject.setResponse(advertisementDataVector);
+                    subscriptionObject.setResponseTimeUs(0);
+
+                    std::string jsonResponse = subscriptionObject.getJson();
+                    publishMessage(mqtt_client, topicString + "/" + subscriptionObject.getCommandName(), jsonResponse);
+                }
+
+                if (static_cast<COMMANDS::OI>(OI) == COMMANDS::OI::GPIO) {
+                    RaduinoCommandGpio subscriptionObject;
+                    subscriptionObject.setResponse(advertisementDataVector);
+                    subscriptionObject.setResponseTimeUs(0);
+
+                    std::string jsonResponse = subscriptionObject.getJson();
+                    // std::cout << "DEBUG: jsonResponse=" << jsonResponse << std::endl;
+                    publishMessage(mqtt_client, topicString + "/" + subscriptionObject.getCommandName(), jsonResponse);
+                }
+            }
+
             registerNode(
-                mon, mqtt_client, nodeAddress, deviceControllerList, commandCallback, gatewayAddress, responseStruct.getSequence_number());
+                mon,
+                mqtt_client,
+                nodeAddress,
+                deviceControllerList,
+                commandCallback,
+                gatewayAddress,
+                responseStruct.getSequence_number(),
+                responseStruct.data[0]);
         }
 
         // TODO: extract this to a function
         uint64_t timestampMsSinceEpoch = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count());
         if ((timestampMsSinceEpoch - timestampLastGatewayAdvertisement) > 5000) {
             timestampLastGatewayAdvertisement = timestampMsSinceEpoch;
-            // std::cout << "DEBUG: publish discovery for gateway:" << std::to_string(gatewayAddress) << ", timestamp:"
+            // std::cout << "DEBUG: publish discovery for gateway:" << std::to_string(gatewayAddress) << ",
+            // timestamp:"
             // << std::to_string(timestampLastGatewayAdvertisement) << std::endl;
 
             for (std::shared_ptr<DeviceController> deviceController : deviceControllerList) {
                 if (deviceController->getNodeAddress() == gatewayAddress) {
-                    deviceController->advertisementReceived(gatewayAddress, gatewaySequenceNumber++);
+                    deviceController->advertisementReceived(gatewayAddress, gatewaySequenceNumber++, 0);
                 }
             }
         }

@@ -15,6 +15,7 @@ void readMultipleRadioNodes(mqtt::async_client& mqtt_client)
 
     mqtt_client.set_callback(commandCallback);
     mqtt_client.subscribe("raduino-subscription/DDATA/#", QOS)->wait();
+    mqtt_client.subscribe("raduino-router/SUBSCRIPTION/#", QOS)->wait();
     mqtt_client.subscribe("raduino-router/ADVERTISEMENT/#", QOS)->wait();
 
     while (true) {

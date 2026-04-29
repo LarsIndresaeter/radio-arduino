@@ -65,7 +65,8 @@ void DeviceController::execute()
         json advertisement = { { "nodeAddress", m_radioAddress },
                                { "lastAdvertisement", timestampLastDiscovery },
                                { "nodeType", m_nodeType },
-                               {"sequenceNumber", m_sequenceNumber}};
+                               {"sequenceNumber", m_sequenceNumber},
+                               {"subscriptionId", m_subscriptionId}};
 
         publishMessage(topic, advertisement.dump());
         setPublishAdvertisement(false);
@@ -79,7 +80,7 @@ void DeviceController::publishState()
     publishMessage(topic, m_command);
 }
 
-void DeviceController::advertisementReceived(uint32_t nodeAddress, uint32_t sequenceNumber)
+void DeviceController::advertisementReceived(uint32_t nodeAddress, uint32_t sequenceNumber, uint8_t subscriptionId)
 {
     using namespace std::chrono;
     if (nodeAddress == m_radioAddress) {
@@ -89,6 +90,7 @@ void DeviceController::advertisementReceived(uint32_t nodeAddress, uint32_t sequ
 
         timestampLastDiscovery = timestamp;
         m_sequenceNumber = sequenceNumber;
+        m_subscriptionId = subscriptionId;
 
         if (healthIndicator < 0) {
             healthIndicator = 0; // discovery received but no response yet

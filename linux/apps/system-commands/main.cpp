@@ -44,6 +44,7 @@ void print_usage()
     std::cout << "                 -S : get statistics from node" << std::endl;
     std::cout << "                 -m : get device name from gateway" << std::endl;
     std::cout << "                 -M : get device name from node" << std::endl;
+    std::cout << "                 -o : subscribe to command" << std::endl;
     std::cout << "          -t <flag> : set transport encryption required (command must be encrypted) on gateway <0|1>"
               << std::endl;
     std::cout << "          -T <flag> : set transport encryption required (command must be encrypted) on node <0|1>"
@@ -84,10 +85,13 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint32_t radioAddress = 0;
     bool verbose = false;
 
-    while ((option = getopt(argc, argv, "aAbBK:N:c:C:f:F:g:G:lLiImMxXrRdeE:DpPt:T:usSUvVzZk:h")) != -1) {
+    while ((option = getopt(argc, argv, "aAbBK:N:c:C:f:F:g:G:lLiImMo:xXrRdeE:DpPt:T:usSUvVzZk:h")) != -1) {
         switch (option) {
         case 'a':
             versionCheck(mon, mon.get<>(RaduinoCommandGetVersion()).getVersionstring());
+            break;
+        case 'o':
+            std::cout << mon.getRadio<>(RaduinoCommandSetSubscription(atoi(optarg), 0)) << std::endl;
             break;
         case 'A':
             versionCheck(mon, mon.getRadio<>(RaduinoCommandGetVersion()).getVersionstring());

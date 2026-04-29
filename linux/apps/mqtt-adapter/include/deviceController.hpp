@@ -15,7 +15,7 @@ public:
         uint32_t gatewayAddress);
 
     void execute();
-    void advertisementReceived(uint32_t nodeAddress, uint32_t sequenceNumber);
+    void advertisementReceived(uint32_t nodeAddress, uint32_t sequenceNumber, uint8_t subscriptionId);
     void setPublishBirth(bool value);
     void setPublishAdvertisement(bool value);
     void parseMessage(std::string topic, std::string message);
@@ -47,6 +47,7 @@ private:
     int healthIndicator = 0;
     uint64_t timestampLastDiscovery = 0;
     uint32_t m_sequenceNumber = 0;
+    uint8_t m_subscriptionId = 0;
     uint32_t m_radioAddress = 0;
     uint32_t m_gatewayAddress = 0;
     bool m_publishBirth = false;

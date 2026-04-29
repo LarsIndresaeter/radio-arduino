@@ -259,7 +259,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         uint32_t nodeAddress = stoul(tokens.at(3));
     }
 
-    if (topic_orig.starts_with("raduino-router/DDATA/")) {
+    if (topic_orig.starts_with("raduino-router/DDATA/") || topic_orig.starts_with("raduino-router/SUBSCRIPTION/")) {
         try {
             auto jsonData = json::parse(payload);
 

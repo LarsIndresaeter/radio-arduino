@@ -62,14 +62,13 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         }
     }
 
-    if (topic_orig.starts_with("raduino-subscription/DDATA/")) {
+    if (topic_orig.starts_with("raduino-subscription/DDATA/")
+        || topic_orig.starts_with("raduino-router/SUBSCRIPTION/")) {
         try {
             // std::cout << "DEBUG: payload:" << payload << std::endl;
             auto jsonData = json::parse(payload);
             std::string commandName = jsonData["name"];
             uint64_t timestamp = jsonData["timestamp"].get<uint64_t>();
-
-            // std::cout << "DEBUG: name:" << commandName << ", timestamp:" << std::to_string(timestamp) << std::endl;
 
             auto tokens = splitString(topic_orig, "/");
             std::string nodeAddressString = tokens.at(2);

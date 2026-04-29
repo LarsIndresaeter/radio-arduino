@@ -95,7 +95,8 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
     std::string payload = message->get_payload_str();
 
     if (topic_orig.starts_with("raduino-adapter/DBIRTH/") || topic_orig.starts_with("raduino-adapter/DDATA/")
-        || topic_orig.starts_with("raduino-adapter/ADVERTISEMENT/")) {
+        || topic_orig.starts_with("raduino-adapter/ADVERTISEMENT/")
+        || topic_orig.starts_with("raduino-adapter/SUBSCRIPTION/")) {
         // resend response from adapter
         try {
             auto tokens = splitString(topic_orig, "/");
