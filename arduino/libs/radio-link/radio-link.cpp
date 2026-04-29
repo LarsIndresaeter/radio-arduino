@@ -1,8 +1,10 @@
 #include <cmd/command_id.hxx>
 #include <cmd/gpio/payload.hxx>
+#include <cmd/vcc/payload.hxx>
 #include <cmd/quadrature_encoder/payload.hxx>
 #include <quadencoder.hpp>
 #include <gpio.hpp>
+#include <adc.hpp>
 #include <radio-link.hpp>
 
 extern bool rx_mode_gateway;
@@ -119,6 +121,12 @@ void populateAdvertisementData(uint8_t* buffer)
         response.setPortb(GPIO::readPortB());
         response.setPortc(GPIO::readPortC());
         response.setPortd(GPIO::readPortD());
+        response.serialize(&buffer[offset_advertisement_data]);
+    }
+
+    if (static_cast<COMMANDS::OI>(subscriptionId) == COMMANDS::OI::VCC) {
+        COMMANDS::VCC::response_t response;
+        response.setVcc(AtmelAdc::getAverageVcc());
         response.serialize(&buffer[offset_advertisement_data]);
     }
 }
