@@ -1,4 +1,8 @@
-#include "include/radio-link.hpp"
+#include <cmd/command_id.hxx>
+#include <cmd/gpio/payload.hxx>
+#include <cmd/quadrature_encoder/payload.hxx>
+#include <quadencoder.hpp>
+#include <gpio.hpp>
 #include <radio-link.hpp>
 
 extern bool rx_mode_gateway;
@@ -9,7 +13,16 @@ uint8_t rx_tx_addr[5] = { 0xF0, 0xF0, 0xF0, 0xF0, 0 };
 uint32_t destination_address = 0;
 uint32_t id_from_last_advertisement_message = 0;
 
+uint8_t subscriptionId = 0;
+uint16_t subscriptionInterval = 0;
+
 #define CRC32_POLY 0x04C11DB7 /* AUTODIN II, Ethernet, & FDDI */
+
+void setSubscription(uint8_t id, uint16_t interval)
+{
+    subscriptionId = id;
+    subscriptionInterval = interval;
+}
 
 void CRC32_calculate(uint8_t* buf, uint16_t length, uint32_t* pCrc)
 {
@@ -81,6 +94,35 @@ advertisement_payload_t scanForAdvertisement(uint32_t id, uint16_t timeout)
 
 uint32_t advertisement_sequence_number = 0;
 
+void populateAdvertisementData(uint8_t* buffer)
+{
+    // clear old data
+    for (uint8_t i = 0; i < 16; i++) {
+        buffer[offset_advertisement_data + i] = 0;
+    }
+
+    if (static_cast<COMMANDS::OI>(subscriptionId) == COMMANDS::OI::QUADRATURE_ENCODER) {
+        QUADENCODER::initialize();
+
+        COMMANDS::QUADRATURE_ENCODER::response_t response;
+        response.setSwitchcount(QUADENCODER::getSwitchCount());
+        response.setSwitchposition(QUADENCODER::getSwitchPosition());
+        response.setCountnegative(QUADENCODER::getCountNegativePulses());
+        response.setCountpositive(QUADENCODER::getCountPositivePulses());
+        response.serialize(&buffer[offset_advertisement_data]);
+
+        QUADENCODER::clearChangedFlag();
+    }
+
+    if (static_cast<COMMANDS::OI>(subscriptionId) == COMMANDS::OI::GPIO) {
+        COMMANDS::GPIO::response_t response;
+        response.setPortb(GPIO::readPortB());
+        response.setPortc(GPIO::readPortC());
+        response.setPortd(GPIO::readPortD());
+        response.serialize(&buffer[offset_advertisement_data]);
+    }
+}
+
 void populateAdvertisementPackage(uint8_t* buffer, uint8_t attentionFlag)
 {
     for (uint8_t i = 0; i < 32; i++) {
@@ -98,7 +140,9 @@ void populateAdvertisementPackage(uint8_t* buffer, uint8_t attentionFlag)
     buffer[offset_advertisement_id + 2] = destination_address >> 8;
     buffer[offset_advertisement_id + 3] = destination_address;
 
-    uint32_t crc=0;
+    populateAdvertisementData(buffer);
+
+    uint32_t crc = 0;
     CRC32_calculate(&buffer[offset_advertisement_pdu], 26, &crc);
 
     uint8_t crc_h = crc >> 8;
@@ -276,7 +320,7 @@ uint8_t isAdvertisementPackage(uint8_t response_length, uint8_t* packet)
 
     // not working yet
     if (is_wakeup_ack == 1) {
-        uint32_t crc=0;
+        uint32_t crc = 0;
         CRC32_calculate(&packet[offset_advertisement_pdu], 26, &crc);
 
         uint8_t crc_h = crc >> 8;

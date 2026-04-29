@@ -176,6 +176,9 @@ void commandSwitch(uint8_t* commandPayload, uint8_t* responsePayload, ComBusInte
     case COMMANDS::OI::SCAN_FOR_ADVERTISEMENT:
         RADIOLINK::commandScanForAdvertisement(commandPayload, responsePayload);
         break;
+    case COMMANDS::OI::SET_SUBSCRIPTION:
+        RADIOLINK::commandSetSubscription(commandPayload, responsePayload);
+        break;
     default:
         break;
     }

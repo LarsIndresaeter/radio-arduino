@@ -55,4 +55,14 @@ void commandScanForAdvertisement(uint8_t* commandPayload, uint8_t* responsePaylo
     response.serialize(responsePayload);
 }
 
+void commandSetSubscription(uint8_t* commandPayload, uint8_t* responsePayload)
+{
+    COMMANDS::SET_SUBSCRIPTION::command_t command(commandPayload);
+    COMMANDS::SET_SUBSCRIPTION::response_t response;
+
+    setSubscription(command.getId(), command.getInterval());
+
+    response.serialize(responsePayload);
+}
+
 } // namespace RADIOLINK

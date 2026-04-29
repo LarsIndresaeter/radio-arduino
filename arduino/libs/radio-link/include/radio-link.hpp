@@ -49,5 +49,6 @@ advertisement_payload_t scanForAdvertisement(uint32_t id, uint16_t timeout);
 
 void closeCommunicationPipe();
 void broadcast_tx(uint8_t* rx_buffer);
+void setSubscription(uint8_t id, uint16_t interval);
 
 } // namespace

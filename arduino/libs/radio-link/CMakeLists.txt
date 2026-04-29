@@ -5,6 +5,6 @@ add_library(radio-link
     command-handlers-radio-link.cpp
     )
 
-target_link_libraries(radio-link nrf24l01 quadencoder protocol)
+target_link_libraries(radio-link nrf24l01 gpio quadencoder protocol)
 
 target_include_directories(radio-link INTERFACE include)
