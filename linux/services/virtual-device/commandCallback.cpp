@@ -122,12 +122,12 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
             }
 
             if (commandName == "get_lsm303d") {
-                int x = jsonData["payload"]["accelerometerX"].get<uint16_t>();
-                int y = jsonData["payload"]["accelerometerY"].get<uint16_t>();
-                int z = jsonData["payload"]["accelerometerZ"].get<uint16_t>();
-                devices[nodeAddressString]["accelerometer"]["x"] = (32768 - x) / 32768.0;
-                devices[nodeAddressString]["accelerometer"]["y"] = (32768 - y) / 32768.0;
-                devices[nodeAddressString]["accelerometer"]["z"] = (32768 - z) / 32768.0;
+                int x = jsonData["payload"]["accelerometerX"].get<int16_t>();
+                int y = jsonData["payload"]["accelerometerY"].get<int16_t>();
+                int z = jsonData["payload"]["accelerometerZ"].get<int16_t>();
+                devices[nodeAddressString]["accelerometer"]["x"] = (x*0.061) / 1000.0;
+                devices[nodeAddressString]["accelerometer"]["y"] = (y*0.061) / 1000.0;
+                devices[nodeAddressString]["accelerometer"]["z"] = (z*0.061) / 1000.0;
             }
 
             std::string topic = "raduino-device/status";
