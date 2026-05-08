@@ -53,6 +53,7 @@ generator.add(46, "get_last_device_id_seen", [], ["id[4]"])
 generator.add(47, "get_active_time_counter", ["timestamp[8]"], ["active_time[8]", "sleep_time[8]"])
 generator.add(48, "scan_for_advertisement", ["id[4]", "timeout[2]"], ["sequence_number[4]", "data[16]", "flags", "id[4]"])
 generator.add(49, "set_subscription", ["id", "interval[2]"], [])
+generator.add(50, "set_advertisement_interval", ["interval[2]"], [])
 
 # close files
 generator.closeFiles()

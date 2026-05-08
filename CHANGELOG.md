@@ -4,6 +4,7 @@
 
 - new set_subscription command which will broadcast data in advertisement packages
 - new tool raduino-fr-scan that will print advertisement packages in several formats
+- new command for setting advertisement interval in milliseconds
 
 ## version 3.0.0
 

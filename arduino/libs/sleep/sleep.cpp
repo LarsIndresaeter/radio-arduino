@@ -5,6 +5,12 @@ extern bool rx_mode_gateway;
 namespace SLEEP {
 
 uint64_t sleep_time = 0;
+uint32_t advertisement_interval = 5000;
+
+void setAdvertisementInterval(uint32_t interval)
+{
+    advertisement_interval = interval;
+}
 
 void powerSaveSleepMs(uint8_t delay_ms)
 {
@@ -36,7 +42,7 @@ void rfNodeSleepAndPollForWakeup()
     uint8_t wakeup_received = 0;
 
     while (wakeup_received == 0) {
-        powerDownRadioAndSleep(5000);
+        powerDownRadioAndSleep(advertisement_interval);
         wakeup_received = RADIOLINK::sendAdvertisementToGateway();
     }
 }

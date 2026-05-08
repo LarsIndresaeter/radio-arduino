@@ -53,3 +53,4 @@
 |  47 |  16 |  24 | [GetActiveTimeCounter](./get_active_time_counter.md)                   |
 |  48 |  14 |  33 | [ScanForAdvertisement](./scan_for_advertisement.md)                    |
 |  49 |  11 |   8 | [SetSubscription](./set_subscription.md)                               |
+|  50 |  10 |   8 | [SetAdvertisementInterval](./set_advertisement_interval.md)            |

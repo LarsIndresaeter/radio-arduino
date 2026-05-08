@@ -6,6 +6,7 @@
 
 namespace SLEEP {
 
+void commandSetAdvertisementInterval(uint8_t* commandPayload, uint8_t* responsePayload);
 void commandSleep(uint8_t* commandPayload, uint8_t* responsePayload);
 
 } // namespace SLEEP

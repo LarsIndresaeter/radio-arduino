@@ -7,6 +7,16 @@ namespace SLEEP {
 uint64_t sleep_time_start_measurement = 0;
 extern uint64_t sleep_time;
 
+void commandSetAdvertisementInterval(uint8_t* commandPayload, uint8_t* responsePayload)
+{
+    COMMANDS::SET_ADVERTISEMENT_INTERVAL::command_t command(commandPayload);
+    COMMANDS::SET_ADVERTISEMENT_INTERVAL::response_t response;
+
+    SLEEP::setAdvertisementInterval(command.getInterval());
+
+    response.serialize(responsePayload);
+}
+
 void commandSleep(uint8_t* commandPayload, uint8_t* responsePayload)
 {
     COMMANDS::SLEEP::command_t command(commandPayload);

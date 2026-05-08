@@ -52,3 +52,4 @@
 #include <cmd/get_active_time_counter/command.hxx>
 #include <cmd/scan_for_advertisement/command.hxx>
 #include <cmd/set_subscription/command.hxx>
+#include <cmd/set_advertisement_interval/command.hxx>

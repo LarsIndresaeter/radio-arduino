@@ -57,6 +57,7 @@ void print_usage()
     std::cout << "                 -Z : Verbose on" << std::endl;
     std::cout << "                 -z : Verbose off" << std::endl;
     std::cout << "                 -k : set keep alive time in milliseconds" << std::endl;
+    std::cout << "      -w <interval> : set broadcast interval in ms" << std::endl;
     std::cout << "                 -h : print this text" << std::endl;
 }
 
@@ -85,8 +86,11 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     uint32_t radioAddress = 0;
     bool verbose = false;
 
-    while ((option = getopt(argc, argv, "aAbBK:N:c:C:f:F:g:G:lLiImMo:xXrRdeE:DpPt:T:usSUvVzZk:h")) != -1) {
+    while ((option = getopt(argc, argv, "aAbBK:N:c:C:f:F:g:G:lLiImMo:xXrRdeE:DpPt:T:usSUvVzZk:w:h")) != -1) {
         switch (option) {
+        case 'w':
+            std::cout << mon.getRadio<>(RaduinoCommandSetAdvertisementInterval(atoi(optarg))) << std::endl;
+            break;
         case 'a':
             versionCheck(mon, mon.get<>(RaduinoCommandGetVersion()).getVersionstring());
             break;

@@ -53,3 +53,4 @@
 #include <cmd/get_active_time_counter/payload.hxx>
 #include <cmd/scan_for_advertisement/payload.hxx>
 #include <cmd/set_subscription/payload.hxx>
+#include <cmd/set_advertisement_interval/payload.hxx>
