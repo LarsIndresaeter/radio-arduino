@@ -65,8 +65,8 @@ void DeviceController::execute()
         json advertisement = { { "nodeAddress", m_radioAddress },
                                { "lastAdvertisement", timestampLastDiscovery },
                                { "nodeType", m_nodeType },
-                               {"sequenceNumber", m_sequenceNumber},
-                               {"subscriptionId", m_subscriptionId}};
+                               { "sequenceNumber", m_sequenceNumber },
+                               { "subscriptionId", m_subscriptionId } };
 
         publishMessage(topic, advertisement.dump());
         setPublishAdvertisement(false);
@@ -119,12 +119,12 @@ void DeviceController::executeJsonCommand()
         auto jsonData = json::parse(m_command);
 
         uint32_t nodeAddress = jsonData["nodeAddress"].get<uint32_t>();
-        bool radioNodeWakeupSucces = false;
+        bool radioNodeWakeupSuccess = false;
 
         if (nodeAddress == m_radioAddress) {
             if (nodeAddress != m_gatewayAddress) {
                 if (m_radioSession.wakeupNotResponding()) {
-                    radioNodeWakeupSucces = true;
+                    radioNodeWakeupSuccess = true;
                 }
                 else {
                     logError("not able to wake up node");
@@ -134,105 +134,137 @@ void DeviceController::executeJsonCommand()
                 }
             }
 
-            json commandList = jsonData["commandList"];
 
-            for (std::string commandName : commandList) {
-                std::string jsonResponse = "";
+            if (jsonData.contains("subscription")) {
+                //std::cout << "DEBUG: subscription json command received" << std::endl;
 
-                if (nodeAddress == m_gatewayAddress) {
-                    if (commandName == "get_version") {
-                        jsonResponse = m_monitor.get<>(RaduinoCommandGetVersion()).getJson();
-                    }
-                    else if (commandName == "get_device_name") {
-                        jsonResponse = m_monitor.get<>(RaduinoCommandGetDeviceName()).getJson();
-                    }
-                    else if (commandName == "get_statistics") {
-                        jsonResponse = m_monitor.get<>(RaduinoCommandGetStatistics()).getJson();
-                    }
-                    else if (commandName == "get_attached_devices_csv_string") {
-                        jsonResponse = m_monitor.get<>(RaduinoCommandGetAttachedDevicesCsvString()).getJson();
-                    }
-                    else if (commandName == "ina219") {
-                        jsonResponse = m_monitor.get<>(RaduinoCommandIna219()).getJson();
-                    }
-                    else {
-                        logDebug(commandName = " not recognized for gateway");
+                auto subscriptionParams = jsonData["subscription"];
+                uint8_t subscriptionId = subscriptionParams["subscriptionId"];
+                uint16_t subscriptionInterval = subscriptionParams["subscriptionInterval"];
+
+                if (m_radioSession.wakeupNotResponding()) {
+                    std::string jsonResponse
+                        = m_monitor.getRadio<>(RaduinoCommandSetSubscription(subscriptionId, subscriptionInterval))
+                              .getJson();
+
+                    if (jsonResponse != "") {
+                        std::string topic = createMqttTopic(
+                            TOPIC_RESPONSE_PREFIX,
+                            std::to_string(m_gatewayAddress) + "/" + std::to_string(m_radioAddress),
+                            "subscription");
+
+                        if (m_monitor.lastCommandReturnedValidResponse()) {
+                            storeValidResponse(jsonResponse);
+                        }
+
+                        publishMessage(topic, jsonResponse);
                     }
                 }
-                else {
-                    if (commandName == "vcc") {
-                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandVcc()).getJson();
-                    }
-                    else if (commandName == "get_version") {
-                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetVersion(), 1000ms).getJson();
-                    }
-                    else if (commandName == "get_device_name") {
-                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetDeviceName()).getJson();
-                    }
-                    else if (commandName == "get_statistics") {
-                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetStatistics()).getJson();
-                    }
-                    else if (commandName == "get_lsm303d") {
-                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetLsm303d()).getJson();
-                    }
-                    else if (commandName == "get_attached_devices_csv_string") {
-                        jsonResponse
-                            = m_monitor.getRadio<>(RaduinoCommandGetAttachedDevicesCsvString(), 1000ms).getJson();
-                    }
-                    else if (commandName == "get_active_time_counter") {
-                        using namespace std::chrono;
-                        auto start = std::chrono::high_resolution_clock::now();
-                        uint64_t time_since_epoch_ms
-                            = std::chrono::duration_cast<std::chrono::milliseconds>(start.time_since_epoch()).count();
-
-                        std::vector<uint8_t> timestamp;
-                        timestamp.push_back(time_since_epoch_ms);
-                        timestamp.push_back(time_since_epoch_ms >> 8);
-                        timestamp.push_back(time_since_epoch_ms >> 16);
-                        timestamp.push_back(time_since_epoch_ms >> 24);
-                        timestamp.push_back(time_since_epoch_ms >> 32);
-                        timestamp.push_back(time_since_epoch_ms >> 40);
-                        timestamp.push_back(time_since_epoch_ms >> 48);
-                        timestamp.push_back(time_since_epoch_ms >> 56);
-
-                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetActiveTimeCounter(timestamp)).getJson();
-                    }
-                    else if (commandName == "quadrature_encoder") {
-                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandQuadratureEncoder()).getJson();
-                    }
-                    else if (commandName == "gpio") {
-                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandGpio()).getJson();
-                    }
-                    else if (commandName == "ssd1306") {
-                        std::string displayText = jsonData["displayText"];
-                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandSsd1306(2, displayText)).getJson();
-                    }
-                    else if (commandName == "ina219") {
-                        jsonResponse = m_monitor.getRadio<>(RaduinoCommandIna219()).getJson();
-                    }
-                    else {
-                        logDebug(commandName + " not recognized for radio node");
-                    }
-                }
-
-                if (jsonResponse != "") {
-                    std::string topic = createMqttTopic(
-                        TOPIC_RESPONSE_PREFIX,
-                        std::to_string(m_gatewayAddress) + "/" + std::to_string(m_radioAddress),
-                        commandName);
-
-                    if (m_monitor.lastCommandReturnedValidResponse()) {
-                        storeValidResponse(jsonResponse);
-                    }
-
-                    publishMessage(topic, jsonResponse);
-                }
-
-                updateQualityIndicator(m_monitor.lastCommandReturnedValidResponse());
             }
 
-            if (radioNodeWakeupSucces) {
-                m_monitor.getRadio<>(RaduinoCommandKeepAlive(0)); // put radio node in sleep
+            if (jsonData.contains("commandList")) {
+                json commandList = jsonData["commandList"];
+
+                for (std::string commandName : commandList) {
+                    std::string jsonResponse = "";
+
+                    if (nodeAddress == m_gatewayAddress) {
+                        if (commandName == "get_version") {
+                            jsonResponse = m_monitor.get<>(RaduinoCommandGetVersion()).getJson();
+                        }
+                        else if (commandName == "get_device_name") {
+                            jsonResponse = m_monitor.get<>(RaduinoCommandGetDeviceName()).getJson();
+                        }
+                        else if (commandName == "get_statistics") {
+                            jsonResponse = m_monitor.get<>(RaduinoCommandGetStatistics()).getJson();
+                        }
+                        else if (commandName == "get_attached_devices_csv_string") {
+                            jsonResponse = m_monitor.get<>(RaduinoCommandGetAttachedDevicesCsvString()).getJson();
+                        }
+                        else if (commandName == "ina219") {
+                            jsonResponse = m_monitor.get<>(RaduinoCommandIna219()).getJson();
+                        }
+                        else {
+                            logDebug(commandName = " not recognized for gateway");
+                        }
+                    }
+                    else {
+                        if (commandName == "vcc") {
+                            jsonResponse = m_monitor.getRadio<>(RaduinoCommandVcc()).getJson();
+                        }
+                        else if (commandName == "get_version") {
+                            jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetVersion(), 1000ms).getJson();
+                        }
+                        else if (commandName == "get_device_name") {
+                            jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetDeviceName()).getJson();
+                        }
+                        else if (commandName == "get_statistics") {
+                            jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetStatistics()).getJson();
+                        }
+                        else if (commandName == "get_lsm303d") {
+                            jsonResponse = m_monitor.getRadio<>(RaduinoCommandGetLsm303d()).getJson();
+                        }
+                        else if (commandName == "get_attached_devices_csv_string") {
+                            jsonResponse
+                                = m_monitor.getRadio<>(RaduinoCommandGetAttachedDevicesCsvString(), 1000ms).getJson();
+                        }
+                        else if (commandName == "get_active_time_counter") {
+                            using namespace std::chrono;
+                            auto start = std::chrono::high_resolution_clock::now();
+                            uint64_t time_since_epoch_ms
+                                = std::chrono::duration_cast<std::chrono::milliseconds>(start.time_since_epoch())
+                                      .count();
+
+                            std::vector<uint8_t> timestamp;
+                            timestamp.push_back(time_since_epoch_ms);
+                            timestamp.push_back(time_since_epoch_ms >> 8);
+                            timestamp.push_back(time_since_epoch_ms >> 16);
+                            timestamp.push_back(time_since_epoch_ms >> 24);
+                            timestamp.push_back(time_since_epoch_ms >> 32);
+                            timestamp.push_back(time_since_epoch_ms >> 40);
+                            timestamp.push_back(time_since_epoch_ms >> 48);
+                            timestamp.push_back(time_since_epoch_ms >> 56);
+
+                            jsonResponse
+                                = m_monitor.getRadio<>(RaduinoCommandGetActiveTimeCounter(timestamp)).getJson();
+                        }
+                        else if (commandName == "quadrature_encoder") {
+                            jsonResponse = m_monitor.getRadio<>(RaduinoCommandQuadratureEncoder()).getJson();
+                        }
+                        else if (commandName == "gpio") {
+                            jsonResponse = m_monitor.getRadio<>(RaduinoCommandGpio()).getJson();
+                        }
+                        else if (commandName == "ssd1306") {
+                            std::string displayText = jsonData["displayText"];
+                            jsonResponse = m_monitor.getRadio<>(RaduinoCommandSsd1306(2, displayText)).getJson();
+                        }
+                        else if (commandName == "ina219") {
+                            jsonResponse = m_monitor.getRadio<>(RaduinoCommandIna219()).getJson();
+                        }
+                        else {
+                            logDebug(commandName + " not recognized for radio node");
+                        }
+                    }
+
+                    if (jsonResponse != "") {
+                        std::string topic = createMqttTopic(
+                            TOPIC_RESPONSE_PREFIX,
+                            std::to_string(m_gatewayAddress) + "/" + std::to_string(m_radioAddress),
+                            commandName);
+
+                        if (m_monitor.lastCommandReturnedValidResponse()) {
+                            storeValidResponse(jsonResponse);
+                        }
+
+                        publishMessage(topic, jsonResponse);
+                    }
+
+                    updateQualityIndicator(m_monitor.lastCommandReturnedValidResponse());
+                }
+
+                if (radioNodeWakeupSuccess) {
+                    m_monitor.getRadio<>(RaduinoCommandKeepAlive(0)); // put radio node in sleep
+                }
             }
         }
     }

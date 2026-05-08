@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mqtt/async_client.h"
+#include <cmd/command_id.hxx>
 #include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
@@ -48,6 +49,7 @@ private:
     void pollNode(std::vector<std::string> commandList, uint32_t nodeAddress);
     void publishMessage(std::string topic, std::string message);
     json subscriptionStatus;
+    void setupPushBasedSubscription(COMMANDS::OI oi, uint16_t interval, uint32_t nodeAddress);
     void registerSubscription(std::string commandName, uint32_t interval, uint32_t nodeAddress);
     void updateJsonNodeInfoList();
 

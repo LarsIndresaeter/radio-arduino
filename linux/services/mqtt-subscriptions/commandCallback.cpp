@@ -125,6 +125,21 @@ void CommandCallback::updateJsonNodeInfoList()
     }
 }
 
+void CommandCallback::setupPushBasedSubscription(COMMANDS::OI oi, uint16_t interval, uint32_t nodeAddress)
+{
+    uint8_t subscriptionId = static_cast<uint8_t>(oi);
+    if (subscriptionId > 0) {
+        json parameters;
+        parameters["subscriptionId"] = subscriptionId;
+        parameters["subscriptionInterval"] = interval;
+        json command;
+        command["subscription"] = parameters;
+        command["nodeAddress"] = nodeAddress;
+        std::string topic = "raduino-router/RCMD/" + std::to_string(nodeAddress);
+        publishMessage(topic, command.dump());
+    }
+}
+
 void CommandCallback::registerSubscription(std::string commandName, uint32_t interval, uint32_t nodeAddress)
 {
     bool subscriptionExist = false;
@@ -210,6 +225,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                     registerSubscription("get_attached_devices_csv_string", 60 * 120, nodeAddress);
                 }
                 else {
+                    setupPushBasedSubscription(COMMANDS::OI::VCC, 1, nodeAddress);
                     registerSubscription("vcc", 60 * 10, nodeAddress);
                     registerSubscription("gpio", 60 * 10, nodeAddress);
                     registerSubscription("get_device_name", 60 * 120, nodeAddress);
@@ -290,10 +306,14 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                         auto jsonData = json::parse(payload);
                         std::string csvString = jsonData["payload"]["csvString"];
                         if (csvString.find("lsm303d") != std::string::npos) {
-                            registerSubscription("get_lsm303d", 60 * 1, nodeAddress);
+                            setupPushBasedSubscription(COMMANDS::OI::GET_LSM303D, 1, nodeAddress);
+                            registerSubscription(
+                                "get_lsm303d", 60 * 1, nodeAddress); // poll device if it is not publishing
                         }
                         else if (csvString.find("quad") != std::string::npos) {
-                            registerSubscription("quadrature_encoder", 60 * 1, nodeAddress);
+                            setupPushBasedSubscription(COMMANDS::OI::QUADRATURE_ENCODER, 1, nodeAddress);
+                            registerSubscription(
+                                "quadrature_encoder", 60 * 1, nodeAddress); // poll device if it is not publishing
                         }
                         else if (csvString.find("ina219") != std::string::npos) {
                             registerSubscription("ina219", 60 * 1, nodeAddress);

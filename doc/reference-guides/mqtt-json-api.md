@@ -35,3 +35,19 @@ This is useful for building a list of detected nodes when a new client is starte
 }
 ```
 
+## subscription
+
+The subscription command will instuct the node to publish measurements in the advertisement packages.
+The subscriptionId is the integer value of the command found in the [commands/README.md](./commands/README.md).
+The subscriptionInterval is multiples of [advertisement interval](./commands/set_advertisement_interval.md).
+
+```json
+{                                                                  
+  "subscription": {
+    "subscriptionId": <uint8_t>,
+    "subscriptionInterval": <uint16_t>
+  }
+  "nodeAddress": 1765835992,
+  "timestamp": 1777485118819
+}
+```

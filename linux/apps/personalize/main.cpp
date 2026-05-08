@@ -183,7 +183,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
     std::cout << mon.get<>(RaduinoCommandRequireTransportEncryption(setRequireTransportEncryption)) << std::endl;
     std::cout << mon.get<>(RaduinoCommandSetUniqueId(uniqueId)) << std::endl;
     std::cout << mon.get<>(RaduinoCommandSetRadioRole(setRadioRole)) << std::endl;
-    std::cout << mon.get<>(RaduinoCommandSetAttachedDevicesCsvString(setAttachedDevicesCsvString)) << std::endl;
+    std::cout << mon.get<>(RaduinoCommandSetAttachedDevicesCsvString(setAttachedDevicesCsvString), 2000ms) << std::endl;
 
     if (dump_eeprom) {
         dumpEeprom(mon, 24);
