@@ -153,7 +153,7 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
                 }
 
                 if (static_cast<COMMANDS::OI>(OI) == COMMANDS::OI::VCC) {
-                    RaduinoCommandGpio subscriptionObject;
+                    RaduinoCommandVcc subscriptionObject;
                     subscriptionObject.setResponse(advertisementDataVector);
                     subscriptionObject.setResponseTimeUs(0);
 
@@ -161,6 +161,17 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
                     // std::cout << "DEBUG: jsonResponse=" << jsonResponse << std::endl;
                     publishMessage(mqtt_client, topicString + "/" + subscriptionObject.getCommandName(), jsonResponse);
                 }
+
+                if (static_cast<COMMANDS::OI>(OI) == COMMANDS::OI::GET_LSM303D) {
+                    RaduinoCommandGetLsm303d subscriptionObject;
+                    subscriptionObject.setResponse(advertisementDataVector);
+                    subscriptionObject.setResponseTimeUs(0);
+
+                    std::string jsonResponse = subscriptionObject.getJson();
+                    // std::cout << "DEBUG: jsonResponse=" << jsonResponse << std::endl;
+                    publishMessage(mqtt_client, topicString + "/" + subscriptionObject.getCommandName(), jsonResponse);
+                }
+ 
             }
 
             registerNode(

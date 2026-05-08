@@ -91,6 +91,17 @@ bool decodeAndPrint(COMMANDS::SCAN_FOR_ADVERTISEMENT::response_t responseStruct)
                 std::cout << jsonResponse;
                 retval = true;
             }
+
+            if (static_cast<COMMANDS::OI>(OI) == COMMANDS::OI::GET_LSM303D) {
+                RaduinoCommandGetLsm303d subscriptionObject;
+                subscriptionObject.setResponse(advertisementDataVector);
+                subscriptionObject.setResponseTimeUs(0);
+                subscriptionObject.setReplyStatus(RaduinoCommandBase::ReplyStatus::Complete);
+
+                std::string jsonResponse = subscriptionObject.getJson();
+                std::cout << jsonResponse;
+                retval = true;
+            }
         }
     }
     return (retval);

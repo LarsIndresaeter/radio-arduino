@@ -2,9 +2,11 @@
 #include <cmd/gpio/payload.hxx>
 #include <cmd/vcc/payload.hxx>
 #include <cmd/quadrature_encoder/payload.hxx>
+#include <cmd/get_lsm303d/payload.hxx>
 #include <quadencoder.hpp>
 #include <gpio.hpp>
 #include <adc.hpp>
+#include <lsm303d.hpp>
 #include <radio-link.hpp>
 
 extern bool rx_mode_gateway;
@@ -127,6 +129,16 @@ void populateAdvertisementData(uint8_t* buffer)
     if (static_cast<COMMANDS::OI>(subscriptionId) == COMMANDS::OI::VCC) {
         COMMANDS::VCC::response_t response;
         response.setVcc(AtmelAdc::getAverageVcc());
+        response.serialize(&buffer[offset_advertisement_data]);
+    }
+
+    if (static_cast<COMMANDS::OI>(subscriptionId) == COMMANDS::OI::GET_LSM303D) {
+        COMMANDS::GET_LSM303D::response_t response;
+
+        response.setAccelerometerx(lsm303dReadDoubleRegister(lsm303d_register_acceleration_x));
+        response.setAccelerometery(lsm303dReadDoubleRegister(lsm303d_register_acceleration_y));
+        response.setAccelerometerz(lsm303dReadDoubleRegister(lsm303d_register_acceleration_z));
+
         response.serialize(&buffer[offset_advertisement_data]);
     }
 }
