@@ -1,0 +1,8 @@
+#pragma once
+#include <string_view>
+
+namespace JSON_SCHEMA{
+
+    constexpr std::string_view adapter_json_schema = R"(@ADAPTER_JSON_SCHEMA@)";
+}
+

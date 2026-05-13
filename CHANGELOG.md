@@ -6,6 +6,7 @@
 - new tool raduino-fr-scan that will print advertisement packages in several formats
 - new command for setting advertisement interval in milliseconds
 - setup push based subscription of sensor data from raduino-mqtt-subscriptions service
+- add json schema and validation for commands parsed by raduino-mqtt-adapter
 
 ## version 3.0.0
 

@@ -1,7 +1,10 @@
 #include "commandCallback.hpp"
 #include "include/commandCallback.hpp"
+#include <nlohmann/json-schema.hpp>
+#include <json_schema.h>
 
 using nlohmann::json;
+using nlohmann::json_schema::json_validator;
 
 CommandCallback::CommandCallback() {}
 
@@ -16,6 +19,12 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         try {
             std::string payload = message->get_payload_str();
             auto jsonData = json::parse(payload);
+
+            json schema = json::parse(JSON_SCHEMA::adapter_json_schema);
+            json_validator validator;
+            validator.set_root_schema(schema);
+            validator.validate(jsonData);
+
             std::string command = jsonData["command"];
 
             if (command == "resendBirthCertificate") {
@@ -26,6 +35,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         }
         catch (std::exception const& e) {
             std::cout << "ERROR: malformed RCMD" << std::endl;
+            std::cout << "ERROR: Validation failed: " << e.what() << std::endl;
         }
     }
 

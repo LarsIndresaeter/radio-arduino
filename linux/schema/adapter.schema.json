@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org",
+  "type": "object",
+  "required": ["command", "params"],
+  "properties": {
+    "command": {
+      "type": "string",
+      "enum": ["subscription", "batchCommand", "resendBirthCertificate"]
+    },
+    "params": { "type": "object" }
+  },
+  "anyOf": [
+     {
+      "properties": {
+        "command": { "const": "resendBirthCertificate" },
+        "params": {
+          "required": ["timestamp"],
+          "properties": {
+            "timestamp": { "type": "integer" }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "command": { "const": "subscription" },
+        "params": {
+          "required": ["subscriptionId", "subscriptionInterval", "nodeAddress", "timestamp"],
+          "properties": {
+            "subscriptionId": { "type": "integer" },
+            "subscriptionInterval": { "type": "integer" },
+            "nodeAddress": { "type": "integer" },
+            "timestamp": { "type": "integer" }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "command": { "const": "batchCommand" },
+        "params": {
+          "required": ["commandList", "nodeAddress", "timestamp"],
+          "properties": {
+            "commandList": { "type": "array", "items": {"type": "string"} },
+            "nodeAddress": { "type": "integer" },
+            "timestamp": { "type": "integer" }
+          }
+        }
+      }
+    }
+  ]
+}
+

@@ -29,8 +29,11 @@ void CommandCallback::resendBirthCertificate()
 {
     std::string topic = "raduino-router/RCMD";
 
+    uint64_t timestamp = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count());
+
     json command;
     command["command"] = "resendBirthCertificate";
+    command["params"]["timestamp"] = timestamp;
 
     publishMessage(topic, command.dump());
 }
@@ -80,7 +83,9 @@ void CommandCallback::pollNode(std::vector<std::string> commandList, uint32_t no
 
     uint64_t timestamp = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count());
 
-    json command = { { "commandList", jsonCommandList }, { "nodeAddress", nodeAddress }, { "timestamp", timestamp } };
+    json command = { { "command", "batchCommand" } };
+    command["params"]
+        = { { "commandList", jsonCommandList }, { "nodeAddress", nodeAddress }, { "timestamp", timestamp } };
 
     publishMessage(topic, command.dump());
 }
@@ -129,12 +134,16 @@ void CommandCallback::setupPushBasedSubscription(COMMANDS::OI oi, uint16_t inter
 {
     uint8_t subscriptionId = static_cast<uint8_t>(oi);
     if (subscriptionId > 0) {
+        uint64_t timestamp = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count());
+
         json parameters;
         parameters["subscriptionId"] = subscriptionId;
         parameters["subscriptionInterval"] = interval;
+        parameters["nodeAddress"] = nodeAddress;
+        parameters["timestamp"] = timestamp;
         json command;
-        command["subscription"] = parameters;
-        command["nodeAddress"] = nodeAddress;
+        command["command"] = "subscription";
+        command["params"] = parameters;
         std::string topic = "raduino-router/RCMD/" + std::to_string(nodeAddress);
         publishMessage(topic, command.dump());
     }

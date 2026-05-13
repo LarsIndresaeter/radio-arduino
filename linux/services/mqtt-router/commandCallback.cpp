@@ -2,6 +2,7 @@
 #include "include/commandCallback.hpp"
 
 using nlohmann::json;
+using namespace std::chrono;
 
 CommandCallback::CommandCallback(
 
@@ -146,7 +147,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         // command to a specific node
         try {
             auto jsonData = json::parse(payload);
-            uint32_t nodeAddress = jsonData["nodeAddress"].get<uint32_t>();
+            uint32_t nodeAddress = jsonData["params"]["nodeAddress"].get<uint32_t>();
 
             nodepath_t n = getNodePath(nodeAddress);
             if (n.nodeAddress == 0) {
@@ -169,8 +170,11 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
 void CommandCallback::resendBirthCertificate()
 {
     std::string topic = "raduino-adapter/RCMD";
+    uint64_t timestamp = (duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count());
+
     json command;
     command["command"] = "resendBirthCertificate";
+    command["params"]["timestamp"] = timestamp;
 
     publishMessage(topic, command.dump());
 }

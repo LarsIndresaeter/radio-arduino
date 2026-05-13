@@ -42,6 +42,8 @@ class AvrUartConan(ConanFile):
             "include/*",
             "libs/*",
             "apps/*",
+            "services/*",
+            "schema/*",
             "src/*",
             ]
 
@@ -49,6 +51,7 @@ class AvrUartConan(ConanFile):
         if self.options.mqtt == True:
             self.requires("paho-mqtt-cpp/1.4.0", private=True)
             self.requires("nlohmann_json/3.11.3", private=True)
+            self.requires("json-schema-validator/2.3.0", private=True)
         else:
             self.requires("openssl/3.3.2",private=True)
         self.requires("raduino-api/[>0.0.2, include_prerelease=True]@raduino/test",private=True)

@@ -118,7 +118,7 @@ void DeviceController::executeJsonCommand()
     try {
         auto jsonData = json::parse(m_command);
 
-        uint32_t nodeAddress = jsonData["nodeAddress"].get<uint32_t>();
+        uint32_t nodeAddress = jsonData["params"]["nodeAddress"].get<uint32_t>();
         bool radioNodeWakeupSuccess = false;
 
         if (nodeAddress == m_radioAddress) {
@@ -134,11 +134,12 @@ void DeviceController::executeJsonCommand()
                 }
             }
 
+            std::string command = jsonData["command"];
 
-            if (jsonData.contains("subscription")) {
+            if (command == "subscription") {
                 //std::cout << "DEBUG: subscription json command received" << std::endl;
 
-                auto subscriptionParams = jsonData["subscription"];
+                auto subscriptionParams = jsonData["params"];
                 uint8_t subscriptionId = subscriptionParams["subscriptionId"];
                 uint16_t subscriptionInterval = subscriptionParams["subscriptionInterval"];
 
@@ -162,8 +163,8 @@ void DeviceController::executeJsonCommand()
                 }
             }
 
-            if (jsonData.contains("commandList")) {
-                json commandList = jsonData["commandList"];
+            if (command == "batchCommand") {
+                json commandList = jsonData["params"]["commandList"];
 
                 for (std::string commandName : commandList) {
                     std::string jsonResponse = "";
@@ -235,7 +236,7 @@ void DeviceController::executeJsonCommand()
                             jsonResponse = m_monitor.getRadio<>(RaduinoCommandGpio()).getJson();
                         }
                         else if (commandName == "ssd1306") {
-                            std::string displayText = jsonData["displayText"];
+                            std::string displayText = jsonData["params"]["displayText"];
                             jsonResponse = m_monitor.getRadio<>(RaduinoCommandSsd1306(2, displayText)).getJson();
                         }
                         else if (commandName == "ina219") {
