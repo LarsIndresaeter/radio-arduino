@@ -144,10 +144,10 @@ void scan(
 
         if (result.responseStruct().getId() > 0) {
             if (printTimestamp) {
-                uint64_t timestamp = result.getTimeStamp() + result.getResponseTimeUs();
-                auto tp
-                    = std::chrono::time_point<std::chrono::system_clock>(std::chrono::microseconds(timestamp * 1000));
-                std::cout << std::format("{:%Y-%m-%d %H:%M:%S} | ", tp);
+                uint64_t timestamp_ms = result.getTimeStamp() + result.getResponseTimeUs();
+                std::time_t timestamp = static_cast<uint32_t>(timestamp_ms/1000);
+                std::cout << std::put_time(std::localtime(&timestamp), "%F %T");
+                std::cout << "           | ";
             }
 
             COMMANDS::SCAN_FOR_ADVERTISEMENT::response_t payload = result.responseStruct();

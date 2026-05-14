@@ -1,5 +1,9 @@
 # Changelog
 
+## version 3.1.2
+
+- don't use std::format since devbox does not support it (C++20)
+
 ## version 3.1.0
 
 - new set_subscription command which will broadcast data in advertisement packages
