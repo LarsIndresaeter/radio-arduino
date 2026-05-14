@@ -1,6 +1,6 @@
 # Changelog
 
-## changes since version 3.0.0
+## version 3.1.0
 
 - new set_subscription command which will broadcast data in advertisement packages
 - new tool raduino-fr-scan that will print advertisement packages in several formats
