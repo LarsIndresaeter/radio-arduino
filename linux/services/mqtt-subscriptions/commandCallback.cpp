@@ -278,12 +278,6 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         }
     }
 
-    if (topic_orig.starts_with("raduino-router/STATE/")) {
-        // TODO: state is not used, perhaps remove it?
-        std::string nodeAddressString = tokens.at(3);
-        uint32_t nodeAddress = stoul(tokens.at(3));
-    }
-
     if (topic_orig.starts_with("raduino-router/DDATA/") || topic_orig.starts_with("raduino-router/SUBSCRIPTION/")) {
         try {
             auto jsonData = json::parse(payload);

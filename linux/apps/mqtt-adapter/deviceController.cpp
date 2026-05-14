@@ -51,7 +51,6 @@ void DeviceController::execute()
 
         m_command = "";
         m_commandReceived = false;
-        publishState();
     }
 
     if (m_publishBirth) {
@@ -71,13 +70,6 @@ void DeviceController::execute()
         publishMessage(topic, advertisement.dump());
         setPublishAdvertisement(false);
     }
-}
-
-void DeviceController::publishState()
-{
-    std::string topic
-        = createMqttTopic("STATE", std::to_string(m_gatewayAddress) + "/" + std::to_string(m_radioAddress), "command");
-    publishMessage(topic, m_command);
 }
 
 void DeviceController::advertisementReceived(uint32_t nodeAddress, uint32_t sequenceNumber, uint8_t subscriptionId)
@@ -340,7 +332,6 @@ void DeviceController::parseMessage(std::string topic, std::string command)
             if (!m_commandReceived) {
                 m_command = command;
                 m_commandReceived = true;
-                publishState();
             }
             else {
                 // std::cout << "WARNING: Ignore command, reason: busy parsing previous command. nodeAddress="

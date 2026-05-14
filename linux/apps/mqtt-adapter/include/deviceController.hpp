@@ -31,7 +31,6 @@ private:
     std::string createMqttTopic(std::string type, std::string eon, std::string device);
     void storeValidResponse(std::string jsonResponse);
     void publishMessage(std::string topic, std::string message);
-    void publishState();
     void updateQualityIndicator(bool lastCommandReturnedValidResponse);
     void executeJsonCommand();
     void publishBirth();
