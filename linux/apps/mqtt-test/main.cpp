@@ -15,6 +15,7 @@ void print_usage()
     std::cout << "                 -b : resendBirthCertificate" << std::endl;
     std::cout << "          -s <type> : subscription type (vcc, gpio, quadrature_encoder, lsm303d)" << std::endl;
     std::cout << "                 -l : command list" << std::endl;
+    std::cout << "          -t <text> : print text on ssd1306 lcd display" << std::endl;
     std::cout << "                 -h : print this text" << std::endl;
 }
 
@@ -55,11 +56,35 @@ void batchCommandStaticNodeInfo(mqtt::async_client& mqtt_client, uint64_t nodeAd
     std::string topic = "raduino-router/RCMD/" + std::to_string(nodeAddress);
 
     json commandList;
+    commandList.push_back("vcc");
     commandList.push_back("get_version");
     commandList.push_back("get_device_name");
+    commandList.push_back("get_statistics");
+    commandList.push_back("get_lsm303d");
+    commandList.push_back("get_attached_devices_csv_string");
+    commandList.push_back("get_active_time_counter");
+    commandList.push_back("quadrature_encoder");
+    commandList.push_back("gpio");
 
     json command;
     command["command"] = "batchCommand";
+    command["params"]["commandList"] = commandList;
+    command["params"]["timestamp"] = getTimestamp();
+    command["params"]["nodeAddress"] = nodeAddress;
+
+    publishMessage(mqtt_client, topic, command.dump());
+}
+
+void setTextOnLcd(mqtt::async_client& mqtt_client, uint64_t nodeAddress, std::string displayText)
+{
+    std::string topic = "raduino-router/RCMD/" + std::to_string(nodeAddress);
+
+    json commandList;
+    commandList.push_back("ssd1306");
+
+    json command;
+    command["command"] = "batchCommand";
+    command["params"]["displayText"] = displayText;
     command["params"]["commandList"] = commandList;
     command["params"]["timestamp"] = getTimestamp();
     command["params"]["nodeAddress"] = nodeAddress;
@@ -100,10 +125,13 @@ void parseOpt(int argc, char* argv[])
     char option = 0;
     uint32_t nodeAddress = 0;
 
-    while ((option = getopt(argc, argv, "bla:s:h")) != -1) {
+    while ((option = getopt(argc, argv, "bla:s:t:h")) != -1) {
         switch (option) {
         case 'b':
             resendBirthCertificate(mqtt_client);
+            break;
+        case 't':
+            setTextOnLcd(mqtt_client, nodeAddress, optarg);
             break;
         case 'a':
             nodeAddress = atoi(optarg);
