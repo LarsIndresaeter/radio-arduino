@@ -2,11 +2,13 @@
 
 ## raduino-mqtt-adapter
 
-These commands must follow the [adapter schema](../../linux/schema/adapter.schema.json)
+These commands must follow the [adapter schema](../../linux/schema/adapter.schema.json).
+Parse errors are printer to standard output (console) by the service raduino-mqtt-adapter,
+in the future this may be published to a log topic or written to a log file.
 
 ### resentBirthCertificate
 
-This command will resent birth certificates.
+This command will resend birth certificates.
 This command will be picked up by all mqtt adapters.
 This is useful for building a list of detected nodes when a new client is started.
 
@@ -26,7 +28,8 @@ The command must be sent to the topic `raduino-adapter/RDMD` or the `raduino-rou
 Command list is a list of the command names to run.
 Only commands without paramters can be executed this way.
 
-This command ust be sent to the `raduino-adapter/RCMD/<id>` topic.
+This command ust be sent to the `raduino-adapter/RCMD/<gw-id>/<id>`
+or `raduino-router/RCMD/<id>` topic.
 
 ```json
 {
@@ -113,7 +116,9 @@ status is published on the topic `raduino-device/status` by the service raduino-
 
 ## command response
 
-command response is published on the topic `raduino-adapter/DDATA/<id>` by the service raduino-mqtt-adapter.
+command response is published on the topic `raduino-adapter/DDATA/<gw-id>/<id>/<command-name>`
+by the service raduino-mqtt-adapter and republished on the topic
+`raduino-router/DDATA/<id>/<command-name>` by the service raduino-mqtt-router.
 
 json formatting is done by the [generated command classes](../explanation/interface/protocol-command-generator.md).
 Either as a response to a command or from the payload of an advertisement.
@@ -155,7 +160,7 @@ the raduino-mqtt-router on the topic `raduino-router/ADVERTISEMENT/<id>`.
 
 Birth certificates are published by the raduino-mqtt-adapter service on the
 topic `raduino-adapter/DBIRTH/<gw-id>/<id>` and republished by the service
-raduino-router/DBIRTH/<id>`.
+`raduino-router/DBIRTH/<id>`.
 
 The birth certificate contains the nodeAddress of the radio node,
 the address of the gateway, a health indicator for the link between the
