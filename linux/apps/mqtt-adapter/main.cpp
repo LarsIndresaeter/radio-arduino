@@ -7,6 +7,7 @@
 #include <deviceController.hpp>
 #include <eventprocess.hpp>
 #include <filesystem>
+#include <json_schema.h>
 #include <linuxCryptoHandler.hpp>
 #include <monitor.hpp>
 #include <radioSession.hpp>
@@ -171,7 +172,6 @@ void readMultipleRadioNodes(monitor& mon, mqtt::async_client& mqtt_client)
                     // std::cout << "DEBUG: jsonResponse=" << jsonResponse << std::endl;
                     publishMessage(mqtt_client, topicString + "/" + subscriptionObject.getCommandName(), jsonResponse);
                 }
- 
             }
 
             registerNode(
@@ -206,7 +206,8 @@ void print_usage()
 {
     std::cout << "raduino-mqtt-client" << std::endl;
     std::cout << "           -K <key> : encrypt command with transport key" << std::endl;
-    std::cout << "                 -h : p rint this text" << std::endl;
+    std::cout << "                 -s : print json schema" << std::endl;
+    std::cout << "                 -h : print this text" << std::endl;
 }
 
 void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHandler)
@@ -229,7 +230,7 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
 
     char option = 0;
 
-    while ((option = getopt(argc, argv, "K:h")) != -1) {
+    while ((option = getopt(argc, argv, "K:sh")) != -1) {
         switch (option) {
         case 'K': {
             std::string s(optarg);
@@ -245,8 +246,14 @@ void parseOpt(int argc, char* argv[], monitor& mon, LinuxCryptoHandler& cryptoHa
             cryptoHandler.setMacKey((uint8_t*)&key[0]);
             mon.setTransportEncryption(true);
         } break;
+        case 's':
+            std::cout << JSON_SCHEMA::adapter_json_schema << std::endl;
+            exit(0);
+            break;
         case 'h':
             print_usage();
+            exit(0);
+            break;
             break;
         }
     }
