@@ -1,6 +1,7 @@
 
 add_subdirectory(mqtt-client)
 add_subdirectory(mqtt-adapter)
+add_subdirectory(mqtt-test)
 add_subdirectory(power-monitor-mqtt)
 add_subdirectory(node)
 add_subdirectory(test)

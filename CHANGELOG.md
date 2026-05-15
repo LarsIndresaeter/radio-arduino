@@ -1,5 +1,9 @@
 # Changelog
 
+## major changes since version 3.1.2
+
+- add new test application raduino-mqtt-test
+
 ## version 3.1.2
 
 - don't use std::format since devbox does not support it (C++20)
