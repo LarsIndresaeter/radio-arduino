@@ -12,7 +12,6 @@
   "anyOf": [
      {
       "properties": {
-        "description": "Instruct mqtt-adapter to publish birth certificates for gateway and radio nodes",
         "command": { "const": "resendBirthCertificate" },
         "params": {
           "required": ["timestamp"],
@@ -24,7 +23,6 @@
     },
     {
       "properties": {
-        "description": "set up a subscription on a radio node. Results will be published in advertisement packages",
         "command": { "const": "subscription" },
         "params": {
           "required": ["subscriptionId", "subscriptionInterval", "nodeAddress", "timestamp"],
@@ -39,7 +37,6 @@
     },
     {
       "properties": {
-        "description": "run a sequence of commands to avoid waking up the node more that neccessary",
         "command": { "const": "batchCommand" },
         "params": {
           "required": ["commandList", "nodeAddress", "timestamp"],
