@@ -23,6 +23,7 @@ void readMultipleRadioNodes(mqtt::async_client& mqtt_client)
     commandCallback.resendBirthCertificate();
 
     while (true) { // loop forever
+        std::this_thread::sleep_for(100ms);
     }
 }
 
