@@ -344,4 +344,3 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
         }
     }
 }
-

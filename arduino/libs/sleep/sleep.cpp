@@ -7,10 +7,7 @@ namespace SLEEP {
 uint64_t sleep_time = 0;
 uint32_t advertisement_interval = 5000;
 
-void setAdvertisementInterval(uint32_t interval)
-{
-    advertisement_interval = interval;
-}
+void setAdvertisementInterval(uint32_t interval) { advertisement_interval = interval; }
 
 void powerSaveSleepMs(uint8_t delay_ms)
 {

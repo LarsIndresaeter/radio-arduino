@@ -25,7 +25,8 @@ void DeviceController::reconsileState()
 
         std::string topic = createMqttTopic("STATE", m_name, "actualState");
 
-        json command = {{"dateString", getDateTimeString()}, {"pollInterval", std::to_string(m_actualState.getActualPollInterval())}};
+        json command = { { "dateString", getDateTimeString() },
+                         { "pollInterval", std::to_string(m_actualState.getActualPollInterval()) } };
 
         publishMessage(topic, command.dump());
     }
@@ -190,7 +191,7 @@ void DeviceController::updateDisplayText()
         if (m_monitor.lastCommandReturnedValidResponse()) {
             std::string topic = m_desiredState->getTopicString() + "/actualState";
 
-            json command = {{"dateString", getDateTimeString()}, {"displayText", displayText}};
+            json command = { { "dateString", getDateTimeString() }, { "displayText", displayText } };
 
             publishMessage(topic, command.dump());
         }

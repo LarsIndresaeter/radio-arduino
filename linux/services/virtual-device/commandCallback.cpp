@@ -125,9 +125,9 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
                 int x = jsonData["payload"]["accelerometerX"].get<int16_t>();
                 int y = jsonData["payload"]["accelerometerY"].get<int16_t>();
                 int z = jsonData["payload"]["accelerometerZ"].get<int16_t>();
-                devices[nodeAddressString]["accelerometer"]["x"] = (x*0.061) / 1000.0;
-                devices[nodeAddressString]["accelerometer"]["y"] = (y*0.061) / 1000.0;
-                devices[nodeAddressString]["accelerometer"]["z"] = (z*0.061) / 1000.0;
+                devices[nodeAddressString]["accelerometer"]["x"] = (x * 0.061) / 1000.0;
+                devices[nodeAddressString]["accelerometer"]["y"] = (y * 0.061) / 1000.0;
+                devices[nodeAddressString]["accelerometer"]["z"] = (z * 0.061) / 1000.0;
             }
 
             std::string topic = "raduino-device/status";
@@ -149,4 +149,3 @@ void CommandCallback::delivery_complete(mqtt::delivery_token_ptr token)
 {
     std::cout << "Message delivered" << std::endl;
 }
-

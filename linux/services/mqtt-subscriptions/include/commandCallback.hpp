@@ -10,7 +10,7 @@ using nlohmann::json;
 
 typedef struct nodeInfo {
     uint32_t nodeAddress;
-    //bool readyForCommand;
+    // bool readyForCommand;
 } nodeInfo_t;
 
 typedef struct subscription {
@@ -20,9 +20,9 @@ typedef struct subscription {
         , nodeAddress(na)
         , lastValidResponse("")
     {
-        timestampLastValidResponse=0;
-        consequtiveErrorResponses=0;
-        active=true;
+        timestampLastValidResponse = 0;
+        consequtiveErrorResponses = 0;
+        active = true;
     }
 
     std::string commandName;

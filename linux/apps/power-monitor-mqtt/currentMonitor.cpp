@@ -125,12 +125,9 @@ void readCurrentAndVoltage(monitor& mon, mqtt::async_client& mqtt_client, int sa
                                        std::to_string(secondsSinceEpoch()) } };
 
                     json payload = {
-                        { "voltage", std::to_string(V_avg) },
-                        { "current", std::to_string(I_avg) },
-                        { "stddev", std::to_string(I_std) },
-                        { "messageCounter", std::to_string(json_message_id) },
-                        { "timestamp", getDateTimeString() },
-                        { "secondsSinceEpoch", secondsSinceEpoch() },
+                        { "voltage", std::to_string(V_avg) }, { "current", std::to_string(I_avg) },
+                        { "stddev", std::to_string(I_std) },  { "messageCounter", std::to_string(json_message_id) },
+                        { "timestamp", getDateTimeString() }, { "secondsSinceEpoch", secondsSinceEpoch() },
 
                     };
 

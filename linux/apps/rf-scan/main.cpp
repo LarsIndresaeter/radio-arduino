@@ -145,7 +145,7 @@ void scan(
         if (result.responseStruct().getId() > 0) {
             if (printTimestamp) {
                 uint64_t timestamp_ms = result.getTimeStamp() + result.getResponseTimeUs();
-                std::time_t timestamp = static_cast<uint32_t>(timestamp_ms/1000);
+                std::time_t timestamp = static_cast<uint32_t>(timestamp_ms / 1000);
                 std::cout << std::put_time(std::localtime(&timestamp), "%F %T");
                 std::cout << "           | ";
             }

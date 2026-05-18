@@ -3,7 +3,7 @@
 #include <sleep.hpp>
 
 namespace SLEEP {
-    
+
 uint64_t sleep_time_start_measurement = 0;
 extern uint64_t sleep_time;
 
@@ -34,8 +34,7 @@ void commandGetActiveTimeCounter(uint8_t* commandPayload, uint8_t* responsePaylo
 
     uint64_t timestamp = command.getTimestamp();
 
-    if(sleep_time_start_measurement == 0)
-    {
+    if (sleep_time_start_measurement == 0) {
         sleep_time_start_measurement = timestamp;
         sleep_time = 0;
     }

@@ -26,7 +26,7 @@ void CommandCallback::message_arrived(mqtt::const_message_ptr message)
     }
     catch (std::exception const& e) {
         std::cout << "ERROR: Validation failed: " << e.what() << std::endl;
-        //TODO: publish this to raduino-log/
+        // TODO: publish this to raduino-log/
     }
 
     if (message->get_topic() == "raduino-adapter/RCMD") {

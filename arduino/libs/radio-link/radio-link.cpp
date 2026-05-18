@@ -1,12 +1,12 @@
-#include <cmd/command_id.hxx>
-#include <cmd/gpio/payload.hxx>
-#include <cmd/vcc/payload.hxx>
-#include <cmd/quadrature_encoder/payload.hxx>
-#include <cmd/get_lsm303d/payload.hxx>
-#include <quadencoder.hpp>
-#include <gpio.hpp>
 #include <adc.hpp>
+#include <cmd/command_id.hxx>
+#include <cmd/get_lsm303d/payload.hxx>
+#include <cmd/gpio/payload.hxx>
+#include <cmd/quadrature_encoder/payload.hxx>
+#include <cmd/vcc/payload.hxx>
+#include <gpio.hpp>
 #include <lsm303d.hpp>
+#include <quadencoder.hpp>
 #include <radio-link.hpp>
 
 extern bool rx_mode_gateway;

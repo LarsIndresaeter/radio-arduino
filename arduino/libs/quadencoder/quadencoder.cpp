@@ -53,8 +53,8 @@ uint8_t clearChangedFlag()
     uint8_t retval = quadencoder_updated;
     quadencoder_updated = 0;
 
-        EIFR = (1 << INTF1); // clear INT1 flag
-                             
+    EIFR = (1 << INTF1); // clear INT1 flag
+
     return retval;
 }
 

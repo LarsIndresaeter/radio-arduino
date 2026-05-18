@@ -8,11 +8,7 @@ using nlohmann::json;
 
 class DeviceController {
 public:
-    DeviceController(
-        monitor& monitor,
-        mqtt::async_client& mqtt_client,
-        uint32_t radioAddress,
-        uint32_t gatewayAddress);
+    DeviceController(monitor& monitor, mqtt::async_client& mqtt_client, uint32_t radioAddress, uint32_t gatewayAddress);
 
     void execute();
     void advertisementReceived(uint32_t nodeAddress, uint32_t sequenceNumber, uint8_t subscriptionId);

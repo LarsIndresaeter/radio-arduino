@@ -129,7 +129,7 @@ void DeviceController::executeJsonCommand()
             std::string command = jsonData["command"];
 
             if (command == "subscription") {
-                //std::cout << "DEBUG: subscription json command received" << std::endl;
+                // std::cout << "DEBUG: subscription json command received" << std::endl;
 
                 auto subscriptionParams = jsonData["params"];
                 uint8_t subscriptionId = subscriptionParams["subscriptionId"];
@@ -351,4 +351,3 @@ void DeviceController::setPublishBirth(bool value) { m_publishBirth = value; }
 void DeviceController::setPublishAdvertisement(bool value) { m_publishAdvertisement = value; }
 
 std::string DeviceController::getTopicString() { return (m_topic); }
-
