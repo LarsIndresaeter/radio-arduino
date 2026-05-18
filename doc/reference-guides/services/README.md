@@ -61,7 +61,7 @@ the raduino protocol with json commands over mqtt.
 └──────────┘       └─────────────┘        └───────────┘                                       └───────────────┘
 ```
 
-### services
+### messaging between services
 
 This figure shows shows the topic names used commands and responses between services.
 The service `bin/raduino-mqtt-subscriptions` interact with a

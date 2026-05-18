@@ -1,9 +1,13 @@
 # Changelog
 
+## changes since 3.1.3
+
+- improve documentation
+
 ## version 3.1.3
 
 - add new test application raduino-mqtt-test
-- sleep in service idle loops
+- add sleep in service idle loops to reduce cpu load
 
 ## version 3.1.2
 
@@ -12,7 +16,7 @@
 ## version 3.1.0
 
 - new set_subscription command which will broadcast data in advertisement packages
-- new tool raduino-fr-scan that will print advertisement packages in several formats
+- new tool raduino-rf-scan that will print advertisement packages in several formats
 - new command for setting advertisement interval in milliseconds
 - setup push based subscription of sensor data from raduino-mqtt-subscriptions service
 - add json schema and validation for commands parsed by raduino-mqtt-adapter
