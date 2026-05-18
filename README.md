@@ -30,12 +30,13 @@
    2. Blink the led: `./bin/raduino-device-atmega328 -b`
 4. If you have two rf-arduino boards
    1. Configure one board as gateway: `./bin/raduino-personalize -n <name> -r gateway`
-   2. Configure one board as node: `./bin/raduino-personalize -n <name> -r node`
-   3. Blink the led on the node via the gateway: `./bin/raduino-device-atmega328 -B`
+   2. Configure one board as node: `./bin/raduino-personalize -n <name> -i 1234 -r node`
+   3. Blink the led on the node via the gateway: `./bin/raduino-device-atmega328 -N 1234 -B`
 5. If you have a mqtt broker on localhost
    1. publish periodic stats like battery voltage with the command `./bin/raduino-mqtt-client`
 6. If you have multiple gateways you can poll status from gateways and nodes
    with the service [raduino-mqtt-subscriptions](./doc/reference-guides/services/raduino-mqtt-subscriptions.md).
+7. You can monitor which nodes send data with the application `./bin/raduino-rf-scan`.
 
 ## Documentation index
 
