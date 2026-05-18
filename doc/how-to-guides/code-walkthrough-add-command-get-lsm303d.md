@@ -10,9 +10,9 @@ The steps to support a new command will typically look like this:
 4. Generate C++ files for new command
 5. Implement command handler for arduino
 6. Add new linux command line tool
-7. Pubish lsm303d sensor data on mqtt
+7. Publish lsm303d sensor data on mqtt
 
-commits in git history for this code change
+Commits in git history for this code change
 
 ```console
 git log --graph --oneline --decorate d0c6b79..49093c4
@@ -52,7 +52,7 @@ From the lsm303d datasheet we find that:
 
 ### enable accelerometer
 
-write to the I2C registers using the new app added in commit `9802211`.
+Write to the I2C registers using the new app added in commit `9802211`.
 
 ```console
 ./bin/raduino-i2c-bridge -a 50 -c 32 -w 23
@@ -68,23 +68,23 @@ Read high register for x axis
 
 ## read accelerometer with cli tool
 
-with the new command line tool you can now read lsm303d connected to a gateway
+With the new command line tool you can now read lsm303d connected to a gateway
 or node.
 
-read from gateway
+Read from gateway
 
 ```console
 ./bin/raduino-device-lsm303d -r
 ```
 
-read from node. Note that `-N 0` will wake up radio node with address 0 in the
+Read from node. Note that `-N 0` will wake up radio node with address 0 in the
 implied addressing scheme between radio-arduino gateway and node.
 
 ```console
 ./bin/raduino-device-lsm303d -N 0 -R
 ```
 
-result
+Result
 
 ```console
 accelerometer=[-16320, 256, 128]
@@ -92,13 +92,13 @@ accelerometer=[-16320, 256, 128]
 
 ## test mqtt publishig
 
-start mosquitto and subscribe. Installation of mqtt server is not described here.
+Start mosquitto and subscribe. Installation of mqtt server is not described here.
 
 ```console
 mosquitto_sub -t '#' -v
 ```
 
-start mqtt client which was updated in commit `fca3c9f`.
+Start mqtt client which was updated in commit `fca3c9f`.
 
 ```console
 ./bin/raduino-mqtt-client

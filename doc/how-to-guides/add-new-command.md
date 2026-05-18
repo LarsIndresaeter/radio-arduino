@@ -3,7 +3,7 @@
 The best way to learn how to add a command is to inspect the code changes for a
 new command. The example below is from a branch that adds commands for setting
 and getting unique id.
-use actual commits (merge commit) as an example
+Use actual commits (merge commit) as an example
 
 ```console
 *   5f5a598 (HEAD -> main) Merge branch 'unique-id'
@@ -28,7 +28,7 @@ Running the script with the command `python generate.py` in the folder
 `interface/libs/commands/` created payload structs used by the arduino code and
 command classes used by the linux application code
 
-this can be done using the command
+This can be done using the command
 
 ```console
 raduino generate commands
@@ -57,7 +57,7 @@ Getter and setter functions are created by the
 [generator script](../explanation/interface/protocol-command-generator.md) and used for
 extracting the id value in the command or setting the id value in the response.
 
-changes to `arduino/libs/eeprom/command-handlers-eeprom.cpp`
+Changes to `arduino/libs/eeprom/command-handlers-eeprom.cpp`
 
 ```cpp
 void commandSetUniqueId(uint8_t* commandPayload, uint8_t* responsePayload)
@@ -81,7 +81,7 @@ void commandGetUniqueId(uint8_t* commandPayload, uint8_t* responsePayload)
 }
 ```
 
-changes to `arduino/src/main`
+Changes to `arduino/src/main`
 
 ```cpp
 case COMMANDS::OI::SET_UNIQUE_ID:

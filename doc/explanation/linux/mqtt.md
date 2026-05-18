@@ -51,7 +51,7 @@ The command
 ./bin/raduino-power-monitor-mqtt -n 5
 ```
 
-will read voltage and current from an attached ina219 power monitor chip and
+Will read voltage and current from an attached ina219 power monitor chip and
 publish json formatted messages to a mqtt server on localhost. Below is one of
 these messages.
 

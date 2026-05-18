@@ -33,7 +33,7 @@ node. Cli tools for debugging or demo and mqtt client
 
 ## [spi bridge](../reference-guides/apps/raduino-spi-bridge.md)
 
-generic tool. useful for test and developement
+generic tool. useful for test and development
 
 ### write and read example
 
@@ -57,7 +57,7 @@ SPI_READ               :  reg=5 length=1 data=[ 21 00 00 00 00 00 00 00 00 00 00
 
 ## [i2c bridge](../reference-guides/apps/raduino-i2c-bridge.md)
 
-generic tool. useful for test and developement. You will typically use this to
+Generic tool. Useful for test and development. You will typically use this to
 experiment with a new i2c device before adding a new command specifically for
 that device.
 

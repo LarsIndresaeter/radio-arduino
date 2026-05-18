@@ -1,6 +1,6 @@
 # monitor serial traffic
 
-install socat and set up a bridge
+Install socat and set up a bridge
 
 ```console
 socat -x -v /dev/ttyUSB0,rawer,b1000000,crnl PTY,link=$HOME/myserial,rawer,crnl
@@ -12,7 +12,7 @@ run a command, for example:
 ./bin/raduino-system-commands --device $HOME/myserial -p
 ```
 
-which will generate this output in the terminal where you started socat
+Which will generate this output in the terminal where you started socat
 
 ```console
 < 2025/11/09 20:18:24.000428478  length=10 from=0 to=9

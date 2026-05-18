@@ -89,7 +89,7 @@ packet
 16-23: "2"
 ```
 
-binary: 06 02 00 02
+Binary: 06 02 00 02
 
 ### response payload
 
@@ -104,11 +104,11 @@ packet
 24-31: "3"
 ```
 
-binary: 06 03 00 02 03
+Binary: 06 03 00 02 03
 
 ## display binary data using the verbose flag
 
-example using the ping command `./bin/raduino-gateway -Vp`
+Example using the ping command `./bin/raduino-gateway -Vp`
 
 This is a command with no command payload and thus the size of the protocol
 packet is the minimum size of 10 bytes.
@@ -138,7 +138,7 @@ r: FE ED 01 02 21 00 F2 BA F7 FA
 [2882]PING                   : 
 ```
 
-ping command with encryption. The protocol payload is enctypted using AES128 CBC-CTS.
+Ping command with encryption. The protocol payload is encrypted using AES128 CBC-CTS.
 
 ```console
 lars@lionfish:~/priv/radio-arduino$ ./bin/raduino-gateway -VTp

@@ -17,5 +17,5 @@ commands that will only respond if it was sent in an encrypted payload.
 
 These commands must be sent encrypted even when `unlock_session` has temporarily
 enabled unencrypted messages or the `require_transport_encryption` command has
-permanentely disabled this feature.
+permanently disabled this feature.
 

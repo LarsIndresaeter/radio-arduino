@@ -68,7 +68,7 @@ This command ust be sent to the `raduino-adapter/RCMD/<id>` topic.
 
 ## virtual-device
 
-status is published on the topic `raduino-device/status` by the service raduino-virtual-device
+Status is published on the topic `raduino-device/status` by the service raduino-virtual-device
 
 ```json
 {
@@ -116,7 +116,7 @@ status is published on the topic `raduino-device/status` by the service raduino-
 
 ## command response
 
-command response is published on the topic `raduino-adapter/DDATA/<gw-id>/<id>/<command-name>`
+Command response is published on the topic `raduino-adapter/DDATA/<gw-id>/<id>/<command-name>`
 by the service raduino-mqtt-adapter and republished on the topic
 `raduino-router/DDATA/<id>/<command-name>` by the service raduino-mqtt-router.
 

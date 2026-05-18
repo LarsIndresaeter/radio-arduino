@@ -1,6 +1,6 @@
 # wakeup
 
-## wakup of a sleeping node using wakeup command
+## wakeup of a sleeping node using wakeup command
 
 The diagram below shows how the [radioSession](../../../linux/libs/radiosession/radioSession.cpp)
 class wake up a sleeping node.

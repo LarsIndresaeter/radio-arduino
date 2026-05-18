@@ -18,8 +18,8 @@ and broadcast of data by the radio node.
 - flags can be used to by the radio node to signal attention
 - data can be used for sending measurements
 
-### wakup
+### wakeup
 
-Arduino boards configured as gateways can wakup up radio nodes from sleep. 
+Arduino boards configured as gateways can wakeup up radio nodes from sleep. 
 This is done by sending a wake up command immediately after an advertisement package
 

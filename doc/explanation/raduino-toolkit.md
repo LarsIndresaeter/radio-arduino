@@ -1,7 +1,7 @@
 # raduino toolkit
 
 This repository has a tool named `raduino` which is a one-stop-tool for all you
-need to do for developement and usage.
+need to do for development and usage.
 
 ## source step
 

@@ -59,7 +59,7 @@ linux and tools as the main folders.
 
 ## how to contribute
 
-If you want to contribute to this code the preffered way is to:
+If you want to contribute to this code the preferred way is to:
 
 1. clone this repository
 2. make the suggested changed to the code

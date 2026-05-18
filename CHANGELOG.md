@@ -38,7 +38,7 @@
 ## version 2.2.0
 
 - publish discovery messages on new topic branch
-- refactor subscritions to be event based
+- refactor subscriptions to be event based
 - bash script that summarize status from mqtt-adapters
 - changed topic for messages sent by mqtt-adapter and mqtt-subscription
 - rename raduino-mqtt-bridge to raduino-mqtt-adapter

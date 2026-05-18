@@ -1,6 +1,6 @@
 # develop on raspberrypi
 
-tested on Raspberry Pi 3, os: Debian 12
+Tested on Raspberry Pi 3, os: Debian 12
 
 ## install docker
 

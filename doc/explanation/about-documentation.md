@@ -1,6 +1,6 @@
 # about documentation
 
-## Inteded audience
+## Intended audience
 
 The intended audience for this project is hobbyists experimenting with rf-nano
 or developers that want to learn.

@@ -1,6 +1,6 @@
 # develop on mac
 
-install docker. Docker Desktop or OrbStack.
+Install docker. Docker Desktop or OrbStack.
 
 ## create docker image
 

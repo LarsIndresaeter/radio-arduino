@@ -56,16 +56,16 @@ def generateCommandAndPayloadFile(commandId, commandName,
                  responsePayloadByteNames):
 ```
 
-the commandPayloadByteNames is a list of names for the payload variables.
+The commandPayloadByteNames is a list of names for the payload variables.
 Payload variables are 1 byte or more.
 
-for example
+For example
 
 ```python
 generateCommandAndPayloadFile(28, "vcc", [], ["vcc[2]"])
 ```
 
-will create a command named `vcc` which takes no parameters and returns two
+Will create a command named `vcc` which takes no parameters and returns two
 bytes named vcc. The response struct will have a getter command,
 `uint16_t getVcc()` automatically generated.
 
@@ -73,7 +73,7 @@ bytes named vcc. The response struct will have a getter command,
 generateCommandAndPayloadFile(29, "sleep", ["delay[4]"], [])
 ```
 
-will create a command named sleep. The command payload will have a setter method
+Will create a command named sleep. The command payload will have a setter method
 `setDelay(uint32_t value)` automatically generated.
 
 ### behavior of the generateCommandFile method

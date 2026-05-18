@@ -10,5 +10,5 @@ and the binary commands.
 
 In addition some mechanisms are explained like
 
-- [wakup](./wakeup.md) of a sleeping radio node
+- [wakeup](./wakeup.md) of a sleeping radio node
 

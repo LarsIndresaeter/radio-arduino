@@ -5,7 +5,7 @@ a project.
 
 ## getting started
 
-You can build or [run the apps nativly](./install-tools.md) or inside a
+You can build or [run the apps natively](./install-tools.md) or inside a
 [docker container](./docker-app.md)
 
 ### build and flash
@@ -13,7 +13,7 @@ You can build or [run the apps nativly](./install-tools.md) or inside a
 1. [how to compile](./how-to-compile.md)) software using the toolkit in this repository.
 2. [flash arduino](./flash-arduino.md) boards using command line tools.
 
-### using the linux apps
+### using the Linux apps
 
 1. [how to configure](./configure-device.md) a newly programmed board as gateway
    or node.

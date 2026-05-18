@@ -1,4 +1,4 @@
-# node discovery and adressing
+# node discovery and addressing
 
 ## limitations with multiple nodes in version 1
 
@@ -12,11 +12,11 @@ to multiple nodes to.
 Fixing this requires breaking changes and the major version number will increase
 after fixing it.
 
-## requirements for discovery and adressing scheme version 2
+## requirements for discovery and addressing scheme version 2
 
 - Gateway should discover new nodes automatically
 - Support for communication to multiple nodes
-- Adressing nodes by unique id
+- Addressing nodes by unique id
 - No state in the node, i.e. same behavior after node reset
 - Multiple gateways can communicate with the same node
 
@@ -28,8 +28,8 @@ after fixing it.
 - Add unique id to wakeup command.
   This ensures that the gateway communicate with the correct node.
 - Send discovery to a broadcast channel.
-- send wakeup to a channel address calcutlated from the unique id.
-- Communication from wakup to next sleep period using adress calculated from
+- send wakeup to a channel address calculated from the unique id.
+- Communication from wakeup to next sleep period using address calculated from
   node id.
 
 #### gateway

@@ -11,7 +11,7 @@ RTC to wake it up.
   the average power consumption to 1.1mA for a board that draws no power for
   other things than the atmega328
 - The node will always have the address `0` when it is powered on. After
-  successfully wakeing up the node this can be changed to a value in the range `0-255`
+  successfully waking up the node this can be changed to a value in the range `0-255`
 - The [wakeup](../interface/wakeup.md) command sent to the gateway will have a
   parameter for which node to wake up.
 - The address value will result in a radio channel change for the communication
